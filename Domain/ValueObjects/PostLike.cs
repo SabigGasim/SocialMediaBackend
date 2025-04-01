@@ -1,6 +1,6 @@
 ﻿using SocialMediaBackend.Domain.Common;
 
-namespace SocialMediaBackend.Domain.Entities;
+namespace SocialMediaBackend.Domain.ValueObjects;
 
 public record PostLike : ValueObject
 {

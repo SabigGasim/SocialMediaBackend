@@ -1,4 +1,5 @@
 ﻿using SocialMediaBackend.Domain.Common;
+using SocialMediaBackend.Domain.ValueObjects;
 
 namespace SocialMediaBackend.Domain.Entities;
 
@@ -22,12 +23,7 @@ public class Post : AuditableEntity<Guid>
         LastModifiedBy = "System";
     }
 
-    private Post()
-    {
-        _likes = new();
-        _comments = new();
-        _mediaItems = new();
-    }
+    private Post() => _mediaItems = new();
 
     public Guid UserId { get; private set; }
     public User User { get; private set; } = default!;
@@ -39,7 +35,7 @@ public class Post : AuditableEntity<Guid>
     public IReadOnlyCollection<Comment> Comments => _comments.AsReadOnly();
     public IReadOnlyCollection<Media> MediaItems => _mediaItems.AsReadOnly();
 
-    public static Post? Create(Guid userId, string text = "", List<Media>? mediaItems = null)
+    public static Post? Create(Guid userId, string? text = null, List<Media>? mediaItems = null)
     {
         if (string.IsNullOrEmpty(text) && mediaItems == null)
         {

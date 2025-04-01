@@ -1,4 +1,5 @@
 ﻿using SocialMediaBackend.Domain.Common;
+using SocialMediaBackend.Domain.ValueObjects;
 
 namespace SocialMediaBackend.Domain.Entities;
 

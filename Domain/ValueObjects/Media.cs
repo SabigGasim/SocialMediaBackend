@@ -1,6 +1,6 @@
 ﻿using SocialMediaBackend.Domain.Common;
 
-namespace SocialMediaBackend.Domain.Entities;
+namespace SocialMediaBackend.Domain.ValueObjects;
 
 public record Media : ValueObject
 {
@@ -19,7 +19,7 @@ public record Media : ValueObject
     public string Url { get; }
     public MediaType MediaType { get; }
     public string FilePath { get; }
-    public string FileName => FilePath.Split('/','\\').Last();
+    public string FileName => FilePath.Split('/', '\\').Last();
     public string FileExtension => FileName.Split('.').Last();
 
     private static MediaType GetMediaType(string fileExtension)

@@ -1,4 +1,5 @@
 ﻿using SocialMediaBackend.Domain.Common;
+using SocialMediaBackend.Domain.ValueObjects;
 
 namespace SocialMediaBackend.Domain.Entities;
 
@@ -38,5 +39,15 @@ public class User : AuditableEntity<Guid>
         //Rules for username, nickname, date of birth, pfp
 
         return new User(username, nickname, dateOfBirth, profilePicture);
+    }
+
+    public Post? AddPost(string? text = null, IEnumerable<Media>? mediaItems = null)
+    {
+        var post = Post.Create(this.Id, text, mediaItems as List<Media> ?? mediaItems?.ToList());
+        if (post is null)
+            return null;
+
+        _posts.Add(post);
+        return post;
     }
 }

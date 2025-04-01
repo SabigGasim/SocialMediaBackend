@@ -2,6 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.Domain.Entities;
+using SocialMediaBackend.Domain.ValueObjects;
 using System;
 
 public class ApplicationDbContext : DbContext
