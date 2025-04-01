@@ -4,12 +4,17 @@ namespace SocialMediaBackend.Domain.Entities;
 
 public record Media : ValueObject
 {
+    //TODO
+    public static Media DefaultProfilePicture = new("", "");
+
     public Media(string url, string filePath)
     {
         FilePath = filePath;
         Url = url;
         MediaType = GetMediaType(FileExtension);
     }
+
+    private Media() { }
 
     public string Url { get; }
     public MediaType MediaType { get; }
