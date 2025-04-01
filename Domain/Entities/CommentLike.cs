@@ -9,10 +9,18 @@ public record CommentLike : ValueObject
     public Guid CommentId { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
 
-    public CommentLike(Guid userId, Guid commentId)
+    private CommentLike(Guid userId, Guid commentId)
     {
         UserId = userId;
         CommentId = commentId;
+        CreatedAt = DateTimeOffset.UtcNow;
+    }
+
+    private CommentLike() { }
+
+    internal static CommentLike Create(Guid userId, Guid commentId)
+    {
+        return new CommentLike(userId, commentId);
     }
 
     protected override IEnumerable<object> GetComponents()

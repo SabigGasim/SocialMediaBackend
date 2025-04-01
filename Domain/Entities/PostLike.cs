@@ -8,11 +8,18 @@ public record PostLike : ValueObject
     public Guid PostId { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
 
-    public PostLike(Guid userId, Guid postId, DateTimeOffset createdAt)
+    private PostLike(Guid userId, Guid postId)
     {
         UserId = userId;
         PostId = postId;
-        CreatedAt = createdAt;
+        CreatedAt = DateTimeOffset.UtcNow;
+    }
+
+    private PostLike() { }
+
+    internal static PostLike Create(Guid userId, Guid id)
+    {
+        return new PostLike(userId, id);
     }
 
     protected override IEnumerable<object> GetComponents()
