@@ -1,4 +1,6 @@
+using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
+using SocialMediaBackend.Api;
 using SocialMediaBackend.Application;
 using SocialMediaBackend.Infrastructure;
 using SocialMediaBackend.Infrastructure.Data;
@@ -9,16 +11,17 @@ var connectionString = builder.Configuration.GetConnectionString("PostgresConnec
 
 builder.Services.AddInfrastructure(connectionString);
 builder.Services.AddApplication();
+builder.Services.AddApi();
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.MapFastEndpoints();
 
 using (var scope = app.Services.CreateScope())
 {
-var dbcontext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var dbcontext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dbcontext.Database.Migrate();
-dbcontext.Database.EnsureCreated();
+    dbcontext.Database.EnsureCreated();
     PrintSchema(dbcontext);
 }
 
