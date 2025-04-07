@@ -2,6 +2,8 @@
 using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Common.ValueObjects;
 using SocialMediaBackend.Domain.Posts;
+using SocialMediaBackend.Domain.Services;
+using SocialMediaBackend.Domain.Users.Rules;
 
 namespace SocialMediaBackend.Domain.Users;
 
@@ -35,12 +37,15 @@ public class User : AuditableEntity<Guid>
     public IReadOnlyCollection<Post> Posts => _posts.AsReadOnly();
     public IReadOnlyCollection<Comment> Comments => _comments.AsReadOnly();
 
-    public static User Create(string username, string nickname, DateOnly dateOfBirth, Media? profilePicture = null)
+    public static async Task<User> CreateAsync(string username, string nickname, DateOnly dateOfBirth, 
+        IUserExistsChecker userExistsChecker,
+        Media? profilePicture = null)
     {
-        //TODO
-        //Rules for username, nickname, date of birth, pfp
+        await CheckRuleAsync(new UsernameShouldBeUniqueRule(userExistsChecker, username));
 
-        return new User(username, nickname, dateOfBirth, profilePicture);
+        var pfp = profilePicture ?? Media.DefaultProfilePicture;
+
+        return new User(username, nickname, dateOfBirth, pfp);
     }
 
     public Post? AddPost(string? text = null, IEnumerable<Media>? mediaItems = null)

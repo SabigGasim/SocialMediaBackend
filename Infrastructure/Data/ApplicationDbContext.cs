@@ -10,7 +10,7 @@ using System;
 public class ApplicationDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
-    public DbSet<Post> Posts { get; set; }
+    public DbSet<Post> Posts { get; set; }  
     public DbSet<Media> Media { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<PostLike> PostLikes { get; set; }
@@ -117,6 +117,10 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<User>()
             .OwnsOne(u => u.ProfilePicture);
+
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Username)
+            .IsUnique();
     }
 }
 
