@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using SocialMediaBackend.Infrastructure.Data;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SocialMediaBackend.Application.DomainServices.Users;
+using SocialMediaBackend.Domain.Services;
 
 namespace SocialMediaBackend.Application;
 
@@ -10,8 +10,6 @@ public static class ApplicationServiceCollectionExtensions
     {
         return services
             .AddSingleton<IUserExistsChecker, UserExistsChecker>()
-            .AddValidatorsFromAssemblyContaining<IApplicationMarker>(ServiceLifetime.Singleton)
-                options.UseInMemoryDatabase("App");
-            .AddTransient(typeof(IPipelineBehavior<,>), typeof(UserRequestBehavior<,>))
+            ;
     }
 }
