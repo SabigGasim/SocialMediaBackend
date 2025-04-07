@@ -12,6 +12,7 @@ public static class InfrastructureServiceCollectionExtensions
     {
         return services
             .AddSingleton<IDbConnectionFactory>(new NpgsqlConnectionFactory(connectionString))
+            .AddSingleton<IUserRepository, UserRepositry>()
             .AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseNpgsql(connectionString);
