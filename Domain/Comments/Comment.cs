@@ -1,7 +1,8 @@
 ﻿using SocialMediaBackend.Domain.Common;
-using SocialMediaBackend.Domain.ValueObjects;
+using SocialMediaBackend.Domain.Posts;
+using SocialMediaBackend.Domain.Users;
 
-namespace SocialMediaBackend.Domain.Entities;
+namespace SocialMediaBackend.Domain.Comments;
 
 public class Comment : AuditableEntity<Guid>
 {
@@ -23,7 +24,7 @@ public class Comment : AuditableEntity<Guid>
         LastModifiedBy = userId.ToString();
     }
 
-    private Comment() {}
+    private Comment() { }
 
     public Guid PostId { get; private set; }
     public Post Post { get; private set; } = default!;
@@ -40,7 +41,7 @@ public class Comment : AuditableEntity<Guid>
 
     internal static Comment? Create(Guid postId, Guid userId, string text, Guid? parentCommentId)
     {
-        if(string.IsNullOrEmpty(text)) 
+        if (string.IsNullOrEmpty(text))
             return null;
 
         return new Comment(postId, userId, text, parentCommentId);
@@ -48,7 +49,7 @@ public class Comment : AuditableEntity<Guid>
 
     internal bool AddLike(Guid userId)
     {
-        var like = CommentLike.Create(userId, this.Id);
+        var like = CommentLike.Create(userId, Id);
         _likes.Add(like);
         LikesCount++;
 

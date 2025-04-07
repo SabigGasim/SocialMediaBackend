@@ -1,7 +1,9 @@
-﻿using SocialMediaBackend.Domain.Common;
-using SocialMediaBackend.Domain.ValueObjects;
+﻿using SocialMediaBackend.Domain.Comments;
+using SocialMediaBackend.Domain.Common;
+using SocialMediaBackend.Domain.Common.ValueObjects;
+using SocialMediaBackend.Domain.Posts;
 
-namespace SocialMediaBackend.Domain.Entities;
+namespace SocialMediaBackend.Domain.Users;
 
 public class User : AuditableEntity<Guid>
 {
@@ -31,7 +33,7 @@ public class User : AuditableEntity<Guid>
     public Media ProfilePicture { get; private set; } = default!;
 
     public IReadOnlyCollection<Post> Posts => _posts.AsReadOnly();
-    public IReadOnlyCollection<Comment> Comments => _comments.AsReadOnly(); 
+    public IReadOnlyCollection<Comment> Comments => _comments.AsReadOnly();
 
     public static User Create(string username, string nickname, DateOnly dateOfBirth, Media? profilePicture = null)
     {
@@ -43,7 +45,7 @@ public class User : AuditableEntity<Guid>
 
     public Post? AddPost(string? text = null, IEnumerable<Media>? mediaItems = null)
     {
-        var post = Post.Create(this.Id, text, mediaItems as List<Media> ?? mediaItems?.ToList());
+        var post = Post.Create(Id, text, mediaItems as List<Media> ?? mediaItems?.ToList());
         if (post is null)
             return null;
 

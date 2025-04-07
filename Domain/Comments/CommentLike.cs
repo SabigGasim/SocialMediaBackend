@@ -1,6 +1,6 @@
 ﻿using SocialMediaBackend.Domain.Common;
 
-namespace SocialMediaBackend.Domain.ValueObjects;
+namespace SocialMediaBackend.Domain.Comments;
 
 
 public record CommentLike : ValueObject

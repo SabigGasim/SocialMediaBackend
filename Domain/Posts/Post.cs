@@ -1,7 +1,9 @@
-﻿using SocialMediaBackend.Domain.Common;
-using SocialMediaBackend.Domain.ValueObjects;
+﻿using SocialMediaBackend.Domain.Comments;
+using SocialMediaBackend.Domain.Common;
+using SocialMediaBackend.Domain.Common.ValueObjects;
+using SocialMediaBackend.Domain.Users;
 
-namespace SocialMediaBackend.Domain.Entities;
+namespace SocialMediaBackend.Domain.Posts;
 
 public class Post : AuditableEntity<Guid>
 {
@@ -47,10 +49,10 @@ public class Post : AuditableEntity<Guid>
 
     public bool AddComment(string text, Guid userId, Guid? parentCommentId = null)
     {
-        if(!_comments.Any(c => c.ParentCommentId == parentCommentId)) 
+        if (!_comments.Any(c => c.ParentCommentId == parentCommentId))
             return false;
 
-        var comment = Comment.Create(userId, this.Id, text, parentCommentId);
+        var comment = Comment.Create(userId, Id, text, parentCommentId);
         if (comment is null)
             return false;
 
@@ -77,7 +79,7 @@ public class Post : AuditableEntity<Guid>
         if (_likes.Any(l => l.UserId == userId))
             return false;
 
-        var postLike = PostLike.Create(userId, this.Id);
+        var postLike = PostLike.Create(userId, Id);
         _likes.Add(postLike);
         LikesCount++;
 
@@ -99,7 +101,7 @@ public class Post : AuditableEntity<Guid>
     public bool LikeComment(Guid userId, Guid commentId)
     {
         var comment = _comments.Find(c => c.Id == commentId);
-        if (comment is null) 
+        if (comment is null)
             return false;
 
         return comment.AddLike(userId);
