@@ -1,4 +1,6 @@
-﻿namespace SocialMediaBackend.Application.Common.Abstractions.Requests.Commands;
+﻿using SocialMediaBackend.Application.Abstractions.Requests;
+
+namespace SocialMediaBackend.Application.Abstractions.Requests.Commands;
 
 public interface ICommandHandler<in TRequest> : FastEndpoints.ICommandHandler<TRequest>
     where TRequest : ICommand

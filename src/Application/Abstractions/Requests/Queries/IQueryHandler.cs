@@ -1,4 +1,4 @@
-﻿namespace SocialMediaBackend.Application.Common.Abstractions.Requests.Queries;
+﻿namespace SocialMediaBackend.Application.Abstractions.Requests.Queries;
 
 //                                           They don't implement and IQueryHandler in FastEndpoints
 public interface IQueryHandler<in TRequest, TResponse> : FastEndpoints.ICommandHandler<TRequest, TResponse>

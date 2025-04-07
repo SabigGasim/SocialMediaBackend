@@ -1,4 +1,4 @@
-﻿namespace SocialMediaBackend.Application.Common.Abstractions.Requests;
+﻿namespace SocialMediaBackend.Application.Abstractions.Requests;
 
 public class HandlerResponse
 {

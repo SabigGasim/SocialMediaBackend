@@ -1,5 +1,5 @@
-﻿using SocialMediaBackend.Application.Common.Abstractions.Requests;
-using SocialMediaBackend.Application.Common.Abstractions.Requests.Commands;
+﻿using SocialMediaBackend.Application.Abstractions.Requests;
+using SocialMediaBackend.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Application.Mappings;
 using SocialMediaBackend.Domain.Services;
 using SocialMediaBackend.Domain.Users;

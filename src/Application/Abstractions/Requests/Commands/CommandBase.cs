@@ -1,5 +1,6 @@
-﻿
-namespace SocialMediaBackend.Application.Common.Abstractions.Requests.Commands;
+﻿using SocialMediaBackend.Application.Abstractions.Requests;
+
+namespace SocialMediaBackend.Application.Abstractions.Requests.Commands;
 
 public abstract class CommandBase : ICommand
 {
