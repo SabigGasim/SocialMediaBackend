@@ -1,12 +1,15 @@
 ﻿namespace SocialMediaBackend.Infrastructure.Data;
 
 using Microsoft.EntityFrameworkCore;
-using SocialMediaBackend.Domain.Entities;
-using SocialMediaBackend.Domain.ValueObjects;
+using SocialMediaBackend.Domain.Comments;
+using SocialMediaBackend.Domain.Common.ValueObjects;
+using SocialMediaBackend.Domain.Posts;
+using SocialMediaBackend.Domain.Users;
 using System;
 
 public class ApplicationDbContext : DbContext
 {
+    public DbSet<User> Users { get; set; }
     public DbSet<Post> Posts { get; set; }
     public DbSet<Media> Media { get; set; }
     public DbSet<Comment> Comments { get; set; }
@@ -14,6 +17,11 @@ public class ApplicationDbContext : DbContext
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
+    }
+
+    protected ApplicationDbContext()
+    {
+        
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -9,9 +9,9 @@ public static class ApplicationServiceCollectionExtensions
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         return services
-            .AddDbContext<ApplicationDbContext>(options =>
-            {
+            .AddSingleton<IUserExistsChecker, UserExistsChecker>()
+            .AddValidatorsFromAssemblyContaining<IApplicationMarker>(ServiceLifetime.Singleton)
                 options.UseInMemoryDatabase("App");
-            });
+            .AddTransient(typeof(IPipelineBehavior<,>), typeof(UserRequestBehavior<,>))
     }
 }
