@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SocialMediaBackend.Infrastructure.Data;
@@ -11,9 +12,11 @@ using SocialMediaBackend.Infrastructure.Data;
 namespace Infrastructure.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250408084735_FixProfilePictureMapping")]
+    partial class FixProfilePictureMapping
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -273,6 +276,20 @@ namespace Infrastructure.Infrastructure.Data.Migrations
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uuid");
+
+                            b1.Property<string>("FilePath")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("ProfilePictureFilePath");
+
+                            b1.Property<int>("MediaType")
+                                .HasColumnType("integer")
+                                .HasColumnName("ProfilePictureMediaType");
+
+                            b1.Property<string>("Url")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("ProfilePictureUrl");
 
                             b1.HasKey("UserId");
 

@@ -116,7 +116,12 @@ public class ApplicationDbContext : DbContext
                     .HasKey(u => u.Id);
 
         modelBuilder.Entity<User>()
-            .OwnsOne(u => u.ProfilePicture);
+            .OwnsOne(u => u.ProfilePicture, pic =>
+            {
+                pic.Property(p => p.Url).HasColumnName("ProfilePictureUrl");
+                pic.Property(p => p.FilePath).HasColumnName("ProfilePictureFilePath");
+                pic.Property(p => p.MediaType).HasColumnName("ProfilePictureMediaType");
+            });
 
         modelBuilder.Entity<User>()
             .HasIndex(u => u.Username)

@@ -18,14 +18,14 @@ public class UserRepositry : IUserRepository
         using var connection = await _dbConnectionFactory.CreateAsync();
         return await connection.ExecuteScalarAsync<bool>(new CommandDefinition($"""
             SELECT EXISTS (
-                SELECT 1 FROM Users WHERE Id = @{nameof(userId)}
+                SELECT 1 FROM "Users" WHERE "Id" = @{nameof(userId)}
             );
             """, new {userId}, cancellationToken: token));
     }
 
     public async Task<bool> ExistsAsync(string username, CancellationToken token = default)
     {
-        using var connection = await _dbConnectionFactory.CreateAsync();
+        using var connection = await _dbConnectionFactory.CreateAsync(token);
         return await connection.ExecuteScalarAsync<bool>(new CommandDefinition($"""
             SELECT COUNT(1) FROM "Users" WHERE "Username" = @{nameof(username)}
             """, new { username }, cancellationToken: token));

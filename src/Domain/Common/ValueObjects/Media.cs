@@ -5,13 +5,16 @@ namespace SocialMediaBackend.Domain.Common.ValueObjects;
 public record Media : ValueObject
 {
     //TODO
-    public static Media DefaultProfilePicture = new("", "");
+    public static Media DefaultProfilePicture = new("url", "path.extension");
 
     public Media(string url, string filePath)
     {
         FilePath = filePath;
         Url = url;
-        MediaType = GetMediaType(FileExtension);
+        if (!string.IsNullOrEmpty(filePath))
+        {
+            MediaType = GetMediaType(FileExtension);
+        }
     }
 
     private Media() { }
@@ -19,8 +22,8 @@ public record Media : ValueObject
     public string Url { get; }
     public MediaType MediaType { get; }
     public string FilePath { get; }
-    public string FileName => FilePath.Split('/', '\\').Last();
-    public string FileExtension => FileName.Split('.').Last();
+    public string FileName => FilePath?.Split('/', '\\').LastOrDefault();
+    public string FileExtension => FileName?.Split('.').LastOrDefault();
 
     private static MediaType GetMediaType(string fileExtension)
     {

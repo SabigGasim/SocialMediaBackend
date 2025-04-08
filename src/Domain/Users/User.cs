@@ -12,13 +12,12 @@ public class User : AuditableEntity<Guid>
     private readonly List<Post> _posts = new();
     private readonly List<Comment> _comments = new();
 
-    private User(string username, string nickname,
-        DateOnly dateOfBirth, Media? profilePicture = null)
+    private User(string username, string nickname, DateOnly dateOfBirth, Media profilePicture)
     {
         Username = username;
         Nickname = nickname;
         DateOfBirth = dateOfBirth;
-        ProfilePicture = profilePicture ?? Media.DefaultProfilePicture;
+        ProfilePicture = profilePicture;
 
         Id = Guid.NewGuid();
         Created = DateTimeOffset.UtcNow;
@@ -31,6 +30,7 @@ public class User : AuditableEntity<Guid>
 
     public string Username { get; private set; } = default!;
     public string Nickname { get; private set; } = default!;
+
     public DateOnly DateOfBirth { get; private set; }
     public Media ProfilePicture { get; private set; } = default!;
 
@@ -56,5 +56,17 @@ public class User : AuditableEntity<Guid>
 
         _posts.Add(post);
         return post;
+    }
+
+    public bool ChangeUsername(string username)
+    {
+        Username = username;
+        return true;
+    }
+
+    public bool ChangeNickname(string nickname)
+    {
+        Nickname = nickname;
+        return true;
     }
 }
