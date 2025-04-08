@@ -1,6 +1,7 @@
 ﻿using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Application.Mappings;
+using SocialMediaBackend.Domain.Common.ValueObjects;
 using SocialMediaBackend.Domain.Services;
 using SocialMediaBackend.Domain.Users;
 using SocialMediaBackend.Infrastructure.Data;
@@ -26,6 +27,6 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Creat
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
 
-        return user.MapToResponse();
+        return user.MapToCreateResponse();
     }
 }
