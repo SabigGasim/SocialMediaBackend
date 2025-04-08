@@ -1,5 +1,9 @@
 version: "3.9"
 
+networks:
+  pg_network:
+    driver: bridge  # Network definition
+
 services:
   db:
     image: postgres:latest
@@ -10,3 +14,17 @@ services:
       - POSTGRES_DB=SocialMedia
     ports:
       - "5432:5432"
+    networks:
+      - pg_network
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin-container
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=email@email.com
+      - PGADMIN_DEFAULT_PASSWORD=pass
+    ports:
+      - "8080:80"
+    networks:
+      - pg_network
+    depends_on:
+      - db
