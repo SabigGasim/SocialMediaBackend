@@ -7,7 +7,14 @@ public static class ApiEndpoints
     public static class Users
     {
         private const string Base = $"{ApiBase}/users";
+        private const string UserActionBase = $"{Base}/{{UserId}}";
+        private const string PatchBase = UserActionBase;
 
         public const string Create = Base;
+        public const string Get = $"{Base}/{{IdOrUsername}}";
+        public const string GetAll = Base;
+        public const string Delete = UserActionBase;
+        public const string PatchUsername = $"{PatchBase}/username";
+        public const string PatchNickname = $"{PatchBase}/nickname";
     }
 }

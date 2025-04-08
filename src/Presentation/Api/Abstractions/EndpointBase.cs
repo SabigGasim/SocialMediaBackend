@@ -1,15 +1,24 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Application.Common.Abstractions.Requests;
-using AppCommandAbstractions = SocialMediaBackend.Application.Common.Abstractions.Requests.Commands;
+using SocialMediaBackend.Application.Abstractions.Requests;
+using AppCommandAbstractions = SocialMediaBackend.Application.Abstractions.Requests.Commands;
 
 namespace SocialMediaBackend.Api.Abstractions;
 
 public class RequestEndpoint<TRequest> : Endpoint<TRequest> where TRequest : notnull
 {
-    protected async Task HandleCommandAsync(AppCommandAbstractions.ICommand command, CancellationToken cancellationToken)
+    protected async Task HandleCommandAsync(AppCommandAbstractions.ICommand<HandlerResponse> command, CancellationToken cancellationToken)
     {
-        await command.ExecuteAsync(cancellationToken);
-        await SendNoContentAsync(cancellationToken);
+        var handlerResponse = await command.ExecuteAsync(cancellationToken);
+
+        if (handlerResponse.IsSuccess)
+        {
+            await SendNoContentAsync(cancellationToken);
+            return;
+        }
+
+        AddError(handlerResponse.Message);
+
+        await SendErrorsAsync(cancellation: cancellationToken);
     }
 }
 
