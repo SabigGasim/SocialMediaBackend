@@ -1,8 +1,6 @@
-﻿using SocialMediaBackend.Application.Abstractions.Requests;
+﻿namespace SocialMediaBackend.Application.Abstractions.Requests.Commands;
 
-namespace SocialMediaBackend.Application.Abstractions.Requests.Commands;
-
-public abstract class CommandBase : ICommand
+public abstract class CommandBase : ICommand<HandlerResponse>
 {
     public Guid Id { get; }
 
