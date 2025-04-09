@@ -5,6 +5,7 @@ using SocialMediaBackend.Infrastructure;
 using SocialMediaBackend.Infrastructure.Data;
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using SocialMediaBackend.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddApplication();
 builder.Services.AddApi();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionStatusCodeMiddleware>();
 
 app.MapFastEndpoints();
 app.UseSwaggerGen();
