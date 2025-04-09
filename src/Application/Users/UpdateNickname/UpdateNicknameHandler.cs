@@ -1,7 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SocialMediaBackend.Application.Abstractions.Requests;
+﻿using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
-using SocialMediaBackend.Application.Users.UpdateUsername;
+using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Infrastructure.Data;
 
 namespace SocialMediaBackend.Application.Users.UpdateNickname;
@@ -20,17 +19,17 @@ public class UpdateNicknameHandler : ICommandHandler<UpdateNicknameCommand>
         var user = await _context.Users.FindAsync(command.UserId);
         if (user is null)
         {
-            return HandlerResponse.CreateError("Bad request: no user exists with the given Id", command.UserId);
+            return ("No user exists with the given Id", HandlerResponseStatus.NotFound, command.UserId);
         }
 
-        if (user.Nickname == command.Nickname)
+        var nicknameIsModified = user.ChangeNickname(command.Nickname);
+        if(!nicknameIsModified)
         {
-            return HandlerResponse.CreateError($"Bad request: nickname is already {command.Nickname}");
+            return ("Nickname was not modified", HandlerResponseStatus.NotModified, command.Nickname);
         }
 
-        user.ChangeNickname(command.Nickname);
         await _context.SaveChangesAsync();
 
-        return HandlerResponse.CreateSuccess();
+        return HandlerResponseStatus.Modified;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Queries;
+using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Application.Mappings;
 using SocialMediaBackend.Infrastructure.Data;
 
@@ -24,8 +25,8 @@ public class GetUserHandler : IQueryHandler<GetUserQuery, GetUserResponse>
             ? await usersQueryable.FirstOrDefaultAsync(x => x.Id == userId)
             : await usersQueryable.FirstOrDefaultAsync(x => x.Username == query.IdOrUsername);
 
-        return user is null
-            ? HandlerResponse<GetUserResponse>.CreateError("User was not found.", query.IdOrUsername)
-            : user.MapToGetResponse();
+        return user is not null
+            ? user.MapToGetResponse()
+            : ("User was not found", HandlerResponseStatus.NotFound, query.IdOrUsername);
     }
 }

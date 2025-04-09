@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Queries;
+using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Application.Mappings;
 using SocialMediaBackend.Infrastructure.Data;
 

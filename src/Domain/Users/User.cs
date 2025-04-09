@@ -58,14 +58,25 @@ public class User : AuditableEntity<Guid>
         return post;
     }
 
-    public bool ChangeUsername(string username)
+    public async Task<bool> ChangeUsernameAsync(string username, IUserExistsChecker userExistsChecker)
     {
-        Username = username;
+        if(Username == username)
+        {
+            return false;
+        }
+
+        await CheckRuleAsync(new UsernameShouldBeUniqueRule(userExistsChecker, username));
+
         return true;
     }
 
     public bool ChangeNickname(string nickname)
     {
+        if (Nickname == nickname)
+        {
+            return false;
+        }
+
         Nickname = nickname;
         return true;
     }

@@ -1,5 +1,6 @@
 ﻿using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
+using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Infrastructure.Data;
 
 namespace SocialMediaBackend.Application.Users.DeleteUser;
@@ -18,13 +19,12 @@ public class DeleteUserCommandHandler : ICommandHandler<DeleteUserCommand>
         var user = await _dbContext.Users.FindAsync(command.UserId, ct);
         if(user is null)
         {
-            return HandlerResponse.CreateError("User was not found.", command.UserId);
+            return ("User was not found", HandlerResponseStatus.NotFound, command.UserId);
         }
 
         _dbContext.Remove(user);
-        var deleted = await _dbContext.SaveChangesAsync() > 0;
-        return deleted
-            ? HandlerResponse.CreateSuccess()
-            : HandlerResponse.CreateError("An error occured deleting the user.", command.UserId);
+        await _dbContext.SaveChangesAsync();
+
+        return HandlerResponseStatus.Deleted;
     }
 }

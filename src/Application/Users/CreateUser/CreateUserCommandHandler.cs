@@ -1,7 +1,7 @@
 ﻿using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
+using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Application.Mappings;
-using SocialMediaBackend.Domain.Common.ValueObjects;
 using SocialMediaBackend.Domain.Services;
 using SocialMediaBackend.Domain.Users;
 using SocialMediaBackend.Infrastructure.Data;
@@ -24,9 +24,14 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Creat
         var user = await User.CreateAsync(command.Username, command.Nickname, command.DateOfBirth,
             _userExistsChecker, command.ProfilePicture);
 
+        if(user is null)
+        {
+            return ("User was not created", HandlerResponseStatus.BadRequest, command);
+        }
+
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
 
-        return user.MapToCreateResponse();
+        return (user.MapToCreateResponse(), HandlerResponseStatus.Created);
     }
 }
