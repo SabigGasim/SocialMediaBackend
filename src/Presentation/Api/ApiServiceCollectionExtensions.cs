@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+using FastEndpoints.Swagger;
 
 namespace SocialMediaBackend.Api;
 
@@ -8,7 +9,7 @@ public static class ApiServiceCollectionExtensions
     {
         return services
             .AddFastEndpoints()
-            .AddHttpContextAccessor()
+            .SwaggerDocument()
             ;
-    }
+    }   
 }

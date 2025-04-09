@@ -1,9 +1,10 @@
-using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.Api;
 using SocialMediaBackend.Application;
 using SocialMediaBackend.Infrastructure;
 using SocialMediaBackend.Infrastructure.Data;
+using FastEndpoints;
+using FastEndpoints.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddApi();
 var app = builder.Build();
 
 app.MapFastEndpoints();
+app.UseSwaggerGen();
 
 using (var scope = app.Services.CreateScope())
 {
