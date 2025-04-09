@@ -13,3 +13,14 @@ public class GetAllUsersEndpoint : RequestEndpoint<GetAllUsersRequest, GetAllUse
         await HandleRequestAsync(new GetAllUsersQuery(req.Slug, req.PageNumber, req.PageSize), ct);
     }
 }
+
+
+public class GetAllUsersEndpointSummary : Summary<GetAllUsersEndpoint>
+{
+    public GetAllUsersEndpointSummary()
+    {
+        Summary = "Gets multiple users from the system";
+        Description = "Gets a paginated response of users in the system that match the given criteria";
+        Response<GetAllUsersResponse>(200, "A paginated response of users with the given criteria were returned");
+    }
+}
