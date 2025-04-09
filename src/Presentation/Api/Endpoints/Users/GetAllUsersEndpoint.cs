@@ -10,7 +10,7 @@ public class GetAllUsersEndpoint : RequestEndpoint<GetAllUsersRequest, GetAllUse
 {
     public override async Task HandleAsync(GetAllUsersRequest req, CancellationToken ct)
     {
-        await HandleRequestAsync(new GetAllUsersQuery(req.Slug, req.PageNumber, req.PageSize), ct);
+        await HandleRequestAsync(new GetAllUsersQuery(req.Slug, req.Page, req.PageSize), ct);
     }
 }
 
