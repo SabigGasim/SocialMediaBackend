@@ -28,7 +28,7 @@ public class UpdateUsernameHandler : ICommandHandler<UpdateUsernameCommand>
         var usernameIsModified = await user.ChangeUsernameAsync(command.Username, _userExistsChecker);
         if(!usernameIsModified)
         {
-            return ("Username was not modified", HandlerResponseStatus.NotModified, command.Username);
+            return ("Username was not modified", HandlerResponseStatus.BadRequest, command.Username);
         }
 
         await _context.SaveChangesAsync();

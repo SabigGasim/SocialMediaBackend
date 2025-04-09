@@ -21,7 +21,7 @@ public class RequestEndpoint<TRequest> : Endpoint<TRequest> where TRequest : not
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync(cancellation: cancellationToken);
+        await SendErrorsAsync((int)statusCode, cancellation: cancellationToken);
     }
 }
 
@@ -41,6 +41,6 @@ public class RequestEndpoint<TRequest, TResponse> : Endpoint<TRequest, TResponse
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync(cancellation: cancellationToken);
+        await SendErrorsAsync((int)statusCode, cancellation: cancellationToken);
     }
 }

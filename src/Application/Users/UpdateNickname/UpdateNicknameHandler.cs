@@ -25,7 +25,7 @@ public class UpdateNicknameHandler : ICommandHandler<UpdateNicknameCommand>
         var nicknameIsModified = user.ChangeNickname(command.Nickname);
         if(!nicknameIsModified)
         {
-            return ("Nickname was not modified", HandlerResponseStatus.NotModified, command.Nickname);
+            return ("Nickname was not modified", HandlerResponseStatus.BadRequest, command.Nickname);
         }
 
         await _context.SaveChangesAsync();
