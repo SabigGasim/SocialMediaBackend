@@ -37,4 +37,5 @@ public static class DomainToApiContractMapper
             totalCount, 
             users.Select(MapToGetResponse));
     }
+    public static CreatePostResponse MapToCreateResponse(this Post post) => new(post.Id);
 }

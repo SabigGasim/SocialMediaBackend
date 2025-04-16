@@ -32,7 +32,10 @@ public class HandlerResponse
     }
 
     public static implicit operator HandlerResponse(HandlerResponseStatus responseStatus) => CreateSuccess(responseStatus);
-    
+
+    public static implicit operator HandlerResponse((string message, HandlerResponseStatus responseStatus) response)
+        => CreateError(response.message, response.responseStatus);
+
     public static implicit operator HandlerResponse((string message, HandlerResponseStatus responseStatus, object param) response)
         => CreateError(response.message, response.responseStatus, response.param);
 
@@ -71,4 +74,7 @@ public sealed class HandlerResponse<TResponse> : HandlerResponse
 
     public static implicit operator HandlerResponse<TResponse>((string message, HandlerResponseStatus responseStatus, object[] parameters) response)
         => HandlerResponse<TResponse>.CreateError(response.message, response.responseStatus, response.parameters);
+
+    public static implicit operator HandlerResponse<TResponse>((string message, HandlerResponseStatus responseStatus) response)
+        => HandlerResponse<TResponse>.CreateError(response.message, response.responseStatus);
 }
