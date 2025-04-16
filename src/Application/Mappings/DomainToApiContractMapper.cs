@@ -37,5 +37,17 @@ public static class DomainToApiContractMapper
             totalCount, 
             users.Select(MapToGetResponse));
     }
+
     public static CreatePostResponse MapToCreateResponse(this Post post) => new(post.Id);
+    public static GetPostResponse MapToGetResponse(this Post post)
+    {
+        return new GetPostResponse(
+            post.Id,
+            post.UserId,
+            post.User.Username,
+            post.User.Nickname,
+            post.User.ProfilePicture.Url,
+            post.MediaItems.Select(x => x.Url),
+            post.Created);
+    }
 }
