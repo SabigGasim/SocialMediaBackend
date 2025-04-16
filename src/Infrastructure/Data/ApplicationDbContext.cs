@@ -11,7 +11,6 @@ public class ApplicationDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Post> Posts { get; set; }  
-    public DbSet<Media> Media { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<PostLike> PostLikes { get; set; }
 
@@ -59,13 +58,18 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Post>()
                     .HasKey(u => u.Id);
 
-        modelBuilder.Entity<Post>()
-            .OwnsMany(p => p.MediaItems, m =>
+        modelBuilder.Entity<Post>(post =>
+        {
+            post.OwnsMany(p => p.MediaItems, m =>
             {
-                m.WithOwner().HasForeignKey($"{nameof(Post)}Id");
+                m.WithOwner().HasForeignKey("PostId");
                 m.Property<Guid>("Id");
                 m.HasKey("Id");
+                m.Property(p => p.Url).HasColumnName("Url");
+                m.Property(p => p.FilePath).HasColumnName("FilePath");
+                m.Property(p => p.MediaType).HasColumnName("MediaType");
             });
+        });
 
         modelBuilder.Entity<Post>()
             .HasOne(p => p.User)

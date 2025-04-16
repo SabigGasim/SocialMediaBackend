@@ -9,11 +9,11 @@ using SocialMediaBackend.Infrastructure.Data;
 
 #nullable disable
 
-namespace Infrastructure.Infrastructure.Data.Migrations
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250402235249_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250416145744_FixPostOwnedMediaItems")]
+    partial class FixPostOwnedMediaItems
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -176,6 +176,9 @@ namespace Infrastructure.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Username")
+                        .IsUnique();
+
                     b.ToTable("Users");
                 });
 
@@ -234,8 +237,22 @@ namespace Infrastructure.Infrastructure.Data.Migrations
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("uuid");
 
+                            b1.Property<string>("FilePath")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("FilePath");
+
+                            b1.Property<int>("MediaType")
+                                .HasColumnType("integer")
+                                .HasColumnName("MediaType");
+
                             b1.Property<Guid>("PostId")
                                 .HasColumnType("uuid");
+
+                            b1.Property<string>("Url")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("Url");
 
                             b1.HasKey("Id");
 
@@ -273,6 +290,20 @@ namespace Infrastructure.Infrastructure.Data.Migrations
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uuid");
+
+                            b1.Property<string>("FilePath")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("ProfilePictureFilePath");
+
+                            b1.Property<int>("MediaType")
+                                .HasColumnType("integer")
+                                .HasColumnName("ProfilePictureMediaType");
+
+                            b1.Property<string>("Url")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("ProfilePictureUrl");
 
                             b1.HasKey("UserId");
 

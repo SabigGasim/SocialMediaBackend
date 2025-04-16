@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class FixPostOwnedMediaItems : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,6 +19,9 @@ namespace Infrastructure.Infrastructure.Data.Migrations
                     Username = table.Column<string>(type: "text", nullable: false),
                     Nickname = table.Column<string>(type: "text", nullable: false),
                     DateOfBirth = table.Column<DateOnly>(type: "date", nullable: false),
+                    ProfilePictureUrl = table.Column<string>(type: "text", nullable: false),
+                    ProfilePictureMediaType = table.Column<int>(type: "integer", nullable: false),
+                    ProfilePictureFilePath = table.Column<string>(type: "text", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -123,6 +126,9 @@ namespace Infrastructure.Infrastructure.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Url = table.Column<string>(type: "text", nullable: false),
+                    MediaType = table.Column<int>(type: "integer", nullable: false),
+                    FilePath = table.Column<string>(type: "text", nullable: false),
                     PostId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
@@ -195,6 +201,12 @@ namespace Infrastructure.Infrastructure.Data.Migrations
                 name: "IX_Posts_MediaItems_PostId",
                 table: "Posts_MediaItems",
                 column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Username",
+                table: "Users",
+                column: "Username",
+                unique: true);
         }
 
         /// <inheritdoc />
