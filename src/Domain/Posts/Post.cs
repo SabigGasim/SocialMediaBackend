@@ -1,6 +1,7 @@
 ﻿using SocialMediaBackend.Domain.Comments;
 using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Common.ValueObjects;
+using SocialMediaBackend.Domain.Services;
 using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Domain.Posts;
@@ -14,7 +15,6 @@ public class Post : AuditableEntity<Guid>
     private Post(Guid userId, string? text,
         List<Media>? mediaItems = null)
     {
-        _mediaItems = mediaItems ?? new();
         UserId = userId;
         Text = text;
 
@@ -23,6 +23,8 @@ public class Post : AuditableEntity<Guid>
         CreatedBy = "System";
         LastModified = DateTimeOffset.UtcNow;
         LastModifiedBy = "System";
+
+        _mediaItems = new(mediaItems ?? []);
     }
 
     private Post() => _mediaItems = new();
@@ -47,12 +49,18 @@ public class Post : AuditableEntity<Guid>
         return new Post(userId, text, mediaItems);
     }
 
-    public bool AddComment(string text, Guid userId, Guid? parentCommentId = null)
+    public bool UpdatePost(string text)
     {
-        if (!_comments.Any(c => c.ParentCommentId == parentCommentId))
-            return false;
+        Text = text;
+        LastModified = TimeProvider.System.GetUtcNow();
+        LastModifiedBy = this.Id.ToString();
+        
+        return true;
+    }
 
-        var comment = Comment.Create(userId, Id, text, parentCommentId);
+    public bool AddComment(string text, Guid userId)
+    {
+        var comment = Comment.Create(userId, Id, text, null);
         if (comment is null)
             return false;
 
@@ -62,16 +70,32 @@ public class Post : AuditableEntity<Guid>
         return true;
     }
 
-    public bool RemoveComment(Guid commentId)
+    public async Task<bool> ReplyToCommentAsync(
+        string text,
+        Guid userId,
+        Guid parentCommentId,
+        ICommentLookupService commentLookupService)
     {
-        var comment = _comments.Find(c => c.Id == commentId);
+        var parentComment = await GetComment(parentCommentId, commentLookupService);
+
+        return parentComment is not null
+            ? parentComment.AddReply(this.Id, userId, text)
+            : true;
+    }
+
+    public async Task<bool> RemoveCommentAsync(
+        Guid commentId,
+        ICommentLookupService commentLookupService)
+    {
+        var comment = await GetCommentWithParent(commentId, commentLookupService);
         if (comment is null)
             return false;
 
         _comments.Remove(comment);
-        CommentsCount--;
-
-        return true;
+        
+        return comment.ParentComment is not null
+            ? comment.ParentComment.RemoveReply(comment)
+            : true;
     }
 
     public bool AddLike(Guid userId)
@@ -89,6 +113,7 @@ public class Post : AuditableEntity<Guid>
     public bool RemoveLike(Guid userId)
     {
         var postLike = _likes.Find(l => l.UserId == userId);
+
         if (postLike is null)
             return false;
 
@@ -98,21 +123,48 @@ public class Post : AuditableEntity<Guid>
         return true;
     }
 
-    public bool LikeComment(Guid userId, Guid commentId)
+    public async Task<bool> LikeCommentAsync(
+        Guid userId, 
+        Guid commentId,
+        ICommentLookupService commentLookupService)
     {
-        var comment = _comments.Find(c => c.Id == commentId);
-        if (comment is null)
-            return false;
+        var comment = await GetComment(commentId, commentLookupService);
 
-        return comment.AddLike(userId);
+        return comment is not null
+            ? comment.AddLike(userId)
+            : false;
     }
 
-    public bool UnlikeComment(Guid userId, Guid commentId)
+    public async Task<bool> UnlikeCommentAsync(
+        Guid userId, 
+        Guid commentId,
+        ICommentLookupService commentLookupService)
     {
-        var comment = _comments.Find(c => c.Id == commentId);
-        if (comment is null)
-            return false;
+        var comment = await GetCommentAndLikeByUser(commentId, userId, commentLookupService);
 
-        return comment.RemoveLike(userId);
+        return comment is not null
+            ? comment.RemoveLike(userId)
+            : false;
+    }
+
+    private async Task<Comment?> GetComment(Guid commentId, ICommentLookupService commentLookupService)
+    {
+        return _comments.Find(x => x.Id == commentId)
+            ?? await commentLookupService.FindAsync(commentId);
+    }
+
+    private async Task<Comment?> GetCommentAndLikeByUser(
+        Guid commentId, 
+        Guid userId,
+        ICommentLookupService commentLookupService)
+    {
+        return _comments.Find(x => x.Id == commentId)
+            ?? await commentLookupService.FindCommentLikedByUser(this.Id, userId);
+    }
+
+    private async Task<Comment?> GetCommentWithParent(Guid commentId, ICommentLookupService commentLookupService)
+    {
+        return _comments.Find(x => x.Id == commentId)
+            ?? await commentLookupService.FindAsync(commentId, includeParent: true);
     }
 }

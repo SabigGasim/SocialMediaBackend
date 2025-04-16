@@ -6,13 +6,13 @@ public record PostLike : ValueObject
 {
     public Guid UserId { get; private set; }
     public Guid PostId { get; private set; }
-    public DateTimeOffset CreatedAt { get; private set; }
+    public DateTimeOffset Created { get; private set; }
 
     private PostLike(Guid userId, Guid postId)
     {
         UserId = userId;
         PostId = postId;
-        CreatedAt = DateTimeOffset.UtcNow;
+        Created = DateTimeOffset.UtcNow;
     }
 
     private PostLike() { }
@@ -26,6 +26,6 @@ public record PostLike : ValueObject
     {
         yield return UserId;
         yield return PostId;
-        yield return CreatedAt;
+        yield return Created;
     }
 }

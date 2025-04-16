@@ -47,6 +47,18 @@ public class Comment : AuditableEntity<Guid>
         return new Comment(postId, userId, text, parentCommentId);
     }
 
+    internal bool AddReply(Guid postId, Guid userId, string text)
+    {
+        var comment = Create(postId, userId, text, this.Id);
+        if (comment is null)
+            return false;
+
+        _replies.Add(comment);
+        RepliesCount++;
+
+        return true;
+    }
+
     internal bool AddLike(Guid userId)
     {
         var like = CommentLike.Create(userId, Id);
@@ -64,6 +76,14 @@ public class Comment : AuditableEntity<Guid>
 
         _likes.Remove(like);
         LikesCount--;
+
+        return true;
+    }
+
+    internal bool RemoveReply(Comment comment)
+    {
+        _replies.Remove(comment);
+        RepliesCount--;
 
         return true;
     }

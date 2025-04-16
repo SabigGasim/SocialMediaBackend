@@ -7,7 +7,7 @@ public record Media : ValueObject
     //TODO
     public static Media DefaultProfilePicture = new("url", "path.extension");
 
-    public Media(string url, string filePath)
+    private Media(string url, string filePath)
     {
         FilePath = filePath;
         Url = url;
@@ -24,6 +24,11 @@ public record Media : ValueObject
     public string FilePath { get; }
     public string FileName => FilePath?.Split('/', '\\').LastOrDefault();
     public string FileExtension => FileName?.Split('.').LastOrDefault();
+
+    public static Media Create(string url, string filePath = "path.extension")
+    {
+        return new Media(url, filePath);
+    }
 
     private static MediaType GetMediaType(string fileExtension)
     {

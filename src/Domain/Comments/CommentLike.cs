@@ -7,13 +7,13 @@ public record CommentLike : ValueObject
 {
     public Guid UserId { get; private set; }
     public Guid CommentId { get; private set; }
-    public DateTimeOffset CreatedAt { get; private set; }
+    public DateTimeOffset Created { get; private set; }
 
     private CommentLike(Guid userId, Guid commentId)
     {
         UserId = userId;
         CommentId = commentId;
-        CreatedAt = DateTimeOffset.UtcNow;
+        Created = DateTimeOffset.UtcNow;
     }
 
     private CommentLike() { }
@@ -27,6 +27,6 @@ public record CommentLike : ValueObject
     {
         yield return UserId;
         yield return CommentId;
-        yield return CreatedAt;
+        yield return Created;
     }
 }
