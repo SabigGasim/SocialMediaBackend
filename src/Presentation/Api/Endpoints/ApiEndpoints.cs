@@ -26,5 +26,6 @@ public static class ApiEndpoints
         public const string Get = $"{Base}/{{PostId}}";
         public const string GetAll = Base;
         public const string Delete = $"{Base}/{{PostId}}";
+        public const string Patch = $"{Base}/{{PostId}}";
     }
 }

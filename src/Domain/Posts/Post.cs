@@ -13,7 +13,7 @@ public class Post : AuditableEntity<Guid>
     private readonly List<Media> _mediaItems;
 
     private Post(Guid userId, string? text,
-        List<Media>? mediaItems = null)
+        IEnumerable<Media>? mediaItems = null)
     {
         UserId = userId;
         Text = text;
@@ -21,7 +21,7 @@ public class Post : AuditableEntity<Guid>
         Id = Guid.NewGuid();
         Created = DateTimeOffset.UtcNow;
         CreatedBy = "System";
-        LastModified = DateTimeOffset.UtcNow;
+        LastModified = new DateTimeOffset(Created.DateTime, Created.Offset);
         LastModifiedBy = "System";
 
         _mediaItems = new(mediaItems ?? []);
@@ -39,7 +39,7 @@ public class Post : AuditableEntity<Guid>
     public IReadOnlyCollection<Comment> Comments => _comments.AsReadOnly();
     public IReadOnlyCollection<Media> MediaItems => _mediaItems.AsReadOnly();
 
-    public static Post? Create(Guid userId, string? text = null, List<Media>? mediaItems = null)
+    public static Post? Create(Guid userId, string? text = null, IEnumerable<Media>? mediaItems = null)
     {
         if (string.IsNullOrEmpty(text) && mediaItems == null)
         {

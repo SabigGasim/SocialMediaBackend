@@ -6,4 +6,4 @@ public record GetUserResponse(
     Guid Id, 
     string Username, 
     string? Nickname = null,
-    Media? ProfilePicture = null);
+    string? ProfilePictureUrl = null);

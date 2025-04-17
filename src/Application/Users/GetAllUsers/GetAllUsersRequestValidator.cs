@@ -7,7 +7,7 @@ public class GetAllUsersRequestValidator : PagedRequestValidator<GetAllUsersRequ
 {
     public GetAllUsersRequestValidator()
     {
-        RuleFor(x => x.Slug.Trim())
+        RuleFor(x => x.Slug)
             .NotEmpty();
     }
 }

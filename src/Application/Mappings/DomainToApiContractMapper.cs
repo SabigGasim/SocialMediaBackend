@@ -1,9 +1,10 @@
-﻿using FastEndpoints;
+﻿using SocialMediaBackend.Application.Posts.CreatePost;
+using SocialMediaBackend.Application.Posts.GetPost;
 using SocialMediaBackend.Application.Users.CreateUser;
 using SocialMediaBackend.Application.Users.GetAllUsers;
 using SocialMediaBackend.Application.Users.GetUser;
+using SocialMediaBackend.Domain.Posts;
 using SocialMediaBackend.Domain.Users;
-using System.Runtime.CompilerServices;
 
 namespace SocialMediaBackend.Application.Mappings;
 
@@ -25,7 +26,7 @@ public static class DomainToApiContractMapper
             user.Id,
             user.Username,
             user.Nickname,
-            user.ProfilePicture
+            user.ProfilePicture.Url
             );
     }
 
@@ -43,11 +44,11 @@ public static class DomainToApiContractMapper
     {
         return new GetPostResponse(
             post.Id,
-            post.UserId,
-            post.User.Username,
-            post.User.Nickname,
-            post.User.ProfilePicture.Url,
+            post.Text,
             post.MediaItems.Select(x => x.Url),
-            post.Created);
+            post.Created,
+            post.LastModified,
+            new GetUserResponse(post.User.Id, post.User.Username, post.User.Nickname, post.User.ProfilePicture.Url)
+            );
     }
 }

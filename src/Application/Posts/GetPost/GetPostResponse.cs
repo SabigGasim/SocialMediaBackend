@@ -1,12 +1,12 @@
-﻿using SocialMediaBackend.Domain.Common.ValueObjects;
+﻿using SocialMediaBackend.Application.Users.GetUser;
+using SocialMediaBackend.Domain.Common.ValueObjects;
 
 namespace SocialMediaBackend.Application.Posts.GetPost;
 
 public record GetPostResponse(
     Guid PostId,
-    Guid UserId,
-    string Username,
-    string Nickname,
-    string ProfilePictureUrl,
-    IEnumerable<string> MediaUrls,
-    DateTimeOffset CreatedAt);
+    string? Text,
+    IEnumerable<string>? MediaUrls,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset UpdatedAt,
+    GetUserResponse User);
