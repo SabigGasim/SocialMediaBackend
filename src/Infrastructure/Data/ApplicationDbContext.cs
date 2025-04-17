@@ -1,12 +1,9 @@
-﻿namespace SocialMediaBackend.Infrastructure.Data;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.Domain.Comments;
-using SocialMediaBackend.Domain.Common.ValueObjects;
 using SocialMediaBackend.Domain.Posts;
 using SocialMediaBackend.Domain.Users;
-using System;
 
+namespace SocialMediaBackend.Infrastructure.Data;
 public class ApplicationDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }

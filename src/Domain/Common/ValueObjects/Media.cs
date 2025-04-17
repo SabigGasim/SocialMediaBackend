@@ -1,6 +1,4 @@
-﻿using SocialMediaBackend.Domain.Common;
-
-namespace SocialMediaBackend.Domain.Common.ValueObjects;
+﻿namespace SocialMediaBackend.Domain.Common.ValueObjects;
 
 public record Media : ValueObject
 {
