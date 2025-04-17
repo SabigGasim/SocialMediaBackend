@@ -1,6 +1,7 @@
 ﻿using SocialMediaBackend.Domain.Comments;
 using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Common.ValueObjects;
+using SocialMediaBackend.Domain.Posts.Rules;
 using SocialMediaBackend.Domain.Services;
 using SocialMediaBackend.Domain.Users;
 
@@ -41,10 +42,7 @@ public class Post : AuditableEntity<Guid>
 
     public static Post? Create(Guid userId, string? text = null, IEnumerable<Media>? mediaItems = null)
     {
-        if (string.IsNullOrEmpty(text) && mediaItems == null)
-        {
-            return null;
-        }
+        CheckRule(new PostShouldHaveTextOrMediaRule(text, mediaItems));
 
         return new Post(userId, text, mediaItems);
     }

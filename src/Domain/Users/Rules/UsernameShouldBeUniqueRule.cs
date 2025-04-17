@@ -20,5 +20,5 @@ internal class UsernameShouldBeUniqueRule : IBusinessRule
 
     public Task<bool> IsBrokenAsync() => _userExistsChecker.CheckAsync(_username);
 
-    public string Message { get; init; }
+    public string Message { get; }
 }

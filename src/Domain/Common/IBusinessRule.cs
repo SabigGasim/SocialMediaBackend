@@ -4,5 +4,5 @@ public interface IBusinessRule
 {
     bool IsBroken();
     Task<bool> IsBrokenAsync();
-    string Message { get; init; }
+    string Message { get; }
 }
