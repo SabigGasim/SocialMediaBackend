@@ -80,4 +80,10 @@ public class User : AuditableEntity<Guid>
         Nickname = nickname;
         return true;
     }
+
+    public bool RemovePost(Guid postId)
+    {
+        var post = _posts.Find(x => x.Id == postId)!;
+        return _posts.Remove(post);
+    }
 }

@@ -12,14 +12,23 @@ public class DeletePostCommandHandler(ApplicationDbContext context) : ICommandHa
 
     public async Task<HandlerResponse> ExecuteAsync(DeletePostCommand command, CancellationToken ct)
     {
-        var rowsAffected = await _context.Posts
-            .Where(x => x.Id == command.PostId)
-            .ExecuteDeleteAsync(ct);
+        //TODO: Get UserId from Authentication
 
-        var deleted = rowsAffected > 0;
+        var post = await _context.Posts
+            .Include(x => x.User)
+            .FirstOrDefaultAsync(x => x.Id == command.PostId, ct);
 
-        return deleted
-            ? HandlerResponseStatus.NoContent
-            : ("Post with the given Id was not found", HandlerResponseStatus.NotFound, command.PostId);
+        if (post is null)
+            return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, command.PostId);
+
+        var user = post.User;
+
+        var removed = user.RemovePost(command.PostId);
+        if (!removed)
+            return ("An internal error occurred", HandlerResponseStatus.InternalError);
+
+        await _context.SaveChangesAsync(ct);
+
+        return HandlerResponseStatus.NoContent;
     }
 }
