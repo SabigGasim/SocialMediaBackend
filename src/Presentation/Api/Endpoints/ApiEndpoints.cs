@@ -27,5 +27,18 @@ public static class ApiEndpoints
         public const string GetAll = Base;
         public const string Delete = $"{Base}/{{PostId}}";
         public const string Patch = $"{Base}/{{PostId}}";
+
+        public const string Comment = $"{Base}/{{PostId}}/comments";
+        public const string DeleteComment = $"{Base}/{{PostId}}/comments/{{CommentId}}";
+        public const string GetAllPostComments = $"{Base}/{{PostId}}/comments";
+    }
+
+    public static class Comments
+    {
+        public const string Base = $"{ApiBase}/comments";
+
+        public const string GetUserComments = $"{Base}/me";
+        public const string Get = $"{Base}/{{CommentId}}";
+        public const string Patch = $"{Base}/{{CommentId}}";
     }
 }
