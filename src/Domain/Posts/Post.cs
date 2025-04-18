@@ -56,16 +56,16 @@ public class Post : AuditableEntity<Guid>
         return true;
     }
 
-    public bool AddComment(string text, Guid userId)
+    public Comment? AddComment(string text, Guid userId)
     {
-        var comment = Comment.Create(userId, Id, text, null);
+        var comment = Comment.Create(this.Id, userId, text, null);
         if (comment is null)
-            return false;
+            return null;
 
         _comments.Add(comment);
         CommentsCount++;
 
-        return true;
+        return comment;
     }
 
     public async Task<bool> ReplyToCommentAsync(
@@ -88,10 +88,9 @@ public class Post : AuditableEntity<Guid>
         return comment.Edit(text);
     }
 
+    public bool RemoveComment(Guid commentId)
     {
-        var comment = await GetCommentWithParent(commentId, commentLookupService);
-        if (comment is null)
-            return false;
+        var comment = _comments.First(x => x.Id == commentId);
 
         _comments.Remove(comment);
         
