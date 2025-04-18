@@ -51,4 +51,9 @@ public static class DomainToApiContractMapper
             new GetUserResponse(post.User.Id, post.User.Username, post.User.Nickname, post.User.ProfilePicture.Url)
             );
     }
+
+    public static CreateCommentResponse MapToCreateResponse(this Comment comment)
+    {
+        return new CreateCommentResponse(comment.Id);
+    }
 }
