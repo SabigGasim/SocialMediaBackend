@@ -65,7 +65,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7251/api/users?slug=\"a\"",
+							"raw": "https://localhost:7251/api/users?slug=o",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -78,7 +78,7 @@
 							"query": [
 								{
 									"key": "slug",
-									"value": "\"a\""
+									"value": "o"
 								}
 							]
 						}
@@ -180,7 +180,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"text\": \"sixth post in the api\",\r\n    \"mediaItems\": [\r\n        {\r\n            \"url\": \"my-protocol://like-for-real?\"\r\n        }\r\n    ] \r\n}",
+							"raw": "{\r\n    \"text\": \"seventh post in the api\",\r\n    \"mediaItems\": [\r\n        {\r\n            \"url\": \"my-protocol://like-for-real?\"\r\n        }\r\n    ] \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -229,7 +229,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7251/api/posts?idOrUsername=d6a319b0-5c31-4929-84a0-3b918efc318e&page=3&pageSize=2&order=asc&until=2025-04-16&since=2025-04-10",
+							"raw": "https://localhost:7251/api/posts?idOrUsername=john&text=first&order=desc&until=2025-04-17&since=2025-04-10",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -242,23 +242,29 @@
 							"query": [
 								{
 									"key": "idOrUsername",
-									"value": "d6a319b0-5c31-4929-84a0-3b918efc318e"
+									"value": "john"
+								},
+								{
+									"key": "text",
+									"value": "first"
 								},
 								{
 									"key": "page",
-									"value": "3"
+									"value": "3",
+									"disabled": true
 								},
 								{
 									"key": "pageSize",
-									"value": "2"
+									"value": "2",
+									"disabled": true
 								},
 								{
 									"key": "order",
-									"value": "asc"
+									"value": "desc"
 								},
 								{
 									"key": "until",
-									"value": "2025-04-16"
+									"value": "2025-04-17"
 								},
 								{
 									"key": "since",
@@ -322,6 +328,157 @@
 									"value": "",
 									"disabled": true
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "Create comment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"text\": \"10th comment on first post in this api\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7251/api/posts/4a876d12-95a6-436d-b19f-460039b26f95/comments",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7251",
+							"path": [
+								"api",
+								"posts",
+								"4a876d12-95a6-436d-b19f-460039b26f95",
+								"comments"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get comment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7251/api/comments/ac82e93d-7647-445e-879a-54fff8626d9d",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7251",
+							"path": [
+								"api",
+								"comments",
+								"ac82e93d-7647-445e-879a-54fff8626d9d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all post comments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7251/api/posts/4a876d12-95a6-436d-b19f-460039b26f95/comments",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7251",
+							"path": [
+								"api",
+								"posts",
+								"4a876d12-95a6-436d-b19f-460039b26f95",
+								"comments"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "pageSize",
+									"value": "3",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit comment",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"text\": \"10th comment on first post in this api\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7251/api/comments/4c9f8418-0438-49ad-8b5e-feec023b04e4",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7251",
+							"path": [
+								"api",
+								"comments",
+								"4c9f8418-0438-49ad-8b5e-feec023b04e4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete comment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7251/api/posts/4a876d12-95a6-436d-b19f-460039b26f95/comments/4c9f8418-0438-49ad-8b5e-feec023b04e4",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7251",
+							"path": [
+								"api",
+								"posts",
+								"4a876d12-95a6-436d-b19f-460039b26f95",
+								"comments",
+								"4c9f8418-0438-49ad-8b5e-feec023b04e4"
 							]
 						}
 					},
