@@ -52,6 +52,16 @@ public static class DomainToApiContractMapper
             );
     }
 
+    public static GetCommentResponse MapToGetResponse(this Comment comment)
+    {
+        return new GetCommentResponse(
+            comment.Id, 
+            comment.PostId, 
+            comment.Text,
+            comment.LikesCount,
+            comment.RepliesCount,
+            comment.User.MapToGetResponse());
+    }
     public static CreateCommentResponse MapToCreateResponse(this Comment comment)
     {
         return new CreateCommentResponse(comment.Id);
