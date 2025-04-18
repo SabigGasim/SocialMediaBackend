@@ -32,7 +32,7 @@ public class Comment : AuditableEntity<Guid>
     public User User { get; private set; } = default!;
     public Guid? ParentCommentId { get; private set; }
     public Comment? ParentComment { get; private set; }
-    public string? Text { get; private set; }
+    public string Text { get; private set; }
     public int LikesCount { get; private set; }
     public int RepliesCount { get; private set; }
 
@@ -84,6 +84,15 @@ public class Comment : AuditableEntity<Guid>
     {
         _replies.Remove(comment);
         RepliesCount--;
+
+        return true;
+    }
+
+    internal bool Edit(string text)
+    {
+        Text = text;
+        LastModified = TimeProvider.System.GetUtcNow();
+        LastModifiedBy = this.Id.ToString();
 
         return true;
     }

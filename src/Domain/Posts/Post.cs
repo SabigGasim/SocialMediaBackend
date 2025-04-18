@@ -81,9 +81,13 @@ public class Post : AuditableEntity<Guid>
             : true;
     }
 
-    public async Task<bool> RemoveCommentAsync(
-        Guid commentId,
-        ICommentLookupService commentLookupService)
+    public bool EditComment(Guid commentId, string text)
+    {
+        var comment = _comments.First(x => x.Id == commentId);
+
+        return comment.Edit(text);
+    }
+
     {
         var comment = await GetCommentWithParent(commentId, commentLookupService);
         if (comment is null)
