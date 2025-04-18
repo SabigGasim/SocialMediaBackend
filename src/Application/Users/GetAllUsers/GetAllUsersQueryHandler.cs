@@ -20,12 +20,11 @@ public class GetAllUsersQueryHandler : IQueryHandler<GetAllUsersQuery, GetAllUse
     public async Task<HandlerResponse<GetAllUsersResponse>> ExecuteAsync(GetAllUsersQuery query, CancellationToken ct)
     {
         var sqlQuery = _context.Users
-            .FromSqlInterpolated($"""
-                SELECT * FROM "Users" WHERE "Username" || "Nickname" ILIKE '%' || {query.Slug} || '%'
-            """)
-            .AsNoTracking();
+            .AsNoTracking()
+            .Where(x => EF.Functions.ILike(x.Username, $"%{query.Slug}%")
+                || EF.Functions.ILike(x.Nickname, $"%{query.Slug}%"));
 
-        var totalCount = await sqlQuery.CountAsync();
+        var totalCount = await sqlQuery.CountAsync(ct);
 
         var users = await sqlQuery
             .OrderBy(u => u.Id)
