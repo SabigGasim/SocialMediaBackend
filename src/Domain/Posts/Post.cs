@@ -2,7 +2,6 @@
 using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Common.ValueObjects;
 using SocialMediaBackend.Domain.Posts.Rules;
-using SocialMediaBackend.Domain.Services;
 using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Domain.Posts;
@@ -68,26 +67,6 @@ public class Post : AuditableEntity<Guid>
         return comment;
     }
 
-    public async Task<bool> ReplyToCommentAsync(
-        string text,
-        Guid userId,
-        Guid parentCommentId,
-        ICommentLookupService commentLookupService)
-    {
-        var parentComment = await GetComment(parentCommentId, commentLookupService);
-
-        return parentComment is not null
-            ? parentComment.AddReply(this.Id, userId, text)
-            : true;
-    }
-
-    public bool EditComment(Guid commentId, string text)
-    {
-        var comment = _comments.First(x => x.Id == commentId);
-
-        return comment.Edit(text);
-    }
-
     public bool RemoveComment(Guid commentId)
     {
         var comment = _comments.First(x => x.Id == commentId);
@@ -122,50 +101,5 @@ public class Post : AuditableEntity<Guid>
         LikesCount--;
 
         return true;
-    }
-
-    public async Task<bool> LikeCommentAsync(
-        Guid userId, 
-        Guid commentId,
-        ICommentLookupService commentLookupService)
-    {
-        var comment = await GetComment(commentId, commentLookupService);
-
-        return comment is not null
-            ? comment.AddLike(userId)
-            : false;
-    }
-
-    public async Task<bool> UnlikeCommentAsync(
-        Guid userId, 
-        Guid commentId,
-        ICommentLookupService commentLookupService)
-    {
-        var comment = await GetCommentAndLikeByUser(commentId, userId, commentLookupService);
-
-        return comment is not null
-            ? comment.RemoveLike(userId)
-            : false;
-    }
-
-    private async Task<Comment?> GetComment(Guid commentId, ICommentLookupService commentLookupService)
-    {
-        return _comments.Find(x => x.Id == commentId)
-            ?? await commentLookupService.FindAsync(commentId);
-    }
-
-    private async Task<Comment?> GetCommentAndLikeByUser(
-        Guid commentId, 
-        Guid userId,
-        ICommentLookupService commentLookupService)
-    {
-        return _comments.Find(x => x.Id == commentId)
-            ?? await commentLookupService.FindCommentLikedByUser(this.Id, userId);
-    }
-
-    private async Task<Comment?> GetCommentWithParent(Guid commentId, ICommentLookupService commentLookupService)
-    {
-        return _comments.Find(x => x.Id == commentId)
-            ?? await commentLookupService.FindAsync(commentId, includeParent: true);
     }
 }

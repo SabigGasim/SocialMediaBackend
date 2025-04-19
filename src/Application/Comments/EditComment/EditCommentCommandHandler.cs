@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SocialMediaBackend.Application.Abstractions.Requests;
+﻿using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Infrastructure.Data;
@@ -12,15 +11,12 @@ public class EditCommentCommandHandler(ApplicationDbContext context) : ICommandH
 
     public async Task<HandlerResponse> ExecuteAsync(EditCommentCommand command, CancellationToken ct)
     {
-        var comment = await _context.Comments
-            .Include(x => x.Post)
-            .FirstOrDefaultAsync(x => x.Id == command.CommentId, ct);
+        var comment = await _context.Comments.FindAsync(command.CommentId, ct);
 
         if(comment is null)
             return ("Comment with the given Id was not found", HandlerResponseStatus.NotFound, command.CommentId);
 
-        var post = comment.Post;
-        post.EditComment(command.CommentId, command.Text);
+        comment.Edit(command.Text);
 
         await _context.SaveChangesAsync(ct);
 

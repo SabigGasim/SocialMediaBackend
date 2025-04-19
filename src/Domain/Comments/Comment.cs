@@ -39,7 +39,7 @@ public class Comment : AuditableEntity<Guid>
     public IReadOnlyCollection<CommentLike> Likes => _likes.AsReadOnly();
     public IReadOnlyCollection<Comment> Replies => _replies.AsReadOnly();
 
-    internal static Comment? Create(Guid postId, Guid userId, string text, Guid? parentCommentId)
+    public static Comment? Create(Guid postId, Guid userId, string text, Guid? parentCommentId)
     {
         if (string.IsNullOrEmpty(text))
             return null;
@@ -47,7 +47,7 @@ public class Comment : AuditableEntity<Guid>
         return new Comment(postId, userId, text, parentCommentId);
     }
 
-    internal bool AddReply(Guid postId, Guid userId, string text)
+    public bool AddReply(Guid postId, Guid userId, string text)
     {
         var comment = Create(postId, userId, text, this.Id);
         if (comment is null)
@@ -59,7 +59,7 @@ public class Comment : AuditableEntity<Guid>
         return true;
     }
 
-    internal bool AddLike(Guid userId)
+    public bool AddLike(Guid userId)
     {
         var like = CommentLike.Create(userId, Id);
         _likes.Add(like);
@@ -68,7 +68,7 @@ public class Comment : AuditableEntity<Guid>
         return true;
     }
 
-    internal bool RemoveLike(Guid userId)
+    public bool RemoveLike(Guid userId)
     {
         var like = _likes.Find(x => x.UserId == userId);
         if (like is null)
@@ -80,7 +80,7 @@ public class Comment : AuditableEntity<Guid>
         return true;
     }
 
-    internal bool RemoveReply(Comment comment)
+    public bool RemoveReply(Comment comment)
     {
         _replies.Remove(comment);
         RepliesCount--;
@@ -88,7 +88,7 @@ public class Comment : AuditableEntity<Guid>
         return true;
     }
 
-    internal bool Edit(string text)
+    public bool Edit(string text)
     {
         Text = text;
         LastModified = TimeProvider.System.GetUtcNow();
