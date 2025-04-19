@@ -1,6 +1,8 @@
 ﻿using SocialMediaBackend.Application.Comments.CreateComment;
 using SocialMediaBackend.Application.Comments.GetAllPostComments;
+using SocialMediaBackend.Application.Comments.GetAllReplies;
 using SocialMediaBackend.Application.Comments.GetComment;
+using SocialMediaBackend.Application.Comments.ReplyToComment;
 using SocialMediaBackend.Application.Posts.CreatePost;
 using SocialMediaBackend.Application.Posts.GetPost;
 using SocialMediaBackend.Application.Users.CreateUser;
@@ -61,6 +63,11 @@ public static class DomainToApiContractMapper
         return new CreateCommentResponse(comment.Id);
     }
 
+    public static ReplyToCommentResponse MapToReplyResponse(this Comment comment)
+    {
+        return new ReplyToCommentResponse(comment.Id);
+    }
+
     public static GetCommentResponse MapToGetResponse(this Comment comment)
     {
         return new GetCommentResponse(
@@ -71,6 +78,28 @@ public static class DomainToApiContractMapper
             comment.RepliesCount,
             comment.User.MapToGetResponse());
     }
+
+    public static GetReplyShortResponse MapToGetReplyResponse(this Comment comment)
+    {
+        return new GetReplyShortResponse(
+            comment.Id,
+            comment.Text,
+            comment.LikesCount,
+            comment.RepliesCount,
+            comment.User.MapToGetResponse());
+    }
+    public static GetAllRepliesResponse MapToGetRepliesResponse(this IEnumerable<Comment> replies,
+        Guid parentId, int page, int pageSize, int totalCount)
+    {
+        return new GetAllRepliesResponse(
+            parentId,
+            page,
+            pageSize,
+            totalCount,
+            replies.Select(MapToGetReplyResponse)
+            );
+    }
+
 
     public static GetAllPostCommentsResponse MapToResponse(
         this IEnumerable<Comment> comments, 
