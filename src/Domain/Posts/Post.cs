@@ -55,11 +55,9 @@ public class Post : AuditableEntity<Guid>
         return true;
     }
 
-    public Comment? AddComment(string text, Guid userId)
+    public Comment AddComment(string text, Guid userId)
     {
         var comment = Comment.Create(this.Id, userId, text, null);
-        if (comment is null)
-            return null;
 
         _comments.Add(comment);
         CommentsCount++;

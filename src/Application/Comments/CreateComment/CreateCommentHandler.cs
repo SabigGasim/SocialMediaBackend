@@ -21,15 +21,12 @@ public class CreateCommentHandler(ApplicationDbContext context)
         if (!userExists)
             return ("Invalid user Id", HandlerResponseStatus.BadRequest);
 
-        var post = await _context.Posts.FirstOrDefaultAsync(x => x.Id == command.PostId, ct);
+        var post = await _context.Posts.FindAsync([command.PostId], cancellationToken: ct);
 
         if (post is null)
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, command.PostId);
 
         var comment = post.AddComment(command.Text, command.UserId);
-
-        if (comment is null)
-            return ("An internal error occurred", HandlerResponseStatus.InternalError);
 
         _context.Add(comment);
         await _context.SaveChangesAsync(ct);

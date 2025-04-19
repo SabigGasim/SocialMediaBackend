@@ -1,6 +1,7 @@
 ﻿using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Posts;
 using SocialMediaBackend.Domain.Users;
+using System.Xml.Linq;
 
 namespace SocialMediaBackend.Domain.Comments;
 
@@ -39,24 +40,19 @@ public class Comment : AuditableEntity<Guid>
     public IReadOnlyCollection<CommentLike> Likes => _likes.AsReadOnly();
     public IReadOnlyCollection<Comment> Replies => _replies.AsReadOnly();
 
-    public static Comment? Create(Guid postId, Guid userId, string text, Guid? parentCommentId)
+    public static Comment Create(Guid postId, Guid userId, string text, Guid? parentCommentId)
     {
-        if (string.IsNullOrEmpty(text))
-            return null;
-
         return new Comment(postId, userId, text, parentCommentId);
     }
 
-    public bool AddReply(Guid postId, Guid userId, string text)
+    public Comment AddReply(Guid postId, Guid userId, string text)
     {
-        var comment = Create(postId, userId, text, this.Id);
-        if (comment is null)
-            return false;
+        var reply = Create(postId, userId, text, parentCommentId: this.Id);
 
-        _replies.Add(comment);
+        _replies.Add(reply);
         RepliesCount++;
 
-        return true;
+        return reply;
     }
 
     public bool AddLike(Guid userId)

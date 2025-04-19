@@ -14,6 +14,7 @@ public class DeleteCommentHandler(ApplicationDbContext context) : ICommandHandle
     {
         var post = await _context.Posts
             .Include(x => x.Comments.Where(c => c.Id == command.CommentId))
+            .ThenInclude(x => x.ParentComment)
             .FirstOrDefaultAsync(x => x.Id == command.PostId);
 
         if (post is null)
