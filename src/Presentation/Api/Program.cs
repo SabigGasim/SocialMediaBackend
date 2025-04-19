@@ -13,7 +13,7 @@ var connectionString = builder.Configuration.GetConnectionString("PostgresConnec
 
 builder.Services.AddInfrastructure(connectionString);
 builder.Services.AddApplication();
-builder.Services.AddApi();
+builder.Services.AddApi(builder.Configuration);
 
 var app = builder.Build();
 
