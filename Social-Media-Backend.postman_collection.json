@@ -65,7 +65,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7251/api/users?slug=o",
+							"raw": "https://localhost:7251/api/users?slug=s",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -78,7 +78,7 @@
 							"query": [
 								{
 									"key": "slug",
-									"value": "o"
+									"value": "s"
 								}
 							]
 						}
@@ -229,7 +229,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7251/api/posts?idOrUsername=john&text=first&order=desc&until=2025-04-17&since=2025-04-10",
+							"raw": "https://localhost:7251/api/posts?idOrUsername=john&order=desc&until=2025-04-17&since=2025-04-10",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -246,7 +246,8 @@
 								},
 								{
 									"key": "text",
-									"value": "first"
+									"value": "first",
+									"disabled": true
 								},
 								{
 									"key": "page",
@@ -377,12 +378,21 @@
 					"response": []
 				},
 				{
-					"name": "Get comment",
+					"name": "Reply to comment",
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": \"de18fec2-aabe-403e-9a5c-ee219203cf5e\",\r\n    \"text\": \"third reply on the first comment on the first post in this api\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "https://localhost:7251/api/comments/ac82e93d-7647-445e-879a-54fff8626d9d",
+							"raw": "https://localhost:7251/api/comments/320f8213-8020-4bee-be78-ff325566163a",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -391,7 +401,60 @@
 							"path": [
 								"api",
 								"comments",
-								"ac82e93d-7647-445e-879a-54fff8626d9d"
+								"320f8213-8020-4bee-be78-ff325566163a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get comment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7251/api/comments/320f8213-8020-4bee-be78-ff325566163a",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7251",
+							"path": [
+								"api",
+								"comments",
+								"320f8213-8020-4bee-be78-ff325566163a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all comment replies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7251/api/comments/320f8213-8020-4bee-be78-ff325566163a/replies?page=1&pageSize=10",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7251",
+							"path": [
+								"api",
+								"comments",
+								"320f8213-8020-4bee-be78-ff325566163a",
+								"replies"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
 							]
 						}
 					},
@@ -438,7 +501,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"text\": \"10th comment on first post in this api\"\r\n}",
+							"raw": "{\r\n    \"text\": \"second comment on first post in this api - edit check\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -446,7 +509,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7251/api/comments/4c9f8418-0438-49ad-8b5e-feec023b04e4",
+							"raw": "https://localhost:7251/api/comments/ac82e93d-7647-445e-879a-54fff8626d9d",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -455,7 +518,7 @@
 							"path": [
 								"api",
 								"comments",
-								"4c9f8418-0438-49ad-8b5e-feec023b04e4"
+								"ac82e93d-7647-445e-879a-54fff8626d9d"
 							]
 						}
 					},
