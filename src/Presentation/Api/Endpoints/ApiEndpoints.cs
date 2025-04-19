@@ -40,5 +40,9 @@ public static class ApiEndpoints
         public const string GetUserComments = $"{Base}/me";
         public const string Get = $"{Base}/{{CommentId}}";
         public const string Patch = $"{Base}/{{CommentId}}";
+
+        public const string Reply = $"{Base}/{{ParentId}}";
+        public const string GetReply = $"{Reply}/replies/{{ReplyId}}";
+        public const string GetReplies = $"{Reply}/replies";
     }
 }
