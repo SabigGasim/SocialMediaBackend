@@ -2,7 +2,21 @@
 
 namespace SocialMediaBackend.Application.Abstractions.Requests;
 
-public class HandlerResponse
+public interface IHandlerResponse
+{
+    static abstract TResult CreateError<TResult>(string message, HandlerResponseStatus status, params object[] parameters)
+        where TResult : IHandlerResponse;
+    bool IsSuccess { get; }
+    string Message { get; } 
+    HandlerResponseStatus ResponseStatus { get; }
+}
+
+public interface IHandlerResponse<T> : IHandlerResponse
+{
+    T Payload { get; }
+}
+
+public class HandlerResponse : IHandlerResponse
 {
     public bool IsSuccess { get; protected set; }
     public string Message { get; protected set; } = string.Empty;
@@ -31,6 +45,12 @@ public class HandlerResponse
         return new HandlerResponse(message, responseStatus, parameters);
     }
 
+    public static TResult CreateError<TResult>(string message, HandlerResponseStatus status, params object[] parameters) 
+        where TResult : IHandlerResponse
+    {
+        return (TResult)(IHandlerResponse)CreateError(message, status, parameters);
+    }
+
     public static implicit operator HandlerResponse(HandlerResponseStatus responseStatus) => CreateSuccess(responseStatus);
 
     public static implicit operator HandlerResponse((string message, HandlerResponseStatus responseStatus) response)
@@ -43,7 +63,7 @@ public class HandlerResponse
         => CreateError(response.message, response.responseStatus, response.parameters);
 }
 
-public sealed class HandlerResponse<TResponse> : HandlerResponse
+public sealed class HandlerResponse<TResponse> : HandlerResponse, IHandlerResponse<TResponse>
 {
     internal HandlerResponse(TResponse payload, HandlerResponseStatus responseStatus) : base(responseStatus)
     {
@@ -63,6 +83,12 @@ public sealed class HandlerResponse<TResponse> : HandlerResponse
     internal new static HandlerResponse<TResponse> CreateError(string message, HandlerResponseStatus responseStatus, params object[] parameters)
     {
         return new HandlerResponse<TResponse>(message, responseStatus, parameters);
+    }
+
+    public new static TResult CreateError<TResult>(string message, HandlerResponseStatus responseStatus, params object[] parameters) 
+        where TResult : IHandlerResponse
+    {
+        return (TResult)(IHandlerResponse)CreateError(message, responseStatus, parameters);
     }
 
     public static implicit operator HandlerResponse<TResponse>(TResponse value) => CreateSuccess(value);

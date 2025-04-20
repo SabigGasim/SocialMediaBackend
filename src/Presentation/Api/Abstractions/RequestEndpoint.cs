@@ -7,7 +7,8 @@ namespace SocialMediaBackend.Api.Abstractions;
 
 public class RequestEndpoint<TRequest> : Endpoint<TRequest> where TRequest : notnull
 {
-    protected async Task HandleCommandAsync(AppCommandAbstractions.ICommand<HandlerResponse> command, CancellationToken cancellationToken)
+    protected async Task HandleCommandAsync<T>(AppCommandAbstractions.ICommand<T> command, CancellationToken cancellationToken)
+        where T : IHandlerResponse
     {
         var handlerResponse = await command.ExecuteAsync(cancellationToken);
 
@@ -25,9 +26,11 @@ public class RequestEndpoint<TRequest> : Endpoint<TRequest> where TRequest : not
     }
 }
 
-public class RequestEndpoint<TRequest, TResponse> : Endpoint<TRequest, TResponse> where TRequest : notnull
+public class RequestEndpoint<TRequest, TResponse> : Endpoint<TRequest, TResponse> 
+    where TRequest : notnull
 {
-    protected async Task HandleRequestAsync(IRequest<HandlerResponse<TResponse>> request, CancellationToken cancellationToken)
+    protected async Task HandleRequestAsync<T>(IRequest<T> request, CancellationToken cancellationToken)
+        where T : IHandlerResponse<TResponse>
     {
         var handlerResponse = await request.ExecuteAsync(cancellationToken);
 

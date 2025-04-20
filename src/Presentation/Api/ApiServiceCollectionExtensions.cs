@@ -33,6 +33,7 @@ public static class ApiServiceCollectionExtensions
         return services
             .AddFastEndpoints()
             .SwaggerDocument()
+            .AddHttpContextAccessor()
             ;
     }   
 }
