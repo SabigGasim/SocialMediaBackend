@@ -12,8 +12,6 @@ public class GetAllPostsQueryHandler(IPostRepository repository) : IQueryHandler
 
     public async Task<HandlerResponse<GetAllPostsResponse>> ExecuteAsync(GetAllPostsQuery query, CancellationToken ct)
     {
-
-
         var (Items, Page, PageSize, TotalCount) = await _repository.GetAllAsync(query.Options, ct);
         var response = Items.MapToResponse(Page, PageSize, TotalCount);
 

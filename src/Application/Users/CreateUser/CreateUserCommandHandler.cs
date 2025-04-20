@@ -29,8 +29,8 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Creat
             return ("User was not created", HandlerResponseStatus.BadRequest, command);
         }
 
-        await _context.Users.AddAsync(user);
-        await _context.SaveChangesAsync();
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync(ct);
 
         return (user.MapToCreateResponse(), HandlerResponseStatus.Created);
     }

@@ -11,7 +11,7 @@ public class UpdatePostCommandHandler(ApplicationDbContext context) : ICommandHa
 
     public async Task<HandlerResponse> ExecuteAsync(UpdatePostCommand command, CancellationToken ct)
     {
-        var post = await _context.Posts.FindAsync(command.PostId);
+        var post = await _context.Posts.FindAsync([command.PostId], ct);
         if(post is null)
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound);
 

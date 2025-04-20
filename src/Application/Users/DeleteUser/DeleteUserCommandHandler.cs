@@ -16,14 +16,14 @@ public class DeleteUserCommandHandler : ICommandHandler<DeleteUserCommand>
 
     public async Task<HandlerResponse> ExecuteAsync(DeleteUserCommand command, CancellationToken ct)
     {
-        var user = await _dbContext.Users.FindAsync(command.UserId, ct);
+        var user = await _dbContext.Users.FindAsync([command.UserId], ct);
         if(user is null)
         {
             return ("User was not found", HandlerResponseStatus.NotFound, command.UserId);
         }
 
         _dbContext.Remove(user);
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(ct);
 
         return HandlerResponseStatus.Deleted;
     }

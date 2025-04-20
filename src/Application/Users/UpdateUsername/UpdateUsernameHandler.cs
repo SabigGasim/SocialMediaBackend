@@ -19,7 +19,7 @@ public class UpdateUsernameHandler : ICommandHandler<UpdateUsernameCommand>
 
     public async Task<HandlerResponse> ExecuteAsync(UpdateUsernameCommand command, CancellationToken ct)
     {
-        var user = await _context.Users.FindAsync(command.UserId);
+        var user = await _context.Users.FindAsync([command.UserId], ct);
         if (user is null)
         {
             return ("No user exists with the given Id", HandlerResponseStatus.NotFound, command.UserId);
@@ -31,7 +31,7 @@ public class UpdateUsernameHandler : ICommandHandler<UpdateUsernameCommand>
             return ("Username was not modified", HandlerResponseStatus.BadRequest, command.Username);
         }
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(ct);
 
         return HandlerResponseStatus.Modified;
     }

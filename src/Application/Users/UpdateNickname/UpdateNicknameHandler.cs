@@ -16,7 +16,7 @@ public class UpdateNicknameHandler : ICommandHandler<UpdateNicknameCommand>
 
     public async Task<HandlerResponse> ExecuteAsync(UpdateNicknameCommand command, CancellationToken ct)
     {
-        var user = await _context.Users.FindAsync(command.UserId);
+        var user = await _context.Users.FindAsync([command.UserId], ct);
         if (user is null)
         {
             return ("No user exists with the given Id", HandlerResponseStatus.NotFound, command.UserId);
@@ -28,7 +28,7 @@ public class UpdateNicknameHandler : ICommandHandler<UpdateNicknameCommand>
             return ("Nickname was not modified", HandlerResponseStatus.BadRequest, command.Nickname);
         }
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(ct);
 
         return HandlerResponseStatus.Modified;
     }

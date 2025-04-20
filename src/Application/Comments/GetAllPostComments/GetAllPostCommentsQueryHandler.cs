@@ -30,7 +30,7 @@ public class GetAllPostCommentsQueryHandler(ApplicationDbContext context)
             .Include(x => x.User)
             .Skip((query.Page - 1) * query.PageSize)
             .Take(query.PageSize)
-            .ToListAsync();
+            .ToListAsync(ct);
 
         return comments.MapToResponse(query.Page, query.PageSize, totalCount);
     }

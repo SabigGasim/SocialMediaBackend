@@ -11,7 +11,7 @@ public class EditCommentCommandHandler(ApplicationDbContext context) : ICommandH
 
     public async Task<HandlerResponse> ExecuteAsync(EditCommentCommand command, CancellationToken ct)
     {
-        var comment = await _context.Comments.FindAsync(command.CommentId, ct);
+        var comment = await _context.Comments.FindAsync([command.CommentId], ct);
 
         if(comment is null)
             return ("Comment with the given Id was not found", HandlerResponseStatus.NotFound, command.CommentId);

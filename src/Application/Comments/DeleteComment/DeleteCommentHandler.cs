@@ -15,7 +15,7 @@ public class DeleteCommentHandler(ApplicationDbContext context) : ICommandHandle
         var post = await _context.Posts
             .Include(x => x.Comments.Where(c => c.Id == command.CommentId))
             .ThenInclude(x => x.ParentComment)
-            .FirstOrDefaultAsync(x => x.Id == command.PostId);
+            .FirstOrDefaultAsync(x => x.Id == command.PostId, ct);
 
         if (post is null)
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, command.CommentId);

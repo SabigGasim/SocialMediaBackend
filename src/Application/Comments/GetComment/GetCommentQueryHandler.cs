@@ -17,7 +17,7 @@ public class GetCommentQueryHandler(ApplicationDbContext context)
         var comment = await _context.Comments
             .AsNoTracking()
             .Include(x => x.User)
-            .FirstOrDefaultAsync(x => x.Id == query.CommentId);
+            .FirstOrDefaultAsync(x => x.Id == query.CommentId, ct);
 
         if (comment is null)
             return ("Comment with the given Id was not found", HandlerResponseStatus.NotFound);
