@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Api & Auth",
+    "Projects": [
+      {
+        "Path": "src\\Presentation\\Api\\Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Identity.Api\\Identity.Api.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
