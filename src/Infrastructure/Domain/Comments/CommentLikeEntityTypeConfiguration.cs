@@ -1,0 +1,24 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SocialMediaBackend.Domain.Comments;
+using SocialMediaBackend.Domain.Users;
+
+namespace SocialMediaBackend.Infrastructure.Domain.Comments;
+
+internal sealed class CommentLikeEntityTypeConfiguration : IEntityTypeConfiguration<CommentLike>
+{
+    public void Configure(EntityTypeBuilder<CommentLike> builder)
+    {
+        builder.HasKey(cl => new { cl.CommentId, cl.UserId });
+
+        builder.HasOne<Comment>()
+            .WithMany(p => p.Likes)
+            .HasForeignKey(p => p.CommentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+}
