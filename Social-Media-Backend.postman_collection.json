@@ -7,8 +7,178 @@
 	},
 	"item": [
 		{
+			"name": "Identity",
+			"item": [
+				{
+					"name": "Token Generator",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    //\"userid\": \"d6a319b0-5c31-4929-84a0-3b918efc318e\", //jonne\r\n    //\"userid\": \"5b12823a-7dea-4d25-958f-045d98405def\", //different\r\n    \"userid\": \"de18fec2-aabe-403e-9a5c-ee219203cf5e\", //goofi\r\n    \"email\": \"sabig@moanyn.com\",\r\n    \"customClaims\": {\r\n         \"admin\": true\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7272/token",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7272",
+							"path": [
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Users",
 			"item": [
+				{
+					"name": "Follows",
+					"item": [
+						{
+							"name": "Follow user",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:7251/api/users/de18fec2-aabe-403e-9a5c-ee219203cf5e/follow",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7251",
+									"path": [
+										"api",
+										"users",
+										"de18fec2-aabe-403e-9a5c-ee219203cf5e",
+										"follow"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unfollow user",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:7251/api/users/de18fec2-aabe-403e-9a5c-ee219203cf5e/followers",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7251",
+									"path": [
+										"api",
+										"users",
+										"de18fec2-aabe-403e-9a5c-ee219203cf5e",
+										"followers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Accept follow request",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:7251/api/users/me/followers/5b12823a-7dea-4d25-958f-045d98405def/accept",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7251",
+									"path": [
+										"api",
+										"users",
+										"me",
+										"followers",
+										"5b12823a-7dea-4d25-958f-045d98405def",
+										"accept"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reject follow request",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:7251/api/users/me/followers/d6a319b0-5c31-4929-84a0-3b918efc318e/reject",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7251",
+									"path": [
+										"api",
+										"users",
+										"me",
+										"followers",
+										"d6a319b0-5c31-4929-84a0-3b918efc318e",
+										"reject"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Privacy",
+					"item": [
+						{
+							"name": "Profile visibility",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"isPublic\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:7251/api/users/me/privacy/visibility",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7251",
+									"path": [
+										"api",
+										"users",
+										"me",
+										"privacy",
+										"visibility"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
 				{
 					"name": "Create user",
 					"request": {
@@ -82,6 +252,14 @@
 								}
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get current user",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				},
@@ -548,6 +726,38 @@
 					"response": []
 				}
 			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjlhYmRlNy1kMTY3LTQ5ZWEtOGZjMy0yN2VkNDQyOTdjMjEiLCJzdWIiOiJzYWJpZ0Btb2FueW4uY29tIiwiZW1haWwiOiJzYWJpZ0Btb2FueW4uY29tIiwidXNlcmlkIjoiNWIxMjgyM2EtN2RlYS00ZDI1LTk1OGYtMDQ1ZDk4NDA1ZGVmIiwiYWRtaW4iOnRydWUsIm5iZiI6MTc0NTM1NDMzMCwiZXhwIjoxNzQ1MzgzMTMwLCJpYXQiOjE3NDUzNTQzMzAsImlzcyI6Imh0dHBzOi8vaWQuc2FiaWdnYXNpbS5jb20iLCJhdWQiOiJodHRwczovL3NvY2lhbC5zYWJpZ2dhc2ltLmNvbSJ9.u6yobyz9zQzw8-5YnncPwu3mvVvqhng2E-7Q8bbmXLM",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
