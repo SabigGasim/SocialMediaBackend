@@ -140,6 +140,7 @@ public class User : AggregateRoot<Guid>
         foreach (var follow in _followers.Where(x => x.Status == FollowStatus.Pending))
         {
             follow.AcceptFollowRequest();
+            this.AddDomainEvent(new FollowRequestAcceptedEvent(follow.FollowerId, follow.FollowingId));
         }
 
         return true;
