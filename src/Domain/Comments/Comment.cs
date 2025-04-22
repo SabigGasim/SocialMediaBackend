@@ -1,11 +1,10 @@
 ﻿using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Posts;
 using SocialMediaBackend.Domain.Users;
-using System.Xml.Linq;
 
 namespace SocialMediaBackend.Domain.Comments;
 
-public class Comment : AuditableEntity<Guid>
+public class Comment : AggregateRoot<Guid>
 {
     private readonly List<CommentLike> _likes = new();
     private readonly List<Comment> _replies = new();

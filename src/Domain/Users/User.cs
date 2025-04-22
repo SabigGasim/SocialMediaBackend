@@ -7,7 +7,7 @@ using SocialMediaBackend.Domain.Users.Rules;
 
 namespace SocialMediaBackend.Domain.Users;
 
-public class User : AuditableEntity<Guid>
+public class User : AggregateRoot<Guid>
 {
     private readonly List<Post> _posts = new();
     private readonly List<Comment> _comments = new();
