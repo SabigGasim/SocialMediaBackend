@@ -6,11 +6,14 @@ using SocialMediaBackend.Application.Comments.ReplyToComment;
 using SocialMediaBackend.Application.Posts.CreatePost;
 using SocialMediaBackend.Application.Posts.GetPost;
 using SocialMediaBackend.Application.Users.CreateUser;
+using SocialMediaBackend.Application.Users.Follows.FollowUser;
 using SocialMediaBackend.Application.Users.GetAllUsers;
 using SocialMediaBackend.Application.Users.GetUser;
 using SocialMediaBackend.Domain.Comments;
 using SocialMediaBackend.Domain.Posts;
 using SocialMediaBackend.Domain.Users;
+using SocialMediaBackend.Domain.Users.Follows;
+using System.Runtime.CompilerServices;
 
 namespace SocialMediaBackend.Application.Mappings;
 
@@ -108,5 +111,10 @@ public static class DomainToApiContractMapper
         int totalCount)
     {
         return new(page, pageSize, totalCount, comments.Select(MapToGetResponse));
+    }
+
+    public static FollowUserResponse MapToFollowResponse(this Follow follow)
+    {
+        return new FollowUserResponse(follow.Status);
     }
 }
