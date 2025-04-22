@@ -3,6 +3,7 @@ using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Common.ValueObjects;
 using SocialMediaBackend.Domain.Posts;
 using SocialMediaBackend.Domain.Services;
+using SocialMediaBackend.Domain.Users.Follows;
 using SocialMediaBackend.Domain.Users.Rules;
 
 namespace SocialMediaBackend.Domain.Users;
@@ -11,6 +12,8 @@ public class User : AggregateRoot<Guid>
 {
     private readonly List<Post> _posts = new();
     private readonly List<Comment> _comments = new();
+    private readonly List<Follow> _followers = new();
+    private readonly List<Follow> _followings = new();
 
     private User(string username, string nickname, DateOnly dateOfBirth, Media profilePicture)
     {
@@ -18,6 +21,7 @@ public class User : AggregateRoot<Guid>
         Nickname = nickname;
         DateOfBirth = dateOfBirth;
         ProfilePicture = profilePicture;
+        ProfileIsPublic = true;
 
         Id = Guid.NewGuid();
         Created = DateTimeOffset.UtcNow;
@@ -64,6 +68,79 @@ public class User : AggregateRoot<Guid>
         return post;
     }
 
+    public bool RemovePost(Guid postId)
+    {
+        var post = _posts.Find(x => x.Id == postId)!;
+        return _posts.Remove(post);
+    }
+
+    public Follow FollowOrRequestFollow(Guid userId)
+    {
+        var follow = ProfileIsPublic
+            ? Follow.Create(userId, this.Id)
+            : Follow.CreateFollowRequest(userId, this.Id);
+
+        if(follow.Status == FollowStatus.Following)
+            this.AddDomainEvent(new UserFollowedEvent(follow.FollowerId, follow.FollowingId));
+
+        return follow;
+    }
+
+    public bool AcceptFollowRequest(Guid followerId)
+    {
+        var follow = _followers.Find(x => x.FollowerId == followerId);
+
+        return follow?.AcceptFollowRequest() == true;
+    }
+
+    public bool Unfollow(Guid followingId)
+    {
+        var follow = _followers.Find(x => x.FollowingId == followingId);
+
+        return follow is not null
+            ? _followers.Remove(follow)
+            : false;
+    }
+
+    public void IncrementFollowingCount(int amount) => FollowingCount += amount;
+    public void IncrementFollowersCount(int amount) => FollowersCount += amount;
+
+    public bool ChangeProfilePrivacy(bool publicProfile)
+    {
+        if (publicProfile == ProfileIsPublic)
+            return true;
+
+        ProfileIsPublic = publicProfile;
+
+        return ProfileIsPublic
+            ? AcceptAllPendingFollowRequests()
+            : true;
+    }
+
+    public bool RejectPendingFollowRequest(Guid followerId)
+    {
+        var follow = _followers.Find(x => x.FollowerId == followerId);
+        
+        return follow is not null
+            ? _followers.Remove(follow)
+            : false;
+    }
+
+    public bool AcceptPendingFollowRequest(Guid followerId)
+    {
+        return _followers.Find(x => x.FollowerId == followerId)?.AcceptFollowRequest() == true;
+    }
+
+    public bool AcceptAllPendingFollowRequests()
+    {
+        foreach (var follow in _followers.Where(x => x.Status == FollowStatus.Pending))
+        {
+            follow.AcceptFollowRequest();
+        }
+
+        return true;
+    }
+
     public async Task<bool> ChangeUsernameAsync(string username, IUserExistsChecker userExistsChecker)
     {
         if(Username == username)
@@ -85,11 +162,5 @@ public class User : AggregateRoot<Guid>
 
         Nickname = nickname;
         return true;
-    }
-
-    public bool RemovePost(Guid postId)
-    {
-        var post = _posts.Find(x => x.Id == postId)!;
-        return _posts.Remove(post);
     }
 }
