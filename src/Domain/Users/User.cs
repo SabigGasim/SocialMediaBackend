@@ -93,13 +93,17 @@ public class User : AggregateRoot<Guid>
         return follow?.AcceptFollowRequest() == true;
     }
 
-    public bool Unfollow(Guid followingId)
+    public bool Unfollow(Guid userToUnfollowId)
     {
-        var follow = _followers.Find(x => x.FollowingId == followingId);
+        var follow = _followings.Find(x => x.FollowingId == userToUnfollowId);
 
-        return follow is not null
-            ? _followers.Remove(follow)
-            : false;
+        if(follow is null)
+            return false;
+
+        _followings.Remove(follow);
+
+        this.AddDomainEvent(new UserUnfollowedEvent(this.Id, userToUnfollowId));
+        return true;
     }
 
     public void IncrementFollowingCount(int amount) => FollowingCount += amount;

@@ -47,7 +47,7 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
 
         await _dispatcher.DispatchAsync(events, ct);
 
-        return await base.SaveChangesAsync(ct); ;
+        return await base.SaveChangesAsync(ct);
     }
 }
 
