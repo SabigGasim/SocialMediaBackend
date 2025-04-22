@@ -1,6 +1,5 @@
 ﻿using Mediator;
 using SocialMediaBackend.Domain.Common;
-using SocialMediaBackend.Infrastructure.Helpers;
 
 namespace SocialMediaBackend.Infrastructure.Processing;
 
@@ -14,10 +13,13 @@ public class DomainEventsDispatcher(IMediator mediator) : IDomainEventsDispatche
         return _mediator.Publish(domainEvent, ct);
     }
 
-    public ValueTask DispatchAsync(IEnumerable<IDomainEvent> domainEvents, CancellationToken ct = default)
+    public async ValueTask DispatchAsync(IEnumerable<IDomainEvent> domainEvents, CancellationToken ct = default)
     {
         var tasks = domainEvents.Select(x => _mediator.Publish(x, ct));
 
-        return ValueTaskHelper.WhenAll(tasks);
+        foreach (var task in tasks)
+        {
+            await task;
+        }
     }
 }
