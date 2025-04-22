@@ -4,6 +4,7 @@ using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.DomainServices.Users;
 using SocialMediaBackend.Application.Processing;
 using SocialMediaBackend.Domain.Services;
+using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Application;
 
@@ -17,6 +18,7 @@ public static class ApplicationServiceCollectionExtensions
                 x.Register(typeof(UserRequestMiddleware<,>));
             })
             .AddSingleton<IUserExistsChecker, UserExistsChecker>()
+            .AddMediator(o => o.ServiceLifetime = ServiceLifetime.Scoped)
             ;
     }
 }
