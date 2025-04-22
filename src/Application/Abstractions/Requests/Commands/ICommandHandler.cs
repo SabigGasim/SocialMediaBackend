@@ -1,13 +1,13 @@
 ﻿namespace SocialMediaBackend.Application.Abstractions.Requests.Commands;
 
-public interface ICommandHandler<in TRequest> : FastEndpoints.ICommandHandler<TRequest, HandlerResponse>
-    where TRequest : ICommand<HandlerResponse>
+public interface ICommandHandler<in TCommand> : FastEndpoints.ICommandHandler<TCommand, HandlerResponse>
+    where TCommand : ICommand<HandlerResponse>
 {
 
 }
 
-public interface ICommandHandler<in TRequest, TResponse> : FastEndpoints.ICommandHandler<TRequest, HandlerResponse<TResponse>>
-    where TRequest : ICommand<HandlerResponse<TResponse>>
+public interface ICommandHandler<in TCommand, TResponse> : FastEndpoints.ICommandHandler<TCommand, HandlerResponse<TResponse>>
+    where TCommand : ICommand<HandlerResponse<TResponse>>
 {
 
 }

@@ -6,8 +6,8 @@ using SocialMediaBackend.Domain.Services;
 
 namespace SocialMediaBackend.Application.Processing;
 
-internal class UserRequestMiddleware<TRequest, TResult> : ICommandMiddleware<TRequest, TResult> 
-    where TRequest : IUserRequest<TResult>
+internal class UserRequestMiddleware<TRequest, TResult> : ICommandMiddleware<TRequest, TResult>
+    where TRequest : IRequest<TResult>, IUserRequest<TRequest>
     where TResult : IHandlerResponse
 {
     private readonly IHttpContextAccessor _contextAccessor;
@@ -28,22 +28,22 @@ internal class UserRequestMiddleware<TRequest, TResult> : ICommandMiddleware<TRe
 
         if(!Guid.TryParse(userIdClaim, out var userId))
         {
-            return CreateError("Access token doesn't have a user Id", HandlerResponseStatus.BadRequest, userId);
+            return CreateError("Access token is expired or doesn't contain a user Id", userId);
         }
 
         var userExists = await _userExistsChecker.CheckAsync(userId, ct);
         if(!userExists)
         {
-            return CreateError("This user doesn't exist", HandlerResponseStatus.Unauthorized, userId);
+            return CreateError("This user doesn't exist", userId);
         }
 
-        request.SetUserId(userId);
+        request.WithUserId(userId);
 
         return await next();
     }
 
-    private static TResult CreateError(string messsage, HandlerResponseStatus status, Guid userId)
+    private static TResult CreateError(string messsage, Guid userId)
     {
-        return TResult.CreateError<TResult>(messsage, status, userId);
+        return TResult.CreateError<TResult>(messsage, HandlerResponseStatus.Unauthorized, userId);
     }
 }

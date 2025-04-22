@@ -1,7 +1,9 @@
 ﻿namespace SocialMediaBackend.Application.Abstractions.Requests;
 
-public interface IUserRequest<TResult> : IRequest<TResult>
+public interface IUserRequest<TRequest> : IRequest
 {
     Guid UserId { get; }
-    void SetUserId(Guid userId);
+    bool IsAdmin { get; }
+    TRequest WithUserId(Guid userId);
+    TRequest AndAdminRole(bool isAdmin);
 }
