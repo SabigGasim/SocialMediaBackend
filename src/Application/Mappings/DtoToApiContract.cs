@@ -24,7 +24,13 @@ internal static class DtoToApiContractMappter
             post.MediaUrls?.Split(','),
             post.CreatedAt,
             post.UpdatedAt,
-            new GetUserResponse(post.User.UserId, post.User.Username, post.User.Nickname, post.User.ProfilePictureUrl)
+            new GetUserResponse(
+                post.User.UserId,
+                post.User.Username,
+                post.User.Nickname,
+                post.User.FollowersCount,
+                post.User.FollowingCount,
+                post.User.ProfilePictureUrl)
             );
     }
 }

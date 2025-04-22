@@ -1,9 +1,9 @@
-﻿using SocialMediaBackend.Domain.Common.ValueObjects;
-
-namespace SocialMediaBackend.Application.Users.GetUser;
+﻿namespace SocialMediaBackend.Application.Users.GetUser;
 
 public record GetUserResponse(
     Guid Id, 
     string Username, 
-    string? Nickname = null,
+    string Nickname,
+    int FollowersCount,
+    int FollowingCount,
     string? ProfilePictureUrl = null);

@@ -35,6 +35,8 @@ public static class DomainToApiContractMapper
             user.Id,
             user.Username,
             user.Nickname,
+            user.FollowersCount,
+            user.FollowingCount,
             user.ProfilePicture.Url
             );
     }

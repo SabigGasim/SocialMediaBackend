@@ -26,6 +26,8 @@ public class PostRepository(IDbConnectionFactory connectionFactory) : IPostRepos
                 u."Id" AS UserId,
                 u."Username",
                 u."Nickname", 
+                u."FollowersCount",
+                u."FollowingCount",
                 u."ProfilePictureUrl"
             FROM "Posts" p
             JOIN "Users" u ON p."UserId" = u."Id"
