@@ -16,6 +16,8 @@ public static class ApiEndpoints
         public const string Delete = UserActionBase;
         public const string PatchUsername = $"{PatchBase}/username";
         public const string PatchNickname = $"{PatchBase}/nickname";
+
+        public const string Follow = $"{UserActionBase}/followers";
     }
 
     public static class Posts
