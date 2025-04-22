@@ -8,6 +8,7 @@ using SocialMediaBackend.Application.Posts.GetPost;
 using SocialMediaBackend.Application.Users.CreateUser;
 using SocialMediaBackend.Application.Users.Follows.FollowUser;
 using SocialMediaBackend.Application.Users.GetAllUsers;
+using SocialMediaBackend.Application.Users.GetFullUserDetails;
 using SocialMediaBackend.Application.Users.GetUser;
 using SocialMediaBackend.Domain.Comments;
 using SocialMediaBackend.Domain.Posts;
@@ -59,7 +60,13 @@ public static class DomainToApiContractMapper
             post.MediaItems.Select(x => x.Url),
             post.Created,
             post.LastModified,
-            new GetUserResponse(post.User.Id, post.User.Username, post.User.Nickname, post.User.ProfilePicture.Url)
+            new GetUserResponse(
+                post.User.Id, 
+                post.User.Username, 
+                post.User.Nickname, 
+                post.User.FollowersCount,
+                post.User.FollowingCount,
+                post.User.ProfilePicture.Url)
             );
     }
 
@@ -118,5 +125,18 @@ public static class DomainToApiContractMapper
     public static FollowUserResponse MapToFollowResponse(this Follow follow)
     {
         return new FollowUserResponse(follow.Status);
+    }
+
+    public static GetFullUserDetailsResponse MapToFullUserResponse(this User user)
+    {
+        return new GetFullUserDetailsResponse(
+            user.Id,
+            user.Username,
+            user.Nickname,
+            user.FollowersCount,
+            user.FollowingCount,
+            user.DateOfBirth,
+            user.ProfilePicture.Url,
+            user.ProfileIsPublic);
     }
 }
