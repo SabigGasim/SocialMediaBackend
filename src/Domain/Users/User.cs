@@ -33,9 +33,15 @@ public class User : AggregateRoot<Guid>
 
     public DateOnly DateOfBirth { get; private set; }
     public Media ProfilePicture { get; private set; } = default!;
+    public bool ProfileIsPublic { get; private set; }
+    public int FollowersCount { get; private set; }
+    public int FollowingCount { get; private set; }
 
     public IReadOnlyCollection<Post> Posts => _posts.AsReadOnly();
     public IReadOnlyCollection<Comment> Comments => _comments.AsReadOnly();
+    public IReadOnlyCollection<Follow> Followers => _followers.AsReadOnly();
+    public IReadOnlyCollection<Follow> Followings => _followings.AsReadOnly();
+
 
     public static async Task<User> CreateAsync(string username, string nickname, DateOnly dateOfBirth, 
         IUserExistsChecker userExistsChecker,
