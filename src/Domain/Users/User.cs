@@ -121,13 +121,16 @@ public class User : AggregateRoot<Guid>
             : true;
     }
 
-    public bool RejectPendingFollowRequest(Guid followerId)
+    public bool RejectPendingFollowRequest(Guid userToRejectId)
     {
-        var follow = _followers.Find(x => x.FollowerId == followerId);
-        
-        return follow is not null
-            ? _followers.Remove(follow)
-            : false;
+        var follow = _followers.Find(x => x.FollowerId == userToRejectId);
+        if(follow is null) 
+            return false;
+
+        _followers.Remove(follow);
+        this.AddDomainEvent(new FollowRequestRejectedEvent(userToRejectId, this.Id));
+
+        return true;
     }
 
     public bool AcceptPendingFollowRequest(Guid userToAcceptId)
