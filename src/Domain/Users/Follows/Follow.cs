@@ -41,7 +41,12 @@ public class Follow : Entity<Unit>
 
     internal bool AcceptFollowRequest()
     {
-        Status = FollowStatus.Following;
-        return true;
+        if (Status == FollowStatus.Pending)
+        {
+            Status = FollowStatus.Following;
+            return true;
+        }
+
+        return false;
     }
 }

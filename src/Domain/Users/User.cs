@@ -130,9 +130,18 @@ public class User : AggregateRoot<Guid>
             : false;
     }
 
-    public bool AcceptPendingFollowRequest(Guid followerId)
+    public bool AcceptPendingFollowRequest(Guid userToAcceptId)
     {
-        return _followers.Find(x => x.FollowerId == followerId)?.AcceptFollowRequest() == true;
+        var followRequest = _followers.Find(x => x.FollowerId == userToAcceptId);
+        if (followRequest is null)
+            return false;
+
+        var accepted = followRequest.AcceptFollowRequest();
+        if(!accepted)
+            return false;
+
+        this.AddDomainEvent(new FollowRequestAcceptedEvent(userToAcceptId, this.Id));
+        return true;
     }
 
     public bool AcceptAllPendingFollowRequests()
