@@ -29,7 +29,7 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(IInfrastructureMarker).Assembly);
     }
 
-    public async Task<int> CommitAsync(CancellationToken ct = default)
+    async Task<int> IUnitOfWork.CommitAsync(CancellationToken ct)
     {
         var entitiesWithEvents = ChangeTracker.Entries<IHasDomainEvents>()
            .Select(e => e.Entity)

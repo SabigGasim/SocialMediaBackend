@@ -32,7 +32,7 @@ public class Comment : AggregateRoot<Guid>
     public User User { get; private set; } = default!;
     public Guid? ParentCommentId { get; private set; }
     public Comment? ParentComment { get; private set; }
-    public string Text { get; private set; }
+    public string Text { get; private set; } = default!;
     public int LikesCount { get; private set; }
     public int RepliesCount { get; private set; }
 
