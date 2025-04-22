@@ -10,9 +10,9 @@ public static class ApiEndpoints
         private const string UserActionBase = $"{Base}/{{UserId}}";
         private const string PatchBase = UserActionBase;
 
+        public const string Me = $"{Base}/me";
         public const string Create = Base;
         public const string Get = $"{Base}/{{IdOrUsername}}";
-        public const string Me = $"{Base}/me";
         public const string GetAll = Base;
         public const string Delete = UserActionBase;
         public const string PatchUsername = $"{PatchBase}/username";
@@ -20,6 +20,13 @@ public static class ApiEndpoints
 
         public const string Follow = $"{UserActionBase}/followers";
         public const string Unfollow = $"{UserActionBase}/followers";
+
+        public static class Privacy
+        {
+            private const string PrivacyBase = $"{Me}/privacy";
+
+            public const string ChangeProfileVisibility = $"{PrivacyBase}/visibility";
+        }
     }
 
     public static class Posts
