@@ -12,12 +12,14 @@ public static class ApiEndpoints
 
         public const string Create = Base;
         public const string Get = $"{Base}/{{IdOrUsername}}";
+        public const string Me = $"{Base}/me";
         public const string GetAll = Base;
         public const string Delete = UserActionBase;
         public const string PatchUsername = $"{PatchBase}/username";
         public const string PatchNickname = $"{PatchBase}/nickname";
 
         public const string Follow = $"{UserActionBase}/followers";
+        public const string Unfollow = $"{UserActionBase}/followers";
     }
 
     public static class Posts
