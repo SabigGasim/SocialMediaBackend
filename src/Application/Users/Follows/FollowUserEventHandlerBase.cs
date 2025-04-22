@@ -11,7 +11,7 @@ public abstract class FollowUserEventHandlerBase<TFollowEventBase>(ApplicationDb
 {
     private readonly ApplicationDbContext _context = context;
 
-    protected abstract void ApplyChanges(User follower, User following);
+    protected abstract Task ApplyChanges(User follower, User following, CancellationToken ct = default);
 
     public async ValueTask Handle(TFollowEventBase domainEvent, CancellationToken cancellationToken)
     {
@@ -26,6 +26,6 @@ public abstract class FollowUserEventHandlerBase<TFollowEventBase>(ApplicationDb
             return;
         }
 
-        ApplyChanges(follower, following);
+        await ApplyChanges(follower, following);
     }
 }
