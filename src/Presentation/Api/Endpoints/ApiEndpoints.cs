@@ -20,6 +20,7 @@ public static class ApiEndpoints
 
         public const string Follow = $"{UserActionBase}/followers";
         public const string Unfollow = $"{UserActionBase}/followers";
+        public const string AcceptFollow = $"{Me}/followers/{{UserId}}/accept";
 
         public static class Privacy
         {
