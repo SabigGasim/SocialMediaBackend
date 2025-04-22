@@ -1,6 +1,24 @@
-﻿namespace SocialMediaBackend.Domain.Common;
+﻿using SocialMediaBackend.Domain.Common.Exceptions;
 
-public abstract class Entity<TId> : BusinessRuleValidator
+namespace SocialMediaBackend.Domain.Common;
+
+public abstract class Entity<TId>
 {
     public virtual TId Id { get; protected set; } = default!;
+
+    protected static void CheckRule(IBusinessRule rule)
+    {
+        if (rule.IsBroken())
+        {
+            throw new BusinessRuleValidationException(rule);
+        }
+    }
+
+    protected static async Task CheckRuleAsync(IBusinessRule rule)
+    {
+        if (await rule.IsBrokenAsync())
+        {
+            throw new BusinessRuleValidationException(rule);
+        }
+    }
 }
