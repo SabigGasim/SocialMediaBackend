@@ -47,3 +47,24 @@ public class RequestEndpoint<TRequest, TResponse> : Endpoint<TRequest, TResponse
         await SendErrorsAsync((int)statusCode, cancellation: cancellationToken);
     }
 }
+
+public class RequestEndpointWithoutRequest<TResponse> : EndpointWithoutRequest<TResponse>
+{
+    protected async Task HandleRequestAsync<T>(IRequest<T> request, CancellationToken cancellationToken)
+        where T : IHandlerResponse<TResponse>
+    {
+        var handlerResponse = await request.ExecuteAsync(cancellationToken);
+
+        var statusCode = handlerResponse.ResponseStatus.MapToHttpStatusCode();
+
+        if (handlerResponse.IsSuccess)
+        {
+            await SendAsync(handlerResponse.Payload, (int)statusCode, cancellation: cancellationToken);
+            return;
+        }
+
+        AddError(handlerResponse.Message, statusCode.ToString());
+
+        await SendErrorsAsync((int)statusCode, cancellation: cancellationToken);
+    }
+}
