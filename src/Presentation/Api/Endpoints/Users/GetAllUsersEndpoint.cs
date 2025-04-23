@@ -1,11 +1,10 @@
 ﻿using FastEndpoints;
-using Microsoft.AspNetCore.Authorization;
 using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Application.Users.GetAllUsers;
 
 namespace SocialMediaBackend.Api.Endpoints.Users;
 
-[HttpGet(ApiEndpoints.Users.GetAll), AllowAnonymous]
+[HttpGet(ApiEndpoints.Users.GetAll)]
 public class GetAllUsersEndpoint : RequestEndpoint<GetAllUsersRequest, GetAllUsersResponse>
 {
     public override async Task HandleAsync(GetAllUsersRequest req, CancellationToken ct)

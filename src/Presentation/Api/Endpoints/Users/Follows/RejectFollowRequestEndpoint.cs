@@ -10,7 +10,6 @@ public class RejectFollowRequestEndpoint : RequestEndpoint<RejectFollowRequestRe
     {
         Post(ApiEndpoints.Users.RejectFollow);
         Description(x => x.Accepts<RejectFollowRequestRequest>());
-        AllowAnonymous();
     }
 
     public override Task HandleAsync(RejectFollowRequestRequest req, CancellationToken ct)

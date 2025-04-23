@@ -1,11 +1,10 @@
 ﻿using FastEndpoints;
-using Microsoft.AspNetCore.Authorization;
 using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Application.Comments.CreateComment;
 
 namespace SocialMediaBackend.Api.Endpoints.Comments;
 
-[HttpPost(ApiEndpoints.Posts.Comment), AllowAnonymous]
+[HttpPost(ApiEndpoints.Posts.Comment)]
 public class CreateCommentEndpoint : RequestEndpoint<CreateCommentRequest, CreateCommentResponse>
 {
     public override Task HandleAsync(CreateCommentRequest req, CancellationToken ct)

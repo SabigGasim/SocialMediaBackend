@@ -1,11 +1,10 @@
 ﻿using FastEndpoints;
-using Microsoft.AspNetCore.Authorization;
 using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Application.Comments.EditComment;
 
 namespace SocialMediaBackend.Api.Endpoints.Comments;
 
-[HttpPatch(ApiEndpoints.Comments.Patch), AllowAnonymous]
+[HttpPatch(ApiEndpoints.Comments.Patch)]
 public class EditCommentEndpoint : RequestEndpoint<EditCommentRequest>
 {
     public override Task HandleAsync(EditCommentRequest req, CancellationToken ct)

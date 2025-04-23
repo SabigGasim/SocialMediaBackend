@@ -1,11 +1,10 @@
 ﻿using FastEndpoints;
-using Microsoft.AspNetCore.Authorization;
 using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Application.Users.DeleteUser;
 
 namespace SocialMediaBackend.Api.Endpoints.Users;
 
-[HttpDelete(ApiEndpoints.Users.Delete), AllowAnonymous]
+[HttpDelete(ApiEndpoints.Users.Delete)]
 public class DeleteUserEndpoint : RequestEndpoint<DeleteUserRequest>
 {
     public override async Task HandleAsync(DeleteUserRequest req, CancellationToken ct)

@@ -1,11 +1,10 @@
 ﻿using FastEndpoints;
-using Microsoft.AspNetCore.Authorization;
 using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Application.Comments.GetAllReplies;
 
 namespace SocialMediaBackend.Api.Endpoints.Comments;
 
-[HttpGet(ApiEndpoints.Comments.GetReplies), AllowAnonymous]
+[HttpGet(ApiEndpoints.Comments.GetReplies)]
 public class GetAllRepliesEndpoint : RequestEndpoint<GetAllRepliesRequest, GetAllRepliesResponse>
 {
     public override Task HandleAsync(GetAllRepliesRequest req, CancellationToken ct)

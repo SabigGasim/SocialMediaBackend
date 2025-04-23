@@ -19,6 +19,10 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionStatusCodeMiddleware>();
 
+app.UseAuthentication();
+
+app.UseAuthorization();
+
 app.MapFastEndpoints();
 app.UseSwaggerGen();
 

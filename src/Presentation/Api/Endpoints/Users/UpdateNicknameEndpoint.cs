@@ -1,12 +1,11 @@
 ﻿using FastEndpoints;
-using Microsoft.AspNetCore.Authorization;
 using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Api.Contracts.Responses;
 using SocialMediaBackend.Application.Users.UpdateNickname;
 
 namespace SocialMediaBackend.Api.Endpoints.Users;
 
-[HttpPatch(ApiEndpoints.Users.PatchNickname), AllowAnonymous]
+[HttpPatch(ApiEndpoints.Users.PatchNickname)]
 internal class UpdateNicknameEndpoint : RequestEndpoint<UpdateNicknameRequest>
 {
     public override async Task HandleAsync(UpdateNicknameRequest req, CancellationToken ct)

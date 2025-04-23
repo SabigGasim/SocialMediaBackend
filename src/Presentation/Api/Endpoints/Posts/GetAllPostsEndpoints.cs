@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using SocialMediaBackend.Api.Abstractions;
+﻿using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Application.Posts.GetAllPosts;
 using SocialMediaBackend.Infrastructure.Domain.Posts;
 
 namespace SocialMediaBackend.Api.Endpoints.Posts;
 
-[FastEndpoints.HttpGet(ApiEndpoints.Posts.GetAll), AllowAnonymous]
+[FastEndpoints.HttpGet(ApiEndpoints.Posts.GetAll)]
 public class GetAllPostsEndpoints : RequestEndpoint<GetAllPostsRequest, GetAllPostsResponse>
 {
     public override Task HandleAsync(GetAllPostsRequest req, CancellationToken ct)
