@@ -3,11 +3,13 @@ using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Domain.Posts;
 
-public record PostLike : ValueObject
+public record PostLike : ValueObject, IUserResource
 {
     public UserId UserId { get; private set; } = default!;
     public PostId PostId { get; private set; } = default!;
     public DateTimeOffset Created { get; private set; }
+    public User User { get; private set; } = default!;
+    public Post Post { get; private set; } = default!;
 
     private PostLike(UserId userId, PostId postId)
     {

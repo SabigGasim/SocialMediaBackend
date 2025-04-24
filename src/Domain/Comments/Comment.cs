@@ -4,7 +4,7 @@ using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Domain.Comments;
 
-public class Comment : AggregateRoot<CommentId>
+public class Comment : AggregateRoot<CommentId>, IUserResource
 {
     private readonly List<CommentLike> _likes = new();
     private readonly List<Comment> _replies = new();

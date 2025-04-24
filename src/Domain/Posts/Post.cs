@@ -6,7 +6,7 @@ using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Domain.Posts;
 
-public class Post : AggregateRoot<PostId>
+public class Post : AggregateRoot<PostId>, IUserResource
 {
     private readonly List<PostLike> _likes = new();
     private readonly List<Comment> _comments = new();
