@@ -12,7 +12,7 @@ public class Follow : Entity<Unit>
 {
     private Follow() { }
 
-    private Follow(Guid followerId, Guid followingId, FollowStatus status)
+    private Follow(UserId followerId, UserId followingId, FollowStatus status)
     {
         FollowerId = followerId;
         FollowingId = followingId;
@@ -20,8 +20,8 @@ public class Follow : Entity<Unit>
         Status = status;
     }
 
-    public Guid FollowerId { get; }
-    public Guid FollowingId { get; }
+    public UserId FollowerId { get; } = default!;
+    public UserId FollowingId { get; } = default!;
 
     public DateTimeOffset FollowedAt { get; }
     public FollowStatus Status { get; private set; }
@@ -29,12 +29,12 @@ public class Follow : Entity<Unit>
     public User Follower { get; } = default!;
     public User Following { get; } = default!;
 
-    internal static Follow CreateFollowRequest(Guid followerId, Guid followingId)
+    internal static Follow CreateFollowRequest(UserId followerId, UserId followingId)
     {
         return new Follow(followerId, followingId, FollowStatus.Pending);
     }
 
-    internal static Follow Create(Guid followerId, Guid followingId)
+    internal static Follow Create(UserId followerId, UserId followingId)
     {
         return new Follow(followerId, followingId, FollowStatus.Following);
     }

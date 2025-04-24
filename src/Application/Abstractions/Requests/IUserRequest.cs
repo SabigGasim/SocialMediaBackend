@@ -1,4 +1,6 @@
-﻿namespace SocialMediaBackend.Application.Abstractions.Requests;
+﻿using SocialMediaBackend.Domain.Users;
+
+namespace SocialMediaBackend.Application.Abstractions.Requests;
 public interface IUserRequestBase<TRequest> : IRequest
 {
     TRequest WithUserId(Guid userId);
@@ -7,13 +9,13 @@ public interface IUserRequestBase<TRequest> : IRequest
 
 public interface IUserRequest<TRequest> : IUserRequestBase<TRequest>
 {
-    Guid UserId { get; }
+    UserId UserId { get; }
     bool IsAdmin { get; }
 }
 
 
 public interface IOptionalUserRequest<TRequest> : IUserRequestBase<TRequest>
 {
-    Guid? UserId { get; }
+    UserId? UserId { get; }
     bool IsAdmin { get; }
 }

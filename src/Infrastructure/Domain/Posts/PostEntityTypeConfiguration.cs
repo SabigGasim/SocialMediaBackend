@@ -8,7 +8,13 @@ internal sealed class PostEntityTypeConfiguration : IEntityTypeConfiguration<Pos
 {
     public void Configure(EntityTypeBuilder<Post> builder)
     {
-        builder.HasKey(u => u.Id);
+        builder.HasKey(p => p.Id);
+
+        builder.Property(p => p.Id)
+            .HasConversion(
+                id => id.Value,
+                value => new PostId(value)
+            );
 
         builder.OwnsMany(p => p.MediaItems, m =>
         {

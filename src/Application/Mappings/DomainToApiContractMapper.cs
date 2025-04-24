@@ -14,7 +14,6 @@ using SocialMediaBackend.Domain.Comments;
 using SocialMediaBackend.Domain.Posts;
 using SocialMediaBackend.Domain.Users;
 using SocialMediaBackend.Domain.Users.Follows;
-using System.Runtime.CompilerServices;
 
 namespace SocialMediaBackend.Application.Mappings;
 
@@ -23,7 +22,7 @@ public static class DomainToApiContractMapper
     public static CreateUserResponse MapToCreateResponse(this User user)
     {
         return new CreateUserResponse(
-            user.Id,
+            user.Id.Value,
             user.Username,
             user.Nickname,
             user.DateOfBirth,
@@ -33,7 +32,7 @@ public static class DomainToApiContractMapper
     public static GetUserResponse MapToGetResponse(this User user)
     {
         return new GetUserResponse(
-            user.Id,
+            user.Id.Value,
             user.Username,
             user.Nickname,
             user.FollowersCount,
@@ -51,17 +50,17 @@ public static class DomainToApiContractMapper
             users.Select(MapToGetResponse));
     }
 
-    public static CreatePostResponse MapToCreateResponse(this Post post) => new(post.Id);
+    public static CreatePostResponse MapToCreateResponse(this Post post) => new(post.Id.Value);
     public static GetPostResponse MapToGetResponse(this Post post)
     {
         return new GetPostResponse(
-            post.Id,
+            post.Id.Value,
             post.Text,
             post.MediaItems.Select(x => x.Url),
             post.Created,
             post.LastModified,
             new GetUserResponse(
-                post.User.Id, 
+                post.User.Id.Value, 
                 post.User.Username, 
                 post.User.Nickname, 
                 post.User.FollowersCount,
@@ -72,19 +71,19 @@ public static class DomainToApiContractMapper
 
     public static CreateCommentResponse MapToCreateResponse(this Comment comment)
     {
-        return new CreateCommentResponse(comment.Id);
+        return new CreateCommentResponse(comment.Id.Value);
     }
 
     public static ReplyToCommentResponse MapToReplyResponse(this Comment comment)
     {
-        return new ReplyToCommentResponse(comment.Id);
+        return new ReplyToCommentResponse(comment.Id.Value);
     }
 
     public static GetCommentResponse MapToGetResponse(this Comment comment)
     {
         return new GetCommentResponse(
-            comment.Id, 
-            comment.PostId, 
+            comment.Id.Value, 
+            comment.PostId.Value, 
             comment.Text,
             comment.LikesCount,
             comment.RepliesCount,
@@ -94,17 +93,17 @@ public static class DomainToApiContractMapper
     public static GetReplyShortResponse MapToGetReplyResponse(this Comment comment)
     {
         return new GetReplyShortResponse(
-            comment.Id,
+            comment.Id.Value,
             comment.Text,
             comment.LikesCount,
             comment.RepliesCount,
             comment.User.MapToGetResponse());
     }
     public static GetAllRepliesResponse MapToGetRepliesResponse(this IEnumerable<Comment> replies,
-        Guid parentId, int page, int pageSize, int totalCount)
+        CommentId parentId, int page, int pageSize, int totalCount)
     {
         return new GetAllRepliesResponse(
-            parentId,
+            parentId.Value,
             page,
             pageSize,
             totalCount,
@@ -130,7 +129,7 @@ public static class DomainToApiContractMapper
     public static GetFullUserDetailsResponse MapToFullUserResponse(this User user)
     {
         return new GetFullUserDetailsResponse(
-            user.Id,
+            user.Id.Value,
             user.Username,
             user.Nickname,
             user.FollowersCount,

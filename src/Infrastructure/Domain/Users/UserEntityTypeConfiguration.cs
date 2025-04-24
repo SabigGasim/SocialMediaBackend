@@ -9,6 +9,11 @@ internal sealed class UserEntityTypeConfiguration : IEntityTypeConfiguration<Use
     {
         builder.HasKey(u => u.Id);
 
+        builder.Property(x => x.Id)
+            .HasConversion(
+                id => id.Value,
+                value => new UserId(value));
+
         builder.OwnsOne(u => u.ProfilePicture, pic =>
         {
             pic.Property(p => p.Url).HasColumnName("ProfilePictureUrl");

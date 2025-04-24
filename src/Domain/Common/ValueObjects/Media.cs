@@ -17,9 +17,9 @@ public record Media : ValueObject
 
     private Media() { }
 
-    public string Url { get; }
+    public string Url { get; } = default!;
     public MediaType MediaType { get; }
-    public string FilePath { get; }
+    public string FilePath { get; } = default!;
     public string FileName => FilePath?.Split('/', '\\').LastOrDefault();
     public string FileExtension => FileName?.Split('.').LastOrDefault();
 

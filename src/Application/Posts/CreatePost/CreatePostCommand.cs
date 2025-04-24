@@ -1,6 +1,7 @@
 ﻿using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Application.Contracts;
+using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Application.Posts.CreatePost;
 
@@ -11,7 +12,7 @@ public class CreatePostCommand(
     public string Text { get; } = text;
     public IEnumerable<MediaRequest> MediaItems { get; } = mediaItems;
 
-    public Guid UserId { get; private set; }
+    public UserId UserId { get; private set; } = default!;
     public bool IsAdmin { get; private set; }
 
     public CreatePostCommand AndAdminRole(bool isAdmin)
@@ -22,7 +23,7 @@ public class CreatePostCommand(
 
     public CreatePostCommand WithUserId(Guid userId)
     {
-        UserId = userId;
+        UserId = new(userId);
         return this;
     }
 }

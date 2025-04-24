@@ -1,11 +1,12 @@
 ﻿using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Queries;
+using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Application.Users.GetFullUserDetails;
 public class GetFullUserDetailsQuery : QueryBase<GetFullUserDetailsResponse>,
     IUserRequest<GetFullUserDetailsQuery>
 {
-    public Guid UserId { get; private set; }
+    public UserId UserId { get; private set; } = default!;
 
     public bool IsAdmin { get; private set; }
 
@@ -17,7 +18,7 @@ public class GetFullUserDetailsQuery : QueryBase<GetFullUserDetailsResponse>,
 
     public GetFullUserDetailsQuery WithUserId(Guid userId)
     {
-        UserId = userId;
+        UserId = new(userId);
         return this;
     }
 }

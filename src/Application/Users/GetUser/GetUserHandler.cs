@@ -3,6 +3,7 @@ using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Queries;
 using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Application.Mappings;
+using SocialMediaBackend.Domain.Users;
 using SocialMediaBackend.Infrastructure.Data;
 
 namespace SocialMediaBackend.Application.Users.GetUser;
@@ -22,7 +23,7 @@ public class GetUserHandler : IQueryHandler<GetUserQuery, GetUserResponse>
         var parsed = Guid.TryParse(query.IdOrUsername, out var userId);
 
         var user = parsed
-            ? await usersQueryable.FirstOrDefaultAsync(x => x.Id == userId, ct)
+            ? await usersQueryable.FirstOrDefaultAsync(x => x.Id == new UserId(userId), ct)
             : await usersQueryable.FirstOrDefaultAsync(x => x.Username == query.IdOrUsername, ct);
 
         return user is not null

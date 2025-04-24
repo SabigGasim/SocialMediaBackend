@@ -8,7 +8,7 @@ using SocialMediaBackend.Domain.Users.Rules;
 
 namespace SocialMediaBackend.Domain.Users;
 
-public class User : AggregateRoot<Guid>
+public class User : AggregateRoot<UserId>
 {
     private readonly List<Post> _posts = new();
     private readonly List<Comment> _comments = new();
@@ -23,7 +23,7 @@ public class User : AggregateRoot<Guid>
         ProfilePicture = profilePicture;
         ProfileIsPublic = true;
 
-        Id = Guid.NewGuid();
+        Id = UserId.New();
         Created = DateTimeOffset.UtcNow;
         CreatedBy = "System";
         LastModified = DateTimeOffset.UtcNow;
@@ -68,13 +68,13 @@ public class User : AggregateRoot<Guid>
         return post;
     }
 
-    public bool RemovePost(Guid postId)
+    public bool RemovePost(PostId postId)
     {
         var post = _posts.Find(x => x.Id == postId)!;
         return _posts.Remove(post);
     }
 
-    public Follow FollowOrRequestFollow(Guid userId)
+    public Follow FollowOrRequestFollow(UserId userId)
     {
         var follow = ProfileIsPublic
             ? Follow.Create(userId, this.Id)
@@ -86,14 +86,14 @@ public class User : AggregateRoot<Guid>
         return follow;
     }
 
-    public bool AcceptFollowRequest(Guid followerId)
+    public bool AcceptFollowRequest(UserId followerId)
     {
         var follow = _followers.Find(x => x.FollowerId == followerId);
 
         return follow?.AcceptFollowRequest() == true;
     }
 
-    public bool Unfollow(Guid userToUnfollowId)
+    public bool Unfollow(UserId userToUnfollowId)
     {
         var follow = _followings.Find(x => x.FollowingId == userToUnfollowId);
 
@@ -121,7 +121,7 @@ public class User : AggregateRoot<Guid>
             : true;
     }
 
-    public bool RejectPendingFollowRequest(Guid userToRejectId)
+    public bool RejectPendingFollowRequest(UserId userToRejectId)
     {
         var follow = _followers.Find(x => x.FollowerId == userToRejectId);
         if(follow is null) 
@@ -133,7 +133,7 @@ public class User : AggregateRoot<Guid>
         return true;
     }
 
-    public bool AcceptPendingFollowRequest(Guid userToAcceptId)
+    public bool AcceptPendingFollowRequest(UserId userToAcceptId)
     {
         var followRequest = _followers.Find(x => x.FollowerId == userToAcceptId);
         if (followRequest is null)

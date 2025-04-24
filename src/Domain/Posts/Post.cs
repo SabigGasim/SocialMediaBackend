@@ -6,19 +6,19 @@ using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Domain.Posts;
 
-public class Post : AggregateRoot<Guid>
+public class Post : AggregateRoot<PostId>
 {
     private readonly List<PostLike> _likes = new();
     private readonly List<Comment> _comments = new();
     private readonly List<Media> _mediaItems;
 
-    private Post(Guid userId, string? text,
+    private Post(UserId userId, string? text,
         IEnumerable<Media>? mediaItems = null)
     {
         UserId = userId;
         Text = text;
 
-        Id = Guid.NewGuid();
+        Id = PostId.New();
         Created = DateTimeOffset.UtcNow;
         CreatedBy = "System";
         LastModified = new DateTimeOffset(Created.DateTime, Created.Offset);
@@ -29,7 +29,7 @@ public class Post : AggregateRoot<Guid>
 
     private Post() => _mediaItems = new();
 
-    public Guid UserId { get; private set; }
+    public UserId UserId { get; private set; } = default!;
     public User User { get; private set; } = default!;
     public int LikesCount { get; private set; }
     public int CommentsCount { get; private set; }
@@ -39,7 +39,7 @@ public class Post : AggregateRoot<Guid>
     public IReadOnlyCollection<Comment> Comments => _comments.AsReadOnly();
     public IReadOnlyCollection<Media> MediaItems => _mediaItems.AsReadOnly();
 
-    public static Post? Create(Guid userId, string? text = null, IEnumerable<Media>? mediaItems = null)
+    public static Post? Create(UserId userId, string? text = null, IEnumerable<Media>? mediaItems = null)
     {
         CheckRule(new PostShouldHaveTextOrMediaRule(text, mediaItems));
 
@@ -55,7 +55,7 @@ public class Post : AggregateRoot<Guid>
         return true;
     }
 
-    public Comment AddComment(string text, Guid userId)
+    public Comment AddComment(string text, UserId userId)
     {
         var comment = Comment.Create(this.Id, userId, text, null);
 
@@ -65,7 +65,7 @@ public class Post : AggregateRoot<Guid>
         return comment;
     }
 
-    public bool RemoveComment(Guid commentId)
+    public bool RemoveComment(CommentId commentId)
     {
         var comment = _comments.First(x => x.Id == commentId);
 
@@ -76,7 +76,7 @@ public class Post : AggregateRoot<Guid>
             : true;
     }
 
-    public bool AddLike(Guid userId)
+    public bool AddLike(UserId userId)
     {
         if (_likes.Any(l => l.UserId == userId))
             return false;
@@ -88,7 +88,7 @@ public class Post : AggregateRoot<Guid>
         return true;
     }
 
-    public bool RemoveLike(Guid userId)
+    public bool RemoveLike(UserId userId)
     {
         var postLike = _likes.Find(l => l.UserId == userId);
 

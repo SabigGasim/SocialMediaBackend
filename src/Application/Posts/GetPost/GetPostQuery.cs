@@ -1,8 +1,25 @@
-﻿using SocialMediaBackend.Application.Abstractions.Requests.Queries;
+﻿using SocialMediaBackend.Application.Abstractions.Requests;
+using SocialMediaBackend.Application.Abstractions.Requests.Queries;
+using SocialMediaBackend.Domain.Posts;
+using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Application.Posts.GetPost;
 
-public class GetPostQuery(Guid postId) : QueryBase<GetPostResponse>
+public class GetPostQuery(Guid postId) : QueryBase<GetPostResponse>, IOptionalUserRequest<GetPostQuery>
 {
-    public Guid PostId { get; } = postId;
+    public PostId PostId { get; } = new(postId);
+    public UserId? UserId { get; private set; }
+    public bool IsAdmin { get; private set; }
+
+    public GetPostQuery WithUserId(Guid userId)
+    {
+        UserId = new(userId);
+        return this;
+    }
+
+    public GetPostQuery AndAdminRole(bool isAdmin)
+    {
+        IsAdmin = isAdmin;
+        return this;
+    }
 }

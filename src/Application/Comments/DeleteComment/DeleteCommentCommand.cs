@@ -1,9 +1,11 @@
 ﻿using SocialMediaBackend.Application.Abstractions.Requests.Commands;
+using SocialMediaBackend.Domain.Comments;
+using SocialMediaBackend.Domain.Posts;
 
 namespace SocialMediaBackend.Application.Comments.DeleteComment;
 
 public class DeleteCommentCommand(Guid commentId, Guid postId) : CommandBase
 {
-    public Guid CommentId { get; } = commentId;
-    public Guid PostId { get; } = postId;
+    public CommentId CommentId { get; } = new(commentId);
+    public PostId PostId { get; } = new(postId);
 }

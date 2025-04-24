@@ -31,7 +31,6 @@ public class PostRepository(IDbConnectionFactory connectionFactory) : IPostRepos
                 u."FollowersCount",
                 u."FollowingCount",
                 u."ProfilePictureUrl"
-                {GetVisibilitySelect(options)}
             FROM "Posts" p
             JOIN "Users" u ON p."UserId" = u."Id"
             LEFT JOIN "Posts_MediaItems" m ON p."Id" = m."PostId"
@@ -76,7 +75,9 @@ public class PostRepository(IDbConnectionFactory connectionFactory) : IPostRepos
     #region SQL Builders
     private static List<string> BuildFilters(GetAllPostsOptions options, DynamicParameters parameters)
     {
-        var filters = new List<string> { "1=1" };
+        var filtersCount = CalculateFiltersCount(options);
+
+        var filters = new List<string>(capacity: filtersCount) { "1=1" };
 
         if (!string.IsNullOrWhiteSpace(options.IdOrUsername))
         {
@@ -122,15 +123,24 @@ public class PostRepository(IDbConnectionFactory connectionFactory) : IPostRepos
         return filters;
     }
 
+    private static int CalculateFiltersCount(GetAllPostsOptions options)
+    {
+        int initialCount = 4; //1=1, PageSize, Page, Order
+
+        if (!string.IsNullOrEmpty(options.Text)) initialCount++;
+        if (!string.IsNullOrEmpty(options.IdOrUsername)) initialCount++;
+        if (options.Since.HasValue) initialCount++;
+        if (options.Until.HasValue) initialCount++;
+        if (options.IsAdmin == false)
+            if (options.RequestingUserId.HasValue) initialCount++;
+
+        return initialCount;
+    }
+
     private static string GetFollowsJoin(GetAllPostsOptions opts)
         => opts.IsAdmin
             ? string.Empty
             : "LEFT JOIN \"Follows\" f ON f.\"FollowingId\" = u.\"Id\" AND f.\"FollowerId\" = @RequestingUserId";
-
-    private static string GetVisibilitySelect(GetAllPostsOptions opts)
-        => opts.IsAdmin
-            ? string.Empty
-            : ", CASE WHEN f.\"FollowerId\" IS NOT NULL THEN TRUE ELSE FALSE END AS \"IsFollowing\"";
 
     private static string GetGroupByExtras(GetAllPostsOptions opts)
         => opts.IsAdmin

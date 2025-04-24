@@ -1,13 +1,14 @@
 ﻿using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
+using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Application.Users.Follows.RejectFollowRequet;
 public class RejectFollowRequestCommand(Guid userToRejectId) : CommandBase, 
     IUserRequest<RejectFollowRequestCommand>
 {
-    public Guid UserToRejectId { get; } = userToRejectId;
+    public UserId UserToRejectId { get; } = new(userToRejectId);
 
-    public Guid UserId { get; private set; }
+    public UserId UserId { get; private set; } = default!;
 
     public bool IsAdmin { get; private set; }
 
@@ -19,7 +20,7 @@ public class RejectFollowRequestCommand(Guid userToRejectId) : CommandBase,
 
     public RejectFollowRequestCommand WithUserId(Guid userId)
     {
-        UserId = userId;
+        UserId = new(userId);
         return this;
     }
 }

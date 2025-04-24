@@ -13,6 +13,18 @@ public class FollowEntityTypeConfiguration : IEntityTypeConfiguration<Follow>
         builder.HasKey(x => new { x.FollowerId, x.FollowingId } )
             .HasName("Id");
 
+        builder.Property(x => x.FollowerId)
+            .HasConversion(
+                id => id.Value,
+                value => new(value)
+            );
+
+        builder.Property(x => x.FollowingId)
+            .HasConversion(
+                id => id.Value,
+                value => new(value)
+            );
+
         builder.HasOne(x => x.Follower)
             .WithMany(x => x.Followings)
             .HasForeignKey(x => x.FollowerId)

@@ -2,12 +2,12 @@
 
 namespace SocialMediaBackend.Domain.Users.Follows;
 
-public abstract class FollowEventBase(Guid followerId, Guid followingId) : DomainEventBase
+public abstract class FollowEventBase(UserId followerId, UserId followingId) : DomainEventBase
 {
-    public Guid FollowerId { get; } = followerId;
-    public Guid FollowingId { get; } = followingId;
+    public UserId FollowerId { get; } = followerId;
+    public UserId FollowingId { get; } = followingId;
 
-    public void Deconstruct(out Guid followerId, out Guid followingId)
+    public void Deconstruct(out UserId followerId, out UserId followingId)
     {
         followerId = FollowerId;
         followingId = FollowingId;

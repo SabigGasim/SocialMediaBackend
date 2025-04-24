@@ -26,6 +26,6 @@ public abstract class FollowUserEventHandlerBase<TFollowEventBase>(ApplicationDb
             return;
         }
 
-        await ApplyChanges(follower, following);
+        await ApplyChanges(follower, following, cancellationToken);
     }
 }

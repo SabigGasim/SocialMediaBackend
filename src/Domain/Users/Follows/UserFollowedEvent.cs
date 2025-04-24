@@ -1,3 +1,3 @@
 ﻿namespace SocialMediaBackend.Domain.Users.Follows;
 
-public class UserFollowedEvent(Guid followerId, Guid followingId) : FollowEventBase(followerId, followingId);
+public class UserFollowedEvent(UserId followerId, UserId followingId) : FollowEventBase(followerId, followingId);

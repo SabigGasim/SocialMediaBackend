@@ -1,20 +1,21 @@
 ﻿using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
+using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Application.Users.Follows.FollowUser;
 
 public class FollowUserCommand(Guid userToFollowId) : CommandBase<FollowUserResponse>,
     IUserRequest<FollowUserCommand>
 {
-    public Guid UserToFollowId { get; } = userToFollowId;
+    public UserId UserToFollowId { get; } = new(userToFollowId);
 
-    public Guid UserId { get; private set; }
+    public UserId UserId { get; private set; } = default!;
 
     public bool IsAdmin { get; private set; }
 
     public FollowUserCommand WithUserId(Guid userId)
     {
-        UserId = userId;
+        UserId = new(userId);
         return this;
     }
 

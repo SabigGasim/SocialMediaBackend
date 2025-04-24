@@ -1,11 +1,12 @@
 ﻿using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
+using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Application.Users.Privacy.ChangeProfileVisibility;
 
 public class ChangeProfileVisibilityCommand(bool isPublic) : CommandBase, IUserRequest<ChangeProfileVisibilityCommand>
 {
-    public Guid UserId { get; private set; }
+    public UserId UserId { get; private set; } = default!;
 
     public bool IsAdmin { get; private set; }
     public bool IsPublic { get; } = isPublic;
@@ -18,7 +19,7 @@ public class ChangeProfileVisibilityCommand(bool isPublic) : CommandBase, IUserR
 
     public ChangeProfileVisibilityCommand WithUserId(Guid userId)
     {
-        UserId = userId;
+        UserId = new(userId);
         return this;
     }
 }

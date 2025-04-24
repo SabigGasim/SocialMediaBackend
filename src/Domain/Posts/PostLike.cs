@@ -1,14 +1,15 @@
 ﻿using SocialMediaBackend.Domain.Common;
+using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Domain.Posts;
 
 public record PostLike : ValueObject
 {
-    public Guid UserId { get; private set; }
-    public Guid PostId { get; private set; }
+    public UserId UserId { get; private set; } = default!;
+    public PostId PostId { get; private set; } = default!;
     public DateTimeOffset Created { get; private set; }
 
-    private PostLike(Guid userId, Guid postId)
+    private PostLike(UserId userId, PostId postId)
     {
         UserId = userId;
         PostId = postId;
@@ -17,9 +18,9 @@ public record PostLike : ValueObject
 
     private PostLike() { }
 
-    internal static PostLike Create(Guid userId, Guid id)
+    internal static PostLike Create(UserId userId, PostId postId)
     {
-        return new PostLike(userId, id);
+        return new PostLike(userId, postId);
     }
 
     protected override IEnumerable<object> GetComponents()

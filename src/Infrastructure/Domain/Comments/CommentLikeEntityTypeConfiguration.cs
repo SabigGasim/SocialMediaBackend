@@ -11,6 +11,18 @@ internal sealed class CommentLikeEntityTypeConfiguration : IEntityTypeConfigurat
     {
         builder.HasKey(cl => new { cl.CommentId, cl.UserId });
 
+        builder.Property(x => x.CommentId)
+            .HasConversion(
+                id => id.Value,
+                value => new CommentId(value)
+            );
+
+        builder.Property(x => x.UserId)
+            .HasConversion(
+                id => id.Value,
+                value => new UserId(value)
+            );
+
         builder.HasOne<Comment>()
             .WithMany(p => p.Likes)
             .HasForeignKey(p => p.CommentId)

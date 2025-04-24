@@ -1,5 +1,6 @@
 ﻿using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Queries;
+using SocialMediaBackend.Domain.Users;
 using SocialMediaBackend.Infrastructure.Domain.Posts;
 
 namespace SocialMediaBackend.Application.Posts.GetAllPosts;
@@ -29,7 +30,7 @@ public class GetAllPostsQuery : QueryBase<GetAllPostsResponse>, IUserRequest<Get
 
     public GetAllPostsOptions Options { get; init; }
 
-    public Guid UserId { get => Options.RequestingUserId ?? Guid.Empty; private set => Options.RequestingUserId = value; }
+    public UserId UserId { get; private set; }
 
     public bool IsAdmin { get => Options.IsAdmin; private set => Options.IsAdmin = value; }
 
@@ -41,7 +42,9 @@ public class GetAllPostsQuery : QueryBase<GetAllPostsResponse>, IUserRequest<Get
 
     public GetAllPostsQuery WithUserId(Guid userId)
     {
-        UserId = userId;
+        UserId = new(userId);
+        Options.RequestingUserId = userId;
+
         return this;
     }
 }

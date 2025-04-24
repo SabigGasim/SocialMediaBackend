@@ -1,15 +1,16 @@
 ﻿using SocialMediaBackend.Domain.Common;
+using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Domain.Comments;
 
 
 public record CommentLike : ValueObject
 {
-    public Guid UserId { get; private set; }
-    public Guid CommentId { get; private set; }
+    public UserId UserId { get; private set; } = default!;
+    public CommentId CommentId { get; private set; } = default!;
     public DateTimeOffset Created { get; private set; }
 
-    private CommentLike(Guid userId, Guid commentId)
+    private CommentLike(UserId userId, CommentId commentId)
     {
         UserId = userId;
         CommentId = commentId;
@@ -18,7 +19,7 @@ public record CommentLike : ValueObject
 
     private CommentLike() { }
 
-    internal static CommentLike Create(Guid userId, Guid commentId)
+    internal static CommentLike Create(UserId userId, CommentId commentId)
     {
         return new CommentLike(userId, commentId);
     }

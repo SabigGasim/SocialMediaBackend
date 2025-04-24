@@ -7,7 +7,7 @@ using SocialMediaBackend.Domain.Services;
 namespace SocialMediaBackend.Application.Processing;
 
 internal class UserRequestMiddleware<TRequest, TResult> : ICommandMiddleware<TRequest, TResult>
-    where TRequest : IRequest<TResult>, IUserRequest<TRequest>
+    where TRequest : IRequest<TResult>, IUserRequestBase<TRequest>
     where TResult : IHandlerResponse
 {
     private readonly IHttpContextAccessor _contextAccessor;

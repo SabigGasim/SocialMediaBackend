@@ -20,7 +20,7 @@ public class DeleteCommentHandler(ApplicationDbContext context) : ICommandHandle
         if (post is null)
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, command.CommentId);
 
-        if (!post.Comments.Any())
+        if (post.Comments.Count == 0)
             return ("Comment with the given Id was not found", HandlerResponseStatus.NotFound, command.CommentId);
 
         post.RemoveComment(command.CommentId);
