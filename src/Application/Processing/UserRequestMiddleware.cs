@@ -37,7 +37,13 @@ internal class UserRequestMiddleware<TRequest, TResult> : ICommandMiddleware<TRe
             return CreateError("This user doesn't exist", userId);
         }
 
-        request.WithUserId(userId);
+        var adminClaim = _contextAccessor.HttpContext!.User.Claims
+            .FirstOrDefault(x => x.Type == "admin")?.Value;
+
+        var isAdmin = bool.TryParse(adminClaim, out bool isAdminValue) && isAdminValue;
+
+        request.WithUserId(userId)
+            .AndAdminRole(isAdmin);
 
         return await next();
     }

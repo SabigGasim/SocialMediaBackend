@@ -9,8 +9,7 @@ public class CreatePostEndpoint : RequestEndpoint<CreatePostRequest, CreatePostR
 {
     public override Task HandleAsync(CreatePostRequest req, CancellationToken ct)
     {
-        var userId = Guid.Parse("d6a319b0-5c31-4929-84a0-3b918efc318e");
-        var command = new CreatePostCommand(userId, req.Text, req.MediaItems);
+        var command = new CreatePostCommand(req.Text, req.MediaItems);
         
         return HandleRequestAsync(command, ct);
     }
