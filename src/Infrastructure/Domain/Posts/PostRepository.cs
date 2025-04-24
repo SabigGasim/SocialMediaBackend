@@ -2,7 +2,6 @@
 using SocialMediaBackend.Infrastructure.Common;
 using SocialMediaBackend.Infrastructure.Data;
 using SocialMediaBackend.Infrastructure.Domain.Users;
-using System.Text;
 
 namespace SocialMediaBackend.Infrastructure.Domain.Posts;
 
@@ -14,131 +13,131 @@ public class PostRepository(IDbConnectionFactory connectionFactory) : IPostRepos
     {
         using var connection = await _connectionFactory.CreateAsync(ct);
 
-        var sqlBuilder = new StringBuilder("""
-            SELECT 
-                p."Id", 
+        var parameters = new DynamicParameters();
+        var filters = BuildFilters(options, parameters);
+
+        var baseSql = $"""
+            SELECT
+                p."Id",
                 p."Text",
-                p."LikesCount", 
-                p."CommentsCount", 
-                p."Created" AS CreatedAt,
-                p."LastModified" AS UpdatedAt,
+                p."LikesCount",
+                p."CommentsCount",
+                p."Created"              AS CreatedAt,
+                p."LastModified"         AS UpdatedAt,
                 string_agg(m."Url", ',') AS MediaUrls,
-                u."Id" AS UserId,
+                u."Id"                   AS UserId,
                 u."Username",
-                u."Nickname", 
+                u."Nickname",
                 u."FollowersCount",
                 u."FollowingCount",
                 u."ProfilePictureUrl"
+                {GetVisibilitySelect(options)}
             FROM "Posts" p
             JOIN "Users" u ON p."UserId" = u."Id"
             LEFT JOIN "Posts_MediaItems" m ON p."Id" = m."PostId"
-            WHERE 1=1
-            """);
+            {GetFollowsJoin(options)}
+            WHERE {string.Join(" AND ", filters)}
+            GROUP BY
+                p."Id",
+                u."Id"
+                {GetGroupByExtras(options)}
+            ORDER BY p."Created" {GetOrderDirection(options.Order)}
+            LIMIT @PageSize OFFSET @Offset;
+        """;
 
-
-        var parameters = new DynamicParameters();
-
-        var filtersBuilder = new StringBuilder("");
-
-        var identifierIsUsername = AppendUserIdOrUsernameIfNotNull(options, filtersBuilder, parameters);
-        AppendPostTextIfNotNull(options, filtersBuilder, parameters);
-        AppendDateConstraintsIfNotNull(options, filtersBuilder, parameters);
-
-        var filters = filtersBuilder.ToString();
-        sqlBuilder.Append(filters);
-
-        AppendGrouping(sqlBuilder);
-        AppendOrderIfNotNull(options, sqlBuilder);
-        AppendPagination(options, sqlBuilder, parameters);
-
+        // Query paged items
         var items = await connection.QueryAsync<PostDto, UserDto, PostDto>(
-            sqlBuilder.ToString(),
-            (post, user) =>
+            command: new CommandDefinition(baseSql, parameters, cancellationToken: ct),
+            (post, user) => 
             {
-                post.User = user;
-                return post;
+                post.User = user; 
+                return post; 
             },
-            param: parameters,
             splitOn: "UserId"
         );
 
-        var totalCount = await connection.ExecuteScalarAsync<int>(new CommandDefinition($"""
+        // Query total count
+        var countSql = $"""
             SELECT COUNT(*)
             FROM "Posts" p
-            {(identifierIsUsername ? @"JOIN ""Users"" u ON u.""Id"" = p.""UserId""" : "")}
-            WHERE 1=1
-            {filters}
-            """, parameters, cancellationToken: ct));
+            JOIN "Users" u ON p."UserId" = u."Id"
+            {GetFollowsJoin(options)}
+            WHERE {string.Join(" AND ", filters)};
+        """;
+
+        var totalCount = await connection.ExecuteScalarAsync<int>(
+            new CommandDefinition(countSql, parameters, cancellationToken: ct)
+        );
+
 
         return new(items, options.Page, options.PageSize, totalCount);
+    }
 
+    #region SQL Builders
+    private static List<string> BuildFilters(GetAllPostsOptions options, DynamicParameters parameters)
+    {
+        var filters = new List<string> { "1=1" };
 
-        #region Local Functions
-        ///Returnes a boolean represnting if the identifier is a username
-        static bool AppendUserIdOrUsernameIfNotNull(GetAllPostsOptions options, StringBuilder sql, DynamicParameters parameters)
+        if (!string.IsNullOrWhiteSpace(options.IdOrUsername))
         {
-            if (string.IsNullOrEmpty(options.IdOrUsername?.Trim()))
-            {
-                return false;
-            }
-
             if (Guid.TryParse(options.IdOrUsername, out var userId))
             {
-                sql.Append(@" AND p.""UserId"" = @UserId");
+                filters.Add("p.\"UserId\" = @UserId");
                 parameters.Add("UserId", userId);
-                return false;
             }
-
-            sql.Append(@" AND u.""Username"" ILIKE @Username");
-            parameters.Add("Username", $"%{options.IdOrUsername}%");
-            return true;
-        }
-
-        static void AppendDateConstraintsIfNotNull(GetAllPostsOptions options, StringBuilder sql, DynamicParameters parameters)
-        {
-            if (options.Since.HasValue)
+            else
             {
-                sql.Append(@" AND p.""Created"" >= @Since");
-                parameters.Add("Since", options.Since.Value.ToDateTime(TimeOnly.MinValue));
-            }
-
-            if (options.Until.HasValue)
-            {
-                sql.Append(@" AND p.""Created"" <= @Until");
-                parameters.Add("Until", options.Until.Value.ToDateTime(TimeOnly.MaxValue));
+                filters.Add("u.\"Username\" ILIKE @Username");
+                parameters.Add("Username", $"%{options.IdOrUsername}%");
             }
         }
 
-        static void AppendOrderIfNotNull(GetAllPostsOptions options, StringBuilder sql)
+        if (!string.IsNullOrWhiteSpace(options.Text))
         {
-            var orderDirection = options.Order == Order.Descending ? "DESC" : "ASC";
-            sql.Append(@$" ORDER BY p.""Created"" {orderDirection}");
+            filters.Add("p.\"Text\" ILIKE @Text");
+            parameters.Add("Text", $"%{options.Text}%");
         }
 
-        static void AppendPagination(GetAllPostsOptions options, StringBuilder sql, DynamicParameters parameters)
+        if (options.Since.HasValue)
         {
-            sql.Append(" LIMIT @Limit OFFSET @Offset");
-            parameters.Add("Limit", options.PageSize);
-            parameters.Add("Offset", (options.Page - 1) * options.PageSize);
+            filters.Add("p.\"Created\" >= @Since");
+            parameters.Add("Since", options.Since.Value.ToDateTime(TimeOnly.MinValue));
         }
 
-        static void AppendPostTextIfNotNull(GetAllPostsOptions options, StringBuilder sql, DynamicParameters parameters)
+        if (options.Until.HasValue)
         {
-            if (!string.IsNullOrWhiteSpace(options.Text))
-            {
-                sql.Append(@" AND p.""Text"" ILIKE @Text");
-                parameters.Add("Text", $"%{options.Text}%");
-            }
+            filters.Add("p.\"Created\" <= @Until");
+            parameters.Add("Until", options.Until.Value.ToDateTime(TimeOnly.MaxValue));
         }
 
-        static void AppendGrouping(StringBuilder sqlBuilder)
+        if (!options.IsAdmin)
         {
-            sqlBuilder.Append("""
-             GROUP BY 
-                p."Id", 
-                u."Id"
-            """);
+            filters.Add("(u.\"ProfileIsPublic\" = TRUE OR f.\"FollowerId\" IS NOT NULL OR u.\"Id\" = @RequestingUserId)");
+            parameters.Add("RequestingUserId", options.RequestingUserId);
         }
-        #endregion
+
+        parameters.Add("PageSize", options.PageSize);
+        parameters.Add("Offset", (options.Page - 1) * options.PageSize);
+
+        return filters;
     }
+
+    private static string GetFollowsJoin(GetAllPostsOptions opts)
+        => opts.IsAdmin
+            ? string.Empty
+            : "LEFT JOIN \"Follows\" f ON f.\"FollowingId\" = u.\"Id\" AND f.\"FollowerId\" = @RequestingUserId";
+
+    private static string GetVisibilitySelect(GetAllPostsOptions opts)
+        => opts.IsAdmin
+            ? string.Empty
+            : ", CASE WHEN f.\"FollowerId\" IS NOT NULL THEN TRUE ELSE FALSE END AS \"IsFollowing\"";
+
+    private static string GetGroupByExtras(GetAllPostsOptions opts)
+        => opts.IsAdmin
+            ? string.Empty
+            : ", f.\"FollowerId\"";
+
+    private static string GetOrderDirection(Order order)
+        => order == Order.Ascending ? "ASC" : "DESC";
+    #endregion
 }

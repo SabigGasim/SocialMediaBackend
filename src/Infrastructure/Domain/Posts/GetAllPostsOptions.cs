@@ -9,6 +9,8 @@ public class GetAllPostsOptions
     public Order Order { get; set; }
     public required int Page { get; set; }
     public required int PageSize { get; set; }
+    public bool IsAdmin { get; set; } = false;
+    public Guid? RequestingUserId { get; set; } = null;
 }
 
 public enum Order
