@@ -11,28 +11,28 @@ internal class PostAuthorizationService(ApplicationDbContext context) : IAuthori
     private readonly ApplicationDbContext _context = context;
 
     public IQueryable<Post> AuthorizeQueryable(
-        IQueryable<Post> resource, 
-        UserId? subjectId, 
+        IQueryable<Post> queryable, 
+        UserId? userId, 
         PostId? resourceId, 
         AuthOptions options)
     {
-        var queryable = resource
+        queryable = queryable
             .Where(x => x.Id == resourceId);
 
-        if (IsNonAdminAuthenticatedUser(subjectId, options))
+        if (options.IsAdmin)
         {
-            queryable = queryable
-                .Where(x =>
-                x.UserId == subjectId
-                    || x.User.ProfileIsPublic
-                    || x.User.Followers.Any(x => x.FollowerId == subjectId));
-        }
-        else if (UserIsNotAuthenticated(subjectId))
-        {
-            queryable = queryable.Where(x => x.User.ProfileIsPublic);
+            return queryable;
         }
 
-        return queryable;
+        if (AuthenticatedUserIsNotAdmin(userId, options))
+        {
+            return queryable.Where(x =>
+                       x.UserId == userId
+                    || x.User.ProfileIsPublic
+                    || x.User.Followers.Any(x => x.FollowerId == userId));
+        }
+        
+        return queryable.Where(x => x.User.ProfileIsPublic);
     }
 
     public Task<bool> AuthorizeAsync(
@@ -50,13 +50,8 @@ internal class PostAuthorizationService(ApplicationDbContext context) : IAuthori
 
 
 
-    private static bool IsNonAdminAuthenticatedUser(UserId? userId, AuthOptions options)
+    private static bool AuthenticatedUserIsNotAdmin(UserId? userId, AuthOptions options)
     {
         return userId is not null && !options.IsAdmin;
-    }
-
-    private static bool UserIsNotAuthenticated(UserId? userId)
-    {
-        return userId is null;
     }
 }
