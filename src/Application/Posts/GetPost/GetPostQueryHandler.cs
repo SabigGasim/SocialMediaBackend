@@ -2,8 +2,6 @@
 using SocialMediaBackend.Application.Abstractions;
 using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Queries;
-using SocialMediaBackend.Application.Auth;
-using SocialMediaBackend.Application.Auth.Posts;
 using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Application.Mappings;
 using SocialMediaBackend.Domain.Posts;
@@ -13,10 +11,10 @@ namespace SocialMediaBackend.Application.Posts.GetPost;
 
 public class GetPostQueryHandler(
     ApplicationDbContext context,
-    IAuthorizationService<Post, PostId> authService) : IQueryHandler<GetPostQuery, GetPostResponse>
+    IAuthorizationHandler<Post, PostId> authService) : IQueryHandler<GetPostQuery, GetPostResponse>
 {
     private readonly ApplicationDbContext _context = context;
-    private readonly IAuthorizationService<Post, PostId> _authService = authService;
+    private readonly IAuthorizationHandler<Post, PostId> _authService = authService;
 
     public async Task<HandlerResponse<GetPostResponse>> ExecuteAsync(GetPostQuery query, CancellationToken ct)
     {
@@ -25,7 +23,7 @@ public class GetPostQueryHandler(
 
         if (!authorized)
         {
-            return ("The author limits who can view this post", HandlerResponseStatus.Unauthorized, query.PostId);
+            return ("The author limits who can view there posts", HandlerResponseStatus.Unauthorized, query.PostId);
         }
 
         var post = await _context.Posts
