@@ -23,12 +23,12 @@ internal sealed class PostLikeEntityTypeConfiguration : IEntityTypeConfiguration
                 value => new PostId(value)
             );
 
-        builder.HasOne<Post>()
+        builder.HasOne(p => p.Post)
             .WithMany(p => p.Likes)
             .HasForeignKey(p => p.PostId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne<User>()
+        builder.HasOne(p => p.User)
             .WithMany()
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade);
