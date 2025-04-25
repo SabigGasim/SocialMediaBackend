@@ -43,6 +43,9 @@ public static class ApiEndpoints
         public const string Comment = $"{Base}/{{PostId}}/comments";
         public const string DeleteComment = $"{Base}/{{PostId}}/comments/{{CommentId}}";
         public const string GetAllPostComments = $"{Base}/{{PostId}}/comments";
+
+        public const string Like = $"{Base}/{{PostId}}/likes";
+        public const string Unlike = $"{Base}/{{PostId}}/likes";
     }
 
     public static class Comments
@@ -56,5 +59,8 @@ public static class ApiEndpoints
         public const string Reply = $"{Base}/{{ParentId}}";
         public const string GetReply = $"{Reply}/replies/{{ReplyId}}";
         public const string GetReplies = $"{Reply}/replies";
+
+        public const string Like = $"{Base}/{{CommentId}}/likes";
+        public const string Unlike = $"{Base}/{{CommentId}}/likes";
     }
 }
