@@ -80,16 +80,16 @@ public class Post : AggregateRoot<PostId>, IUserResource
         return true;
     }
 
-    public bool AddLike(UserId userId)
+    public PostLike? AddLike(UserId userId)
     {
         if (_likes.Any(l => l.UserId == userId))
-            return false;
+            return null;
 
         var postLike = PostLike.Create(userId, Id);
         _likes.Add(postLike);
         LikesCount++;
 
-        return true;
+        return postLike;
     }
 
     public bool RemoveLike(UserId userId)
