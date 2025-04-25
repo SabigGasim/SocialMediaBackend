@@ -54,13 +54,18 @@ public class Comment : AggregateRoot<CommentId>, IUserResource
         return reply;
     }
 
-    public bool AddLike(UserId userId)
+    public CommentLike? AddLike(UserId userId)
     {
+        if (_likes.Any(x => x.UserId == userId))
+        {
+            return null;
+        }
+
         var like = CommentLike.Create(userId, Id);
         _likes.Add(like);
         LikesCount++;
 
-        return true;
+        return like;
     }
 
     public bool RemoveLike(UserId userId)
