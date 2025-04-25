@@ -5,7 +5,7 @@ using SocialMediaBackend.Infrastructure.Domain.Posts;
 
 namespace SocialMediaBackend.Application.Mappings;
 
-internal static class DtoToApiContractMappter
+internal static class DtoToApiContractMapper
 {
     public static GetAllPostsResponse MapToResponse(
         this IEnumerable<PostDto> posts, 
@@ -24,6 +24,8 @@ internal static class DtoToApiContractMappter
             post.MediaUrls?.Split(','),
             post.CreatedAt,
             post.UpdatedAt,
+            post.LikesCount,
+            post.CommentsCount,
             new GetUserResponse(
                 post.User.UserId,
                 post.User.Username,

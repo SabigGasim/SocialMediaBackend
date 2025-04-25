@@ -9,4 +9,7 @@ public record GetPostResponse(
     IEnumerable<string>? MediaUrls,
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt,
-    GetUserResponse User);
+    int LikesCount,
+    int CommentsCount,
+    GetUserResponse User
+    );

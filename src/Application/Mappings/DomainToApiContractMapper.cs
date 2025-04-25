@@ -59,6 +59,8 @@ public static class DomainToApiContractMapper
             post.MediaItems.Select(x => x.Url),
             post.Created,
             post.LastModified,
+            post.LikesCount,
+            post.CommentsCount,
             new GetUserResponse(
                 post.User.Id.Value, 
                 post.User.Username, 
