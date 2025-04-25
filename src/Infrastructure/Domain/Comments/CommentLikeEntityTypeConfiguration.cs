@@ -23,12 +23,12 @@ internal sealed class CommentLikeEntityTypeConfiguration : IEntityTypeConfigurat
                 value => new UserId(value)
             );
 
-        builder.HasOne<Comment>()
+        builder.HasOne(p => p.Comment)
             .WithMany(p => p.Likes)
             .HasForeignKey(p => p.CommentId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne<User>()
+        builder.HasOne(u => u.User)
             .WithMany()
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade);
