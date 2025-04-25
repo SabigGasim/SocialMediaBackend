@@ -2,4 +2,4 @@
 
 namespace SocialMediaBackend.Application.Users.UpdateUsername;
 
-public record UpdateUsernameRequest([FromRoute]Guid UserId, [FromBody]string Username);
+public record UpdateUsernameRequest([FromBody]string Username);

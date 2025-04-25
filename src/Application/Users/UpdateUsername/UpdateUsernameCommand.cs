@@ -1,10 +1,25 @@
-﻿using SocialMediaBackend.Application.Abstractions.Requests.Commands;
+﻿using SocialMediaBackend.Application.Abstractions.Requests;
+using SocialMediaBackend.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Application.Users.UpdateUsername;
 
-public class UpdateUsernameCommand(Guid userId, string username) : CommandBase
+public class UpdateUsernameCommand(string username) : CommandBase, IUserRequest<UpdateUsernameCommand>
 {
-    public UserId UserId { get; } = new(userId);
     public string Username { get; } = username;
+
+    public UserId UserId { get; private set; } = default!;
+    public bool IsAdmin { get; private set; }
+
+    public UpdateUsernameCommand AndAdminRole(bool isAdmin)
+    {
+        IsAdmin = isAdmin;
+        return this;
+    }
+
+    public UpdateUsernameCommand WithUserId(Guid userId)
+    {
+        UserId = new(userId);
+        return this;
+    }
 }
