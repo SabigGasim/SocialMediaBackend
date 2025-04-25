@@ -1,26 +1,35 @@
-﻿using SocialMediaBackend.Application.Abstractions.Requests;
+﻿using SocialMediaBackend.Application.Abstractions;
+using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Application.Common;
+using SocialMediaBackend.Domain.Posts;
 using SocialMediaBackend.Infrastructure.Data;
 
 namespace SocialMediaBackend.Application.Posts.UpdatePost;
 
-public class UpdatePostCommandHandler(ApplicationDbContext context) : ICommandHandler<UpdatePostCommand>
+public class UpdatePostCommandHandler(
+    ApplicationDbContext context,
+    IAuthorizationHandler<Post, PostId> authorizationHandler) : ICommandHandler<UpdatePostCommand>
 {
     public readonly ApplicationDbContext _context = context;
+    private readonly IAuthorizationHandler<Post, PostId> _authorizationHandler = authorizationHandler;
 
     public async Task<HandlerResponse> ExecuteAsync(UpdatePostCommand command, CancellationToken ct)
     {
         var post = await _context.Posts.FindAsync([command.PostId], ct);
-        if(post is null)
+        if (post is null)
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound);
 
-        var updated = post.UpdatePost(command.Text);
-        if(updated)
-            await _context.SaveChangesAsync(ct);
+        var authorized = await _authorizationHandler
+            .AuthorizeAsync(command.UserId, command.PostId, new(command.IsAdmin), ct);
 
-        return updated
-            ? HandlerResponseStatus.Modified
-            : ("An internal error occured", HandlerResponseStatus.InternalError);
+        if (!authorized)
+            return ("Forbidden", HandlerResponseStatus.Unauthorized);
+
+        post.UpdatePost(command.Text);
+
+        await _context.SaveChangesAsync(ct);
+
+        return HandlerResponseStatus.Modified;
     }
 }
