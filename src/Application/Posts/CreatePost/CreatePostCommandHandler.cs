@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SocialMediaBackend.Application.Abstractions.Requests;
+﻿using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Application.Mappings;
@@ -14,13 +13,9 @@ public class CreatePostCommandHandler(ApplicationDbContext context) : ICommandHa
 
     public async Task<HandlerResponse<CreatePostResponse>> ExecuteAsync(CreatePostCommand command, CancellationToken ct)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == command.UserId, ct);
-        if (user is null)
-        {
-            return ("User was not found", HandlerResponseStatus.BadRequest, command.UserId);
-        }
+        var user = await _context.Users.FindAsync([command.UserId], ct);
         
-        var post = user.AddPost(command.Text, command.MediaItems.Select(x => Media.Create(x.Url)));
+        var post = user!.AddPost(command.Text, command.MediaItems.Select(x => Media.Create(x.Url)));
         if (post is null)
         {
             return ("An error occured while creating the post", HandlerResponseStatus.InternalError);
