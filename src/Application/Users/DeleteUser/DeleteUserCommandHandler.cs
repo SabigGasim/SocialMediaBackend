@@ -5,25 +5,25 @@ using SocialMediaBackend.Infrastructure.Data;
 
 namespace SocialMediaBackend.Application.Users.DeleteUser;
 
-public class DeleteUserCommandHandler : ICommandHandler<DeleteUserCommand>
+public class DeleteUserCommandHandler(ApplicationDbContext context) : ICommandHandler<DeleteUserCommand>
 {
-    private readonly ApplicationDbContext _dbContext;
-
-    public DeleteUserCommandHandler(ApplicationDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    private readonly ApplicationDbContext _context = context;
 
     public async Task<HandlerResponse> ExecuteAsync(DeleteUserCommand command, CancellationToken ct)
     {
-        var user = await _dbContext.Users.FindAsync([command.UserId], ct);
+        if(!command.IsAdmin && command.UserId != command.UserToDeleteId)
+        {
+            return ("Forbidden", HandlerResponseStatus.Unauthorized, command.UserToDeleteId);
+        }
+
+        var user = await _context.Users.FindAsync([command.UserToDeleteId], ct);
         if(user is null)
         {
             return ("User was not found", HandlerResponseStatus.NotFound, command.UserId);
         }
 
-        _dbContext.Remove(user);
-        await _dbContext.SaveChangesAsync(ct);
+        _context.Remove(user);
+        await _context.SaveChangesAsync(ct);
 
         return HandlerResponseStatus.Deleted;
     }
