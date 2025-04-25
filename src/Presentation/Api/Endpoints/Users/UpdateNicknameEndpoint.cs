@@ -10,7 +10,7 @@ internal class UpdateNicknameEndpoint : RequestEndpoint<UpdateNicknameRequest>
 {
     public override async Task HandleAsync(UpdateNicknameRequest req, CancellationToken ct)
     {
-        await HandleCommandAsync(new UpdateNicknameCommand(req.UserId, req.Nickname), ct);
+        await HandleCommandAsync(new UpdateNicknameCommand(req.Nickname), ct);
     }
 }
 
