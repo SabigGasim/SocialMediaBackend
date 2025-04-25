@@ -19,7 +19,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    //\"userid\": \"d6a319b0-5c31-4929-84a0-3b918efc318e\", //jonne\r\n    //\"userid\": \"5b12823a-7dea-4d25-958f-045d98405def\", //different\r\n    \"userid\": \"de18fec2-aabe-403e-9a5c-ee219203cf5e\", //goofi\r\n    \"email\": \"sabig@moanyn.com\",\r\n    \"customClaims\": {\r\n         \"admin\": true\r\n    }\r\n}",
+							"raw": "{\r\n    \"userid\": \"d6a319b0-5c31-4929-84a0-3b918efc318e\", //jonne\r\n    //\"userid\": \"5b12823a-7dea-4d25-958f-045d98405def\", //different\r\n    //\"userid\": \"de18fec2-aabe-403e-9a5c-ee219203cf5e\", //goofi\r\n    \"email\": \"sabig@moanyn.com\",\r\n    \"customClaims\": {\r\n         \"admin\": false\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -54,7 +54,7 @@
 								"method": "POST",
 								"header": [],
 								"url": {
-									"raw": "https://localhost:7251/api/users/de18fec2-aabe-403e-9a5c-ee219203cf5e/follow",
+									"raw": "https://localhost:7251/api/users/de18fec2-aabe-403e-9a5c-ee219203cf5e/followers",
 									"protocol": "https",
 									"host": [
 										"localhost"
@@ -64,7 +64,7 @@
 										"api",
 										"users",
 										"de18fec2-aabe-403e-9a5c-ee219203cf5e",
-										"follow"
+										"followers"
 									]
 								}
 							},
@@ -259,7 +259,20 @@
 					"name": "Get current user",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7251/api/users/me",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7251",
+							"path": [
+								"api",
+								"users",
+								"me"
+							]
+						}
 					},
 					"response": []
 				},
@@ -299,7 +312,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7251/api/users/335d0e4f-cb39-4e0d-9a92-39db8f9f8437/username",
+							"raw": "https://localhost:7251/api/users/me/username",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -308,7 +321,7 @@
 							"path": [
 								"api",
 								"users",
-								"335d0e4f-cb39-4e0d-9a92-39db8f9f8437",
+								"me",
 								"username"
 							]
 						}
@@ -330,7 +343,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7251/api/users/fcd0fa49-3cdd-4ab6-93a0-ea6be8b47539/nickname",
+							"raw": "https://localhost:7251/api/users/me/nickname",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -339,7 +352,7 @@
 							"path": [
 								"api",
 								"users",
-								"fcd0fa49-3cdd-4ab6-93a0-ea6be8b47539",
+								"me",
 								"nickname"
 							]
 						}
@@ -351,6 +364,55 @@
 		{
 			"name": "Posts",
 			"item": [
+				{
+					"name": "Likes",
+					"item": [
+						{
+							"name": "Like post",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:7251/api/posts/4a876d12-95a6-436d-b19f-460039b26f95/likes",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7251",
+									"path": [
+										"api",
+										"posts",
+										"4a876d12-95a6-436d-b19f-460039b26f95",
+										"likes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unlike post",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:7251/api/posts/4a876d12-95a6-436d-b19f-460039b26f95/likes",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7251",
+									"path": [
+										"api",
+										"posts",
+										"4a876d12-95a6-436d-b19f-460039b26f95",
+										"likes"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
 				{
 					"name": "Create post",
 					"request": {
@@ -386,7 +448,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7251/api/posts/22f2c939-7a0a-435b-a896-323ce77de2bf",
+							"raw": "https://localhost:7251/api/posts/4a876d12-95a6-436d-b19f-460039b26f95",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -395,7 +457,7 @@
 							"path": [
 								"api",
 								"posts",
-								"22f2c939-7a0a-435b-a896-323ce77de2bf"
+								"4a876d12-95a6-436d-b19f-460039b26f95"
 							]
 						}
 					},
@@ -518,6 +580,55 @@
 			"name": "Comments",
 			"item": [
 				{
+					"name": "Likes",
+					"item": [
+						{
+							"name": "Like comment",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:7251/api/comments/320f8213-8020-4bee-be78-ff325566163a/likes",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7251",
+									"path": [
+										"api",
+										"comments",
+										"320f8213-8020-4bee-be78-ff325566163a",
+										"likes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unlike post",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:7251/api/posts/4a876d12-95a6-436d-b19f-460039b26f95/likes",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7251",
+									"path": [
+										"api",
+										"posts",
+										"4a876d12-95a6-436d-b19f-460039b26f95",
+										"likes"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Create comment",
 					"request": {
 						"method": "POST",
@@ -562,7 +673,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userId\": \"de18fec2-aabe-403e-9a5c-ee219203cf5e\",\r\n    \"text\": \"third reply on the first comment on the first post in this api\"\r\n}",
+							"raw": "{\r\n    \"text\": \"second reply on the first comment on the first post in this api\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -733,7 +844,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjlhYmRlNy1kMTY3LTQ5ZWEtOGZjMy0yN2VkNDQyOTdjMjEiLCJzdWIiOiJzYWJpZ0Btb2FueW4uY29tIiwiZW1haWwiOiJzYWJpZ0Btb2FueW4uY29tIiwidXNlcmlkIjoiNWIxMjgyM2EtN2RlYS00ZDI1LTk1OGYtMDQ1ZDk4NDA1ZGVmIiwiYWRtaW4iOnRydWUsIm5iZiI6MTc0NTM1NDMzMCwiZXhwIjoxNzQ1MzgzMTMwLCJpYXQiOjE3NDUzNTQzMzAsImlzcyI6Imh0dHBzOi8vaWQuc2FiaWdnYXNpbS5jb20iLCJhdWQiOiJodHRwczovL3NvY2lhbC5zYWJpZ2dhc2ltLmNvbSJ9.u6yobyz9zQzw8-5YnncPwu3mvVvqhng2E-7Q8bbmXLM",
+				"value": "{{vault:social-auth-token}}",
 				"type": "string"
 			}
 		]
