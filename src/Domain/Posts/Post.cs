@@ -67,13 +67,17 @@ public class Post : AggregateRoot<PostId>, IUserResource
 
     public bool RemoveComment(CommentId commentId)
     {
-        var comment = _comments.First(x => x.Id == commentId);
+        var comment = _comments.FirstOrDefault(x => x.Id == commentId);
+        if (comment is null)
+        {
+            return false;
+        }
 
         _comments.Remove(comment);
-        
-        return comment.ParentComment is not null
-            ? comment.ParentComment.RemoveReply(comment)
-            : true;
+
+        this.AddDomainEvent(new CommentDeletedEvent(commentId));
+
+        return true;
     }
 
     public bool AddLike(UserId userId)

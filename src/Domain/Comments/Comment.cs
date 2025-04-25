@@ -75,9 +75,10 @@ public class Comment : AggregateRoot<CommentId>, IUserResource
         return true;
     }
 
-    public bool RemoveReply(Comment comment)
+    public bool RemoveReply(CommentId replyId)
     {
-        _replies.Remove(comment);
+        var reply = _replies.Find(x => x.Id == replyId)!;
+        _replies.Remove(reply);
         RepliesCount--;
 
         return true;
