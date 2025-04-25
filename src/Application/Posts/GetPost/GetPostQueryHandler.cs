@@ -18,21 +18,21 @@ public class GetPostQueryHandler(
 
     public async Task<HandlerResponse<GetPostResponse>> ExecuteAsync(GetPostQuery query, CancellationToken ct)
     {
-        var authorized = await _authService
-            .AuthorizeAsync(query.UserId, query.PostId, new(query.IsAdmin), ct);
-
-        if (!authorized)
-        {
-            return ("The author limits who can view there posts", HandlerResponseStatus.Unauthorized, query.PostId);
-        }
-
         var post = await _context.Posts
             .AsNoTracking()
             .Include(x => x.User)
             .FirstOrDefaultAsync(x => x.Id == query.PostId, ct);
 
-        return post is not null
-            ? (post.MapToGetResponse(), HandlerResponseStatus.OK)
-            : ("Post with the given Id was not found", HandlerResponseStatus.NotFound, query.PostId);
+        if (post is null)
+            return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, query.PostId);
+
+        var authorized = await _authService
+            .AuthorizeAsync(query.UserId, query.PostId, new(query.IsAdmin), ct);
+
+        if (!authorized)
+            return ("The author limits who can view there posts", HandlerResponseStatus.Unauthorized, post.Id);
+
+
+        return (post.MapToGetResponse(), HandlerResponseStatus.OK);
     }
 }
