@@ -24,4 +24,11 @@ public interface IAuthorizationService
         AuthOptions options,
         CancellationToken ct = default)
         where TResource : Entity<TResourceId>;
+
+    Task<bool> IsAdminOrResourceOwnerAsync<TResource, TResourceId>(
+        UserId? userId, 
+        TResourceId resourceId, 
+        AuthOptions options, 
+        CancellationToken ct = default)
+        where TResource : Entity<TResourceId>;
 }

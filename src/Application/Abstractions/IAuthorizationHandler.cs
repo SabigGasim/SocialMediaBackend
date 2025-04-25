@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SocialMediaBackend.Application.Auth;
+﻿using SocialMediaBackend.Application.Auth;
 using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Users;
 
@@ -20,6 +19,12 @@ public interface IAuthorizationHandler<TResource, TResourceId>
         AuthOptions options);
 
     Task<bool> AuthorizeAsync(
+        UserId? userId, 
+        TResourceId resourceId, 
+        AuthOptions options,
+        CancellationToken ct = default);
+
+    Task<bool> IsAdminOrResourceOwnerAsync(
         UserId? userId, 
         TResourceId resourceId, 
         AuthOptions options,

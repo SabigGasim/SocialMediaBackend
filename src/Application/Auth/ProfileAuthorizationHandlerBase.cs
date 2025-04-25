@@ -28,6 +28,20 @@ public abstract class ProfileAuthorizationHandlerBase<TUserResource, TId>
         return fullQuery.AnyAsync(ct);
     }
 
+    public virtual Task<bool> IsAdminOrResourceOwnerAsync(UserId? userId, TId resourceId, AuthOptions options, CancellationToken ct = default)
+    {
+        if (UserIsAdmin(userId, options))
+        {
+            return Task.FromResult(true);
+        }
+
+        return _context
+            .Set<TUserResource>()
+            .AsNoTracking()
+            .Where(x => x.Id == resourceId && x.User.Id == userId)
+            .AnyAsync(ct);
+    }
+
     public virtual IQueryable<TUserResource> AuthorizeQueryable(IQueryable<TUserResource> queryable, UserId? userId, AuthOptions options)
     {
         if (UserIsAdmin(userId, options))
