@@ -2,4 +2,4 @@
 
 namespace SocialMediaBackend.Application.Comments.ReplyToComment;
 
-public record ReplyToCommentRequest([FromRoute]Guid ParentId, [FromBody]Guid UserId, [FromBody]string Text);
+public record ReplyToCommentRequest([FromRoute]Guid ParentId, [FromBody]string Text);

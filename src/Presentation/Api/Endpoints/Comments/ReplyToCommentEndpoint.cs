@@ -9,6 +9,6 @@ public class ReplyToCommentEndpoint : RequestEndpoint<ReplyToCommentRequest, Rep
 {
     public override Task HandleAsync(ReplyToCommentRequest req, CancellationToken ct)
     {
-        return HandleRequestAsync(new ReplyToCommentCommand(req.ParentId, req.UserId, req.Text), ct);
+        return HandleRequestAsync(new ReplyToCommentCommand(req.ParentId, req.Text), ct);
     }
 }
