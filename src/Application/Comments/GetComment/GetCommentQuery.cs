@@ -1,9 +1,28 @@
-﻿using SocialMediaBackend.Application.Abstractions.Requests.Queries;
+﻿using SocialMediaBackend.Application.Abstractions.Requests;
+using SocialMediaBackend.Application.Abstractions.Requests.Queries;
 using SocialMediaBackend.Domain.Comments;
+using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Application.Comments.GetComment;
 
-public class GetCommentQuery(Guid commentId) : QueryBase<GetCommentResponse>
+public class GetCommentQuery(Guid commentId) 
+    : QueryBase<GetCommentResponse>, IOptionalUserRequest<GetCommentQuery>
 {
     public CommentId CommentId { get; } = new(commentId);
+
+    public UserId? UserId { get; private set; } = default!;
+
+    public bool IsAdmin { get; private set; }
+
+    public GetCommentQuery AndAdminRole(bool isAdmin)
+    {
+        IsAdmin = isAdmin;
+        return this;
+    }
+
+    public GetCommentQuery WithUserId(Guid userId)
+    {
+        UserId = new(userId);
+        return this;
+    }
 }
