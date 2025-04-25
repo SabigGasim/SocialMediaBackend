@@ -31,6 +31,6 @@ internal sealed class CommentEntityTypeConfiguration : IEntityTypeConfiguration<
             .WithMany(c => c.Replies)
             .HasForeignKey(c => c.ParentCommentId)
             .IsRequired(false)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
