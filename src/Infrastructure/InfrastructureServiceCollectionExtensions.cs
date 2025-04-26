@@ -22,6 +22,6 @@ public static class InfrastructureServiceCollectionExtensions
             {
                 options.UseNpgsql(connectionString);
             })
-            .AddScoped<IUnitOfWork>(x => x.GetRequiredService<ApplicationDbContext>());
+            .AddScoped<IUnitOfWork, UnitOfWork>();
     }
 }
