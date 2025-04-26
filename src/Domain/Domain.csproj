@@ -11,4 +11,9 @@
     <PackageReference Include="Mediator.Abstractions" Version="2.1.7" />
   </ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="Tests.Core" />
+		<InternalsVisibleTo Include="SocialMediaBackend.Application.UnitTests" />
+	</ItemGroup>
+
 </Project>

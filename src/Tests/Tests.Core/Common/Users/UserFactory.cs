@@ -1,0 +1,46 @@
+﻿using NSubstitute;
+using SocialMediaBackend.Domain.Services;
+using SocialMediaBackend.Domain.Users;
+using SocialMediaBackend.Domain.Users.Follows;
+
+namespace Tests.Core.Common.Users;
+
+public static class UserFactory
+{
+    public static async Task<User> CreateAsync(
+        string username = "user", 
+        string nickname = "user",
+        bool isPublic = true,
+        DateTime? dateTimeOfBirth = null,
+        IUserExistsChecker? userExistsChecker = null)
+    {
+        var dateOfBirth = GetDateOfBirth(dateTimeOfBirth);
+        var service = GetUserExistsService(userExistsChecker);
+
+        var user = await User.CreateAsync(username, nickname, dateOfBirth, service);
+
+        user.ChangeProfilePrivacy(isPublic);
+        user.ClearDomainEvents();
+
+        return user!;
+    }
+
+    private static DateOnly GetDateOfBirth(DateTime? dateOfBirth)
+    {
+        return dateOfBirth is not null
+                    ? DateOnly.FromDateTime((DateTime)dateOfBirth)
+                    : DateOnly.Parse("2000/01/01");
+    }
+
+    private static IUserExistsChecker GetUserExistsService(IUserExistsChecker? service)
+    {
+        if (service is null)
+        {
+            var mockService = Substitute.For<IUserExistsChecker>();
+            mockService.CheckAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(false);
+            service = mockService;
+        }
+
+        return service;
+    }
+}
