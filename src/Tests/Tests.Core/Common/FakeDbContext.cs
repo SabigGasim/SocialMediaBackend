@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.Infrastructure.Data;
+using Tests.Core.Common.Users;
 
 namespace Tests.Core.Common;
 

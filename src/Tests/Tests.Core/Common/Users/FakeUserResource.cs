@@ -1,7 +1,7 @@
 ﻿using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Users;
 
-namespace Tests.Core.Common;
+namespace Tests.Core.Common.Users;
 
 public class FakeUserResource : Entity<FakeUserResourceId>, IUserResource
 {
@@ -12,7 +12,7 @@ public class FakeUserResource : Entity<FakeUserResourceId>, IUserResource
     {
         return new FakeUserResource()
         {
-            Id = new(Guid.NewGuid()),
+            Id = FakeUserResourceId.New(),
             User = user,
             UserId = user.Id,
         };
