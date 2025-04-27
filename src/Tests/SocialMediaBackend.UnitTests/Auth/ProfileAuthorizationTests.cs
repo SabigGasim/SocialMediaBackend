@@ -282,6 +282,7 @@ public class ProfileAuthorizationHandlerBaseTests : IDisposable
     {
         _dbContext.Database.EnsureDeleted();
         _dbContext.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
 

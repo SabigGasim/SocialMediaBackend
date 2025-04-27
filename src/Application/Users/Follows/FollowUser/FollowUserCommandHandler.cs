@@ -25,14 +25,12 @@ public class FollowUserCommandHandler(
         {
             return ("User with the given Id was not found", HandlerResponseStatus.NotFound, command.UserToFollowId);
         }
-            
-        var userIsAlreadyFollowed = userToFollow.Followers.Any(x => x.FollowerId == command.UserId);
-        if (userIsAlreadyFollowed)
+
+        var follow = userToFollow.FollowOrRequestFollow(command.UserId);
+        if (follow is null)
         {
             return ("User is already followed", HandlerResponseStatus.Conflict, command.UserToFollowId);
         }
-
-        var follow = userToFollow.FollowOrRequestFollow(command.UserId);
         
         _context.Add(follow);
         

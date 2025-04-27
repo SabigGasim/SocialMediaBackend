@@ -74,14 +74,22 @@ public class User : AggregateRoot<UserId>
         return _posts.Remove(post);
     }
 
-    public Follow FollowOrRequestFollow(UserId userId)
+    public Follow? FollowOrRequestFollow(UserId followerId)
     {
+        var followExists = _followers.Any(x => x.FollowerId == followerId);
+        if (followExists)
+        {
+            return null;
+        }
+
         var follow = ProfileIsPublic
-            ? Follow.Create(userId, this.Id)
-            : Follow.CreateFollowRequest(userId, this.Id);
+            ? Follow.Create(followerId, this.Id)
+            : Follow.CreateFollowRequest(followerId, this.Id);
 
         if(follow.Status == FollowStatus.Following)
             this.AddDomainEvent(new UserFollowedEvent(follow.FollowerId, follow.FollowingId));
+
+        _followers.Add(follow);
 
         return follow;
     }
@@ -89,8 +97,14 @@ public class User : AggregateRoot<UserId>
     public bool AcceptFollowRequest(UserId followerId)
     {
         var follow = _followers.Find(x => x.FollowerId == followerId);
+        if (follow is null || !follow.AcceptFollowRequest())
+        {
+            return false;
+        }
 
-        return follow?.AcceptFollowRequest() == true;
+        this.AddDomainEvent(new FollowRequestAcceptedEvent(follow.FollowerId, follow.FollowingId));
+
+        return true;
     }
 
     public bool Unfollow(UserId userToUnfollowId)
@@ -167,6 +181,7 @@ public class User : AggregateRoot<UserId>
 
         await CheckRuleAsync(new UsernameShouldBeUniqueRule(userExistsChecker, username));
 
+        Username = username;
         return true;
     }
 
