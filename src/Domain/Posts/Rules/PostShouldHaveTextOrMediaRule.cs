@@ -10,7 +10,7 @@ internal class PostShouldHaveTextOrMediaRule(string? text, IEnumerable<Media>? m
 
     public string Message { get; } = "A post should contain at least one media item or a text";
 
-    public bool IsBroken() => string.IsNullOrWhiteSpace(_text) && _media?.Any() == false;
+    public bool IsBroken() => string.IsNullOrWhiteSpace(_text) && !(_media?.Any() ?? false);
 
     public Task<bool> IsBrokenAsync()
     {
