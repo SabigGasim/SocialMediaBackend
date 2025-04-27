@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SocialMediaBackend.Domain.Comments;
 using SocialMediaBackend.Domain.Users;
 using SocialMediaBackend.Domain.Users.Follows;
+using Tests.Core.Common.Comments;
 using Tests.Core.Common.Users;
 
 namespace Tests.Core.Common;
@@ -50,5 +52,19 @@ public static class DbContextExtensions
         await context.SaveChangesAsync();
 
         return (user, followers, follows);
+    }
+
+    public static async Task<(Comment comment, Comment reply)> CreateCommentWithReplyAsync(
+        this FakeDbContext context)
+    {
+        var comment = CommentFactory.Create();
+        var reply = comment.AddReply(UserId.New(), "text")!;
+
+        context.Add(comment);
+        context.Add(reply);
+
+        await context.SaveChangesAsync();
+
+        return (comment, reply);
     }
 }
