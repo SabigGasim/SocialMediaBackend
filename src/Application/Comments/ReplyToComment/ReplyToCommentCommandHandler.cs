@@ -28,7 +28,7 @@ public class ReplyToCommentCommandHandler(
         if (!authorized)
             return ("The author restricts who can see their comments", HandlerResponseStatus.Unauthorized, parent.UserId);
 
-        var reply = parent.AddReply(parent.PostId, command.UserId, command.Text);
+        var reply = parent.AddReply(command.UserId, command.Text);
 
         _context.Add(reply);
         await _context.SaveChangesAsync(ct);

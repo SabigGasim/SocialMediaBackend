@@ -44,9 +44,9 @@ public class Comment : AggregateRoot<CommentId>, IUserResource
         return new Comment(postId, userId, text, parentCommentId);
     }
 
-    public Comment AddReply(PostId postId, UserId userId, string text)
+    public Comment AddReply(UserId userId, string text)
     {
-        var reply = Create(postId, userId, text, parentCommentId: this.Id);
+        var reply = Create(this.PostId, userId, text, parentCommentId: this.Id);
 
         _replies.Add(reply);
         RepliesCount++;
@@ -82,7 +82,12 @@ public class Comment : AggregateRoot<CommentId>, IUserResource
 
     public bool RemoveReply(CommentId replyId)
     {
-        var reply = _replies.Find(x => x.Id == replyId)!;
+        var reply = _replies.Find(x => x.Id == replyId);
+        if (reply is null)
+        {
+            return false;
+        }
+
         _replies.Remove(reply);
         RepliesCount--;
 
