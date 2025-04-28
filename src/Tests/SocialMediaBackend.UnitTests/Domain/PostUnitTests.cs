@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.Domain.Common.Exceptions;
 using SocialMediaBackend.Domain.Common.ValueObjects;
-using SocialMediaBackend.Domain.Posts.Rules;
 using SocialMediaBackend.Domain.Posts;
 using SocialMediaBackend.Domain.Users;
 using SocialMediaBackend.Infrastructure.Data;
@@ -9,7 +8,7 @@ using Tests.Core.Common;
 using Shouldly;
 using Tests.Core.Common.Posts;
 
-namespace SocialMediaBackend.Domain.UnitTests;
+namespace SocialMediaBackend.UnitTests.Domain;
 
 public class PostUnitTests : IDisposable
 {

@@ -7,7 +7,7 @@ using Tests.Core.Common.Comments;
 using Tests.Core.Common;
 using SocialMediaBackend.Domain.Posts;
 
-namespace SocialMediaBackend.Domain.UnitTests;
+namespace SocialMediaBackend.UnitTests.Domain;
 
 public class CommentUnitTests : IDisposable
 {

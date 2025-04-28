@@ -8,7 +8,7 @@ using SocialMediaBackend.Infrastructure.Data;
 using Tests.Core.Common;
 using Tests.Core.Common.Users;
 
-namespace SocialMediaBackend.Application.UnitTests.Auth;
+namespace SocialMediaBackend.UnitTests.Application.Auth;
 
 public class FakeProfileAuthorizationHandler(FakeDbContext context) : ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>(context);
 
@@ -155,7 +155,7 @@ public class ProfileAuthorizationHandlerBaseTests : IDisposable
         var user4 = await UserFactory.CreateAsync(isPublic: false);
         var owner = await UserFactory.CreateAsync(isPublic: false);
 
-        var follows = new List<Follow> 
+        var follows = new List<Follow>
         {
             Follow.Create(owner.Id, user1.Id),
             Follow.Create(owner.Id, user2.Id),
@@ -215,8 +215,8 @@ public class ProfileAuthorizationHandlerBaseTests : IDisposable
         var owner = await UserFactory.CreateAsync(isPublic: true);
         var user1 = await UserFactory.CreateAsync(isPublic: true);
         var user2 = await UserFactory.CreateAsync(isPublic: false);
-        var resources = new List<FakeUserResource> 
-        { 
+        var resources = new List<FakeUserResource>
+        {
             FakeUserResource.Create(owner),
             FakeUserResource.Create(user1),
             FakeUserResource.Create(user2),

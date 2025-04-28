@@ -13,8 +13,8 @@
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="Tests.Core" />
-		<InternalsVisibleTo Include="SocialMediaBackend.Application.UnitTests" />
-		<InternalsVisibleTo Include="SocialMediaBackend.Domain.UnitTests" />
+		<InternalsVisibleTo Include="SocialMediaBackend.UnitTests" />
+		<InternalsVisibleTo Include="SocialMediaBackend.IntegrationTests" />
 	</ItemGroup>
 
 </Project>

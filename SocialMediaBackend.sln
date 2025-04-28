@@ -30,11 +30,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Api", "Identity.Ap
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9B00FAC1-A11F-4883-BA46-EA0501F7B2C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Application.UnitTests", "src\Tests\SocialMediaBackend.UnitTests\SocialMediaBackend.Application.UnitTests.csproj", "{6B793069-1B33-45DA-B1C9-1C5AD476D2A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.UnitTests", "src\Tests\SocialMediaBackend.UnitTests\SocialMediaBackend.UnitTests.csproj", "{6B793069-1B33-45DA-B1C9-1C5AD476D2A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Core", "src\Tests\Tests.Core\Tests.Core.csproj", "{EF0D9E81-D519-47F9-B5BB-1319EA1BEA24}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Domain.UnitTests", "Tests\SocialMediaBackend.Domain.UnitTests\SocialMediaBackend.Domain.UnitTests.csproj", "{6F6B373F-0155-4F5A-BC0C-8F6CB44DA820}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,10 +72,6 @@ Global
 		{EF0D9E81-D519-47F9-B5BB-1319EA1BEA24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF0D9E81-D519-47F9-B5BB-1319EA1BEA24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF0D9E81-D519-47F9-B5BB-1319EA1BEA24}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6F6B373F-0155-4F5A-BC0C-8F6CB44DA820}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6F6B373F-0155-4F5A-BC0C-8F6CB44DA820}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6F6B373F-0155-4F5A-BC0C-8F6CB44DA820}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6F6B373F-0155-4F5A-BC0C-8F6CB44DA820}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,6 +87,5 @@ Global
 		{9B00FAC1-A11F-4883-BA46-EA0501F7B2C4} = {A2E5176F-DF22-403A-9204-4DBC54BBCA3B}
 		{6B793069-1B33-45DA-B1C9-1C5AD476D2A8} = {9B00FAC1-A11F-4883-BA46-EA0501F7B2C4}
 		{EF0D9E81-D519-47F9-B5BB-1319EA1BEA24} = {9B00FAC1-A11F-4883-BA46-EA0501F7B2C4}
-		{6F6B373F-0155-4F5A-BC0C-8F6CB44DA820} = {9B00FAC1-A11F-4883-BA46-EA0501F7B2C4}
 	EndGlobalSection
 EndGlobal

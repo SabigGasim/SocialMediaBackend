@@ -10,12 +10,12 @@ using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.Infrastructure.Data;
 using SocialMediaBackend.Domain.Users.Follows;
 
-namespace SocialMediaBackend.Domain.UnitTests;
+namespace SocialMediaBackend.UnitTests.Domain;
 
 public class UserUnitTests : IDisposable
 {
     private readonly FakeDbContext _dbContext;
-    
+
     public UserUnitTests()
     {
         _dbContext = CreateInMemoryDbContext();
@@ -170,7 +170,7 @@ public class UserUnitTests : IDisposable
         user.Followers.Count.ShouldBe(3);
         user.DomainEvents!.Count.ShouldBe(3);
         user.DomainEvents.ShouldAllBe(x => x is FollowRequestAcceptedEvent);
-        
+
         var follows = user.DomainEvents
             .Cast<FollowRequestAcceptedEvent>()
             .Select(e => new { e.FollowerId, e.FollowingId })
