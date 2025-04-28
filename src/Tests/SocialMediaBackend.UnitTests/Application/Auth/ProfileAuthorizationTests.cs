@@ -12,14 +12,12 @@ namespace SocialMediaBackend.UnitTests.Application.Auth;
 
 public class FakeProfileAuthorizationHandler(FakeDbContext context) : ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>(context);
 
-public class ProfileAuthorizationHandlerBaseTests : IDisposable
+public class ProfileAuthorizationHandlerBaseTests : TestBase
 {
-    private readonly FakeDbContext _dbContext;
     private readonly FakeProfileAuthorizationHandler _handler;
 
-    public ProfileAuthorizationHandlerBaseTests()
+    public ProfileAuthorizationHandlerBaseTests() : base()
     {
-        _dbContext = CreateInMemoryDbContext();
         _handler = new FakeProfileAuthorizationHandler(_dbContext);
     }
 
@@ -267,22 +265,6 @@ public class ProfileAuthorizationHandlerBaseTests : IDisposable
 
         // Assert
         result.Count.ShouldBe(0);
-    }
-
-    private static FakeDbContext CreateInMemoryDbContext()
-    {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-
-        return new FakeDbContext(options);
-    }
-
-    public void Dispose()
-    {
-        _dbContext.Database.EnsureDeleted();
-        _dbContext.Dispose();
-        GC.SuppressFinalize(this);
     }
 }
 

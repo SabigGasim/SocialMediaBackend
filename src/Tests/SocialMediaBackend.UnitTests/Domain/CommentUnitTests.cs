@@ -1,23 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Shouldly;
+﻿using Shouldly;
 using SocialMediaBackend.Domain.Comments;
 using SocialMediaBackend.Domain.Users;
-using SocialMediaBackend.Infrastructure.Data;
 using Tests.Core.Common.Comments;
 using Tests.Core.Common;
 using SocialMediaBackend.Domain.Posts;
 
 namespace SocialMediaBackend.UnitTests.Domain;
 
-public class CommentUnitTests : IDisposable
+public class CommentUnitTests : TestBase
 {
-    private readonly FakeDbContext _dbContext;
-
-    public CommentUnitTests()
-    {
-        _dbContext = CreateInMemoryDbContext();
-    }
-
     [Fact]
     public void Create_ShouldReturnComment()
     {
@@ -175,22 +166,5 @@ public class CommentUnitTests : IDisposable
         removed.ShouldBeFalse();
         comment.RepliesCount.ShouldBe(0);
         comment.Replies?.ShouldBeEmpty();
-    }
-
-
-    private static FakeDbContext CreateInMemoryDbContext()
-    {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-
-        return new FakeDbContext(options);
-    }
-
-    public void Dispose()
-    {
-        _dbContext.Database.EnsureDeleted();
-        _dbContext.Dispose();
-        GC.SuppressFinalize(this);
     }
 }

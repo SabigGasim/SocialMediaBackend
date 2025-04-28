@@ -6,21 +6,12 @@ using Shouldly;
 using Tests.Core.Common.Users;
 using SocialMediaBackend.Domain.Common.Exceptions;
 using Tests.Core.Common;
-using Microsoft.EntityFrameworkCore;
-using SocialMediaBackend.Infrastructure.Data;
 using SocialMediaBackend.Domain.Users.Follows;
 
 namespace SocialMediaBackend.UnitTests.Domain;
 
-public class UserUnitTests : IDisposable
+public class UserUnitTests : TestBase
 {
-    private readonly FakeDbContext _dbContext;
-
-    public UserUnitTests()
-    {
-        _dbContext = CreateInMemoryDbContext();
-    }
-
     [Fact]
     public async Task CreateAsync_ShouldReturnUser()
     {
@@ -327,22 +318,4 @@ public class UserUnitTests : IDisposable
         // Assert
         result.ShouldBeFalse();
     }
-
-
-    private static FakeDbContext CreateInMemoryDbContext()
-    {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-
-        return new FakeDbContext(options);
-    }
-
-    public void Dispose()
-    {
-        _dbContext.Database.EnsureDeleted();
-        _dbContext.Dispose();
-        GC.SuppressFinalize(this);
-    }
-
 }

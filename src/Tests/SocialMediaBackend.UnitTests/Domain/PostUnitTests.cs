@@ -10,15 +10,8 @@ using Tests.Core.Common.Posts;
 
 namespace SocialMediaBackend.UnitTests.Domain;
 
-public class PostUnitTests : IDisposable
+public class PostUnitTests : TestBase
 {
-    private readonly FakeDbContext _dbContext;
-
-    public PostUnitTests()
-    {
-        _dbContext = CreateInMemoryDbContext();
-    }
-
     [Fact]
     public void Create_ShouldReturnPost_WhenTextIsProvided()
     {
@@ -146,22 +139,5 @@ public class PostUnitTests : IDisposable
         result.ShouldBeFalse();
         post.LikesCount.ShouldBe(0);
         post.Likes?.ShouldBeEmpty();
-    }
-
-
-    private static FakeDbContext CreateInMemoryDbContext()
-    {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-
-        return new FakeDbContext(options);
-    }
-
-    public void Dispose()
-    {
-        _dbContext.Database.EnsureDeleted();
-        _dbContext.Dispose();
-        GC.SuppressFinalize(this);
     }
 }
