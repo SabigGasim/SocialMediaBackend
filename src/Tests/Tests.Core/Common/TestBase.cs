@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using SocialMediaBackend.Domain.Common.ValueObjects;
 using SocialMediaBackend.Domain.Users;
 using System.Text;
 using System.Text.Json;
@@ -16,8 +14,9 @@ public abstract class TestBase(AuthFixture auth, App app) : FastEndpoints.Testin
 {
     private readonly AuthFixture _auth = auth;
     private readonly App _app = app;
-    private const string _adminId = "e593a99a-56d0-48ff-b3b9-abed820a8bd1";
     private readonly SemaphoreSlim _locker = new(1, 1);
+    
+    private const string _adminId = "e593a99a-56d0-48ff-b3b9-abed820a8bd1";
 
     public static string AdminAuthToken { get; private set; } = default!;
 
@@ -33,7 +32,7 @@ public abstract class TestBase(AuthFixture auth, App app) : FastEndpoints.Testin
         using var client = _auth.CreateClient(o => o.BaseAddress = new Uri("https://localhost:7272"));
         var body = new
         {
-            userid = "e593a99a-56d0-48ff-b3b9-abed820a8bd1",
+            userid = _adminId,
             email = "sabig@moanyn.com",
             customClaims = new
             {
@@ -44,9 +43,9 @@ public abstract class TestBase(AuthFixture auth, App app) : FastEndpoints.Testin
         var json = JsonSerializer.Serialize(body);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await client.PostAsync("/token", content);
+        var response = await client.PostAsync("/token", content, TestContext.Current.CancellationToken);
 
-        AdminAuthToken = await response.Content.ReadAsStringAsync();
+        AdminAuthToken = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         await CreateUserIfNotExists();
     }
@@ -54,14 +53,15 @@ public abstract class TestBase(AuthFixture auth, App app) : FastEndpoints.Testin
 
     private async Task CreateUserIfNotExists()
     {
-        await _locker.WaitAsync();
+        var token = TestContext.Current.CancellationToken;
 
         await using var scope = _app.Services.CreateAsyncScope();
-        
-        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
 
+        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+        
         var userId = new UserId(Guid.Parse(_adminId));
-        var token = TestContext.Current.CancellationToken;
+
+        await _locker.WaitAsync(token);
 
         var adminExists = await context.Users.AnyAsync(x => x.Id == userId, token);
         if (!adminExists)
