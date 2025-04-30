@@ -1,11 +1,19 @@
-var builder = WebApplication.CreateBuilder(args);
+namespace Identity.Api;
 
-builder.Services.AddControllers();
+public class Program
+{
+    private static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+        builder.Services.AddControllers();
 
-app.UseAuthorization();
+        var app = builder.Build();
 
-app.MapControllers();
+        app.UseAuthorization();
 
-app.Run();
+        app.MapControllers();
+
+        app.Run();
+    }
+}

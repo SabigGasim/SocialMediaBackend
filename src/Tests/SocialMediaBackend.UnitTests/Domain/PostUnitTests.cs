@@ -8,7 +8,7 @@ using Tests.Core.Common.Posts;
 
 namespace SocialMediaBackend.UnitTests.Domain;
 
-public class PostUnitTests : TestBase
+public class PostUnitTests(AuthFixture auth, App app) : TestBase(auth, app)
 {
     [Fact]
     public void Create_ShouldReturnPost_WhenTextIsProvided()

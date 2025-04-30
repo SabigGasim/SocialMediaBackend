@@ -10,7 +10,8 @@ using Tests.Core.Common.Users;
 
 namespace SocialMediaBackend.UnitTests.Application.Auth;
 
-public class ProfileAuthorizationHandlerBaseTests(App app) : TestBase
+
+public class ProfileAuthorizationHandlerBaseTests(AuthFixture auth, App app) : TestBase(auth, app)
 {
     private readonly App App = app;
 

@@ -9,7 +9,7 @@ using Tests.Core.Common.Users;
 
 namespace SocialMediaBackend.UnitTests.Domain;
 
-public class CommentUnitTests(App app) : TestBase
+public class CommentUnitTests(AuthFixture auth, App app) : TestBase(auth, app)
 {
     private readonly App App = app;
 
