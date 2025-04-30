@@ -22,7 +22,7 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : TestBase
         var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
         var handler = scope.ServiceProvider.GetRequiredService<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
 
-        var user = await UserFactory.CreateAsync();
+        var user = await UserFactory.CreateAsync(ct: TestContext.Current.CancellationToken);
         var resource = FakeUserResource.Create(user);
         context.Add(user);
         context.Add(resource);
@@ -46,7 +46,7 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : TestBase
         var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
         var handler = scope.ServiceProvider.GetRequiredService<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
 
-        var owner = await UserFactory.CreateAsync(isPublic: false);
+        var owner = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
         var resource = FakeUserResource.Create(owner);
         context.Add(owner);
         context.Add(resource);
@@ -89,7 +89,7 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : TestBase
         var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
         var handler = scope.ServiceProvider.GetRequiredService<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
 
-        var user = await UserFactory.CreateAsync(isPublic: false);
+        var user = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken );
         var resource = FakeUserResource.Create(user);
 
         context.Add(user);
@@ -113,8 +113,8 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : TestBase
         using var scope = App.Services.CreateScope();
         var handler = scope.ServiceProvider.GetRequiredService<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
 
-        var user1 = await UserFactory.CreateAsync(isPublic: false);
-        var user2 = await UserFactory.CreateAsync(isPublic: true);
+        var user1 = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
+        var user2 = await UserFactory.CreateAsync(isPublic: true, ct: TestContext.Current.CancellationToken);
 
         var adminId = UserId.New();
         var options = new AuthOptions(IsAdmin: true);
@@ -139,9 +139,9 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : TestBase
         using var scope = App.Services.CreateScope();
         var handler = scope.ServiceProvider.GetRequiredService<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
 
-        var owner = await UserFactory.CreateAsync(isPublic: false);
-        var user1 = await UserFactory.CreateAsync(isPublic: true);
-        var user2 = await UserFactory.CreateAsync(isPublic: false);
+        var owner = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
+        var user1 = await UserFactory.CreateAsync(isPublic: true, ct: TestContext.Current.CancellationToken);
+        var user2 = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
 
         var options = new AuthOptions(IsAdmin: false);
 
@@ -169,11 +169,11 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : TestBase
         var handler = scope.ServiceProvider.GetRequiredService<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
 
         var options = new AuthOptions(IsAdmin: false);
-        var user1 = await UserFactory.CreateAsync(isPublic: false);
-        var user2 = await UserFactory.CreateAsync(isPublic: false);
-        var user3 = await UserFactory.CreateAsync(isPublic: false);
-        var user4 = await UserFactory.CreateAsync(isPublic: false);
-        var follower = await UserFactory.CreateAsync(isPublic: false);
+        var user1 = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
+        var user2 = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
+        var user3 = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
+        var user4 = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
+        var follower = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
 
         var follows = new List<Follow>
         {
@@ -220,8 +220,8 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : TestBase
 
         UserId? anonymousUserId = null;
         var options = new AuthOptions(IsAdmin: true);
-        var user1 = await UserFactory.CreateAsync(isPublic: true);
-        var user2 = await UserFactory.CreateAsync(isPublic: false);
+        var user1 = await UserFactory.CreateAsync(isPublic: true, ct: TestContext.Current.CancellationToken);
+        var user2 = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
 
         var resources = new List<FakeUserResource>
         {
@@ -245,9 +245,9 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : TestBase
         var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
 
         var options = new AuthOptions();
-        var owner = await UserFactory.CreateAsync(isPublic: true);
-        var user1 = await UserFactory.CreateAsync(isPublic: true);
-        var user2 = await UserFactory.CreateAsync(isPublic: false);
+        var owner = await UserFactory.CreateAsync(isPublic: true, ct: TestContext.Current.CancellationToken);
+        var user1 = await UserFactory.CreateAsync(isPublic: true, ct: TestContext.Current.CancellationToken);
+        var user2 = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
         var resources = new List<FakeUserResource>
         {
             FakeUserResource.Create(owner),
@@ -281,9 +281,9 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : TestBase
 
         var options = new AuthOptions();
         var nonExistentResourceId = FakeUserResourceId.New();
-        var owner = await UserFactory.CreateAsync(isPublic: true);
-        var user1 = await UserFactory.CreateAsync(isPublic: true);
-        var user2 = await UserFactory.CreateAsync(isPublic: false);
+        var owner = await UserFactory.CreateAsync(isPublic: true, ct: TestContext.Current.CancellationToken);
+        var user1 = await UserFactory.CreateAsync(isPublic: true, ct: TestContext.Current.CancellationToken);
+        var user2 = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
         var resources = new List<FakeUserResource>
         {
             FakeUserResource.Create(owner),

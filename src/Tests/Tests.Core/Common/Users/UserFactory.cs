@@ -13,13 +13,14 @@ public static class UserFactory
         string nickname = "user",
         bool isPublic = true,
         DateTime? dateTimeOfBirth = null,
-        IUserExistsChecker? userExistsChecker = null)
+        IUserExistsChecker? userExistsChecker = null,
+        CancellationToken ct = default)
     {
         var dateOfBirth = GetDateOfBirth(dateTimeOfBirth);
         var service = GetUserExistsService(userExistsChecker);
 
         username = username ?? Guid.NewGuid().ToString().Replace("-", "")[..8];
-        var user = await User.CreateAsync(username, nickname, dateOfBirth, service, Media.Create(Media.DefaultProfilePicture.Url));
+        var user = await User.CreateAsync(username, nickname, dateOfBirth, service, Media.Create(Media.DefaultProfilePicture.Url), ct);
 
         user.ChangeProfilePrivacy(isPublic);
         user.ClearDomainEvents();

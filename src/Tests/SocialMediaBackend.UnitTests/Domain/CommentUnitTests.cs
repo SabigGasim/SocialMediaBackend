@@ -5,7 +5,6 @@ using Tests.Core.Common.Comments;
 using Tests.Core.Common;
 using SocialMediaBackend.Domain.Posts;
 using Microsoft.Extensions.DependencyInjection;
-using Tests.Core.Common.Posts;
 using Tests.Core.Common.Users;
 
 namespace SocialMediaBackend.UnitTests.Domain;
@@ -125,7 +124,7 @@ public class CommentUnitTests(App app) : TestBase
 
         var comment = await context.CreateCommentAsync(ct: TestContext.Current.CancellationToken);
         var replyText = "text";
-        var replier = await UserFactory.CreateAsync();
+        var replier = await UserFactory.CreateAsync(ct: TestContext.Current.CancellationToken);
 
         context.Add(replier);
 

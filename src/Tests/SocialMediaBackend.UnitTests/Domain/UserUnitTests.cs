@@ -28,7 +28,7 @@ public class UserUnitTests(App app) : TestBase
         checker.CheckAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(false);
 
         //Act
-        var user = await User.CreateAsync(username, nickname, dateOfBirth, checker, profilePicture);
+        var user = await User.CreateAsync(username, nickname, dateOfBirth, checker, profilePicture, ct: TestContext.Current.CancellationToken);
 
         //Assert
         user.Username.ShouldBe(username);
@@ -46,7 +46,7 @@ public class UserUnitTests(App app) : TestBase
 
         //Act & Assert
         await UserFactory
-            .CreateAsync(userExistsChecker: service)
+            .CreateAsync(userExistsChecker: service, ct: TestContext.Current.CancellationToken)
             .ShouldThrowAsync<BusinessRuleValidationException>();
     }
 
@@ -54,8 +54,8 @@ public class UserUnitTests(App app) : TestBase
     public async Task FollowOrRequestFollow_ShouldReturnFollowingStatus()
     {
         //Arrange
-        var follower = await UserFactory.CreateAsync();
-        var user = await UserFactory.CreateAsync(isPublic: true);
+        var follower = await UserFactory.CreateAsync(ct: TestContext.Current.CancellationToken);
+        var user = await UserFactory.CreateAsync(isPublic: true, ct: TestContext.Current.CancellationToken);
 
         //Act
         var follow = user.FollowOrRequestFollow(follower.Id);
@@ -81,8 +81,8 @@ public class UserUnitTests(App app) : TestBase
     public async Task FollowOrRequestFollow_ShouldBeNull_WhenFollowIsAlreadyFollowed(bool isPublic)
     {
         //Arrange
-        var user = await UserFactory.CreateAsync(isPublic: isPublic);
-        var follower = await UserFactory.CreateAsync();
+        var user = await UserFactory.CreateAsync(isPublic: isPublic, ct: TestContext.Current.CancellationToken);
+        var follower = await UserFactory.CreateAsync(ct: TestContext.Current.CancellationToken);
         user.FollowOrRequestFollow(follower.Id);
         user.ClearDomainEvents();
 
@@ -98,8 +98,8 @@ public class UserUnitTests(App app) : TestBase
     public async Task FollowOrRequestFollow_ShouldReturnPendingStatus()
     {
         //Arrange
-        var follower = await UserFactory.CreateAsync();
-        var user = await UserFactory.CreateAsync(isPublic: false);
+        var follower = await UserFactory.CreateAsync(ct: TestContext.Current.CancellationToken);
+        var user = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
 
         //Act
         var follow = user.FollowOrRequestFollow(follower.Id);
@@ -142,7 +142,7 @@ public class UserUnitTests(App app) : TestBase
         using var scope = App.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
 
-        var user = await UserFactory.CreateAsync(isPublic: false);
+        var user = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
         var randomUserId = UserId.New();
 
         context.Add(user);
@@ -215,7 +215,7 @@ public class UserUnitTests(App app) : TestBase
     public async Task Unfollow_ShouldNotWork_WhenFollowerDoesntExist()
     {
         //Arrange
-        var user = await UserFactory.CreateAsync();
+        var user = await UserFactory.CreateAsync(ct: TestContext.Current.CancellationToken);
         var randomUserId = UserId.New();
 
         //Act
@@ -254,7 +254,7 @@ public class UserUnitTests(App app) : TestBase
     public async Task RejectPendingFollowRequest_ShouldNotWork_WhenRequestDoesntExist()
     {
         //Arrange
-        var user = await UserFactory.CreateAsync();
+        var user = await UserFactory.CreateAsync(ct: TestContext.Current.CancellationToken);
         var randomUserId = UserId.New();
 
         //Act
@@ -269,13 +269,13 @@ public class UserUnitTests(App app) : TestBase
     public async Task ChangeUsernameAsync_ShouldReturnTrue_AndUpdateUsername_WhenUsernameIsUnique()
     {
         // Arrange
-        var user = await UserFactory.CreateAsync();
+        var user = await UserFactory.CreateAsync(ct: TestContext.Current.CancellationToken);
         var username = Guid.NewGuid().ToString()[..10];
         var checker = Substitute.For<IUserExistsChecker>();
         checker.CheckAsync(Arg.Any<string>(), TestContext.Current.CancellationToken).Returns(false);
 
         // Act
-        var result = await user.ChangeUsernameAsync(username, checker);
+        var result = await user.ChangeUsernameAsync(username, checker, TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldBeTrue();
@@ -286,7 +286,7 @@ public class UserUnitTests(App app) : TestBase
     public async Task ChangeUsernameAsync_ShouldReturnFalse_WhenUsernameIsSame()
     {
         // Arrange
-        var user = await UserFactory.CreateAsync();
+        var user = await UserFactory.CreateAsync(ct: TestContext.Current.CancellationToken);
         var username = user.Username;
         var token = TestContext.Current.CancellationToken;
 
@@ -301,7 +301,7 @@ public class UserUnitTests(App app) : TestBase
     public async Task ChangeUsernameAsync_ShouldThrowBusinessRuleException_WhenUsernameIsNotUnique()
     {
         // Arrange
-        var user = await UserFactory.CreateAsync();
+        var user = await UserFactory.CreateAsync(ct: TestContext.Current.CancellationToken);
         var username = Guid.NewGuid().ToString()[..10];
         var checker = Substitute.For<IUserExistsChecker>();
         var token = TestContext.Current.CancellationToken;
@@ -315,7 +315,7 @@ public class UserUnitTests(App app) : TestBase
     public async Task ChangeNickname_ShouldReturnTrue_AndUpdateNickname_WhenDifferent()
     {
         // Arrange
-        var user = await UserFactory.CreateAsync();
+        var user = await UserFactory.CreateAsync(ct: TestContext.Current.CancellationToken);
         var nickname = Guid.NewGuid().ToString()[..10];
 
         // Act
@@ -330,7 +330,7 @@ public class UserUnitTests(App app) : TestBase
     public async Task ChangeNickname_ShouldReturnFalse_WhenNicknameIsSame()
     {
         // Arrange
-        var user = await UserFactory.CreateAsync();
+        var user = await UserFactory.CreateAsync(ct: TestContext.Current.CancellationToken);
         var nickname = user.Nickname;
 
         // Act
