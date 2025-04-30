@@ -1,4 +1,5 @@
 ﻿using NSubstitute;
+using SocialMediaBackend.Domain.Common.ValueObjects;
 using SocialMediaBackend.Domain.Services;
 using SocialMediaBackend.Domain.Users;
 using SocialMediaBackend.Domain.Users.Follows;
@@ -8,7 +9,7 @@ namespace Tests.Core.Common.Users;
 public static class UserFactory
 {
     public static async Task<User> CreateAsync(
-        string username = "user", 
+        string? username = null, 
         string nickname = "user",
         bool isPublic = true,
         DateTime? dateTimeOfBirth = null,
@@ -17,7 +18,8 @@ public static class UserFactory
         var dateOfBirth = GetDateOfBirth(dateTimeOfBirth);
         var service = GetUserExistsService(userExistsChecker);
 
-        var user = await User.CreateAsync(username, nickname, dateOfBirth, service);
+        username = username ?? Guid.NewGuid().ToString().Replace("-", "")[..8];
+        var user = await User.CreateAsync(username, nickname, dateOfBirth, service, Media.Create(Media.DefaultProfilePicture.Url));
 
         user.ChangeProfilePrivacy(isPublic);
         user.ClearDomainEvents();

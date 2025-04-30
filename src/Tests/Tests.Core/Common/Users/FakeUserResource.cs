@@ -1,8 +1,10 @@
 ﻿using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Users;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Tests.Core.Common.Users;
 
+[Table("FakeUserResource")]
 public class FakeUserResource : Entity<FakeUserResourceId>, IUserResource
 {
     public User User { get; set; } = null!;

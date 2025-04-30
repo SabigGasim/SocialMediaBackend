@@ -7,8 +7,8 @@ namespace Tests.Core.Common.Posts;
 
 public static class PostFactory
 {
-    public static Post Create(string text = "text", IEnumerable<Media>? mediaItems = null)
+    public static Post Create(UserId? userId = null, string text = "text", IEnumerable<Media>? mediaItems = null)
     {
-        return Post.Create(UserId.New(), text, mediaItems)!;
+        return Post.Create(userId ?? UserId.New(), text, mediaItems)!;
     }
 }

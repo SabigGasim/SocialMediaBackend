@@ -1,40 +1,38 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Shouldly;
 using SocialMediaBackend.Application.Auth;
 using SocialMediaBackend.Domain.Users;
 using SocialMediaBackend.Domain.Users.Follows;
-using SocialMediaBackend.Infrastructure.Data;
 using Tests.Core.Common;
 using Tests.Core.Common.Users;
 
 namespace SocialMediaBackend.UnitTests.Application.Auth;
 
-public class FakeProfileAuthorizationHandler(FakeDbContext context) : ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>(context);
-
-public class ProfileAuthorizationHandlerBaseTests : TestBase
+public class ProfileAuthorizationHandlerBaseTests(App app) : TestBase
 {
-    private readonly FakeProfileAuthorizationHandler _handler;
-
-    public ProfileAuthorizationHandlerBaseTests() : base()
-    {
-        _handler = new FakeProfileAuthorizationHandler(_dbContext);
-    }
+    private readonly App App = app;
 
     [Fact]
     public async Task AuthorizeAsync_ShouldReturnTrue_WhenUserIsOwner()
     {
         // Arrange
+        using var scope = App.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+        var handler = scope.ServiceProvider.GetRequiredService<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
+
         var user = await UserFactory.CreateAsync();
         var resource = FakeUserResource.Create(user);
-        _dbContext.Add(resource);
+        context.Add(user);
+        context.Add(resource);
 
-        await _dbContext.SaveChangesAsync();
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var options = new AuthOptions(IsAdmin: false);
 
         // Act
-        var result = await _handler.AuthorizeAsync(user.Id, resource.Id, options);
+        var result = await handler.AuthorizeAsync(user.Id, resource.Id, options, TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldBeTrue();
@@ -44,17 +42,22 @@ public class ProfileAuthorizationHandlerBaseTests : TestBase
     public async Task AuthorizeAsync_ShouldReturnFalse_WhenProfileIsPrivate_AndNotAdmin()
     {
         // Arrange
+        await using var scope = App.Services.CreateAsyncScope();
+        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+        var handler = scope.ServiceProvider.GetRequiredService<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
+
         var owner = await UserFactory.CreateAsync(isPublic: false);
         var resource = FakeUserResource.Create(owner);
-        _dbContext.Add(resource);
+        context.Add(owner);
+        context.Add(resource);
 
-        await _dbContext.SaveChangesAsync();
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var differentUserId = UserId.New();
         var options = new AuthOptions(IsAdmin: false);
 
         // Act
-        var result = await _handler.AuthorizeAsync(differentUserId, resource.Id, options);
+        var result = await handler.AuthorizeAsync(differentUserId, resource.Id, options, TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldBeFalse();
@@ -64,12 +67,15 @@ public class ProfileAuthorizationHandlerBaseTests : TestBase
     public async Task IsAdminOrResourceOwnerAsync_ShouldReturnTrue_WhenUserIsAdmin()
     {
         // Arrange
+        await using var scope = App.Services.CreateAsyncScope();
+        var handler = scope.ServiceProvider.GetRequiredService<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
+
         var userId = UserId.New();
         var resourceId = FakeUserResourceId.New();
         var options = new AuthOptions(IsAdmin: true);
 
         // Act
-        var result = await _handler.IsAdminOrResourceOwnerAsync(userId, resourceId, options);
+        var result = await handler.IsAdminOrResourceOwnerAsync(userId, resourceId, options, TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldBeTrue();
@@ -79,16 +85,22 @@ public class ProfileAuthorizationHandlerBaseTests : TestBase
     public async Task IsAdminOrResourceOwnerAsync_ShouldReturnTrue_WhenUserIsOwner()
     {
         // Arrange
+        await using var scope = App.Services.CreateAsyncScope();
+        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+        var handler = scope.ServiceProvider.GetRequiredService<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
+
         var user = await UserFactory.CreateAsync(isPublic: false);
         var resource = FakeUserResource.Create(user);
-        _dbContext.Add(resource);
 
-        await _dbContext.SaveChangesAsync();
+        context.Add(user);
+        context.Add(resource);
+
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var options = new AuthOptions(IsAdmin: false);
 
         // Act
-        var result = await _handler.IsAdminOrResourceOwnerAsync(user.Id, resource.Id, options);
+        var result = await handler.IsAdminOrResourceOwnerAsync(user.Id, resource.Id, options, TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldBeTrue();
@@ -98,6 +110,9 @@ public class ProfileAuthorizationHandlerBaseTests : TestBase
     public async Task AuthorizeQueryable_ShouldReturnAll_WhenUserIsAdmin()
     {
         // Arrange
+        using var scope = App.Services.CreateScope();
+        var handler = scope.ServiceProvider.GetRequiredService<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
+
         var user1 = await UserFactory.CreateAsync(isPublic: false);
         var user2 = await UserFactory.CreateAsync(isPublic: true);
 
@@ -111,7 +126,7 @@ public class ProfileAuthorizationHandlerBaseTests : TestBase
         }.AsQueryable();
 
         // Act
-        var result = _handler.AuthorizeQueryable(resources, adminId, options).ToList();
+        var result = handler.AuthorizeQueryable(resources, adminId, options).ToList();
 
         // Assert
         result.Count.ShouldBe(resources.Count());
@@ -121,21 +136,24 @@ public class ProfileAuthorizationHandlerBaseTests : TestBase
     public async Task AuthorizeQueryable_ShouldFilterOwnedAndPublics_WhenUserIsNotAdmin()
     {
         // Arrange
+        using var scope = App.Services.CreateScope();
+        var handler = scope.ServiceProvider.GetRequiredService<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
+
         var owner = await UserFactory.CreateAsync(isPublic: false);
-        var user2 = await UserFactory.CreateAsync(isPublic: true);
-        var user3 = await UserFactory.CreateAsync(isPublic: false);
+        var user1 = await UserFactory.CreateAsync(isPublic: true);
+        var user2 = await UserFactory.CreateAsync(isPublic: false);
 
         var options = new AuthOptions(IsAdmin: false);
 
         var resources = new List<FakeUserResource>
         {
             FakeUserResource.Create(owner),
-            FakeUserResource.Create(user2),
-            FakeUserResource.Create(user3)
+            FakeUserResource.Create(user1),
+            FakeUserResource.Create(user2)
         }.AsQueryable();
 
         // Act
-        var result = _handler.AuthorizeQueryable(resources, owner.Id, options).ToList();
+        var result = handler.AuthorizeQueryable(resources, owner.Id, options).ToList();
 
         // Assert
         result.Count.ShouldBe(2);
@@ -143,20 +161,24 @@ public class ProfileAuthorizationHandlerBaseTests : TestBase
     }
 
     [Fact]
-    public async Task AuthorizeQueryable_ShouldFilterFollowers_WhenUserIsNotAdmin()
+    public async Task AuthorizeQueryable_ShouldFilterFollowersAndPublics_WhenUserIsNotAdmin()
     {
         // Arrange
+        await using var scope = App.Services.CreateAsyncScope();
+        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+        var handler = scope.ServiceProvider.GetRequiredService<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
+
         var options = new AuthOptions(IsAdmin: false);
         var user1 = await UserFactory.CreateAsync(isPublic: false);
         var user2 = await UserFactory.CreateAsync(isPublic: false);
         var user3 = await UserFactory.CreateAsync(isPublic: false);
         var user4 = await UserFactory.CreateAsync(isPublic: false);
-        var owner = await UserFactory.CreateAsync(isPublic: false);
+        var follower = await UserFactory.CreateAsync(isPublic: false);
 
         var follows = new List<Follow>
         {
-            Follow.Create(owner.Id, user1.Id),
-            Follow.Create(owner.Id, user2.Id),
+            Follow.Create(follower.Id, user1.Id),
+            Follow.Create(follower.Id, user2.Id),
         };
 
         var resources = new List<FakeUserResource>
@@ -167,25 +189,35 @@ public class ProfileAuthorizationHandlerBaseTests : TestBase
             FakeUserResource.Create(user4)
         };
 
-        _dbContext.AddRange(user1, user2, user3, owner);
-        _dbContext.AddRange(follows);
-        _dbContext.AddRange(resources);
-        await _dbContext.SaveChangesAsync();
+        context.AddRange(user1, user2, user3, user4, follower);
+        context.AddRange(follows);
+        context.AddRange(resources);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Act
-        var result = await _handler
-            .AuthorizeQueryable(_dbContext.Set<FakeUserResource>(), owner.Id, options)
-            .ToListAsync();
+        var result = await handler
+            .AuthorizeQueryable(context.Set<FakeUserResource>(), follower.Id, options)
+            .Include(x => x.User)
+            .ThenInclude(x => x.Followers)
+            .ToListAsync(TestContext.Current.CancellationToken);
 
         // Assert
-        result.Count.ShouldBe(2);
-        result.All(x => x.User.Followers.Any(u => u.FollowerId == owner.Id)).ShouldBeTrue();
+        // The public check here is for concurrency sake among the class fixture instance
+        // Where the database might have users with public profiles from other tests
+        result.All(x => x.User.Followers.Any(u => u.FollowerId == follower.Id) || x.User.ProfileIsPublic)
+            .ShouldBeTrue();
+
+        result.Where(x => x.User.Followers.Any(u => u.FollowerId == follower.Id))
+            .Count().ShouldBe(2);
     }
 
     [Fact]
     public async Task AuthorizeQueryable_ShouldFilterOnlyPublic_WhenAnonymousUser()
     {
         // Arrange
+        using var scope = App.Services.CreateScope();
+        var handler = scope.ServiceProvider.GetRequiredService<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
+
         UserId? anonymousUserId = null;
         var options = new AuthOptions(IsAdmin: true);
         var user1 = await UserFactory.CreateAsync(isPublic: true);
@@ -198,7 +230,7 @@ public class ProfileAuthorizationHandlerBaseTests : TestBase
         }.AsQueryable();
 
         // Act
-        var result = _handler.AuthorizeQueryable(resources, anonymousUserId, options).ToList();
+        var result = handler.AuthorizeQueryable(resources, anonymousUserId, options).ToList();
 
         // Assert
         result.Count.ShouldBe(1);
@@ -209,6 +241,9 @@ public class ProfileAuthorizationHandlerBaseTests : TestBase
     public async Task AuthorizeQueryable_ShouldReturnResource_WhenResourceIdExists()
     {
         // Arrange
+        using var scope = App.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+
         var options = new AuthOptions();
         var owner = await UserFactory.CreateAsync(isPublic: true);
         var user1 = await UserFactory.CreateAsync(isPublic: true);
@@ -222,7 +257,7 @@ public class ProfileAuthorizationHandlerBaseTests : TestBase
 
         var resourceId = resources.First().Id;
 
-        var handler = Substitute.ForPartsOf<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>(_dbContext);
+        var handler = Substitute.ForPartsOf<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>(context);
         handler.AuthorizeQueryable(
             Arg.Any<IQueryable<FakeUserResource>>(),
             Arg.Any<UserId?>(),
@@ -241,6 +276,9 @@ public class ProfileAuthorizationHandlerBaseTests : TestBase
     public async Task AuthorizeQueryable_ShouldNotReturnResource_WhenResourceIdDoesntExist()
     {
         // Arrange
+        using var scope = App.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+
         var options = new AuthOptions();
         var nonExistentResourceId = FakeUserResourceId.New();
         var owner = await UserFactory.CreateAsync(isPublic: true);
@@ -253,7 +291,7 @@ public class ProfileAuthorizationHandlerBaseTests : TestBase
             FakeUserResource.Create(user2),
         }.AsQueryable();
 
-        var handler = Substitute.ForPartsOf<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>(_dbContext);
+        var handler = Substitute.ForPartsOf<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>(context);
         handler.AuthorizeQueryable(
             Arg.Any<IQueryable<FakeUserResource>>(),
             Arg.Any<UserId?>(),

@@ -26,13 +26,17 @@ app.UseAuthorization();
 app.MapFastEndpoints();
 app.UseSwaggerGen();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbcontext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dbcontext.Database.Migrate();
-    dbcontext.Database.EnsureCreated();
-    PrintSchema(dbcontext);
-}
+if (!builder.Environment.IsEnvironment("Testing"))
+    await using (var scope = app.Services.CreateAsyncScope())
+    {
+        var dbcontext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        await dbcontext.Database.MigrateAsync();
+        await dbcontext.Database.EnsureCreatedAsync();
+        if (builder.Environment.IsDevelopment())
+        {
+            PrintSchema(dbcontext);
+        }
+    }
 
 
 app.Run();
@@ -67,3 +71,5 @@ static void PrintSchema(DbContext context)
         }
     }
 }
+
+public partial class Program { }

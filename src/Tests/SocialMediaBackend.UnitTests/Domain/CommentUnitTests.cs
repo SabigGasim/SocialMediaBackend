@@ -4,11 +4,16 @@ using SocialMediaBackend.Domain.Users;
 using Tests.Core.Common.Comments;
 using Tests.Core.Common;
 using SocialMediaBackend.Domain.Posts;
+using Microsoft.Extensions.DependencyInjection;
+using Tests.Core.Common.Posts;
+using Tests.Core.Common.Users;
 
 namespace SocialMediaBackend.UnitTests.Domain;
 
-public class CommentUnitTests : TestBase
+public class CommentUnitTests(App app) : TestBase
 {
+    private readonly App App = app;
+
     [Fact]
     public void Create_ShouldReturnComment()
     {
@@ -115,16 +120,19 @@ public class CommentUnitTests : TestBase
     public async Task AddReply_ShouldReturnReply()
     {
         //Arrange
-        var comment = CommentFactory.Create();
-        var replyText = "text";
-        var replier = UserId.New();
+        using var scope = App.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
 
-        _dbContext.Add(comment);
+        var comment = await context.CreateCommentAsync(ct: TestContext.Current.CancellationToken);
+        var replyText = "text";
+        var replier = await UserFactory.CreateAsync();
+
+        context.Add(replier);
 
         //Act
-        var reply = comment.AddReply(replier, replyText);
-        _dbContext.Add(reply);
-        await _dbContext.SaveChangesAsync();
+        var reply = comment.AddReply(replier.Id, replyText);
+        context.Add(reply);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         //Assert
         reply.ShouldNotBeNull();
@@ -133,7 +141,7 @@ public class CommentUnitTests : TestBase
         comment.Replies!.Count.ShouldBe(1);
         reply.ParentCommentId.ShouldBe(comment.Id);
         reply.ParentComment.ShouldBe(comment);
-        reply.UserId.ShouldBe(replier);
+        reply!.UserId.ShouldBe(replier.Id);
         reply.PostId.ShouldBe(comment.PostId);
         reply.Text.ShouldBe(replyText);
     }
@@ -142,7 +150,10 @@ public class CommentUnitTests : TestBase
     public async Task RemoveReply_ShouldWork_WhenReplyExists()
     {
         //Arrange
-        var (comment, reply) = await _dbContext.CreateCommentWithReplyAsync();
+        using var scope = App.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+
+        var (comment, reply) = await context.CreateCommentWithReplyAsync(TestContext.Current.CancellationToken);
 
         //Act
         var removed = comment.RemoveReply(reply.Id);

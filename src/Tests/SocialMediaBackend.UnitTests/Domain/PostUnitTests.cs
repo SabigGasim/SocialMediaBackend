@@ -1,9 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SocialMediaBackend.Domain.Common.Exceptions;
+﻿using SocialMediaBackend.Domain.Common.Exceptions;
 using SocialMediaBackend.Domain.Common.ValueObjects;
 using SocialMediaBackend.Domain.Posts;
 using SocialMediaBackend.Domain.Users;
-using SocialMediaBackend.Infrastructure.Data;
 using Tests.Core.Common;
 using Shouldly;
 using Tests.Core.Common.Posts;

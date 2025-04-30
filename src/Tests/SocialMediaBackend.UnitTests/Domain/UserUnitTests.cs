@@ -7,11 +7,15 @@ using Tests.Core.Common.Users;
 using SocialMediaBackend.Domain.Common.Exceptions;
 using Tests.Core.Common;
 using SocialMediaBackend.Domain.Users.Follows;
+using FastEndpoints;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SocialMediaBackend.UnitTests.Domain;
 
-public class UserUnitTests : TestBase
+public class UserUnitTests(App app) : TestBase
 {
+    private readonly App App = app;
+
     [Fact]
     public async Task CreateAsync_ShouldReturnUser()
     {
@@ -111,7 +115,10 @@ public class UserUnitTests : TestBase
     public async Task AcceptFollowRequest_ShouldWork()
     {
         //Arrange
-        var (user, follower, follow) = await _dbContext.CreateUserWithFollowerAsync(FollowStatus.Pending);
+        using var scope = App.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+
+        var (user, follower, follow) = await context.CreateUserWithFollowerAsync(FollowStatus.Pending);
 
         //Act
         var accepted = user.AcceptFollowRequest(follower.Id);
@@ -132,11 +139,14 @@ public class UserUnitTests : TestBase
     public async Task AcceptFollowRequest_ShouldNotWork_WhenPendingRequestDoesntExists()
     {
         //Arrange
+        using var scope = App.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+
         var user = await UserFactory.CreateAsync(isPublic: false);
         var randomUserId = UserId.New();
 
-        _dbContext.Add(user);
-        await _dbContext.SaveChangesAsync();
+        context.Add(user);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         //Act
         var accepted = user.AcceptFollowRequest(randomUserId);
@@ -150,7 +160,10 @@ public class UserUnitTests : TestBase
     public async Task AcceptAllPendingFollowRequests_ShouldWork_AndAddDomainEvents_WhenRequestsExists()
     {
         //Arrange
-        var (user, followers, requests) = await _dbContext
+        using var scope = App.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+
+        var (user, followers, requests) = await context
             .CreateUserWithFollowerAsync(FollowStatus.Pending, followersCount: 3);
 
         //Act
@@ -178,7 +191,10 @@ public class UserUnitTests : TestBase
     public async Task Unfollow_ShouldWork_AndAddDomainEvent_WhenFollowingExists()
     {
         // Arrange
-        var (user, follower, _) = await _dbContext.CreateUserWithFollowerAsync(FollowStatus.Following);
+        using var scope = App.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+
+        var (user, follower, _) = await context.CreateUserWithFollowerAsync(FollowStatus.Following);
 
         // Act
         var result = follower.Unfollow(user.Id);
@@ -214,7 +230,10 @@ public class UserUnitTests : TestBase
     public async Task RejectPendingFollowRequest_ShouldWork_AndAddDomainEvent_WhenRequestExists()
     {
         // Arrange
-        var (user, follower, _) = await _dbContext.CreateUserWithFollowerAsync(FollowStatus.Pending);
+        using var scope = App.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+
+        var (user, follower, _) = await context.CreateUserWithFollowerAsync(FollowStatus.Pending);
 
         // Act
         var result = user.RejectPendingFollowRequest(follower.Id);
@@ -253,7 +272,7 @@ public class UserUnitTests : TestBase
         var user = await UserFactory.CreateAsync();
         var username = Guid.NewGuid().ToString()[..10];
         var checker = Substitute.For<IUserExistsChecker>();
-        checker.CheckAsync(Arg.Any<string>()).Returns(false);
+        checker.CheckAsync(Arg.Any<string>(), TestContext.Current.CancellationToken).Returns(false);
 
         // Act
         var result = await user.ChangeUsernameAsync(username, checker);
@@ -269,9 +288,10 @@ public class UserUnitTests : TestBase
         // Arrange
         var user = await UserFactory.CreateAsync();
         var username = user.Username;
+        var token = TestContext.Current.CancellationToken;
 
         // Act
-        var result = await user.ChangeUsernameAsync(username, Substitute.For<IUserExistsChecker>());
+        var result = await user.ChangeUsernameAsync(username, Substitute.For<IUserExistsChecker>(), token);
 
         // Assert
         result.ShouldBeFalse();
@@ -284,10 +304,11 @@ public class UserUnitTests : TestBase
         var user = await UserFactory.CreateAsync();
         var username = Guid.NewGuid().ToString()[..10];
         var checker = Substitute.For<IUserExistsChecker>();
+        var token = TestContext.Current.CancellationToken;
         checker.CheckAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(true);
 
         // Act & Assert
-        await user.ChangeUsernameAsync(username, checker).ShouldThrowAsync<BusinessRuleValidationException>();
+        await user.ChangeUsernameAsync(username, checker, token).ShouldThrowAsync<BusinessRuleValidationException>();
     }
 
     [Fact]

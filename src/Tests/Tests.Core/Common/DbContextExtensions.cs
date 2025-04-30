@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.Domain.Comments;
+using SocialMediaBackend.Domain.Posts;
 using SocialMediaBackend.Domain.Users;
 using SocialMediaBackend.Domain.Users.Follows;
 using Tests.Core.Common.Comments;
+using Tests.Core.Common.Posts;
 using Tests.Core.Common.Users;
 
 namespace Tests.Core.Common;
@@ -54,16 +56,48 @@ public static class DbContextExtensions
         return (user, followers, follows);
     }
 
-    public static async Task<(Comment comment, Comment reply)> CreateCommentWithReplyAsync(
-        this FakeDbContext context)
+    public static async Task<Comment> CreateCommentAsync(
+        this FakeDbContext context, PostId? postId = null, UserId? userId = null, CancellationToken ct = default)
     {
-        var comment = CommentFactory.Create();
-        var reply = comment.AddReply(UserId.New(), "text")!;
+        if (userId is null)
+        {
+            var user = await UserFactory.CreateAsync();
+            userId = user.Id;
+            context.Add(user);
+        }
 
+        if (postId is null)
+        {
+            var post = PostFactory.Create(userId);
+            postId = post.Id;   
+            context.Add(post);
+        }
+        
+        var comment = CommentFactory.Create(postId, userId);
+
+        context.Add(comment);
+
+        await context.SaveChangesAsync(ct);
+
+        return comment;
+    }
+
+    public static async Task<(Comment comment, Comment reply)> CreateCommentWithReplyAsync(
+        this FakeDbContext context, CancellationToken ct = default)
+    {
+        var user = await UserFactory.CreateAsync();
+        var replier = await UserFactory.CreateAsync();
+        var post = PostFactory.Create(user.Id);
+        var comment = CommentFactory.Create(post.Id, user.Id);
+        var reply = comment.AddReply(replier.Id, "text")!;
+
+        context.Add(user);
+        context.Add(replier);
+        context.Add(post);
         context.Add(comment);
         context.Add(reply);
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(ct);
 
         return (comment, reply);
     }
