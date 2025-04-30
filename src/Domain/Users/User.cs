@@ -49,9 +49,10 @@ public class User : AggregateRoot<UserId>
 
     public static async Task<User> CreateAsync(string username, string nickname, DateOnly dateOfBirth, 
         IUserExistsChecker userExistsChecker,
-        Media? profilePicture = null)
+        Media? profilePicture = null,
+        CancellationToken ct = default)
     {
-        await CheckRuleAsync(new UsernameShouldBeUniqueRule(userExistsChecker, username));
+        await CheckRuleAsync(new UsernameShouldBeUniqueRule(userExistsChecker, username), ct);
 
         var pfp = profilePicture ?? Media.DefaultProfilePicture;
 
@@ -172,14 +173,15 @@ public class User : AggregateRoot<UserId>
         return true;
     }
 
-    public async Task<bool> ChangeUsernameAsync(string username, IUserExistsChecker userExistsChecker)
+    public async Task<bool> ChangeUsernameAsync(string username, IUserExistsChecker userExistsChecker,
+        CancellationToken ct = default)
     {
         if(Username == username)
         {
             return false;
         }
 
-        await CheckRuleAsync(new UsernameShouldBeUniqueRule(userExistsChecker, username));
+        await CheckRuleAsync(new UsernameShouldBeUniqueRule(userExistsChecker, username), ct);
 
         Username = username;
         return true;

@@ -12,7 +12,7 @@ internal class PostShouldHaveTextOrMediaRule(string? text, IEnumerable<Media>? m
 
     public bool IsBroken() => string.IsNullOrWhiteSpace(_text) && !(_media?.Any() ?? false);
 
-    public Task<bool> IsBrokenAsync()
+    public Task<bool> IsBrokenAsync(CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }

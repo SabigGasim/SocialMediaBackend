@@ -14,9 +14,9 @@ public abstract class Entity<TId>
         }
     }
 
-    protected static async Task CheckRuleAsync(IBusinessRule rule)
+    protected static async Task CheckRuleAsync(IBusinessRule rule, CancellationToken ct = default)
     {
-        if (await rule.IsBrokenAsync())
+        if (await rule.IsBrokenAsync(ct))
         {
             throw new BusinessRuleValidationException(rule);
         }

@@ -22,7 +22,7 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Creat
     public async Task<HandlerResponse<CreateUserResponse>> ExecuteAsync(CreateUserCommand command, CancellationToken ct)
     {
         var user = await User.CreateAsync(command.Username, command.Nickname, command.DateOfBirth,
-            _userExistsChecker, command.ProfilePicture);
+            _userExistsChecker, command.ProfilePicture, ct);
 
         if(user is null)
         {
