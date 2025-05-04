@@ -37,11 +37,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Users", "Users", "{4274D189
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Feed", "Feed", "{5F199362-B8D2-4057-91CE-603D45C041E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "src\Modules\Users\Domain\Domain.csproj", "{F52130D2-6EF4-40B8-BA80-79A8C3E524AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Users.Domain", "src\Modules\Users\Domain\SocialMediaBackend.Modules.Users.Domain.csproj", "{F52130D2-6EF4-40B8-BA80-79A8C3E524AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\Modules\Users\Infrastructure\Infrastructure.csproj", "{65DBB002-F9B1-4B34-89D2-7250D7460AB3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Users.Infrastructure", "src\Modules\Users\Infrastructure\SocialMediaBackend.Modules.Users.Infrastructure.csproj", "{65DBB002-F9B1-4B34-89D2-7250D7460AB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "src\Modules\Users\Application\Application.csproj", "{EBD1054C-37D9-46DA-9938-0C68ABF08673}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Users.Application", "src\Modules\Users\Application\SocialMediaBackend.Modules.Users.Application.csproj", "{EBD1054C-37D9-46DA-9938-0C68ABF08673}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

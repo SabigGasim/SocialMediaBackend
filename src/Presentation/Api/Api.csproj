@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Modules\Users\Application\Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Users\Application\SocialMediaBackend.Modules.Users.Application.csproj" />
   </ItemGroup>
 
 </Project>
