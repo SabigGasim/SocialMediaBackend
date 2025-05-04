@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SocialMediaBackend.Domain.Comments;
+using SocialMediaBackend.Domain.Feed.Comments;
 using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Infrastructure.Domain.Comments;

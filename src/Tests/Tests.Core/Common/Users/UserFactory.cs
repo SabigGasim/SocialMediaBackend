@@ -2,7 +2,6 @@
 using SocialMediaBackend.Domain.Common.ValueObjects;
 using SocialMediaBackend.Domain.Services;
 using SocialMediaBackend.Domain.Users;
-using SocialMediaBackend.Domain.Users.Follows;
 
 namespace Tests.Core.Common.Users;
 
@@ -19,7 +18,7 @@ public static class UserFactory
         var dateOfBirth = GetDateOfBirth(dateTimeOfBirth);
         var service = GetUserExistsService(userExistsChecker);
 
-        username = username ?? Guid.NewGuid().ToString().Replace("-", "")[..8];
+        username = username ?? TextHelper.CreateRandom(8);
         var user = await User.CreateAsync(username, nickname, dateOfBirth, service, Media.Create(Media.DefaultProfilePicture.Url), ct);
 
         user.ChangeProfilePrivacy(isPublic);

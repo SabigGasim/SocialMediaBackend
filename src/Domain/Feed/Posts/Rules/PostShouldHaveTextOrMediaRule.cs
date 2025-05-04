@@ -1,7 +1,7 @@
 ﻿using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Common.ValueObjects;
 
-namespace SocialMediaBackend.Domain.Posts.Rules;
+namespace SocialMediaBackend.Domain.Feed.Posts.Rules;
 
 internal class PostShouldHaveTextOrMediaRule(string? text, IEnumerable<Media>? media = null) : IBusinessRule
 {

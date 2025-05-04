@@ -103,4 +103,10 @@ public sealed class HandlerResponse<TResponse> : HandlerResponse, IHandlerRespon
 
     public static implicit operator HandlerResponse<TResponse>((string message, HandlerResponseStatus responseStatus) response)
         => HandlerResponse<TResponse>.CreateError(response.message, response.responseStatus);
+
+    public void Deconstruct(out HandlerResponse response, out TResponse result)
+    {
+        response = this as HandlerResponse;
+        result = Payload;
+    }
 }

@@ -9,7 +9,6 @@ using SocialMediaBackend.Application.Auth;
 using SocialMediaBackend.Infrastructure.Data;
 using Testcontainers.PostgreSql;
 using Tests.Core.Common.Users;
-using Xunit;
 
 namespace Tests.Core.Common;
 

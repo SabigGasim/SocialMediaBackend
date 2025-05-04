@@ -10,8 +10,8 @@ using SocialMediaBackend.Application.Users.Follows.FollowUser;
 using SocialMediaBackend.Application.Users.GetAllUsers;
 using SocialMediaBackend.Application.Users.GetFullUserDetails;
 using SocialMediaBackend.Application.Users.GetUser;
-using SocialMediaBackend.Domain.Comments;
-using SocialMediaBackend.Domain.Posts;
+using SocialMediaBackend.Domain.Feed.Comments;
+using SocialMediaBackend.Domain.Feed.Posts;
 using SocialMediaBackend.Domain.Users;
 using SocialMediaBackend.Domain.Users.Follows;
 

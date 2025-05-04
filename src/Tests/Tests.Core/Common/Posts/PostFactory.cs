@@ -1,5 +1,5 @@
 ﻿using SocialMediaBackend.Domain.Common.ValueObjects;
-using SocialMediaBackend.Domain.Posts;
+using SocialMediaBackend.Domain.Feed.Posts;
 using SocialMediaBackend.Domain.Users;
 using Tests.Core.Common.Users;
 

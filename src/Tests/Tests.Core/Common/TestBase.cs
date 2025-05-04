@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FastEndpoints.Testing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SocialMediaBackend.Domain.Users;
 using System.Text;
@@ -10,7 +11,7 @@ namespace Tests.Core.Common;
 
 
 [Collection("Api & Auth")]
-public abstract class TestBase(AuthFixture auth, App app) : FastEndpoints.Testing.TestBase<App>
+public abstract class AppTestBase(AuthFixture auth, App app) : TestBase<App>
 {
     private readonly AuthFixture _auth = auth;
     private readonly App _app = app;
@@ -18,7 +19,8 @@ public abstract class TestBase(AuthFixture auth, App app) : FastEndpoints.Testin
     
     private const string _adminId = "e593a99a-56d0-48ff-b3b9-abed820a8bd1";
 
-    public static string AdminAuthToken { get; private set; } = default!;
+    public static UserId AdminId { get; } = new UserId(Guid.Parse(_adminId));
+    public static string AdminAuthToken { get; private set; } = default!;   
 
     protected override async ValueTask SetupAsync()
     {
@@ -47,6 +49,8 @@ public abstract class TestBase(AuthFixture auth, App app) : FastEndpoints.Testin
 
         AdminAuthToken = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
+        _app.Client.DefaultRequestHeaders.Authorization = new("Bearer", AdminAuthToken);
+
         await CreateUserIfNotExists();
     }
 
@@ -58,16 +62,14 @@ public abstract class TestBase(AuthFixture auth, App app) : FastEndpoints.Testin
         await using var scope = _app.Services.CreateAsyncScope();
 
         var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
-        
-        var userId = new UserId(Guid.Parse(_adminId));
 
         await _locker.WaitAsync(token);
 
-        var adminExists = await context.Users.AnyAsync(x => x.Id == userId, token);
+        var adminExists = await context.Users.AnyAsync(x => x.Id == AdminId, token);
         if (!adminExists)
         {
             var user = await UserFactory.CreateAsync(isPublic: true, ct: token);
-            context.Entry(user).Property(x => x.Id).CurrentValue = userId;
+            context.Entry(user).Property(x => x.Id).CurrentValue = AdminId;
             await context.Users.AddAsync(user, token);
             await context.SaveChangesAsync(token);
         }

@@ -1,7 +1,7 @@
 ﻿using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Users;
 
-namespace SocialMediaBackend.Domain.Posts;
+namespace SocialMediaBackend.Domain.Feed.Posts;
 
 public record PostLike : ValueObject, IUserResource
 {

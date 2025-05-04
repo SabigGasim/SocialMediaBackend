@@ -1,6 +1,6 @@
 ﻿using SocialMediaBackend.Domain.Common;
 
-namespace SocialMediaBackend.Domain.Posts;
+namespace SocialMediaBackend.Domain.Feed.Posts;
 
 public sealed record PostId(Guid Value) : TypedIdValueBase<Guid>(Value)
 {

@@ -4,8 +4,8 @@ using SocialMediaBackend.Application.Abstractions.Requests.Queries;
 using SocialMediaBackend.Application.Auth;
 using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Application.Mappings;
-using SocialMediaBackend.Domain.Comments;
-using SocialMediaBackend.Domain.Posts;
+using SocialMediaBackend.Domain.Feed.Comments;
+using SocialMediaBackend.Domain.Feed.Posts;
 using SocialMediaBackend.Infrastructure.Data;
 
 namespace SocialMediaBackend.Application.Comments.GetAllPostComments;

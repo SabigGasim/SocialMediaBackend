@@ -4,8 +4,8 @@ using SocialMediaBackend.Application.Abstractions;
 using SocialMediaBackend.Application.Auth;
 using SocialMediaBackend.Application.DomainServices.Users;
 using SocialMediaBackend.Application.Processing;
-using SocialMediaBackend.Domain.Comments;
-using SocialMediaBackend.Domain.Posts;
+using SocialMediaBackend.Domain.Feed.Comments;
+using SocialMediaBackend.Domain.Feed.Posts;
 using SocialMediaBackend.Domain.Services;
 
 namespace SocialMediaBackend.Application;

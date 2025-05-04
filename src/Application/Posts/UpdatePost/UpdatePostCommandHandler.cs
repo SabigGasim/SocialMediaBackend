@@ -2,7 +2,7 @@
 using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Application.Common;
-using SocialMediaBackend.Domain.Posts;
+using SocialMediaBackend.Domain.Feed.Posts;
 using SocialMediaBackend.Infrastructure.Data;
 
 namespace SocialMediaBackend.Application.Posts.UpdatePost;

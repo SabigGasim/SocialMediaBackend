@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SocialMediaBackend.Domain.Posts;
+using SocialMediaBackend.Domain.Feed.Posts;
 using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Infrastructure.Domain.Posts;

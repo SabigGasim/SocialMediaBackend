@@ -1,5 +1,5 @@
-﻿using SocialMediaBackend.Domain.Comments;
-using SocialMediaBackend.Domain.Posts;
+﻿using SocialMediaBackend.Domain.Feed.Comments;
+using SocialMediaBackend.Domain.Feed.Posts;
 using SocialMediaBackend.Domain.Users;
 
 namespace Tests.Core.Common.Comments;

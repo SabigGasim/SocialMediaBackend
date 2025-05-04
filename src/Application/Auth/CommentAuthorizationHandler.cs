@@ -1,4 +1,4 @@
-﻿using SocialMediaBackend.Domain.Comments;
+﻿using SocialMediaBackend.Domain.Feed.Comments;
 using SocialMediaBackend.Infrastructure.Data;
 
 namespace SocialMediaBackend.Application.Auth;

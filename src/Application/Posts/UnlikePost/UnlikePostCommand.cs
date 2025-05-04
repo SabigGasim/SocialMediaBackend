@@ -1,7 +1,7 @@
 ﻿using SocialMediaBackend.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Domain.Users;
-using SocialMediaBackend.Domain.Posts;
+using SocialMediaBackend.Domain.Feed.Posts;
 
 namespace SocialMediaBackend.Application.Posts.UnlikePost;
 

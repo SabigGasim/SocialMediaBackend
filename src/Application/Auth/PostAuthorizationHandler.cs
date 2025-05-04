@@ -1,4 +1,4 @@
-﻿using SocialMediaBackend.Domain.Posts;
+﻿using SocialMediaBackend.Domain.Feed.Posts;
 using SocialMediaBackend.Infrastructure.Data;
 
 namespace SocialMediaBackend.Application.Auth;

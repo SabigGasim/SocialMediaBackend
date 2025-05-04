@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace SocialMediaBackend.UnitTests.Domain;
 
-public class UserUnitTests(AuthFixture auth, App app) : TestBase(auth, app)
+public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 {
     private readonly App App = app;
 

@@ -4,7 +4,7 @@ using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Queries;
 using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Application.Mappings;
-using SocialMediaBackend.Domain.Posts;
+using SocialMediaBackend.Domain.Feed.Posts;
 using SocialMediaBackend.Infrastructure.Data;
 
 namespace SocialMediaBackend.Application.Posts.GetPost;

@@ -2,10 +2,10 @@
 using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Infrastructure.Data;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
-using SocialMediaBackend.Domain.Posts;
 using SocialMediaBackend.Application.Auth;
-using SocialMediaBackend.Domain.Comments;
 using Microsoft.EntityFrameworkCore;
+using SocialMediaBackend.Domain.Feed.Posts;
+using SocialMediaBackend.Domain.Feed.Comments;
 
 namespace SocialMediaBackend.Application.Comments.LikeComment;
 internal class LikeCommentCommandHandler(

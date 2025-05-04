@@ -1,6 +1,6 @@
 ﻿using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
-using SocialMediaBackend.Domain.Posts;
+using SocialMediaBackend.Domain.Feed.Posts;
 using SocialMediaBackend.Domain.Users;
 namespace SocialMediaBackend.Application.Posts.LikePost;
 

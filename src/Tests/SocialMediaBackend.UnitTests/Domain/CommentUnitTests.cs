@@ -1,15 +1,15 @@
 ﻿using Shouldly;
-using SocialMediaBackend.Domain.Comments;
 using SocialMediaBackend.Domain.Users;
 using Tests.Core.Common.Comments;
 using Tests.Core.Common;
-using SocialMediaBackend.Domain.Posts;
 using Microsoft.Extensions.DependencyInjection;
 using Tests.Core.Common.Users;
+using SocialMediaBackend.Domain.Feed.Posts;
+using SocialMediaBackend.Domain.Feed.Comments;
 
 namespace SocialMediaBackend.UnitTests.Domain;
 
-public class CommentUnitTests(AuthFixture auth, App app) : TestBase(auth, app)
+public class CommentUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 {
     private readonly App App = app;
 

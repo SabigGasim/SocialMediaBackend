@@ -1,7 +1,7 @@
 ﻿using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Users;
 
-namespace SocialMediaBackend.Domain.Comments;
+namespace SocialMediaBackend.Domain.Feed.Comments;
 
 
 public record CommentLike : ValueObject, IUserResource

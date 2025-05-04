@@ -1,6 +1,6 @@
 ﻿using SocialMediaBackend.Domain.Common;
 
-namespace SocialMediaBackend.Domain.Comments;
+namespace SocialMediaBackend.Domain.Feed.Comments;
 
 public sealed record CommentId(Guid Value) : TypedIdValueBase<Guid>(Value)
 {

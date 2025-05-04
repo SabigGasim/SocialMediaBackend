@@ -1,7 +1,7 @@
-﻿using SocialMediaBackend.Domain.Comments;
-using SocialMediaBackend.Domain.Common;
+﻿using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Common.ValueObjects;
-using SocialMediaBackend.Domain.Posts;
+using SocialMediaBackend.Domain.Feed.Comments;
+using SocialMediaBackend.Domain.Feed.Posts;
 using SocialMediaBackend.Domain.Services;
 using SocialMediaBackend.Domain.Users.Follows;
 using SocialMediaBackend.Domain.Users.Rules;

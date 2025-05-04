@@ -1,8 +1,8 @@
 ﻿using SocialMediaBackend.Domain.Common;
-using SocialMediaBackend.Domain.Posts;
+using SocialMediaBackend.Domain.Feed.Posts;
 using SocialMediaBackend.Domain.Users;
 
-namespace SocialMediaBackend.Domain.Comments;
+namespace SocialMediaBackend.Domain.Feed.Comments;
 
 public class Comment : AggregateRoot<CommentId>, IUserResource
 {
@@ -46,7 +46,7 @@ public class Comment : AggregateRoot<CommentId>, IUserResource
 
     public Comment AddReply(UserId userId, string text)
     {
-        var reply = Create(this.PostId, userId, text, parentCommentId: this.Id);
+        var reply = Create(PostId, userId, text, parentCommentId: Id);
 
         _replies.Add(reply);
         RepliesCount++;
@@ -98,7 +98,7 @@ public class Comment : AggregateRoot<CommentId>, IUserResource
     {
         Text = text;
         LastModified = TimeProvider.System.GetUtcNow();
-        LastModifiedBy = this.Id.ToString();
+        LastModifiedBy = Id.ToString();
 
         return true;
     }

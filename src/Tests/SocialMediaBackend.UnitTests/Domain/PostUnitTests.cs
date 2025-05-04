@@ -1,14 +1,14 @@
 ﻿using SocialMediaBackend.Domain.Common.Exceptions;
 using SocialMediaBackend.Domain.Common.ValueObjects;
-using SocialMediaBackend.Domain.Posts;
 using SocialMediaBackend.Domain.Users;
 using Tests.Core.Common;
 using Shouldly;
 using Tests.Core.Common.Posts;
+using SocialMediaBackend.Domain.Feed.Posts;
 
 namespace SocialMediaBackend.UnitTests.Domain;
 
-public class PostUnitTests(AuthFixture auth, App app) : TestBase(auth, app)
+public class PostUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 {
     [Fact]
     public void Create_ShouldReturnPost_WhenTextIsProvided()

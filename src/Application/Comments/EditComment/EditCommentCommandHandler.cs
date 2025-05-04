@@ -2,7 +2,7 @@
 using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Application.Common;
-using SocialMediaBackend.Domain.Comments;
+using SocialMediaBackend.Domain.Feed.Comments;
 using SocialMediaBackend.Infrastructure.Data;
 
 namespace SocialMediaBackend.Application.Comments.EditComment;

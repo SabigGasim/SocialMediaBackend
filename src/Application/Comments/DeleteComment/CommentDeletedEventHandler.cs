@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.Application.Abstractions;
-using SocialMediaBackend.Domain.Comments;
+using SocialMediaBackend.Domain.Feed.Comments;
 using SocialMediaBackend.Infrastructure.Data;
 
 namespace SocialMediaBackend.Application.Comments.DeleteComment;

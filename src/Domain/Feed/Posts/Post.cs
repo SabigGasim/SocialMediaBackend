@@ -1,10 +1,10 @@
-﻿using SocialMediaBackend.Domain.Comments;
-using SocialMediaBackend.Domain.Common;
+﻿using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Common.ValueObjects;
-using SocialMediaBackend.Domain.Posts.Rules;
+using SocialMediaBackend.Domain.Feed.Comments;
+using SocialMediaBackend.Domain.Feed.Posts.Rules;
 using SocialMediaBackend.Domain.Users;
 
-namespace SocialMediaBackend.Domain.Posts;
+namespace SocialMediaBackend.Domain.Feed.Posts;
 
 public class Post : AggregateRoot<PostId>, IUserResource
 {
@@ -50,14 +50,14 @@ public class Post : AggregateRoot<PostId>, IUserResource
     {
         Text = text;
         LastModified = TimeProvider.System.GetUtcNow();
-        LastModifiedBy = this.Id.ToString();
-        
+        LastModifiedBy = Id.ToString();
+
         return true;
     }
 
     public Comment AddComment(string text, UserId userId)
     {
-        var comment = Comment.Create(this.Id, userId, text, null);
+        var comment = Comment.Create(Id, userId, text, null);
 
         _comments.Add(comment);
         CommentsCount++;
@@ -75,7 +75,7 @@ public class Post : AggregateRoot<PostId>, IUserResource
 
         _comments.Remove(comment);
 
-        this.AddDomainEvent(new CommentDeletedEvent(commentId));
+        AddDomainEvent(new CommentDeletedEvent(commentId));
 
         return true;
     }
