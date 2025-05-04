@@ -20,14 +20,14 @@ public class GetPostQueryHandler(
     {
         var post = await _context.Posts
             .AsNoTracking()
-            .Include(x => x.User)
+            .Include(x => x.Author)
             .FirstOrDefaultAsync(x => x.Id == query.PostId, ct);
 
         if (post is null)
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, query.PostId);
 
         var authorized = await _authService
-            .AuthorizeAsync(query.UserId, query.PostId, new(query.IsAdmin), ct);
+            .AuthorizeAsync(new(query.UserId!.Value), query.PostId, new(query.IsAdmin), ct);
 
         if (!authorized)
             return ("The author limits who can view there posts", HandlerResponseStatus.Unauthorized, post.Id);

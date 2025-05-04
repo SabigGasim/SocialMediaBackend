@@ -11,7 +11,7 @@ public class UpdatePostCommand(Guid postId, string text) : CommandBase, IUserReq
     public PostId PostId { get; } = new(postId);
     public string Text { get; } = text;
 
-    public UserId UserId { get; private set; } = default!;
+    public Guid UserId { get; private set; } = default!;
     public bool IsAdmin { get; private set; }
 
     public UpdatePostCommand AndAdminRole(bool isAdmin)
@@ -22,7 +22,7 @@ public class UpdatePostCommand(Guid postId, string text) : CommandBase, IUserReq
 
     public UpdatePostCommand WithUserId(Guid userId)
     {
-        UserId = new(userId);
+        UserId = userId;
         return this;
     }
 }

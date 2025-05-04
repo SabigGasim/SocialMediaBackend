@@ -12,7 +12,7 @@ public class GetAllRepliesQuery(Guid parentId, int page, int pageSize)
     public int Page { get; } = page;
     public int PageSize { get; } = pageSize;
 
-    public UserId? UserId { get; private set; } = default!;
+    public Guid? UserId { get; private set; } = default!;
 
     public bool IsAdmin {  get; private set; }
 
@@ -24,7 +24,7 @@ public class GetAllRepliesQuery(Guid parentId, int page, int pageSize)
 
     public GetAllRepliesQuery WithUserId(Guid userId)
     {
-        UserId = new(userId);
+        UserId = userId;
         return this;
     }
 }

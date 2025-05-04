@@ -2,6 +2,7 @@
 using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Application.Common;
+using SocialMediaBackend.Domain.Feed;
 using SocialMediaBackend.Infrastructure.Data;
 
 namespace SocialMediaBackend.Application.Comments.UnlikeComment;
@@ -14,13 +15,13 @@ public class UnlikeCommentCommandHandler(ApplicationDbContext context) : IComman
     {
         var comment = await _context.Comments
             .Where(x => x.Id == command.CommentId)
-            .Include(x => x.Likes.Where(x => x.UserId == command.UserId))
+            .Include(x => x.Likes.Where(x => x.UserId == new AuthorId(command.UserId)))
             .FirstOrDefaultAsync(ct);
 
         if (comment is null)
             return ("Comment with the given Id was not found", HandlerResponseStatus.NotFound, command.CommentId);
 
-        var removed = comment.RemoveLike(command.UserId);
+        var removed = comment.RemoveLike(new AuthorId((command.UserId)));
         if (!removed)
             return ("User with the given Id didn't like this comment", HandlerResponseStatus.Conflict, command.UserId);
 

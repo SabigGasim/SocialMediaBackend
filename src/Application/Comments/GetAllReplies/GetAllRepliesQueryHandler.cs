@@ -2,6 +2,7 @@
 using SocialMediaBackend.Application.Abstractions;
 using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Queries;
+using SocialMediaBackend.Application.Auth;
 using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Application.Mappings;
 using SocialMediaBackend.Domain.Feed.Comments;
@@ -25,18 +26,18 @@ public class GetAllRepliesQueryHandler(
             return ("Comment with the given Id was not found", HandlerResponseStatus.NotFound);
 
         var authorized = await _authorizationHandler
-            .AuthorizeAsync(query.UserId, query.ParentId, new(query.IsAdmin), ct);
+            .AuthorizeAsync(new(query.UserId!.Value), query.ParentId, new(query.IsAdmin), ct);
 
         if (!authorized)
             return ("The author limits who can view their comments", HandlerResponseStatus.Unauthorized, query.ParentId);
 
         var queryable = _context.Comments
             .AsNoTracking()
-            .Include(x => x.User)
+            .Include(x => x.Author)
             .Where(x => x.ParentCommentId == query.ParentId);
 
         queryable = _authorizationHandler
-            .AuthorizeQueryable(queryable, query.UserId, new(query.IsAdmin));
+            .AuthorizeQueryable(queryable, new(query.UserId!.Value), new AuthOptions(query.IsAdmin));
 
         var replies = await queryable
             .Skip((query.Page - 1) * query.PageSize)

@@ -9,7 +9,7 @@ public class UnlikePostCommand(Guid postId) : CommandBase, IUserRequest<UnlikePo
 {
     public PostId PostId { get; } = new(postId);
 
-    public UserId UserId { get; private set; } = default!;
+    public Guid UserId { get; private set; } = default!;
     public bool IsAdmin { get; private set; }
 
     public UnlikePostCommand AndAdminRole(bool isAdmin)
@@ -20,7 +20,7 @@ public class UnlikePostCommand(Guid postId) : CommandBase, IUserRequest<UnlikePo
 
     public UnlikePostCommand WithUserId(Guid userId)
     {
-        UserId = new(userId);
+        UserId = userId;
         return this;
     }
 }

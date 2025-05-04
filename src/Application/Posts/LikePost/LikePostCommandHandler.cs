@@ -5,6 +5,7 @@ using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.Domain.Feed.Posts;
+using SocialMediaBackend.Domain.Feed;
 
 namespace SocialMediaBackend.Application.Posts.LikePost;
 
@@ -18,8 +19,8 @@ public class LikePostCommandHandler(
     public async Task<HandlerResponse> ExecuteAsync(LikePostCommand command, CancellationToken ct)
     {
         var post = await _context.Posts
-            .Include(x => x.User)
-            .Include(x => x.Likes.Where(p => p.UserId == command.UserId))
+            .Include(x => x.Author)
+            .Include(x => x.Likes.Where(p => p.UserId == new AuthorId(command.UserId)))
             .Where(x => x.Id == command.PostId)
             .FirstOrDefaultAsync(ct);
 
@@ -27,14 +28,14 @@ public class LikePostCommandHandler(
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, command.PostId);
 
         var authorized = await _authorizationHandler
-            .AuthorizeAsync(command.UserId, command.PostId, new(command.IsAdmin), ct);
+            .AuthorizeAsync(new(command.UserId), command.PostId, new(command.IsAdmin), ct);
 
         if (!authorized)
-            return ("The author limits who can view their posts", HandlerResponseStatus.Unauthorized, post.UserId);
+            return ("The author limits who can view their posts", HandlerResponseStatus.Unauthorized, post.AuthorId);
 
-        var like = post.AddLike(command.UserId);
+        var like = post.AddLike(new(command.UserId));
         if (like is null)
-            return ("User already liked this post", HandlerResponseStatus.Conflict, post.UserId);
+            return ("User already liked this post", HandlerResponseStatus.Conflict, post.AuthorId);
 
         _context.Add(like);
         await _context.SaveChangesAsync(ct);

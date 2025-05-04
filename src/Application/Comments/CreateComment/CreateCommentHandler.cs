@@ -23,12 +23,12 @@ public class CreateCommentHandler(
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, command.PostId);
 
         var authorized = await _authorizationHandler
-            .AuthorizeAsync(command.UserId, command.PostId, new(command.IsAdmin), ct);
+            .AuthorizeAsync(new(command.UserId), command.PostId, new(command.IsAdmin), ct);
 
         if (!authorized)
-            return ("The author limits who can view their posts", HandlerResponseStatus.Unauthorized, post.UserId);
+            return ("The author limits who can view their posts", HandlerResponseStatus.Unauthorized, post.AuthorId);
 
-        var comment = post.AddComment(command.Text, command.UserId);
+        var comment = post.AddComment(command.Text, new(command.UserId));
 
         _context.Add(comment);
         await _context.SaveChangesAsync(ct);

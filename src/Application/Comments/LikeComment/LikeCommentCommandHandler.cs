@@ -6,6 +6,7 @@ using SocialMediaBackend.Application.Auth;
 using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.Domain.Feed.Posts;
 using SocialMediaBackend.Domain.Feed.Comments;
+using SocialMediaBackend.Domain.Feed;
 
 namespace SocialMediaBackend.Application.Comments.LikeComment;
 internal class LikeCommentCommandHandler(
@@ -18,8 +19,8 @@ internal class LikeCommentCommandHandler(
     public async Task<HandlerResponse> ExecuteAsync(LikeCommentCommand command, CancellationToken ct)
     {
         var comment = await _context.Comments
-            .Include(x => x.User)
-            .Include(x => x.Likes.Where(p => p.UserId == command.UserId))
+            .Include(x => x.Author)
+            .Include(x => x.Likes.Where(p => p.UserId == new AuthorId(command.UserId)))
             .Where(x => x.Id == command.CommentId)
             .FirstOrDefaultAsync(ct);
 
@@ -28,11 +29,11 @@ internal class LikeCommentCommandHandler(
         
         bool authorized = await AuthorizePostAndComment(command, comment.PostId, ct);
         if (!authorized)
-            return ("The author limits who can view their comments", HandlerResponseStatus.Unauthorized, comment.UserId);
+            return ("The author limits who can view their comments", HandlerResponseStatus.Unauthorized, comment.AuthorId);
 
-        var like = comment.AddLike(command.UserId);
+        var like = comment.AddLike(new(command.UserId));
         if (like is null)
-            return ("User already liked this comment", HandlerResponseStatus.Conflict, comment.UserId);
+            return ("User already liked this comment", HandlerResponseStatus.Conflict, comment.AuthorId);
 
         _context.Add(like);
         await _context.SaveChangesAsync(ct);
@@ -44,9 +45,9 @@ internal class LikeCommentCommandHandler(
     {
         return 
              await _authorizationService
-                .AuthorizeAsync<Post, PostId>(command.UserId, postId, new(command.IsAdmin), ct)
+                .AuthorizeAsync<Post, PostId>(new(command.UserId), postId, new(command.IsAdmin), ct)
                 &&
              await _authorizationService
-                .AuthorizeAsync<Comment, CommentId>(command.UserId, command.CommentId, new(command.IsAdmin), ct);
+                .AuthorizeAsync<Comment, CommentId>(new(command.UserId), command.CommentId, new(command.IsAdmin), ct);
     }
 }

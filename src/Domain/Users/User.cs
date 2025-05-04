@@ -1,7 +1,5 @@
 ﻿using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Common.ValueObjects;
-using SocialMediaBackend.Domain.Feed.Comments;
-using SocialMediaBackend.Domain.Feed.Posts;
 using SocialMediaBackend.Domain.Services;
 using SocialMediaBackend.Domain.Users.Follows;
 using SocialMediaBackend.Domain.Users.Rules;
@@ -10,8 +8,6 @@ namespace SocialMediaBackend.Domain.Users;
 
 public class User : AggregateRoot<UserId>
 {
-    private readonly List<Post> _posts = new();
-    private readonly List<Comment> _comments = new();
     private readonly List<Follow> _followers = new();
     private readonly List<Follow> _followings = new();
 
@@ -41,8 +37,6 @@ public class User : AggregateRoot<UserId>
     public int FollowersCount { get; private set; }
     public int FollowingCount { get; private set; }
 
-    public IReadOnlyCollection<Post> Posts => _posts.AsReadOnly();
-    public IReadOnlyCollection<Comment> Comments => _comments.AsReadOnly();
     public IReadOnlyCollection<Follow> Followers => _followers.AsReadOnly();
     public IReadOnlyCollection<Follow> Followings => _followings.AsReadOnly();
 
@@ -57,22 +51,6 @@ public class User : AggregateRoot<UserId>
         var pfp = profilePicture ?? Media.DefaultProfilePicture;
 
         return new User(username, nickname, dateOfBirth, pfp);
-    }
-
-    public Post? AddPost(string? text = null, IEnumerable<Media>? mediaItems = null)
-    {
-        var post = Post.Create(Id, text, mediaItems as List<Media> ?? mediaItems?.ToList());
-        if (post is null)
-            return null;
-
-        _posts.Add(post);
-        return post;
-    }
-
-    public bool RemovePost(PostId postId)
-    {
-        var post = _posts.Find(x => x.Id == postId)!;
-        return _posts.Remove(post);
     }
 
     public Follow? FollowOrRequestFollow(UserId followerId)

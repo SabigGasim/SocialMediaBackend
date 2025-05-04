@@ -10,6 +10,7 @@ using SocialMediaBackend.Application.Users.Follows.FollowUser;
 using SocialMediaBackend.Application.Users.GetAllUsers;
 using SocialMediaBackend.Application.Users.GetFullUserDetails;
 using SocialMediaBackend.Application.Users.GetUser;
+using SocialMediaBackend.Domain.Feed;
 using SocialMediaBackend.Domain.Feed.Comments;
 using SocialMediaBackend.Domain.Feed.Posts;
 using SocialMediaBackend.Domain.Users;
@@ -30,6 +31,18 @@ public static class DomainToApiContractMapper
     }
 
     public static GetUserResponse MapToGetResponse(this User user)
+    {
+        return new GetUserResponse(
+            user.Id.Value,
+            user.Username,
+            user.Nickname,
+            user.FollowersCount,
+            user.FollowingCount,
+            user.ProfilePicture.Url
+            );
+    }
+
+    public static GetUserResponse MapToGetResponse(this Author user)
     {
         return new GetUserResponse(
             user.Id.Value,
@@ -62,12 +75,12 @@ public static class DomainToApiContractMapper
             post.LikesCount,
             post.CommentsCount,
             new GetUserResponse(
-                post.User.Id.Value, 
-                post.User.Username, 
-                post.User.Nickname, 
-                post.User.FollowersCount,
-                post.User.FollowingCount,
-                post.User.ProfilePicture.Url)
+                post.Author.Id.Value, 
+                post.Author.Username, 
+                post.Author.Nickname, 
+                post.Author.FollowersCount,
+                post.Author.FollowingCount,
+                post.Author.ProfilePicture.Url)
             );
     }
 
@@ -89,7 +102,7 @@ public static class DomainToApiContractMapper
             comment.Text,
             comment.LikesCount,
             comment.RepliesCount,
-            comment.User.MapToGetResponse());
+            comment.Author.MapToGetResponse());
     }
 
     public static GetReplyShortResponse MapToGetReplyResponse(this Comment comment)
@@ -99,7 +112,7 @@ public static class DomainToApiContractMapper
             comment.Text,
             comment.LikesCount,
             comment.RepliesCount,
-            comment.User.MapToGetResponse());
+            comment.Author.MapToGetResponse());
     }
     public static GetAllRepliesResponse MapToGetRepliesResponse(this IEnumerable<Comment> replies,
         CommentId parentId, int page, int pageSize, int totalCount)

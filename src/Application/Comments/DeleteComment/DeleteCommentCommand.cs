@@ -11,7 +11,7 @@ public class DeleteCommentCommand(Guid commentId, Guid postId) : CommandBase, IU
     public CommentId CommentId { get; } = new(commentId);
     public PostId PostId { get; } = new(postId);
 
-    public UserId UserId { get; private set; } = default!;
+    public Guid UserId { get; private set; } = default!;
 
     public bool IsAdmin { get; private set; }
 
@@ -23,7 +23,7 @@ public class DeleteCommentCommand(Guid commentId, Guid postId) : CommandBase, IU
 
     public DeleteCommentCommand WithUserId(Guid userId)
     {
-        UserId = new(userId);
+        UserId = userId;
         return this;
     }
 }

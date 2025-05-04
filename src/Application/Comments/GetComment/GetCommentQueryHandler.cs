@@ -20,14 +20,14 @@ public class GetCommentQueryHandler(
     public async Task<HandlerResponse<GetCommentResponse>> ExecuteAsync(GetCommentQuery query, CancellationToken ct)
     {
         var authorized = await _authorizationHandler
-            .AuthorizeAsync(query.UserId, query.CommentId, new(query.IsAdmin), ct);
+            .AuthorizeAsync(new(query.UserId!.Value), query.CommentId, new(query.IsAdmin), ct);
 
         if (!authorized)
             return ("The author restricts who can see their comments", HandlerResponseStatus.Unauthorized, query.CommentId);
 
         var comment = await _context.Comments
             .AsNoTracking()
-            .Include(x => x.User)
+            .Include(x => x.Author)
             .FirstOrDefaultAsync(x => x.Id == query.CommentId, ct);
 
         if (comment is null)

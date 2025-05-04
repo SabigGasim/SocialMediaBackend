@@ -8,7 +8,7 @@ public class UnlikeCommentCommand(Guid commentId) : CommandBase, IUserRequest<Un
 {
     public CommentId CommentId { get; } = new(commentId);
 
-    public UserId UserId { get; private set; } = default!;
+    public Guid UserId { get; private set; } = default!;
     public bool IsAdmin { get; private set; }
 
     public UnlikeCommentCommand AndAdminRole(bool isAdmin)
@@ -19,7 +19,7 @@ public class UnlikeCommentCommand(Guid commentId) : CommandBase, IUserRequest<Un
 
     public UnlikeCommentCommand WithUserId(Guid userId)
     {
-        UserId = new(userId);
+        UserId = userId;
         return this;
     }
 }

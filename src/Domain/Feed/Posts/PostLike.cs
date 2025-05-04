@@ -3,15 +3,14 @@ using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Domain.Feed.Posts;
 
-public record PostLike : ValueObject, IUserResource
+public record PostLike : ValueObject
 {
-    public UserId UserId { get; private set; } = default!;
+    public AuthorId UserId { get; private set; } = default!;
     public PostId PostId { get; private set; } = default!;
     public DateTimeOffset Created { get; private set; }
-    public User User { get; private set; } = default!;
     public Post Post { get; private set; } = default!;
 
-    private PostLike(UserId userId, PostId postId)
+    private PostLike(AuthorId userId, PostId postId)
     {
         UserId = userId;
         PostId = postId;
@@ -20,7 +19,7 @@ public record PostLike : ValueObject, IUserResource
 
     private PostLike() { }
 
-    internal static PostLike Create(UserId userId, PostId postId)
+    internal static PostLike Create(AuthorId userId, PostId postId)
     {
         return new PostLike(userId, postId);
     }

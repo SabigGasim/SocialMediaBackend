@@ -22,7 +22,7 @@ public class EditCommentCommandHandler(
             return ("Comment with the given Id was not found", HandlerResponseStatus.NotFound, command.CommentId);
 
         var authorized = await _authorizationHandler
-            .IsAdminOrResourceOwnerAsync(command.UserId, command.CommentId, new(command.IsAdmin), ct);
+            .IsAdminOrResourceOwnerAsync(new(command.UserId), command.CommentId, new(command.IsAdmin), ct);
 
         if (!authorized)
             return ("Forbidden", HandlerResponseStatus.Unauthorized);

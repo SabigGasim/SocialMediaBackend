@@ -21,7 +21,7 @@ public class UpdatePostCommandHandler(
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound);
 
         var authorized = await _authorizationHandler
-            .AuthorizeAsync(command.UserId, command.PostId, new(command.IsAdmin), ct);
+            .AuthorizeAsync(new(command.UserId), command.PostId, new(command.IsAdmin), ct);
 
         if (!authorized)
             return ("Forbidden", HandlerResponseStatus.Unauthorized);

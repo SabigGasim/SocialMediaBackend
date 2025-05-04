@@ -23,12 +23,12 @@ public class ReplyToCommentCommandHandler(
             return ("Comment with the given Id was not found", HandlerResponseStatus.NotFound);
 
         var authorized = await _authorizationHandler
-            .AuthorizeAsync(command.UserId, command.ParentId, new(command.IsAdmin), ct);
+            .AuthorizeAsync(new(command.UserId), command.ParentId, new(command.IsAdmin), ct);
 
         if (!authorized)
-            return ("The author restricts who can see their comments", HandlerResponseStatus.Unauthorized, parent.UserId);
+            return ("The author restricts who can see their comments", HandlerResponseStatus.Unauthorized, parent.AuthorId);
 
-        var reply = parent.AddReply(command.UserId, command.Text);
+        var reply = parent.AddReply(new(command.UserId), command.Text);
 
         _context.Add(reply);
         await _context.SaveChangesAsync(ct);

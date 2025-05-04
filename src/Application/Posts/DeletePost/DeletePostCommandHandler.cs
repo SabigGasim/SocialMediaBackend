@@ -3,6 +3,7 @@ using SocialMediaBackend.Application.Abstractions;
 using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Application.Common;
+using SocialMediaBackend.Domain.Feed;
 using SocialMediaBackend.Domain.Feed.Posts;
 using SocialMediaBackend.Infrastructure.Data;
 
@@ -18,20 +19,20 @@ public class DeletePostCommandHandler(
     public async Task<HandlerResponse> ExecuteAsync(DeletePostCommand command, CancellationToken ct)
     {   
         var authorized = await _authorizationHandler
-            .IsAdminOrResourceOwnerAsync(command.UserId, command.PostId, new(command.IsAdmin), ct);
+            .IsAdminOrResourceOwnerAsync(new(command.UserId), command.PostId, new(command.IsAdmin), ct);
 
         if (!authorized)
         {
             return ("Forbidden", HandlerResponseStatus.Unauthorized);
         }
 
-        var query = _context.Users
+        var query = _context.Authors
                 .Include(x => x.Posts.Where(p => p.Id == command.PostId))
                 .AsQueryable();
 
         query = command.IsAdmin
-            ? query.Where(x => x.Id == command.UserId || x.Posts.Any(p => p.Id == command.PostId))
-            : query.Where(x => x.Id == command.UserId);
+            ? query.Where(x => x.Id == new AuthorId(command.UserId) || x.Posts.Any(p => p.Id == command.PostId))
+            : query.Where(x => x.Id == new AuthorId(command.UserId));
 
         var user = await query.FirstOrDefaultAsync(ct);
         if (user is null)

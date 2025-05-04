@@ -8,7 +8,7 @@ public class UpdateNicknameCommand(string nickname) : CommandBase, IUserRequest<
 {
     public string Nickname { get; } = nickname;
 
-    public UserId UserId { get; private set; } = default!;
+    public Guid UserId { get; private set; } = default!;
     public bool IsAdmin { get; private set; }
 
     public UpdateNicknameCommand AndAdminRole(bool isAdmin)
@@ -19,7 +19,7 @@ public class UpdateNicknameCommand(string nickname) : CommandBase, IUserRequest<
 
     public UpdateNicknameCommand WithUserId(Guid userId)
     {
-        UserId = new(userId);
+        UserId = userId;
         return this;
     }
 }

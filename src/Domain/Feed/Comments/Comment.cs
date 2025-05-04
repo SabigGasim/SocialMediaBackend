@@ -1,35 +1,34 @@
 ﻿using SocialMediaBackend.Domain.Common;
 using SocialMediaBackend.Domain.Feed.Posts;
-using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Domain.Feed.Comments;
 
-public class Comment : AggregateRoot<CommentId>, IUserResource
+public class Comment : AggregateRoot<CommentId>
 {
     private readonly List<CommentLike> _likes = new();
     private readonly List<Comment> _replies = new();
 
-    private Comment(PostId postId, UserId userId,
+    private Comment(PostId postId, AuthorId authorId,
         string text, CommentId? parentCommentId = null)
     {
         PostId = postId;
-        UserId = userId;
+        AuthorId = authorId;
         Text = text;
         ParentCommentId = parentCommentId;
 
         Id = CommentId.New();
         Created = DateTimeOffset.UtcNow;
-        CreatedBy = userId.ToString();
+        CreatedBy = authorId.ToString();
         LastModified = DateTimeOffset.UtcNow;
-        LastModifiedBy = userId.ToString();
+        LastModifiedBy = authorId.ToString();
     }
 
     private Comment() { }
 
     public PostId PostId { get; private set; } = default!;
     public Post Post { get; private set; } = default!;
-    public UserId UserId { get; private set; } = default!;
-    public User User { get; private set; } = default!;
+    public AuthorId AuthorId { get; private set; } = default!;
+    public Author Author { get; private set; } = default!;
     public CommentId? ParentCommentId { get; private set; }
     public Comment? ParentComment { get; private set; }
     public string Text { get; private set; } = default!;
@@ -39,14 +38,14 @@ public class Comment : AggregateRoot<CommentId>, IUserResource
     public IReadOnlyCollection<CommentLike> Likes => _likes.AsReadOnly();
     public IReadOnlyCollection<Comment> Replies => _replies.AsReadOnly();
 
-    public static Comment Create(PostId postId, UserId userId, string text, CommentId? parentCommentId)
+    public static Comment Create(PostId postId, AuthorId authorId, string text, CommentId? parentCommentId)
     {
-        return new Comment(postId, userId, text, parentCommentId);
+        return new Comment(postId, authorId, text, parentCommentId);
     }
 
-    public Comment AddReply(UserId userId, string text)
+    public Comment AddReply(AuthorId authorId, string text)
     {
-        var reply = Create(PostId, userId, text, parentCommentId: Id);
+        var reply = Create(PostId, authorId, text, parentCommentId: Id);
 
         _replies.Add(reply);
         RepliesCount++;
@@ -54,7 +53,7 @@ public class Comment : AggregateRoot<CommentId>, IUserResource
         return reply;
     }
 
-    public CommentLike? AddLike(UserId userId)
+    public CommentLike? AddLike(AuthorId userId)
     {
         if (_likes.Any(x => x.UserId == userId))
         {
@@ -68,7 +67,7 @@ public class Comment : AggregateRoot<CommentId>, IUserResource
         return like;
     }
 
-    public bool RemoveLike(UserId userId)
+    public bool RemoveLike(AuthorId userId)
     {
         var like = _likes.Find(x => x.UserId == userId);
         if (like is null)

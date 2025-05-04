@@ -2,20 +2,19 @@
 using SocialMediaBackend.Domain.Common.ValueObjects;
 using SocialMediaBackend.Domain.Feed.Comments;
 using SocialMediaBackend.Domain.Feed.Posts.Rules;
-using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Domain.Feed.Posts;
 
-public class Post : AggregateRoot<PostId>, IUserResource
+public class Post : AggregateRoot<PostId>
 {
     private readonly List<PostLike> _likes = new();
     private readonly List<Comment> _comments = new();
     private readonly List<Media> _mediaItems;
 
-    private Post(UserId userId, string? text,
+    private Post(AuthorId authorId, string? text,
         IEnumerable<Media>? mediaItems = null)
     {
-        UserId = userId;
+        AuthorId = authorId;
         Text = text;
 
         Id = PostId.New();
@@ -29,8 +28,8 @@ public class Post : AggregateRoot<PostId>, IUserResource
 
     private Post() => _mediaItems = new();
 
-    public UserId UserId { get; private set; } = default!;
-    public User User { get; private set; } = default!;
+    public AuthorId AuthorId { get; private set; } = default!;
+    public Author Author { get; private set; } = default!;
     public int LikesCount { get; private set; }
     public int CommentsCount { get; private set; }
     public string? Text { get; private set; }
@@ -39,11 +38,11 @@ public class Post : AggregateRoot<PostId>, IUserResource
     public IReadOnlyCollection<Comment> Comments => _comments.AsReadOnly();
     public IReadOnlyCollection<Media> MediaItems => _mediaItems.AsReadOnly();
 
-    public static Post? Create(UserId userId, string? text = null, IEnumerable<Media>? mediaItems = null)
+    public static Post? Create(AuthorId authorId, string? text = null, IEnumerable<Media>? mediaItems = null)
     {
         CheckRule(new PostShouldHaveTextOrMediaRule(text, mediaItems));
 
-        return new Post(userId, text, mediaItems);
+        return new Post(authorId, text, mediaItems);
     }
 
     public bool UpdatePost(string text)
@@ -55,9 +54,9 @@ public class Post : AggregateRoot<PostId>, IUserResource
         return true;
     }
 
-    public Comment AddComment(string text, UserId userId)
+    public Comment AddComment(string text, AuthorId authorId)
     {
-        var comment = Comment.Create(Id, userId, text, null);
+        var comment = Comment.Create(Id, authorId, text, null);
 
         _comments.Add(comment);
         CommentsCount++;
@@ -80,21 +79,21 @@ public class Post : AggregateRoot<PostId>, IUserResource
         return true;
     }
 
-    public PostLike? AddLike(UserId userId)
+    public PostLike? AddLike(AuthorId authorId)
     {
-        if (_likes.Any(l => l.UserId == userId))
+        if (_likes.Any(l => l.UserId == authorId))
             return null;
 
-        var postLike = PostLike.Create(userId, Id);
+        var postLike = PostLike.Create(authorId, Id);
         _likes.Add(postLike);
         LikesCount++;
 
         return postLike;
     }
 
-    public bool RemoveLike(UserId userId)
+    public bool RemoveLike(AuthorId authorId)
     {
-        var postLike = _likes.Find(l => l.UserId == userId);
+        var postLike = _likes.Find(l => l.UserId == authorId);
 
         if (postLike is null)
             return false;

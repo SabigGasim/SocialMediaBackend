@@ -3,6 +3,7 @@ using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Domain.Common;
+using SocialMediaBackend.Domain.Users;
 using SocialMediaBackend.Infrastructure.Data;
 
 namespace SocialMediaBackend.Application.Users.Follows.AcceptFollowRequest;
@@ -19,7 +20,7 @@ public class AcceptFollowRequetCommandHandler(
         var user = await _context.Users
             .Include(x => x.Followers)
             .ThenInclude(x => x.Follower)
-            .FirstAsync(x => x.Id == command.UserId, ct);
+            .FirstAsync(x => x.Id == new UserId(command.UserId), ct);
 
         var accepted = user.AcceptPendingFollowRequest(command.UserToAcceptId);
         if (!accepted)

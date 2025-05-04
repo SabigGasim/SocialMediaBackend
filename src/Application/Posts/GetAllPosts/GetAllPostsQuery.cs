@@ -30,7 +30,7 @@ public class GetAllPostsQuery : QueryBase<GetAllPostsResponse>, IOptionalUserReq
 
     public GetAllPostsOptions Options { get; init; }
 
-    public UserId? UserId { get; private set; }
+    public Guid? UserId { get; private set; }
 
     public bool IsAdmin { get => Options.IsAdmin; private set => Options.IsAdmin = value; }
 
@@ -42,7 +42,7 @@ public class GetAllPostsQuery : QueryBase<GetAllPostsResponse>, IOptionalUserReq
 
     public GetAllPostsQuery WithUserId(Guid userId)
     {
-        UserId = new(userId);
+        UserId = userId;
         Options.RequestingUserId = userId;
 
         return this;

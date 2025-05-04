@@ -8,7 +8,7 @@ public class LikePostCommand(Guid postId) : CommandBase, IUserRequest<LikePostCo
 {
     public PostId PostId { get; } = new(postId);
 
-    public UserId UserId { get; private set; } = default!;
+    public Guid UserId { get; private set; } = default!;
     public bool IsAdmin { get; private set; }
 
     public LikePostCommand AndAdminRole(bool isAdmin)
@@ -19,7 +19,7 @@ public class LikePostCommand(Guid postId) : CommandBase, IUserRequest<LikePostCo
 
     public LikePostCommand WithUserId(Guid userId)
     {
-        UserId = new(userId);
+        UserId = userId;
         return this;
     }
 }

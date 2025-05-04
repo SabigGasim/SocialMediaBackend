@@ -6,7 +6,7 @@ namespace SocialMediaBackend.Application.Users.DeleteUser;
 
 public class DeleteUserCommand(Guid userToDeleteId) : CommandBase, IUserRequest<DeleteUserCommand>
 {
-    public UserId UserId { get; private set; } = default!;
+    public Guid UserId { get; private set; } = default!;
     public UserId UserToDeleteId { get; } = new(userToDeleteId);
 
     public bool IsAdmin { get; private set; }
@@ -19,7 +19,7 @@ public class DeleteUserCommand(Guid userToDeleteId) : CommandBase, IUserRequest<
 
     public DeleteUserCommand WithUserId(Guid userId)
     {
-        UserId = new(userId);
+        UserId = userId;
         return this;
     }
 }

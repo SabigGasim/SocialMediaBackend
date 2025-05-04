@@ -12,7 +12,7 @@ public class CreatePostCommand(
     public string Text { get; } = text;
     public IEnumerable<MediaRequest> MediaItems { get; } = mediaItems;
 
-    public UserId UserId { get; private set; } = default!;
+    public Guid UserId { get; private set; } = default!;
     public bool IsAdmin { get; private set; }
 
     public CreatePostCommand AndAdminRole(bool isAdmin)
@@ -23,7 +23,7 @@ public class CreatePostCommand(
 
     public CreatePostCommand WithUserId(Guid userId)
     {
-        UserId = new(userId);
+        UserId = userId;
         return this;
     }
 }

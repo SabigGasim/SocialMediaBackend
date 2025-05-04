@@ -26,7 +26,7 @@ public class FollowUserCommandHandler(
             return ("User with the given Id was not found", HandlerResponseStatus.NotFound, command.UserToFollowId);
         }
 
-        var follow = userToFollow.FollowOrRequestFollow(command.UserId);
+        var follow = userToFollow.FollowOrRequestFollow(new(command.UserId));
         if (follow is null)
         {
             return ("User is already followed", HandlerResponseStatus.Conflict, command.UserToFollowId);

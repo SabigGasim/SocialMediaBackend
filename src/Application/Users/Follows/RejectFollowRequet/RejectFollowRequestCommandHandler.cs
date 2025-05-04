@@ -3,6 +3,7 @@ using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Domain.Common;
+using SocialMediaBackend.Domain.Users;
 using SocialMediaBackend.Domain.Users.Follows;
 using SocialMediaBackend.Infrastructure.Data;
 
@@ -20,7 +21,7 @@ public class RejectFollowRequestCommandHandler(
     {
         var user = await _context.Users
             .Include(x => x.Followers.Where(f => f.Status == FollowStatus.Pending))
-            .FirstAsync(x => x.Id == command.UserId, ct);
+            .FirstAsync(x => x.Id == new UserId(command.UserId), ct);
 
         var rejected = user.RejectPendingFollowRequest(command.UserToRejectId);
         if (!rejected)

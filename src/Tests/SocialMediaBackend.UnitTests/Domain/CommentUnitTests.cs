@@ -62,7 +62,7 @@ public class CommentUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app
         // Assert
         like.ShouldNotBeNull();
         comment.LikesCount.ShouldBe(1);
-        comment.Likes.Single().UserId.ShouldBe(userId);
+        comment.Likes.Single().AuthorId.ShouldBe(userId);
         comment.Likes.Single().CommentId.ShouldBe(comment.Id);
     }
 

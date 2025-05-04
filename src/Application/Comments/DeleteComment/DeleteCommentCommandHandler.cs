@@ -21,7 +21,7 @@ public class DeleteCommentCommandHandler(
     public async Task<HandlerResponse> ExecuteAsync(DeleteCommentCommand command, CancellationToken ct)
     {
         var authorized = await _authorizationHandler
-            .IsAdminOrResourceOwnerAsync(command.UserId, command.CommentId, new(command.IsAdmin), ct);
+            .IsAdminOrResourceOwnerAsync(new(command.UserId), command.CommentId, new(command.IsAdmin), ct);
 
         if (!authorized)
         {

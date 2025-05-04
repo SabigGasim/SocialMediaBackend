@@ -26,7 +26,7 @@ public class GetAllPostCommentsQueryHandler(
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound);
 
         var authorized = await _authorizationService
-            .AuthorizeAsync<Post, PostId>(query.UserId, query.PostId, new(query.IsAdmin), ct);
+            .AuthorizeAsync<Post, PostId>(new(query.UserId!.Value), query.PostId, new(query.IsAdmin), ct);
 
         if (!authorized)
             return ("The author limits who can view there posts", HandlerResponseStatus.Unauthorized, query.PostId);
@@ -39,12 +39,12 @@ public class GetAllPostCommentsQueryHandler(
             .AsQueryable();
 
         sqlQuery = _authorizationService
-            .AuthorizeQueryable<Comment, CommentId>(sqlQuery, query.UserId, new(query.IsAdmin));
+            .AuthorizeQueryable<Comment, CommentId>(sqlQuery, new(query.UserId!.Value), new(query.IsAdmin));
 
         var totalCount = await sqlQuery.CountAsync(ct);
 
         var comments = await sqlQuery
-            .Include(x => x.User)
+            .Include(x => x.Author)
             .Skip((query.Page - 1) * query.PageSize)
             .Take(query.PageSize)
             .ToListAsync(ct);

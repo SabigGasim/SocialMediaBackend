@@ -3,6 +3,7 @@ using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Application.Common;
 using SocialMediaBackend.Domain.Common;
+using SocialMediaBackend.Domain.Users;
 using SocialMediaBackend.Infrastructure.Data;
 
 namespace SocialMediaBackend.Application.Users.Follows.UnfollowUser;
@@ -18,7 +19,7 @@ public class UnfollowUserCommandHandler(
     {
         var user = await _context.Users
             .Include(u => u.Followings)
-            .FirstAsync(x => x.Id == command.UserId, ct);
+            .FirstAsync(x => x.Id == new UserId(command.UserId), ct);
 
         var followed = user.Unfollow(command.UserToUnfollow);
 

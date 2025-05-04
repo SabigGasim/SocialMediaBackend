@@ -20,8 +20,6 @@ public static class ApplicationServiceCollectionExtensions
                 x.Register(typeof(UserRequestMiddleware<,>));
             })
             .AddSingleton<IUserExistsChecker, UserExistsChecker>()
-            .AddScoped<IAuthorizationHandler<Post, PostId>, PostAuthorizationHandler>()
-            .AddScoped<IAuthorizationHandler<Comment, CommentId>, CommentAuthorizationHandler>()
             .AddSingleton<IAuthorizationService, AuthorizationService>()
             .AddMediator(o => o.ServiceLifetime = ServiceLifetime.Scoped)
             ;

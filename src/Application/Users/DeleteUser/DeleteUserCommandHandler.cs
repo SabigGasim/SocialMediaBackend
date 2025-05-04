@@ -1,6 +1,7 @@
 ﻿using SocialMediaBackend.Application.Abstractions.Requests;
 using SocialMediaBackend.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Application.Common;
+using SocialMediaBackend.Domain.Users;
 using SocialMediaBackend.Infrastructure.Data;
 
 namespace SocialMediaBackend.Application.Users.DeleteUser;
@@ -11,7 +12,7 @@ public class DeleteUserCommandHandler(ApplicationDbContext context) : ICommandHa
 
     public async Task<HandlerResponse> ExecuteAsync(DeleteUserCommand command, CancellationToken ct)
     {
-        if(!command.IsAdmin && command.UserId != command.UserToDeleteId)
+        if(!command.IsAdmin && new UserId(command.UserId) != command.UserToDeleteId)
         {
             return ("Forbidden", HandlerResponseStatus.Unauthorized, command.UserToDeleteId);
         }

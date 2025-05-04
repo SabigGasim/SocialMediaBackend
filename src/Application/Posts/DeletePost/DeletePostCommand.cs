@@ -9,7 +9,7 @@ public class DeletePostCommand(Guid postId) : CommandBase, IUserRequest<DeletePo
 {
     public PostId PostId { get; } = new(postId);
 
-    public UserId UserId { get; private set; } = default!;
+    public Guid UserId { get; private set; } = default!;
 
     public bool IsAdmin { get; private set; }
 
@@ -21,7 +21,7 @@ public class DeletePostCommand(Guid postId) : CommandBase, IUserRequest<DeletePo
 
     public DeletePostCommand WithUserId(Guid userId)
     {
-        UserId = new(userId);
+        UserId = userId;
         return this;
     }
 }

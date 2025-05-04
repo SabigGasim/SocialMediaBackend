@@ -10,7 +10,7 @@ public class EditCommentCommand(Guid commentId, string text) : CommandBase, IUse
     public CommentId CommentId { get; } = new(commentId);
     public string Text { get; } = text;
 
-    public UserId UserId { get; private set; } = default!;
+    public Guid UserId { get; private set; } = default!;
 
     public bool IsAdmin { get; private set; }
 
@@ -22,7 +22,7 @@ public class EditCommentCommand(Guid commentId, string text) : CommandBase, IUse
 
     public EditCommentCommand WithUserId(Guid userId)
     {
-        UserId = new(userId);
+        UserId = userId;
         return this;
     }
 }

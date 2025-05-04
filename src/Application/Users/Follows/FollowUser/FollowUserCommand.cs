@@ -9,13 +9,13 @@ public class FollowUserCommand(Guid userToFollowId) : CommandBase<FollowUserResp
 {
     public UserId UserToFollowId { get; } = new(userToFollowId);
 
-    public UserId UserId { get; private set; } = default!;
+    public Guid UserId { get; private set; } = default!;
 
     public bool IsAdmin { get; private set; }
 
     public FollowUserCommand WithUserId(Guid userId)
     {
-        UserId = new(userId);
+        UserId = userId;
         return this;
     }
 

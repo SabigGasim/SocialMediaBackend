@@ -9,13 +9,13 @@ public interface IUserRequestBase<TRequest> : IRequest
 
 public interface IUserRequest<TRequest> : IUserRequestBase<TRequest>
 {
-    UserId UserId { get; }
+    Guid UserId { get; }
     bool IsAdmin { get; }
 }
 
 
 public interface IOptionalUserRequest<TRequest> : IUserRequestBase<TRequest>
 {
-    UserId? UserId { get; }
+    Guid? UserId { get; }
     bool IsAdmin { get; }
 }

@@ -5,7 +5,7 @@ using SocialMediaBackend.Domain.Users;
 namespace SocialMediaBackend.Application.Users.Follows.AcceptFollowRequest;
 public class AcceptFollowRequetCommand(Guid userToAcceptId) : CommandBase, IUserRequest<AcceptFollowRequetCommand>
 {
-    public UserId UserId { get; private set; } = default!;
+    public Guid UserId { get; private set; } = default!;
     public bool IsAdmin { get; private set; }
 
     public UserId UserToAcceptId { get; } = new(userToAcceptId);
@@ -18,7 +18,7 @@ public class AcceptFollowRequetCommand(Guid userToAcceptId) : CommandBase, IUser
 
     public AcceptFollowRequetCommand WithUserId(Guid userId)
     {
-        UserId = new(userId);
+        UserId = userId;
         return this;
     }
 }

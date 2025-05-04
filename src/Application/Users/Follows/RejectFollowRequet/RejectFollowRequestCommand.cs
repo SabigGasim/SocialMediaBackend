@@ -8,7 +8,7 @@ public class RejectFollowRequestCommand(Guid userToRejectId) : CommandBase,
 {
     public UserId UserToRejectId { get; } = new(userToRejectId);
 
-    public UserId UserId { get; private set; } = default!;
+    public Guid UserId { get; private set; } = default!;
 
     public bool IsAdmin { get; private set; }
 
@@ -20,7 +20,7 @@ public class RejectFollowRequestCommand(Guid userToRejectId) : CommandBase,
 
     public RejectFollowRequestCommand WithUserId(Guid userId)
     {
-        UserId = new(userId);
+        UserId = userId;
         return this;
     }
 }

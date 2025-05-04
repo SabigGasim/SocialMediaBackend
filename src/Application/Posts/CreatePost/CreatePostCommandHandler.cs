@@ -13,7 +13,7 @@ public class CreatePostCommandHandler(ApplicationDbContext context) : ICommandHa
 
     public async Task<HandlerResponse<CreatePostResponse>> ExecuteAsync(CreatePostCommand command, CancellationToken ct)
     {
-        var user = await _context.Users.FindAsync([command.UserId], ct);
+        var user = await _context.Authors.FindAsync([command.UserId], ct);
         
         var post = user!.AddPost(command.Text, command.MediaItems.Select(x => Media.Create(x.Url)));
         if (post is null)

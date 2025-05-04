@@ -10,7 +10,7 @@ public class ReplyToCommentCommand(Guid parentId, string text)
 {
     public CommentId ParentId { get; } = new(parentId);
     public string Text { get; } = text;
-    public UserId UserId { get; private set; } = default!;
+    public Guid UserId { get; private set; } = default!;
 
     public bool IsAdmin { get; private set; }
 
@@ -22,7 +22,7 @@ public class ReplyToCommentCommand(Guid parentId, string text)
 
     public ReplyToCommentCommand WithUserId(Guid userId)
     {
-        UserId = new(userId);
+        UserId = userId;
         return this;
     }
 }
