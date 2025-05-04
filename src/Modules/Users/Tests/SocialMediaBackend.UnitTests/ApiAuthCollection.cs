@@ -1,6 +1,6 @@
-﻿using Tests.Core.Common;
+﻿using SocialMediaBackend.Modules.Users.Tests.Core.Common;
 
-namespace SocialMediaBackend.Modules.Users.UnitTests;
+namespace SocialMediaBackend.Modules.Users.Tests.UnitTests;
 
 [CollectionDefinition("Api & Auth")]
 public class ApiAuthCollection : ICollectionFixture<App>, ICollectionFixture<AuthFixture>;

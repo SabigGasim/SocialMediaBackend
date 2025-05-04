@@ -2,12 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SocialMediaBackend.Modules.Users.Domain.Users;
+using SocialMediaBackend.Modules.Users.Tests.Core.Common.Users;
 using System.Text;
 using System.Text.Json;
-using Tests.Core.Common.Users;
 using Xunit;
 
-namespace Tests.Core.Common;
+namespace SocialMediaBackend.Modules.Users.Tests.Core.Common;
 
 
 [Collection("Api & Auth")]
@@ -16,16 +16,16 @@ public abstract class AppTestBase(AuthFixture auth, App app) : TestBase<App>
     private readonly AuthFixture _auth = auth;
     private readonly App _app = app;
     private readonly SemaphoreSlim _locker = new(1, 1);
-    
+
     private const string _adminId = "e593a99a-56d0-48ff-b3b9-abed820a8bd1";
 
     public static UserId AdminId { get; } = new UserId(Guid.Parse(_adminId));
-    public static string AdminAuthToken { get; private set; } = default!;   
+    public static string AdminAuthToken { get; private set; } = default!;
 
     protected override async ValueTask SetupAsync()
     {
         await base.SetupAsync();
-        if(AdminAuthToken != null)
+        if (AdminAuthToken != null)
         {
             await CreateUserIfNotExists();
             return;

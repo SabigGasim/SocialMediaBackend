@@ -1,13 +1,13 @@
 ﻿using Shouldly;
 using SocialMediaBackend.Modules.Users.Domain.Users;
-using Tests.Core.Common.Comments;
-using Tests.Core.Common;
 using Microsoft.Extensions.DependencyInjection;
-using Tests.Core.Common.Users;
 using SocialMediaBackend.Modules.Users.Domain.Feed.Posts;
 using SocialMediaBackend.Modules.Users.Domain.Feed.Comments;
+using SocialMediaBackend.Modules.Users.Tests.Core.Common;
+using SocialMediaBackend.Modules.Users.Tests.Core.Common.Comments;
+using SocialMediaBackend.Modules.Users.Tests.Core.Common.Users;
 
-namespace SocialMediaBackend.Modules.Users.UnitTests.Domain;
+namespace SocialMediaBackend.Modules.Users.Tests.UnitTests.Domain;
 
 public class CommentUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 {

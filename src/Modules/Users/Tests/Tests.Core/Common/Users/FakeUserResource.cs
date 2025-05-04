@@ -2,7 +2,7 @@
 using SocialMediaBackend.Modules.Users.Domain.Users;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Tests.Core.Common.Users;
+namespace SocialMediaBackend.Modules.Users.Tests.Core.Common.Users;
 
 [Table("FakeUserResource")]
 public class FakeUserResource : Entity<FakeUserResourceId>, IUserResource

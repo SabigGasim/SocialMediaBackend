@@ -1,13 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SocialMediaBackend.Modules.Users.Domain.Feed.Comments;
+﻿using SocialMediaBackend.Modules.Users.Domain.Feed.Comments;
 using SocialMediaBackend.Modules.Users.Domain.Feed.Posts;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
-using Tests.Core.Common.Comments;
-using Tests.Core.Common.Posts;
-using Tests.Core.Common.Users;
+using SocialMediaBackend.Modules.Users.Tests.Core.Common.Comments;
+using SocialMediaBackend.Modules.Users.Tests.Core.Common.Posts;
+using SocialMediaBackend.Modules.Users.Tests.Core.Common.Users;
 
-namespace Tests.Core.Common;
+namespace SocialMediaBackend.Modules.Users.Tests.Core.Common;
 
 public static class DbContextExtensions
 {
@@ -36,14 +35,14 @@ public static class DbContextExtensions
         var user = await UserFactory.CreateAsync(isPublic: status == FollowStatus.Following);
         var followers = new List<User>(followersCount);
         var follows = new List<Follow>(followersCount);
-        
+
         for (int i = 0; i < followersCount; i++)
         {
             var follower = await UserFactory.CreateAsync();
             var follow = status == FollowStatus.Following
                 ? Follow.Create(follower.Id, user.Id)
                 : Follow.CreateFollowRequest(follower.Id, user.Id);
-            
+
             followers.Add(follower);
             follows.Add(follow);
         }
@@ -69,10 +68,10 @@ public static class DbContextExtensions
         if (postId is null)
         {
             var post = PostFactory.Create(userId);
-            postId = post.Id;   
+            postId = post.Id;
             context.Add(post);
         }
-        
+
         var comment = CommentFactory.Create(postId, userId);
 
         context.Add(comment);

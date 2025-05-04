@@ -3,14 +3,13 @@ using SocialMediaBackend.Modules.Users.Domain.Common.ValueObjects;
 using SocialMediaBackend.Modules.Users.Domain.Services;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 using Shouldly;
-using Tests.Core.Common.Users;
 using SocialMediaBackend.Modules.Users.Domain.Common.Exceptions;
-using Tests.Core.Common;
 using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
-using FastEndpoints;
 using Microsoft.Extensions.DependencyInjection;
+using SocialMediaBackend.Modules.Users.Tests.Core.Common;
+using SocialMediaBackend.Modules.Users.Tests.Core.Common.Users;
 
-namespace SocialMediaBackend.Modules.Users.UnitTests.Domain;
+namespace SocialMediaBackend.Modules.Users.Tests.UnitTests.Domain;
 
 public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 {

@@ -7,10 +7,10 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using SocialMediaBackend.Modules.Users.Application.Auth;
 using SocialMediaBackend.Modules.Users.Infrastructure.Data;
+using SocialMediaBackend.Modules.Users.Tests.Core.Common.Users;
 using Testcontainers.PostgreSql;
-using Tests.Core.Common.Users;
 
-namespace Tests.Core.Common;
+namespace SocialMediaBackend.Modules.Users.Tests.Core.Common;
 
 public class App : AppFixture<Program>
 {
@@ -46,7 +46,7 @@ public class App : AppFixture<Program>
             services.RemoveAll<IDbConnectionFactory>();
             services.AddSingleton<IDbConnectionFactory>(_ =>
                 new NpgsqlConnectionFactory(_container.GetConnectionString()));
-            
+
             services.RemoveAll<ApplicationDbContext>();
             services.AddDbContext<FakeDbContext>(options =>
             {

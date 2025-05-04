@@ -3,12 +3,12 @@ using SocialMediaBackend.Modules.Users.Domain.Common.ValueObjects;
 using SocialMediaBackend.Modules.Users.Domain.Services;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 
-namespace Tests.Core.Common.Users;
+namespace SocialMediaBackend.Modules.Users.Tests.Core.Common.Users;
 
 public static class UserFactory
 {
     public static async Task<User> CreateAsync(
-        string? username = null, 
+        string? username = null,
         string nickname = "user",
         bool isPublic = true,
         DateTime? dateTimeOfBirth = null,

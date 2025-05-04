@@ -2,7 +2,7 @@
 using SocialMediaBackend.Modules.Users.Domain.Feed.Posts;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 
-namespace Tests.Core.Common.Comments;
+namespace SocialMediaBackend.Modules.Users.Tests.Core.Common.Comments;
 
 public static class CommentFactory
 {

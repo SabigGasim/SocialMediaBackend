@@ -5,10 +5,10 @@ using Shouldly;
 using SocialMediaBackend.Modules.Users.Application.Auth;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
-using Tests.Core.Common;
-using Tests.Core.Common.Users;
+using SocialMediaBackend.Modules.Users.Tests.Core.Common;
+using SocialMediaBackend.Modules.Users.Tests.Core.Common.Users;
 
-namespace SocialMediaBackend.Modules.Users.UnitTests.Application.Auth;
+namespace SocialMediaBackend.Modules.Users.Tests.UnitTests.Application.Auth;
 
 
 public class ProfileAuthorizationHandlerBaseTests(AuthFixture auth, App app) : AppTestBase(auth, app)
@@ -90,7 +90,7 @@ public class ProfileAuthorizationHandlerBaseTests(AuthFixture auth, App app) : A
         var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
         var handler = scope.ServiceProvider.GetRequiredService<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
 
-        var user = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken );
+        var user = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
         var resource = FakeUserResource.Create(user);
 
         context.Add(user);

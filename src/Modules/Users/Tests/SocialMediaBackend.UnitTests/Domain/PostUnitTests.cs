@@ -1,12 +1,12 @@
 ﻿using SocialMediaBackend.Modules.Users.Domain.Common.Exceptions;
 using SocialMediaBackend.Modules.Users.Domain.Common.ValueObjects;
 using SocialMediaBackend.Modules.Users.Domain.Users;
-using Tests.Core.Common;
 using Shouldly;
-using Tests.Core.Common.Posts;
 using SocialMediaBackend.Modules.Users.Domain.Feed.Posts;
+using SocialMediaBackend.Modules.Users.Tests.Core.Common;
+using SocialMediaBackend.Modules.Users.Tests.Core.Common.Posts;
 
-namespace SocialMediaBackend.Modules.Users.UnitTests.Domain;
+namespace SocialMediaBackend.Modules.Users.Tests.UnitTests.Domain;
 
 public class PostUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 {

@@ -14,8 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Identity.Api\Identity.Api.csproj" />
-    <ProjectReference Include="..\..\Presentation\Api\Api.csproj" />
+    <ProjectReference Include="..\..\..\..\..\Identity.Api\Identity.Api.csproj" />
+    <ProjectReference Include="..\..\..\..\Presentation\Api\Api.csproj" />
+    <ProjectReference Include="..\..\Domain\SocialMediaBackend.Modules.Users.Domain.csproj" />
   </ItemGroup>
 
 </Project>
