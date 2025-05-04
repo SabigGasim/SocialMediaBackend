@@ -1,4 +1,4 @@
-﻿using SocialMediaBackend.Modules.Users.Infrastructure.Common;
+﻿using SocialMediaBackend.BuildingBlocks.Infrastructure;
 
 namespace SocialMediaBackend.Modules.Users.Infrastructure.Domain.Posts;
 

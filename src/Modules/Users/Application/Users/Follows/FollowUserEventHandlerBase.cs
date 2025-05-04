@@ -1,4 +1,4 @@
-﻿using SocialMediaBackend.Modules.Users.Application.Abstractions;
+﻿using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
 using SocialMediaBackend.Modules.Users.Infrastructure.Data;

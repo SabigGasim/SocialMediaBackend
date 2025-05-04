@@ -1,4 +1,4 @@
-﻿using SocialMediaBackend.Modules.Users.Domain.Common;
+﻿using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 
 namespace SocialMediaBackend.Modules.Users.Application.Auth;

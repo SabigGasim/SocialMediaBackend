@@ -1,6 +1,5 @@
-﻿using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests;
-using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests.Queries;
-using SocialMediaBackend.Modules.Users.Domain.Users;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.Modules.Users.Infrastructure.Domain.Posts;
 
 namespace SocialMediaBackend.Modules.Users.Application.Posts.GetAllPosts;

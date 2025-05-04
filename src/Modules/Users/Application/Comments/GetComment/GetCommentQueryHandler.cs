@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SocialMediaBackend.BuildingBlocks.Application;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
+using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
 using SocialMediaBackend.Modules.Users.Application.Abstractions;
-using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests;
-using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests.Queries;
-using SocialMediaBackend.Modules.Users.Application.Common;
 using SocialMediaBackend.Modules.Users.Application.Mappings;
 using SocialMediaBackend.Modules.Users.Domain.Feed.Comments;
 using SocialMediaBackend.Modules.Users.Infrastructure.Data;

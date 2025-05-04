@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.Modules.Users.Application.Abstractions;
-using SocialMediaBackend.Modules.Users.Domain.Common;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 
 namespace SocialMediaBackend.Modules.Users.Application.Auth;

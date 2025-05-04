@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using SocialMediaBackend.Modules.Users.Infrastructure.Common;
+using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 using SocialMediaBackend.Modules.Users.Infrastructure.Domain.Users;
 

@@ -1,4 +1,4 @@
-﻿using SocialMediaBackend.Modules.Users.Application.Abstractions;
+﻿using SocialMediaBackend.BuildingBlocks.Application;
 using System.Runtime.CompilerServices;
 
 namespace SocialMediaBackend.Modules.Users.Application.Comments.GetAllReplies;

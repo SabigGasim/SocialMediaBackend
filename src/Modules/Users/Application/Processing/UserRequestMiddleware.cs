@@ -1,7 +1,7 @@
 ﻿using FastEndpoints;
 using Microsoft.AspNetCore.Http;
-using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests;
-using SocialMediaBackend.Modules.Users.Application.Common;
+using SocialMediaBackend.BuildingBlocks.Application;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.Modules.Users.Domain.Services;
 
 namespace SocialMediaBackend.Modules.Users.Application.Processing;

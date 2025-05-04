@@ -1,5 +1,5 @@
 ﻿using NSubstitute;
-using SocialMediaBackend.Modules.Users.Domain.Common.ValueObjects;
+using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 using SocialMediaBackend.Modules.Users.Domain.Services;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 

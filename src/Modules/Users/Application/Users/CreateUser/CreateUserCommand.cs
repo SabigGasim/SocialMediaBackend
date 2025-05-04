@@ -1,5 +1,5 @@
-﻿using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests.Commands;
-using SocialMediaBackend.Modules.Users.Domain.Common.ValueObjects;
+﻿using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
+using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.CreateUser;
 

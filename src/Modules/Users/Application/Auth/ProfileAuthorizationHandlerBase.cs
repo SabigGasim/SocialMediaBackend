@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.Modules.Users.Application.Abstractions;
 using SocialMediaBackend.Modules.Users.Domain.Common;
 using SocialMediaBackend.Modules.Users.Domain.Users;

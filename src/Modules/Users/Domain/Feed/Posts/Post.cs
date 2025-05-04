@@ -1,5 +1,5 @@
-﻿using SocialMediaBackend.Modules.Users.Domain.Common;
-using SocialMediaBackend.Modules.Users.Domain.Common.ValueObjects;
+﻿using SocialMediaBackend.BuildingBlocks.Domain;
+using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 using SocialMediaBackend.Modules.Users.Domain.Feed.Comments;
 using SocialMediaBackend.Modules.Users.Domain.Feed.Posts.Rules;
 

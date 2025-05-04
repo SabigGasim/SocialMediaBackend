@@ -1,5 +1,4 @@
-﻿using SocialMediaBackend.Modules.Users.Domain.Common;
-using SocialMediaBackend.Modules.Users.Domain.Users;
+﻿using SocialMediaBackend.BuildingBlocks.Domain;
 
 namespace SocialMediaBackend.Modules.Users.Domain.Feed.Posts;
 

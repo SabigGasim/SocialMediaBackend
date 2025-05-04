@@ -55,11 +55,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Users.IntegrationEvents", "src\Modules\Users\SocialMediaBackend.Modules.Users.IntegrationEvents\SocialMediaBackend.Modules.Users.IntegrationEvents.csproj", "{B384147D-56AA-4721-B1FC-D5FD4607CB24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Core", "src\Modules\Users\Tests\Tests.Core\Tests.Core.csproj", "{7B3BE186-5588-4F8A-B78B-B43A1E418F3E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Users.Tests.Core", "src\Modules\Users\Tests\Tests.Core\SocialMediaBackend.Modules.Users.Tests.Core.csproj", "{7B3BE186-5588-4F8A-B78B-B43A1E418F3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.UnitTests", "src\Modules\Users\Tests\SocialMediaBackend.UnitTests\SocialMediaBackend.UnitTests.csproj", "{947E9160-4858-4FAD-BD80-731C02E5FA77}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Users.Tests.UnitTests", "src\Modules\Users\Tests\SocialMediaBackend.UnitTests\SocialMediaBackend.Modules.Users.Tests.UnitTests.csproj", "{947E9160-4858-4FAD-BD80-731C02E5FA77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.IntegrationTests", "src\Modules\Users\Tests\SocialMediaBackend.IntegrationTests\SocialMediaBackend.IntegrationTests.csproj", "{A17C1113-64B6-4231-8335-747E0BBFD4A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Users.Tests.IntegrationTests", "src\Modules\Users\Tests\SocialMediaBackend.IntegrationTests\SocialMediaBackend.Modules.Users.Tests.IntegrationTests.csproj", "{A17C1113-64B6-4231-8335-747E0BBFD4A6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{1C2E08F2-6A68-4742-8859-1A70B40D35F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.BuildingBlocks.Domain", "src\BuildingBlocks\SocialMediaBackend.BuildingBlocks.Domain\SocialMediaBackend.BuildingBlocks.Domain.csproj", "{4FC72D2E-0A62-46E3-B9AC-BA28420F0818}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.BuildingBlocks.Application", "src\BuildingBlocks\SocialMediaBackend.BuildingBlocks.Application\SocialMediaBackend.BuildingBlocks.Application.csproj", "{DB7801E6-1650-4475-9662-6B79F05AC2E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.BuildingBlocks.Infrastructure", "src\BuildingBlocks\SocialMediaBackend.BuildingBlocks.Infrastructure\SocialMediaBackend.BuildingBlocks.Infrastructure.csproj", "{0CE8E9CD-C8CD-4785-9555-01EA91E079B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -135,6 +143,18 @@ Global
 		{A17C1113-64B6-4231-8335-747E0BBFD4A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A17C1113-64B6-4231-8335-747E0BBFD4A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A17C1113-64B6-4231-8335-747E0BBFD4A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FC72D2E-0A62-46E3-B9AC-BA28420F0818}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FC72D2E-0A62-46E3-B9AC-BA28420F0818}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FC72D2E-0A62-46E3-B9AC-BA28420F0818}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FC72D2E-0A62-46E3-B9AC-BA28420F0818}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB7801E6-1650-4475-9662-6B79F05AC2E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB7801E6-1650-4475-9662-6B79F05AC2E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB7801E6-1650-4475-9662-6B79F05AC2E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB7801E6-1650-4475-9662-6B79F05AC2E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CE8E9CD-C8CD-4785-9555-01EA91E079B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CE8E9CD-C8CD-4785-9555-01EA91E079B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CE8E9CD-C8CD-4785-9555-01EA91E079B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CE8E9CD-C8CD-4785-9555-01EA91E079B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -163,5 +183,9 @@ Global
 		{7B3BE186-5588-4F8A-B78B-B43A1E418F3E} = {9B00FAC1-A11F-4883-BA46-EA0501F7B2C4}
 		{947E9160-4858-4FAD-BD80-731C02E5FA77} = {9B00FAC1-A11F-4883-BA46-EA0501F7B2C4}
 		{A17C1113-64B6-4231-8335-747E0BBFD4A6} = {9B00FAC1-A11F-4883-BA46-EA0501F7B2C4}
+		{1C2E08F2-6A68-4742-8859-1A70B40D35F2} = {A2E5176F-DF22-403A-9204-4DBC54BBCA3B}
+		{4FC72D2E-0A62-46E3-B9AC-BA28420F0818} = {1C2E08F2-6A68-4742-8859-1A70B40D35F2}
+		{DB7801E6-1650-4475-9662-6B79F05AC2E3} = {1C2E08F2-6A68-4742-8859-1A70B40D35F2}
+		{0CE8E9CD-C8CD-4785-9555-01EA91E079B8} = {1C2E08F2-6A68-4742-8859-1A70B40D35F2}
 	EndGlobalSection
 EndGlobal

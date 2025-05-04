@@ -1,6 +1,5 @@
-﻿using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests;
-using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests.Commands;
-using SocialMediaBackend.Modules.Users.Domain.Users;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
+using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Privacy.ChangeProfileVisibility;
 

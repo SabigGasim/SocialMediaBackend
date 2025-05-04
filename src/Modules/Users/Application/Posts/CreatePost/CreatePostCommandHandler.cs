@@ -1,9 +1,9 @@
-﻿using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests;
-using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests.Commands;
-using SocialMediaBackend.Modules.Users.Application.Common;
-using SocialMediaBackend.Modules.Users.Application.Mappings;
-using SocialMediaBackend.Modules.Users.Domain.Common.ValueObjects;
+﻿using SocialMediaBackend.Modules.Users.Application.Mappings;
+using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 using SocialMediaBackend.Modules.Users.Infrastructure.Data;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
+using SocialMediaBackend.BuildingBlocks.Application;
+using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 
 namespace SocialMediaBackend.Modules.Users.Application.Posts.CreatePost;
 

@@ -1,5 +1,5 @@
 ﻿using SocialMediaBackend.Modules.Users.Domain.Common.Exceptions;
-using SocialMediaBackend.Modules.Users.Domain.Common.ValueObjects;
+using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 using Shouldly;
 using SocialMediaBackend.Modules.Users.Domain.Feed.Posts;

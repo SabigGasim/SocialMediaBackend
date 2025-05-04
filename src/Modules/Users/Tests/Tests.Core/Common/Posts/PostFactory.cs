@@ -1,4 +1,4 @@
-﻿using SocialMediaBackend.Modules.Users.Domain.Common.ValueObjects;
+﻿using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 using SocialMediaBackend.Modules.Users.Domain.Feed.Posts;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 

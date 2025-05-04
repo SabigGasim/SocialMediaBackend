@@ -1,4 +1,4 @@
-﻿using SocialMediaBackend.Modules.Users.Application.Common;
+﻿using SocialMediaBackend.BuildingBlocks.Application;
 using System.Net;
 
 namespace SocialMediaBackend.Modules.Users.Api.Mappings;

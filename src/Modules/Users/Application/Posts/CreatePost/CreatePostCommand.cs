@@ -1,7 +1,6 @@
-﻿using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests;
-using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests.Commands;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.Modules.Users.Application.Contracts;
-using SocialMediaBackend.Modules.Users.Domain.Users;
 
 namespace SocialMediaBackend.Modules.Users.Application.Posts.CreatePost;
 

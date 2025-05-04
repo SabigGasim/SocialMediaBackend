@@ -1,7 +1,6 @@
-﻿using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests;
-using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests.Queries;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.Modules.Users.Domain.Feed.Comments;
-using SocialMediaBackend.Modules.Users.Domain.Users;
 
 namespace SocialMediaBackend.Modules.Users.Application.Comments.GetAllReplies;
 

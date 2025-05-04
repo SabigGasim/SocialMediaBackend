@@ -1,4 +1,4 @@
-﻿using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests.Queries;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.GetAllUsers;
 

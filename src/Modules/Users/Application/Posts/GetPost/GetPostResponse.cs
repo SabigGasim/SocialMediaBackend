@@ -1,5 +1,5 @@
 ﻿using SocialMediaBackend.Modules.Users.Application.Users.GetUser;
-using SocialMediaBackend.Modules.Users.Domain.Common.ValueObjects;
+using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 
 namespace SocialMediaBackend.Modules.Users.Application.Posts.GetPost;
 

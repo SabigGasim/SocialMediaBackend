@@ -17,4 +17,8 @@
 		<InternalsVisibleTo Include="SocialMediaBackend.IntegrationTests" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\BuildingBlocks\SocialMediaBackend.BuildingBlocks.Domain\SocialMediaBackend.BuildingBlocks.Domain.csproj" />
+	</ItemGroup>
+
 </Project>

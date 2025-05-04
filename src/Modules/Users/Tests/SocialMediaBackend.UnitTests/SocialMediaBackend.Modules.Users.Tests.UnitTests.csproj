@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tests.Core\Tests.Core.csproj" />
+    <ProjectReference Include="..\Tests.Core\SocialMediaBackend.Modules.Users.Tests.Core.csproj" />
   </ItemGroup>
 	
   <ItemGroup>

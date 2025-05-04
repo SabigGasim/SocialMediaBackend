@@ -1,13 +1,13 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests;
 using AppCommandAbstractions = SocialMediaBackend.Modules.Users.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Modules.Users.Api.Mappings;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
 
 namespace SocialMediaBackend.Modules.Users.Api.Abstractions;
 
 public class RequestEndpoint<TRequest> : Endpoint<TRequest> where TRequest : notnull
 {
-    protected async Task HandleCommandAsync<T>(AppCommandAbstractions.ICommand<T> command, CancellationToken cancellationToken)
+    protected async Task HandleCommandAsync<T>(BuildingBlocks.Application.Requests.Commands.ICommand<T> command, CancellationToken cancellationToken)
         where T : IHandlerResponse
     {
         var handlerResponse = await command.ExecuteAsync(cancellationToken);

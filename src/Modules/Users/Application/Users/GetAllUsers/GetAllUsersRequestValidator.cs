@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using SocialMediaBackend.Modules.Users.Application.Common;
+using SocialMediaBackend.BuildingBlocks.Application;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.GetAllUsers;
 

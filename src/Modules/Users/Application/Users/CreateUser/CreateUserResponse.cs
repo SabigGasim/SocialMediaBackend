@@ -1,4 +1,4 @@
-﻿using SocialMediaBackend.Modules.Users.Domain.Common.ValueObjects;
+﻿using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.CreateUser;
 

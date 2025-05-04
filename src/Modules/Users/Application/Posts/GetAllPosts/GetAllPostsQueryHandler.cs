@@ -1,6 +1,6 @@
-﻿using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests;
-using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests.Queries;
-using SocialMediaBackend.Modules.Users.Application.Common;
+﻿using SocialMediaBackend.BuildingBlocks.Application;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
+using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
 using SocialMediaBackend.Modules.Users.Application.Mappings;
 using SocialMediaBackend.Modules.Users.Infrastructure.Domain.Posts;
 

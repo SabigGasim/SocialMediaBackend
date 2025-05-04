@@ -1,5 +1,5 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Modules.Users.Application.Abstractions;
+using SocialMediaBackend.BuildingBlocks.Application;
 
 namespace SocialMediaBackend.Modules.Users.Application.Posts.GetAllPosts;
 

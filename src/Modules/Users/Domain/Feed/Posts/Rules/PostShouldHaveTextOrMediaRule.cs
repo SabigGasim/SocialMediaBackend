@@ -1,5 +1,5 @@
-﻿using SocialMediaBackend.Modules.Users.Domain.Common;
-using SocialMediaBackend.Modules.Users.Domain.Common.ValueObjects;
+﻿using SocialMediaBackend.BuildingBlocks.Domain;
+using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 
 namespace SocialMediaBackend.Modules.Users.Domain.Feed.Posts.Rules;
 
