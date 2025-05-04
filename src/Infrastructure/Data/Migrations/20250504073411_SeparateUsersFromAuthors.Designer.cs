@@ -12,8 +12,8 @@ using SocialMediaBackend.Infrastructure.Data;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250416155835_AddMediaOwnershipFix2")]
-    partial class AddMediaOwnershipFix2
+    [Migration("20250504073411_SeparateUsersFromAuthors")]
+    partial class SeparateUsersFromAuthors
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,10 +25,56 @@ namespace Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SocialMediaBackend.Domain.Comments.Comment", b =>
+            modelBuilder.Entity("SocialMediaBackend.Domain.Feed.Author", b =>
                 {
                     b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<int>("FollowersCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FollowingCount")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nickname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("ProfileIsPublic")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
+
+                    b.ToTable("Authors");
+                });
+
+            modelBuilder.Entity("SocialMediaBackend.Domain.Feed.Comments.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AuthorId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("Created")
@@ -56,23 +102,21 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Text")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("ParentCommentId");
 
                     b.HasIndex("PostId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("SocialMediaBackend.Domain.Comments.CommentLike", b =>
+            modelBuilder.Entity("SocialMediaBackend.Domain.Feed.Comments.CommentLike", b =>
                 {
                     b.Property<Guid>("CommentId")
                         .HasColumnType("uuid");
@@ -90,10 +134,12 @@ namespace Infrastructure.Migrations
                     b.ToTable("CommentLike");
                 });
 
-            modelBuilder.Entity("SocialMediaBackend.Domain.Posts.Post", b =>
+            modelBuilder.Entity("SocialMediaBackend.Domain.Feed.Posts.Post", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AuthorId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("CommentsCount")
@@ -117,17 +163,14 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Text")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("SocialMediaBackend.Domain.Posts.PostLike", b =>
+            modelBuilder.Entity("SocialMediaBackend.Domain.Feed.Posts.PostLike", b =>
                 {
                     b.Property<Guid>("PostId")
                         .HasColumnType("uuid");
@@ -138,17 +181,40 @@ namespace Infrastructure.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("UserId1")
+                        .HasColumnType("uuid");
+
                     b.HasKey("PostId", "UserId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PostLikes");
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("PostLike");
+                });
+
+            modelBuilder.Entity("SocialMediaBackend.Domain.Users.Follows.Follow", b =>
+                {
+                    b.Property<Guid>("FollowerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("FollowingId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("FollowerId", "FollowingId")
+                        .HasName("Id");
+
+                    b.HasIndex("FollowingId");
+
+                    b.ToTable("Follows");
                 });
 
             modelBuilder.Entity("SocialMediaBackend.Domain.Users.User", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("Created")
@@ -160,6 +226,12 @@ namespace Infrastructure.Migrations
                     b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date");
 
+                    b.Property<int>("FollowersCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FollowingCount")
+                        .HasColumnType("integer");
+
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("timestamp with time zone");
 
@@ -169,6 +241,11 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Nickname")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("ProfileIsPublic")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -182,52 +259,87 @@ namespace Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SocialMediaBackend.Domain.Comments.Comment", b =>
+            modelBuilder.Entity("SocialMediaBackend.Domain.Feed.Author", b =>
                 {
-                    b.HasOne("SocialMediaBackend.Domain.Comments.Comment", "ParentComment")
+                    b.OwnsOne("SocialMediaBackend.Domain.Common.ValueObjects.Media", "ProfilePicture", b1 =>
+                        {
+                            b1.Property<Guid>("AuthorId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("FilePath")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("ProfilePictureFilePath");
+
+                            b1.Property<int>("MediaType")
+                                .HasColumnType("integer")
+                                .HasColumnName("ProfilePictureMediaType");
+
+                            b1.Property<string>("Url")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("ProfilePictureUrl");
+
+                            b1.HasKey("AuthorId");
+
+                            b1.ToTable("Authors");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AuthorId");
+                        });
+
+                    b.Navigation("ProfilePicture")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SocialMediaBackend.Domain.Feed.Comments.Comment", b =>
+                {
+                    b.HasOne("SocialMediaBackend.Domain.Feed.Author", "Author")
+                        .WithMany("Comments")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialMediaBackend.Domain.Feed.Comments.Comment", "ParentComment")
                         .WithMany("Replies")
                         .HasForeignKey("ParentCommentId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SocialMediaBackend.Domain.Posts.Post", "Post")
+                    b.HasOne("SocialMediaBackend.Domain.Feed.Posts.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SocialMediaBackend.Domain.Users.User", "User")
-                        .WithMany("Comments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Author");
 
                     b.Navigation("ParentComment");
 
                     b.Navigation("Post");
-
-                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SocialMediaBackend.Domain.Comments.CommentLike", b =>
+            modelBuilder.Entity("SocialMediaBackend.Domain.Feed.Comments.CommentLike", b =>
                 {
-                    b.HasOne("SocialMediaBackend.Domain.Comments.Comment", null)
+                    b.HasOne("SocialMediaBackend.Domain.Feed.Comments.Comment", "Comment")
                         .WithMany("Likes")
                         .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SocialMediaBackend.Domain.Users.User", null)
+                    b.HasOne("SocialMediaBackend.Domain.Feed.Author", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Comment");
                 });
 
-            modelBuilder.Entity("SocialMediaBackend.Domain.Posts.Post", b =>
+            modelBuilder.Entity("SocialMediaBackend.Domain.Feed.Posts.Post", b =>
                 {
-                    b.HasOne("SocialMediaBackend.Domain.Users.User", "User")
+                    b.HasOne("SocialMediaBackend.Domain.Feed.Author", "Author")
                         .WithMany("Posts")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -264,24 +376,53 @@ namespace Infrastructure.Migrations
                                 .HasForeignKey("PostId");
                         });
 
-                    b.Navigation("MediaItems");
+                    b.Navigation("Author");
 
-                    b.Navigation("User");
+                    b.Navigation("MediaItems");
                 });
 
-            modelBuilder.Entity("SocialMediaBackend.Domain.Posts.PostLike", b =>
+            modelBuilder.Entity("SocialMediaBackend.Domain.Feed.Posts.PostLike", b =>
                 {
-                    b.HasOne("SocialMediaBackend.Domain.Posts.Post", null)
+                    b.HasOne("SocialMediaBackend.Domain.Feed.Posts.Post", "Post")
                         .WithMany("Likes")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SocialMediaBackend.Domain.Users.User", null)
+                    b.HasOne("SocialMediaBackend.Domain.Feed.Author", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("SocialMediaBackend.Domain.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SocialMediaBackend.Domain.Users.Follows.Follow", b =>
+                {
+                    b.HasOne("SocialMediaBackend.Domain.Users.User", "Follower")
+                        .WithMany("Followings")
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialMediaBackend.Domain.Users.User", "Following")
+                        .WithMany("Followers")
+                        .HasForeignKey("FollowingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Follower");
+
+                    b.Navigation("Following");
                 });
 
             modelBuilder.Entity("SocialMediaBackend.Domain.Users.User", b =>
@@ -317,14 +458,21 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SocialMediaBackend.Domain.Comments.Comment", b =>
+            modelBuilder.Entity("SocialMediaBackend.Domain.Feed.Author", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Posts");
+                });
+
+            modelBuilder.Entity("SocialMediaBackend.Domain.Feed.Comments.Comment", b =>
                 {
                     b.Navigation("Likes");
 
                     b.Navigation("Replies");
                 });
 
-            modelBuilder.Entity("SocialMediaBackend.Domain.Posts.Post", b =>
+            modelBuilder.Entity("SocialMediaBackend.Domain.Feed.Posts.Post", b =>
                 {
                     b.Navigation("Comments");
 
@@ -333,9 +481,9 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("SocialMediaBackend.Domain.Users.User", b =>
                 {
-                    b.Navigation("Comments");
+                    b.Navigation("Followers");
 
-                    b.Navigation("Posts");
+                    b.Navigation("Followings");
                 });
 #pragma warning restore 612, 618
         }

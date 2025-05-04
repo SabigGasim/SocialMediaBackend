@@ -22,15 +22,20 @@ internal sealed class CommentEntityTypeConfiguration : IEntityTypeConfiguration<
                 value => new(value)
             );
 
-        builder.HasOne(c => c.User)
+        builder.HasOne(c => c.Author)
             .WithMany(u => u.Comments)
-            .HasForeignKey(c => c.UserId)
+            .HasForeignKey(c => c.AuthorId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(c => c.ParentComment)
             .WithMany(c => c.Replies)
             .HasForeignKey(c => c.ParentCommentId)
             .IsRequired(false)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.Post)
+            .WithMany(u => u.Comments)
+            .HasForeignKey(x => x.PostId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

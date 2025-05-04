@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SocialMediaBackend.Domain.Feed;
 using SocialMediaBackend.Domain.Users;
 
-namespace SocialMediaBackend.Infrastructure.Domain.Users;
-internal sealed class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
+namespace SocialMediaBackend.Infrastructure.Domain.Authors;
+
+internal class AuthorEntityTypeConfiguration : IEntityTypeConfiguration<Author>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public void Configure(EntityTypeBuilder<Author> builder)
     {
         builder.HasKey(u => u.Id);
 

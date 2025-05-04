@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SocialMediaBackend.Domain.Feed;
 using SocialMediaBackend.Domain.Feed.Posts;
-using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Infrastructure.Domain.Posts;
 
@@ -14,13 +14,13 @@ internal sealed class PostLikeEntityTypeConfiguration : IEntityTypeConfiguration
         builder.Property(p => p.UserId)
             .HasConversion(
                 id => id.Value,
-                value => new UserId(value)
+                value => new(value)
             );
 
         builder.Property(p => p.PostId)
             .HasConversion(
                 id => id.Value,
-                value => new PostId(value)
+                value => new(value)
             );
 
         builder.HasOne(p => p.Post)
@@ -28,7 +28,7 @@ internal sealed class PostLikeEntityTypeConfiguration : IEntityTypeConfiguration
             .HasForeignKey(p => p.PostId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(p => p.User)
+        builder.HasOne<Author>()
             .WithMany()
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade);

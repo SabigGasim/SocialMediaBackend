@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SocialMediaBackend.Domain.Feed;
 using SocialMediaBackend.Domain.Feed.Comments;
-using SocialMediaBackend.Domain.Users;
 
 namespace SocialMediaBackend.Infrastructure.Domain.Comments;
 
@@ -14,13 +14,13 @@ internal sealed class CommentLikeEntityTypeConfiguration : IEntityTypeConfigurat
         builder.Property(x => x.CommentId)
             .HasConversion(
                 id => id.Value,
-                value => new CommentId(value)
+                value => new(value)
             );
 
         builder.Property(x => x.UserId)
             .HasConversion(
                 id => id.Value,
-                value => new UserId(value)
+                value => new(value)
             );
 
         builder.HasOne(p => p.Comment)
@@ -28,7 +28,7 @@ internal sealed class CommentLikeEntityTypeConfiguration : IEntityTypeConfigurat
             .HasForeignKey(p => p.CommentId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(u => u.User)
+        builder.HasOne<Author>()
             .WithMany()
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade);

@@ -13,7 +13,7 @@ internal sealed class PostEntityTypeConfiguration : IEntityTypeConfiguration<Pos
         builder.Property(p => p.Id)
             .HasConversion(
                 id => id.Value,
-                value => new PostId(value)
+                value => new(value)
             );
 
         builder.OwnsMany(p => p.MediaItems, m =>
@@ -26,9 +26,9 @@ internal sealed class PostEntityTypeConfiguration : IEntityTypeConfiguration<Pos
             m.Property(p => p.MediaType).HasColumnName("MediaType");
         });;
 
-        builder.HasOne(p => p.User)
+        builder.HasOne(p => p.Author)
             .WithMany(u => u.Posts)
-            .HasForeignKey(p => p.UserId)
+            .HasForeignKey(p => p.AuthorId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
