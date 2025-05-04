@@ -1,8 +1,8 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Application.Comments.CreateComment;
+using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Comments.CreateComment;
 
-namespace SocialMediaBackend.Api.Endpoints.Comments;
+namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Comments;
 
 [HttpPost(ApiEndpoints.Posts.Comment)]
 public class CreateCommentEndpoint : RequestEndpoint<CreateCommentRequest, CreateCommentResponse>

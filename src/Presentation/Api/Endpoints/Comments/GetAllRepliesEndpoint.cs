@@ -1,8 +1,8 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Application.Comments.GetAllReplies;
+using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Comments.GetAllReplies;
 
-namespace SocialMediaBackend.Api.Endpoints.Comments;
+namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Comments;
 
 [HttpGet(ApiEndpoints.Comments.GetReplies)]
 public class GetAllRepliesEndpoint : RequestEndpoint<GetAllRepliesRequest, GetAllRepliesResponse>

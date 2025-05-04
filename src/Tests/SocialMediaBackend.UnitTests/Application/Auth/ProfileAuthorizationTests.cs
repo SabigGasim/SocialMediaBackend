@@ -2,13 +2,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Shouldly;
-using SocialMediaBackend.Application.Auth;
-using SocialMediaBackend.Domain.Users;
-using SocialMediaBackend.Domain.Users.Follows;
+using SocialMediaBackend.Modules.Users.Application.Auth;
+using SocialMediaBackend.Modules.Users.Domain.Users;
+using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
 using Tests.Core.Common;
 using Tests.Core.Common.Users;
 
-namespace SocialMediaBackend.UnitTests.Application.Auth;
+namespace SocialMediaBackend.Modules.Users.UnitTests.Application.Auth;
 
 
 public class ProfileAuthorizationHandlerBaseTests(AuthFixture auth, App app) : AppTestBase(auth, app)

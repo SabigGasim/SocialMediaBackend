@@ -1,7 +1,7 @@
-﻿using SocialMediaBackend.Application.Common;
+﻿using SocialMediaBackend.Modules.Users.Application.Common;
 using System.Net;
 
-namespace SocialMediaBackend.Api.Mappings;
+namespace SocialMediaBackend.Modules.Users.Api.Mappings;
 
 public static class ApplicationToApiMappings
 {

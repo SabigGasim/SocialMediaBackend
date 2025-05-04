@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace SocialMediaBackend.Api;
+namespace SocialMediaBackend.Modules.Users.Api;
 
 public static class ApiServiceCollectionExtensions
 {

@@ -1,8 +1,8 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Application.Users.Privacy.ChangeProfileVisibility;
+using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Users.Privacy.ChangeProfileVisibility;
 
-namespace SocialMediaBackend.Api.Endpoints.Users.Privacy;
+namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Users.Privacy;
 
 [HttpPatch(ApiEndpoints.Users.Privacy.ChangeProfileVisibility)]
 public class ChangeProfileVisibilityEndpoint : RequestEndpoint<ChangeProfileVisibilityRequest>

@@ -1,4 +1,4 @@
-﻿namespace SocialMediaBackend.Api.Contracts.Responses;
+﻿namespace SocialMediaBackend.Modules.Users.Api.Contracts.Responses;
 
 internal record ValidationFailureResponse
 {

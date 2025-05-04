@@ -1,4 +1,4 @@
-﻿namespace SocialMediaBackend.Sdk;
+﻿namespace SocialMediaBackend.Modules.Users.Sdk;
 
 internal static class ApiEndpoints
 {

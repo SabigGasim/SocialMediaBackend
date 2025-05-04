@@ -1,6 +1,6 @@
-﻿using SocialMediaBackend.Domain.Common.ValueObjects;
-using SocialMediaBackend.Domain.Feed.Posts;
-using SocialMediaBackend.Domain.Users;
+﻿using SocialMediaBackend.Modules.Users.Domain.Common.ValueObjects;
+using SocialMediaBackend.Modules.Users.Domain.Feed.Posts;
+using SocialMediaBackend.Modules.Users.Domain.Users;
 using Tests.Core.Common.Users;
 
 namespace Tests.Core.Common.Posts;

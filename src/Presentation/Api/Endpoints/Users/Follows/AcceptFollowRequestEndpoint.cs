@@ -1,9 +1,9 @@
 ﻿using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
-using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Application.Users.Follows.AcceptFollowRequest;
+using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Users.Follows.AcceptFollowRequest;
 
-namespace SocialMediaBackend.Api.Endpoints.Users.Follows;
+namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Users.Follows;
 
 
 public class AcceptFollowRequestEndpoint : RequestEndpoint<AcceptFollowRequestRequest>

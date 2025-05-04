@@ -1,16 +1,16 @@
 ﻿using NSubstitute;
-using SocialMediaBackend.Domain.Common.ValueObjects;
-using SocialMediaBackend.Domain.Services;
-using SocialMediaBackend.Domain.Users;
+using SocialMediaBackend.Modules.Users.Domain.Common.ValueObjects;
+using SocialMediaBackend.Modules.Users.Domain.Services;
+using SocialMediaBackend.Modules.Users.Domain.Users;
 using Shouldly;
 using Tests.Core.Common.Users;
-using SocialMediaBackend.Domain.Common.Exceptions;
+using SocialMediaBackend.Modules.Users.Domain.Common.Exceptions;
 using Tests.Core.Common;
-using SocialMediaBackend.Domain.Users.Follows;
+using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
 using FastEndpoints;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace SocialMediaBackend.UnitTests.Domain;
+namespace SocialMediaBackend.Modules.Users.UnitTests.Domain;
 
 public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 {

@@ -1,8 +1,8 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Application.Comments.ReplyToComment;
+using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Comments.ReplyToComment;
 
-namespace SocialMediaBackend.Api.Endpoints.Comments;
+namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Comments;
 
 [HttpPost(ApiEndpoints.Comments.Reply)]
 public class ReplyToCommentEndpoint : RequestEndpoint<ReplyToCommentRequest, ReplyToCommentResponse>

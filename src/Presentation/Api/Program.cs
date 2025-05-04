@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using SocialMediaBackend.Api;
-using SocialMediaBackend.Application;
-using SocialMediaBackend.Infrastructure;
-using SocialMediaBackend.Infrastructure.Data;
+using SocialMediaBackend.Modules.Users.Api;
+using SocialMediaBackend.Modules.Users.Application;
+using SocialMediaBackend.Modules.Users.Infrastructure;
+using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 using FastEndpoints;
 using FastEndpoints.Swagger;
-using SocialMediaBackend.Api.Middlewares;
+using SocialMediaBackend.Modules.Users.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 

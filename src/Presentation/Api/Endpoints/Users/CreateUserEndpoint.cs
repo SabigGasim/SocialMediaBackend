@@ -1,10 +1,10 @@
 ﻿using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
-using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Api.Contracts.Responses;
-using SocialMediaBackend.Application.Users.CreateUser;
+using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Api.Contracts.Responses;
+using SocialMediaBackend.Modules.Users.Application.Users.CreateUser;
 
-namespace SocialMediaBackend.Api.Endpoints.Users;
+namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Users;
 
 [HttpPost(ApiEndpoints.Users.Create), AllowAnonymous]
 public class CreateUserEndpoint : RequestEndpoint<CreateUserRequest, CreateUserResponse>

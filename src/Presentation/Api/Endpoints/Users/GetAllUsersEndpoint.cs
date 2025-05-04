@@ -1,8 +1,8 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Application.Users.GetAllUsers;
+using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Users.GetAllUsers;
 
-namespace SocialMediaBackend.Api.Endpoints.Users;
+namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Users;
 
 [HttpGet(ApiEndpoints.Users.GetAll)]
 public class GetAllUsersEndpoint : RequestEndpoint<GetAllUsersRequest, GetAllUsersResponse>

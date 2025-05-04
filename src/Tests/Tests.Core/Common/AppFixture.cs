@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using SocialMediaBackend.Application.Auth;
-using SocialMediaBackend.Infrastructure.Data;
+using SocialMediaBackend.Modules.Users.Application.Auth;
+using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 using Testcontainers.PostgreSql;
 using Tests.Core.Common.Users;
 

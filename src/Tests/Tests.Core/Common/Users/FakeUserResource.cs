@@ -1,5 +1,5 @@
-﻿using SocialMediaBackend.Domain.Common;
-using SocialMediaBackend.Domain.Users;
+﻿using SocialMediaBackend.Modules.Users.Domain.Common;
+using SocialMediaBackend.Modules.Users.Domain.Users;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Tests.Core.Common.Users;

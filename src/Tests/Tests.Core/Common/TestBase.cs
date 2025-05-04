@@ -1,7 +1,7 @@
 ﻿using FastEndpoints.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using SocialMediaBackend.Domain.Users;
+using SocialMediaBackend.Modules.Users.Domain.Users;
 using System.Text;
 using System.Text.Json;
 using Tests.Core.Common.Users;

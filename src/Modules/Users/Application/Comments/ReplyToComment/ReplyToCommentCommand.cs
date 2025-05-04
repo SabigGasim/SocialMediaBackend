@@ -1,0 +1,28 @@
+﻿using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests;
+using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests.Commands;
+using SocialMediaBackend.Modules.Users.Domain.Feed.Comments;
+using SocialMediaBackend.Modules.Users.Domain.Users;
+
+namespace SocialMediaBackend.Modules.Users.Application.Comments.ReplyToComment;
+
+public class ReplyToCommentCommand(Guid parentId, string text) 
+    : CommandBase<ReplyToCommentResponse>, IUserRequest<ReplyToCommentCommand>
+{
+    public CommentId ParentId { get; } = new(parentId);
+    public string Text { get; } = text;
+    public Guid UserId { get; private set; } = default!;
+
+    public bool IsAdmin { get; private set; }
+
+    public ReplyToCommentCommand AndAdminRole(bool isAdmin)
+    {
+        IsAdmin = isAdmin;
+        return this;
+    }
+
+    public ReplyToCommentCommand WithUserId(Guid userId)
+    {
+        UserId = userId;
+        return this;
+    }
+}

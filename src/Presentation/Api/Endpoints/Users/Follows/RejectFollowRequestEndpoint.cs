@@ -1,8 +1,8 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Application.Users.Follows.RejectFollowRequet;
+using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Users.Follows.RejectFollowRequet;
 
-namespace SocialMediaBackend.Api.Endpoints.Users.Follows;
+namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Users.Follows;
 
 public class RejectFollowRequestEndpoint : RequestEndpoint<RejectFollowRequestRequest>
 {

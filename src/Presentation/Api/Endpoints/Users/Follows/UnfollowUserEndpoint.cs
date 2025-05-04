@@ -1,8 +1,8 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Application.Users.Follows.UnfollowUser;
+using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Users.Follows.UnfollowUser;
 
-namespace SocialMediaBackend.Api.Endpoints.Users.Follows;
+namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Users.Follows;
 
 [HttpDelete(ApiEndpoints.Users.Follow)]
 public class UnfollowUserEndpoint : RequestEndpoint<UnfollowUserRequest>

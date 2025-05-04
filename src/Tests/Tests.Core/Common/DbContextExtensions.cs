@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SocialMediaBackend.Domain.Feed.Comments;
-using SocialMediaBackend.Domain.Feed.Posts;
-using SocialMediaBackend.Domain.Users;
-using SocialMediaBackend.Domain.Users.Follows;
+using SocialMediaBackend.Modules.Users.Domain.Feed.Comments;
+using SocialMediaBackend.Modules.Users.Domain.Feed.Posts;
+using SocialMediaBackend.Modules.Users.Domain.Users;
+using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
 using Tests.Core.Common.Comments;
 using Tests.Core.Common.Posts;
 using Tests.Core.Common.Users;

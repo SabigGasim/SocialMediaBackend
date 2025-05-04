@@ -1,8 +1,8 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Application.Comments.LikeComment;
+using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Comments.LikeComment;
 
-namespace SocialMediaBackend.Api.Endpoints.Comments;
+namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Comments;
 
 public class LikeCommentEndpoint : RequestEndpoint<LikeCommentRequest>
 {

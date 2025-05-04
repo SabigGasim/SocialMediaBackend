@@ -1,0 +1,27 @@
+﻿using FastEndpoints;
+using Microsoft.Extensions.DependencyInjection;
+using SocialMediaBackend.Modules.Users.Application.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Auth;
+using SocialMediaBackend.Modules.Users.Application.DomainServices.Users;
+using SocialMediaBackend.Modules.Users.Application.Processing;
+using SocialMediaBackend.Modules.Users.Domain.Feed.Comments;
+using SocialMediaBackend.Modules.Users.Domain.Feed.Posts;
+using SocialMediaBackend.Modules.Users.Domain.Services;
+
+namespace SocialMediaBackend.Modules.Users.Application;
+
+public static class ApplicationServiceCollectionExtensions
+{
+    public static IServiceCollection AddApplication(this IServiceCollection services)
+    {
+        return services
+            .AddCommandMiddleware(x =>
+            {
+                x.Register(typeof(UserRequestMiddleware<,>));
+            })
+            .AddSingleton<IUserExistsChecker, UserExistsChecker>()
+            .AddSingleton<IAuthorizationService, AuthorizationService>()
+            .AddMediator(o => o.ServiceLifetime = ServiceLifetime.Scoped)
+            ;
+    }
+}

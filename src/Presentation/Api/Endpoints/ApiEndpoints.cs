@@ -1,4 +1,4 @@
-﻿namespace SocialMediaBackend.Api.Endpoints;
+﻿namespace SocialMediaBackend.Modules.Users.Api.Endpoints;
 
 public static class ApiEndpoints
 {

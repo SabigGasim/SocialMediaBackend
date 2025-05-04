@@ -1,8 +1,8 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Application.Posts.UnlikePost;
+using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Posts.UnlikePost;
 
-namespace SocialMediaBackend.Api.Endpoints.Posts;
+namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Posts;
 
 public class UnlikePostEndpoint : RequestEndpoint<UnlikePostRequest>
 {

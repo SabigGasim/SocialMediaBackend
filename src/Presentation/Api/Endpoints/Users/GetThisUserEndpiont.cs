@@ -1,8 +1,8 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Application.Users.GetFullUserDetails;
+using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Users.GetFullUserDetails;
 
-namespace SocialMediaBackend.Api.Endpoints.Users;
+namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Users;
 
 [HttpGet(ApiEndpoints.Users.Me)]
 public class GetThisUserEndpiont : RequestEndpointWithoutRequest<GetFullUserDetailsResponse>

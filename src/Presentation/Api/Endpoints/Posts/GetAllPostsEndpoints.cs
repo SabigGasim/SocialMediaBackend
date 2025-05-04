@@ -1,8 +1,8 @@
-﻿using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Application.Posts.GetAllPosts;
-using SocialMediaBackend.Infrastructure.Domain.Posts;
+﻿using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Posts.GetAllPosts;
+using SocialMediaBackend.Modules.Users.Infrastructure.Domain.Posts;
 
-namespace SocialMediaBackend.Api.Endpoints.Posts;
+namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Posts;
 
 [FastEndpoints.HttpGet(ApiEndpoints.Posts.GetAll)]
 public class GetAllPostsEndpoints : RequestEndpoint<GetAllPostsRequest, GetAllPostsResponse>

@@ -1,8 +1,8 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Application.Posts.CreatePost;
+using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Posts.CreatePost;
 
-namespace SocialMediaBackend.Api.Endpoints.Posts;
+namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Posts;
 
 [HttpPost(ApiEndpoints.Posts.Create)]
 public class CreatePostEndpoint : RequestEndpoint<CreatePostRequest, CreatePostResponse>

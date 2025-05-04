@@ -1,7 +1,7 @@
 ﻿using NSubstitute;
-using SocialMediaBackend.Domain.Common.ValueObjects;
-using SocialMediaBackend.Domain.Services;
-using SocialMediaBackend.Domain.Users;
+using SocialMediaBackend.Modules.Users.Domain.Common.ValueObjects;
+using SocialMediaBackend.Modules.Users.Domain.Services;
+using SocialMediaBackend.Modules.Users.Domain.Users;
 
 namespace Tests.Core.Common.Users;
 

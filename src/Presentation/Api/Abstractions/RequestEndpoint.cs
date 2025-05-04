@@ -1,9 +1,9 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Application.Abstractions.Requests;
-using AppCommandAbstractions = SocialMediaBackend.Application.Abstractions.Requests.Commands;
-using SocialMediaBackend.Api.Mappings;
+using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests;
+using AppCommandAbstractions = SocialMediaBackend.Modules.Users.Application.Abstractions.Requests.Commands;
+using SocialMediaBackend.Modules.Users.Api.Mappings;
 
-namespace SocialMediaBackend.Api.Abstractions;
+namespace SocialMediaBackend.Modules.Users.Api.Abstractions;
 
 public class RequestEndpoint<TRequest> : Endpoint<TRequest> where TRequest : notnull
 {

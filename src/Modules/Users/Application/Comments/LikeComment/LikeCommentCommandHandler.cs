@@ -1,0 +1,53 @@
+﻿using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests;
+using SocialMediaBackend.Modules.Users.Application.Common;
+using SocialMediaBackend.Modules.Users.Infrastructure.Data;
+using SocialMediaBackend.Modules.Users.Application.Abstractions.Requests.Commands;
+using SocialMediaBackend.Modules.Users.Application.Auth;
+using Microsoft.EntityFrameworkCore;
+using SocialMediaBackend.Modules.Users.Domain.Feed.Posts;
+using SocialMediaBackend.Modules.Users.Domain.Feed.Comments;
+using SocialMediaBackend.Modules.Users.Domain.Feed;
+
+namespace SocialMediaBackend.Modules.Users.Application.Comments.LikeComment;
+internal class LikeCommentCommandHandler(
+    ApplicationDbContext context,
+    IAuthorizationService authorizationService) : ICommandHandler<LikeCommentCommand>
+{
+    private readonly ApplicationDbContext _context = context;
+    private readonly IAuthorizationService _authorizationService = authorizationService;
+
+    public async Task<HandlerResponse> ExecuteAsync(LikeCommentCommand command, CancellationToken ct)
+    {
+        var comment = await _context.Comments
+            .Include(x => x.Author)
+            .Include(x => x.Likes.Where(p => p.UserId == new AuthorId(command.UserId)))
+            .Where(x => x.Id == command.CommentId)
+            .FirstOrDefaultAsync(ct);
+
+        if (comment is null)
+            return ("Comment with the given Id was not found", HandlerResponseStatus.NotFound, command.CommentId);
+        
+        bool authorized = await AuthorizePostAndComment(command, comment.PostId, ct);
+        if (!authorized)
+            return ("The author limits who can view their comments", HandlerResponseStatus.Unauthorized, comment.AuthorId);
+
+        var like = comment.AddLike(new(command.UserId));
+        if (like is null)
+            return ("User already liked this comment", HandlerResponseStatus.Conflict, comment.AuthorId);
+
+        _context.Add(like);
+        await _context.SaveChangesAsync(ct);
+
+        return HandlerResponseStatus.Created;
+    }
+
+    private async Task<bool> AuthorizePostAndComment(LikeCommentCommand command, PostId postId, CancellationToken ct)
+    {
+        return 
+             await _authorizationService
+                .AuthorizeAsync<Post, PostId>(new(command.UserId), postId, new(command.IsAdmin), ct)
+                &&
+             await _authorizationService
+                .AuthorizeAsync<Comment, CommentId>(new(command.UserId), command.CommentId, new(command.IsAdmin), ct);
+    }
+}

@@ -1,9 +1,9 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Api.Contracts.Responses;
-using SocialMediaBackend.Application.Users.GetUser;
+using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Api.Contracts.Responses;
+using SocialMediaBackend.Modules.Users.Application.Users.GetUser;
 
-namespace SocialMediaBackend.Api.Endpoints.Users;
+namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Users;
 
 [HttpGet(ApiEndpoints.Users.Get)]
 internal class GetUserEndpoint : RequestEndpoint<GetUserRequest, GetUserResponse>

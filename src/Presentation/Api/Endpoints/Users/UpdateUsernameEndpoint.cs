@@ -1,9 +1,9 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Api.Contracts.Responses;
-using SocialMediaBackend.Application.Users.UpdateUsername;
+using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Api.Contracts.Responses;
+using SocialMediaBackend.Modules.Users.Application.Users.UpdateUsername;
 
-namespace SocialMediaBackend.Api.Endpoints.Users;
+namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Users;
 
 [HttpPatch(ApiEndpoints.Users.PatchUsername)]
 internal class UpdateUsernameEndpoint : RequestEndpoint<UpdateUsernameRequest>

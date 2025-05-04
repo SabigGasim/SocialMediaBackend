@@ -1,7 +1,7 @@
-﻿using SocialMediaBackend.Domain.Common.Exceptions;
+﻿using SocialMediaBackend.Modules.Users.Domain.Common.Exceptions;
 using System.Text.Json;
 
-namespace SocialMediaBackend.Api.Middlewares;
+namespace SocialMediaBackend.Modules.Users.Api.Middlewares;
 
 internal class ExceptionStatusCodeMiddleware(RequestDelegate next, IHostEnvironment environment)
 {

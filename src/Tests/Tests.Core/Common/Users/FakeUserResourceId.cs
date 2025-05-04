@@ -1,4 +1,4 @@
-﻿using SocialMediaBackend.Domain.Common;
+﻿using SocialMediaBackend.Modules.Users.Domain.Common;
 
 namespace Tests.Core.Common.Users;
 public record FakeUserResourceId(Guid Id) : TypedIdValueBase<Guid>(Id)

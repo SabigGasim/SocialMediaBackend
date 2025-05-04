@@ -1,4 +1,4 @@
-﻿using SocialMediaBackend.Application.Auth;
+﻿using SocialMediaBackend.Modules.Users.Application.Auth;
 using Tests.Core.Common.Users;
 
 namespace Tests.Core.Common;
