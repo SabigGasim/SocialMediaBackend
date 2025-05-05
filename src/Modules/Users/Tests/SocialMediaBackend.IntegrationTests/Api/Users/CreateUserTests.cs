@@ -1,6 +1,5 @@
 ﻿using FastEndpoints;
 using Shouldly;
-using SocialMediaBackend.Modules.Users.Api.Endpoints.Users.Follows;
 using SocialMediaBackend.Modules.Users.Application.Users.CreateUser;
 using SocialMediaBackend.Modules.Users.Application.Users.DeleteUser;
 using SocialMediaBackend.Modules.Users.Application.Users.Follows.FollowUser;
@@ -8,7 +7,8 @@ using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
 using SocialMediaBackend.Modules.Users.Tests.Core.Common;
 using System.Net;
-using SocialMediaBackend.Api.Endpoints.Users;
+using SocialMediaBackend.Api.Modules.Users.Endpoints.Users;
+using SocialMediaBackend.Api.Modules.Users.Endpoints.Users.Follows;
 
 namespace SocialMediaBackend.Modules.Users.Tests.IntegrationTests.Api.Users;
 
