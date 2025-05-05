@@ -18,7 +18,11 @@ public static class ApplicationServiceCollectionExtensions
             })
             .AddSingleton<IUserExistsChecker, UserExistsChecker>()
             .AddSingleton<IAuthorizationService, AuthorizationService>()
-            .AddMediator(o => o.ServiceLifetime = ServiceLifetime.Scoped)
+            .AddMediator(o =>
+            {
+                o.ServiceLifetime = ServiceLifetime.Scoped;
+                o.Namespace = "SocialMediaBackend.Modules.Users.Application.SourceGenerated.Mediator";
+            })
             ;
     }
 }

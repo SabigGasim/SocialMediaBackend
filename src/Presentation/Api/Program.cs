@@ -1,18 +1,20 @@
 using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.Modules.Users.Api;
-using SocialMediaBackend.Modules.Users.Application;
-using SocialMediaBackend.Modules.Users.Infrastructure;
 using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 using FastEndpoints;
 using FastEndpoints.Swagger;
-using SocialMediaBackend.Modules.Users.Api.Middlewares;
+using SocialMediaBackend.Api.Modules.Users;
+using SocialMediaBackend.Api.Modules.Feed;
+using SocialMediaBackend.Api.Middlewares;
+using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("PostgresConnection")!;
 
-builder.Services.AddInfrastructure(connectionString);
-builder.Services.AddApplication();
+builder.Services.AddUserModule(builder.Configuration);
+builder.Services.AddFeedModule(builder.Configuration);
+
 builder.Services.AddApi(builder.Configuration);
 
 var app = builder.Build();
@@ -29,12 +31,20 @@ app.UseSwaggerGen();
 if (!builder.Environment.IsEnvironment("Testing"))
     await using (var scope = app.Services.CreateAsyncScope())
     {
-        var dbcontext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        await dbcontext.Database.MigrateAsync();
-        await dbcontext.Database.EnsureCreatedAsync();
-        if (builder.Environment.IsDevelopment())
+        List<DbContext> contexts = 
+        [
+            scope.ServiceProvider.GetRequiredService<UsersDbContext>(),
+            scope.ServiceProvider.GetRequiredService<FeedDbContext>()
+        ];
+        
+        foreach(var context in contexts)
         {
-            PrintSchema(dbcontext);
+            await context.Database.MigrateAsync();
+            await context.Database.EnsureCreatedAsync();
+            if (builder.Environment.IsDevelopment())
+            {
+                PrintSchema(context);
+            }
         }
     }
 

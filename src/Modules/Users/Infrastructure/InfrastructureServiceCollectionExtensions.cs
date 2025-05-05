@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Users.Domain.Users;
@@ -16,10 +17,14 @@ public static class InfrastructureServiceCollectionExtensions
             .AddSingleton<IDbConnectionFactory>(new NpgsqlConnectionFactory(connectionString))
             .AddSingleton<IUserRepository, UserRepositry>()
             .AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>()
-            .AddDbContext<ApplicationDbContext>(options =>
+            .AddDbContext<UsersDbContext>(options =>
             {
-                options.UseNpgsql(connectionString);
+                options.UseNpgsql(
+                    connectionString,
+                    npgsqlOptions => npgsqlOptions.MigrationsHistoryTable(
+                        HistoryRepository.DefaultTableName,
+                        Schema.Users));
             })
-            .AddScoped<IUnitOfWork, UnitOfWork>();
+            .AddScoped<IUnitOfWork, UnitOfWork<UsersDbContext>>();
     }
 }

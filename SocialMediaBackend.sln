@@ -37,14 +37,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Users.Application", "src\Modules\Users\Application\SocialMediaBackend.Modules.Users.Application.csproj", "{EBD1054C-37D9-46DA-9938-0C68ABF08673}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Feed.Domain", "src\Modules\Feed\SocialMediaBackend.Modules.Feed.Domain\SocialMediaBackend.Modules.Feed.Domain.csproj", "{C661D8B4-54F2-42D7-A2BE-86CA9405FE86}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Feed.Application", "src\Modules\Feed\SocialMediaBackend.Modules.Feed.Application\SocialMediaBackend.Modules.Feed.Application.csproj", "{611A4861-A86B-4CF4-A84B-B718C67DC43F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Feed.Infrastructure", "src\Modules\Feed\SocialMediaBackend.Modules.Feed.Infrastructure\SocialMediaBackend.Modules.Feed.Infrastructure.csproj", "{6619C80D-119A-47F5-87AB-DBF16762CD81}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Feed.IntegrationEvents", "src\Modules\Feed\SocialMediaBackend.Modules.Feed.IntegrationEvents\SocialMediaBackend.Modules.Feed.IntegrationEvents.csproj", "{7BEFB10B-EC5C-4F05-B080-B07ED176B707}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CC13822B-E6DA-45AD-A6EE-28B9DA8978DF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Feed.Tests.UnitTests", "src\Modules\Feed\Tests\SocialMediaBackend.Modules.Feed.Tests.UnitTests\SocialMediaBackend.Modules.Feed.Tests.UnitTests.csproj", "{8FF3E63D-CF86-4D73-A819-0F58828280EF}"
@@ -68,6 +60,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.BuildingBlocks.Application", "src\BuildingBlocks\SocialMediaBackend.BuildingBlocks.Application\SocialMediaBackend.BuildingBlocks.Application.csproj", "{DB7801E6-1650-4475-9662-6B79F05AC2E3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.BuildingBlocks.Infrastructure", "src\BuildingBlocks\SocialMediaBackend.BuildingBlocks.Infrastructure\SocialMediaBackend.BuildingBlocks.Infrastructure.csproj", "{0CE8E9CD-C8CD-4785-9555-01EA91E079B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Feed.Infrastructure", "src\Modules\Feed\Infrastructure\SocialMediaBackend.Modules.Feed.Infrastructure.csproj", "{19C87F94-0C16-434E-972F-2442BEACBC76}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Feed.IntegrationEvents", "src\Modules\Feed\IntegrationEvents\SocialMediaBackend.Modules.Feed.IntegrationEvents.csproj", "{CB910357-1575-490F-9897-8450B660A42D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Feed.Domain", "src\Modules\Feed\Domain\SocialMediaBackend.Modules.Feed.Domain.csproj", "{A7521E0E-3742-4C35-893E-1A20168BE768}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Feed.Application", "src\Modules\Feed\Application\SocialMediaBackend.Modules.Feed.Application.csproj", "{3562295D-60CE-410B-9C70-D48F299765AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,22 +99,6 @@ Global
 		{EBD1054C-37D9-46DA-9938-0C68ABF08673}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBD1054C-37D9-46DA-9938-0C68ABF08673}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBD1054C-37D9-46DA-9938-0C68ABF08673}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C661D8B4-54F2-42D7-A2BE-86CA9405FE86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C661D8B4-54F2-42D7-A2BE-86CA9405FE86}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C661D8B4-54F2-42D7-A2BE-86CA9405FE86}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C661D8B4-54F2-42D7-A2BE-86CA9405FE86}.Release|Any CPU.Build.0 = Release|Any CPU
-		{611A4861-A86B-4CF4-A84B-B718C67DC43F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{611A4861-A86B-4CF4-A84B-B718C67DC43F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{611A4861-A86B-4CF4-A84B-B718C67DC43F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{611A4861-A86B-4CF4-A84B-B718C67DC43F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6619C80D-119A-47F5-87AB-DBF16762CD81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6619C80D-119A-47F5-87AB-DBF16762CD81}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6619C80D-119A-47F5-87AB-DBF16762CD81}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6619C80D-119A-47F5-87AB-DBF16762CD81}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7BEFB10B-EC5C-4F05-B080-B07ED176B707}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7BEFB10B-EC5C-4F05-B080-B07ED176B707}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7BEFB10B-EC5C-4F05-B080-B07ED176B707}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7BEFB10B-EC5C-4F05-B080-B07ED176B707}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8FF3E63D-CF86-4D73-A819-0F58828280EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8FF3E63D-CF86-4D73-A819-0F58828280EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FF3E63D-CF86-4D73-A819-0F58828280EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -155,6 +139,22 @@ Global
 		{0CE8E9CD-C8CD-4785-9555-01EA91E079B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CE8E9CD-C8CD-4785-9555-01EA91E079B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CE8E9CD-C8CD-4785-9555-01EA91E079B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19C87F94-0C16-434E-972F-2442BEACBC76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19C87F94-0C16-434E-972F-2442BEACBC76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19C87F94-0C16-434E-972F-2442BEACBC76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19C87F94-0C16-434E-972F-2442BEACBC76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB910357-1575-490F-9897-8450B660A42D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB910357-1575-490F-9897-8450B660A42D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB910357-1575-490F-9897-8450B660A42D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB910357-1575-490F-9897-8450B660A42D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7521E0E-3742-4C35-893E-1A20168BE768}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7521E0E-3742-4C35-893E-1A20168BE768}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7521E0E-3742-4C35-893E-1A20168BE768}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7521E0E-3742-4C35-893E-1A20168BE768}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3562295D-60CE-410B-9C70-D48F299765AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3562295D-60CE-410B-9C70-D48F299765AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3562295D-60CE-410B-9C70-D48F299765AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3562295D-60CE-410B-9C70-D48F299765AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -171,10 +171,6 @@ Global
 		{F52130D2-6EF4-40B8-BA80-79A8C3E524AA} = {4274D189-B5BE-446D-855D-05F990FF6C95}
 		{65DBB002-F9B1-4B34-89D2-7250D7460AB3} = {4274D189-B5BE-446D-855D-05F990FF6C95}
 		{EBD1054C-37D9-46DA-9938-0C68ABF08673} = {4274D189-B5BE-446D-855D-05F990FF6C95}
-		{C661D8B4-54F2-42D7-A2BE-86CA9405FE86} = {5F199362-B8D2-4057-91CE-603D45C041E7}
-		{611A4861-A86B-4CF4-A84B-B718C67DC43F} = {5F199362-B8D2-4057-91CE-603D45C041E7}
-		{6619C80D-119A-47F5-87AB-DBF16762CD81} = {5F199362-B8D2-4057-91CE-603D45C041E7}
-		{7BEFB10B-EC5C-4F05-B080-B07ED176B707} = {5F199362-B8D2-4057-91CE-603D45C041E7}
 		{CC13822B-E6DA-45AD-A6EE-28B9DA8978DF} = {5F199362-B8D2-4057-91CE-603D45C041E7}
 		{8FF3E63D-CF86-4D73-A819-0F58828280EF} = {CC13822B-E6DA-45AD-A6EE-28B9DA8978DF}
 		{745CFFAE-1DC7-49CD-A7EC-7D787A540E9C} = {CC13822B-E6DA-45AD-A6EE-28B9DA8978DF}
@@ -187,5 +183,9 @@ Global
 		{4FC72D2E-0A62-46E3-B9AC-BA28420F0818} = {1C2E08F2-6A68-4742-8859-1A70B40D35F2}
 		{DB7801E6-1650-4475-9662-6B79F05AC2E3} = {1C2E08F2-6A68-4742-8859-1A70B40D35F2}
 		{0CE8E9CD-C8CD-4785-9555-01EA91E079B8} = {1C2E08F2-6A68-4742-8859-1A70B40D35F2}
+		{19C87F94-0C16-434E-972F-2442BEACBC76} = {5F199362-B8D2-4057-91CE-603D45C041E7}
+		{CB910357-1575-490F-9897-8450B660A42D} = {5F199362-B8D2-4057-91CE-603D45C041E7}
+		{A7521E0E-3742-4C35-893E-1A20168BE768} = {5F199362-B8D2-4057-91CE-603D45C041E7}
+		{3562295D-60CE-410B-9C70-D48F299765AD} = {5F199362-B8D2-4057-91CE-603D45C041E7}
 	EndGlobalSection
 EndGlobal

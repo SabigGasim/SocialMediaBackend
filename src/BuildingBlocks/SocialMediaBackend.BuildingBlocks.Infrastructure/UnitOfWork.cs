@@ -4,9 +4,10 @@ using SocialMediaBackend.BuildingBlocks.Infrastructure;
 
 namespace SocialMediaBackend.Modules.Users.Infrastructure.Processing;
 
-public class UnitOfWork(DbContext context, IDomainEventsDispatcher dispatcher) : IUnitOfWork
+public class UnitOfWork<TDbContext>(TDbContext context, IDomainEventsDispatcher dispatcher) : IUnitOfWork
+    where TDbContext : DbContext
 {
-    private readonly DbContext _context = context;
+    private readonly TDbContext _context = context;
     private readonly IDomainEventsDispatcher _dispatcher = dispatcher;
 
     public async Task<int> CommitAsync(CancellationToken ct = default)
