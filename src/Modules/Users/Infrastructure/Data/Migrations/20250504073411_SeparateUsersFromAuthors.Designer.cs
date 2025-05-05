@@ -11,7 +11,7 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(UsersDbContext))]
     [Migration("20250504073411_SeparateUsersFromAuthors")]
     partial class SeparateUsersFromAuthors
     {
