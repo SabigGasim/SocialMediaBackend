@@ -4,14 +4,14 @@ using SocialMediaBackend.Modules.Users.Tests.Core.Common.Users;
 
 namespace SocialMediaBackend.Modules.Users.Tests.Core.Common;
 
-public class FakeDbContext : ApplicationDbContext
+public class FakeDbContext : UsersDbContext
 {
     public FakeDbContext()
     {
 
     }
 
-    public FakeDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+    public FakeDbContext(DbContextOptions<UsersDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

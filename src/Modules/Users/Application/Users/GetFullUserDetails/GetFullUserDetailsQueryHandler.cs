@@ -8,10 +8,10 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.GetFullUserDetails;
 
-public class GetFullUserDetailsQueryHandler(ApplicationDbContext context)
+public class GetFullUserDetailsQueryHandler(UsersDbContext context)
     : IQueryHandler<GetFullUserDetailsQuery, GetFullUserDetailsResponse>
 {
-    private readonly ApplicationDbContext _context = context;
+    private readonly UsersDbContext _context = context;
 
     public async Task<HandlerResponse<GetFullUserDetailsResponse>> ExecuteAsync(GetFullUserDetailsQuery query, CancellationToken ct)
     {

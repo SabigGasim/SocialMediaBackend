@@ -5,11 +5,11 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows;
 
-public abstract class FollowUserEventHandlerBase<TFollowEventBase>(ApplicationDbContext context)
+public abstract class FollowUserEventHandlerBase<TFollowEventBase>(UsersDbContext context)
     : IDomainEventHandler<TFollowEventBase>
     where TFollowEventBase : FollowEventBase
 {
-    private readonly ApplicationDbContext _context = context;
+    private readonly UsersDbContext _context = context;
 
     protected abstract Task ApplyChanges(User follower, User following, CancellationToken ct = default);
 

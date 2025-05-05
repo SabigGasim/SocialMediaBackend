@@ -9,10 +9,10 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.FollowUser;
 
 public class FollowUserCommandHandler(
-    ApplicationDbContext context, 
+    UsersDbContext context, 
     IUnitOfWork unitOfWork) : ICommandHandler<FollowUserCommand, FollowUserResponse>
 {
-    private readonly ApplicationDbContext _context = context;
+    private readonly UsersDbContext _context = context;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<HandlerResponse<FollowUserResponse>> ExecuteAsync(FollowUserCommand command, CancellationToken ct)

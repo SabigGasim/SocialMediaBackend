@@ -11,9 +11,9 @@ namespace SocialMediaBackend.Modules.Users.Application.Users.CreateUser;
 public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, CreateUserResponse>
 {
     private readonly IUserExistsChecker _userExistsChecker;
-    private readonly ApplicationDbContext _context;
+    private readonly UsersDbContext _context;
 
-    public CreateUserCommandHandler(IUserExistsChecker userExistsChecker, ApplicationDbContext context)
+    public CreateUserCommandHandler(IUserExistsChecker userExistsChecker, UsersDbContext context)
     {
         _userExistsChecker = userExistsChecker;
         _context = context;

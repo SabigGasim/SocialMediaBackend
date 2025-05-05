@@ -9,10 +9,10 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.AcceptFollowRequest;
 
 public class AcceptFollowRequetCommandHandler(
-    ApplicationDbContext context,
+    UsersDbContext context,
     IUnitOfWork unitOfWork) : ICommandHandler<AcceptFollowRequetCommand>
 {
-    private readonly ApplicationDbContext _context = context;
+    private readonly UsersDbContext _context = context;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<HandlerResponse> ExecuteAsync(AcceptFollowRequetCommand command, CancellationToken ct)

@@ -8,14 +8,18 @@
 
   <ItemGroup>
     <PackageReference Include="FastEndpoints" Version="6.0.0" />
+    <PackageReference Include="Mediator.SourceGenerator" Version="2.1.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\SocialMediaBackend.BuildingBlocks.Application\SocialMediaBackend.BuildingBlocks.Application.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\SocialMediaBackend.BuildingBlocks.Domain\SocialMediaBackend.BuildingBlocks.Domain.csproj" />
-    <ProjectReference Include="..\SocialMediaBackend.Modules.Feed.Domain\SocialMediaBackend.Modules.Feed.Domain.csproj" />
-    <ProjectReference Include="..\SocialMediaBackend.Modules.Feed.Infrastructure\SocialMediaBackend.Modules.Feed.Infrastructure.csproj" />
+    <ProjectReference Include="..\Domain\SocialMediaBackend.Modules.Feed.Domain.csproj" />
+    <ProjectReference Include="..\Infrastructure\SocialMediaBackend.Modules.Feed.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

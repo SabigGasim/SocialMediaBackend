@@ -11,9 +11,9 @@ public abstract class ProfileAuthorizationHandlerBase<TUserResource, TId>
     where TUserResource : Entity<TId>, IUserResource
     where TId : class
 {
-    protected readonly ApplicationDbContext _context;
+    protected readonly UsersDbContext _context;
 
-    public ProfileAuthorizationHandlerBase(ApplicationDbContext context)
+    public ProfileAuthorizationHandlerBase(UsersDbContext context)
     {
         _context = context;
     }

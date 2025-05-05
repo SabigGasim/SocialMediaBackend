@@ -4,10 +4,10 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.UnfollowUser;
 
-public sealed class UserUnfollowedEventHandler(ApplicationDbContext context)
+public sealed class UserUnfollowedEventHandler(UsersDbContext context)
     : FollowUserEventHandlerBase<UserUnfollowedEvent>(context)
 {
-    private readonly ApplicationDbContext _context = context;
+    private readonly UsersDbContext _context = context;
 
     protected override async Task ApplyChanges(User follower, User following, CancellationToken ct = default)
     {

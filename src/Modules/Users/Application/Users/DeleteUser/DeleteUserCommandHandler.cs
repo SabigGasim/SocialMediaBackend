@@ -6,9 +6,9 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.DeleteUser;
 
-public class DeleteUserCommandHandler(ApplicationDbContext context) : ICommandHandler<DeleteUserCommand>
+public class DeleteUserCommandHandler(UsersDbContext context) : ICommandHandler<DeleteUserCommand>
 {
-    private readonly ApplicationDbContext _context = context;
+    private readonly UsersDbContext _context = context;
 
     public async Task<HandlerResponse> ExecuteAsync(DeleteUserCommand command, CancellationToken ct)
     {

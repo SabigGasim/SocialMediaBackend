@@ -4,7 +4,7 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.AcceptFollowRequest;
 
-public sealed class FollowRequestAcceptedEventHandler(ApplicationDbContext context)
+public sealed class FollowRequestAcceptedEventHandler(UsersDbContext context)
     : FollowUserEventHandlerBase<FollowRequestAcceptedEvent>(context)
 {
     protected override Task ApplyChanges(User follower, User following, CancellationToken ct = default)

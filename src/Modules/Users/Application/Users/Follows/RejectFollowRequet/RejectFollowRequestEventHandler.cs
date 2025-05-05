@@ -4,10 +4,10 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.RejectFollowRequet;
 
-public class RejectFollowRequestEventHandler(ApplicationDbContext context)
+public class RejectFollowRequestEventHandler(UsersDbContext context)
     : FollowUserEventHandlerBase<FollowRequestRejectedEvent>(context)
 {
-    private readonly ApplicationDbContext _context = context;
+    private readonly UsersDbContext _context = context;
 
     protected override async Task ApplyChanges(User follower, User following, CancellationToken ct = default)
     {

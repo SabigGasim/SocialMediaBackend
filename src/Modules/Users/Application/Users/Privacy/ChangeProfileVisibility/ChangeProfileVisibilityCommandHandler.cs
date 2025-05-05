@@ -10,11 +10,11 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 namespace SocialMediaBackend.Modules.Users.Application.Users.Privacy.ChangeProfileVisibility;
 
 public class ChangeProfileVisibilityCommandHandler(
-    ApplicationDbContext context,
+    UsersDbContext context,
     IUnitOfWork unitOfWork)
     : ICommandHandler<ChangeProfileVisibilityCommand>
 {
-    private readonly ApplicationDbContext _context = context;
+    private readonly UsersDbContext _context = context;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<HandlerResponse> ExecuteAsync(ChangeProfileVisibilityCommand command, CancellationToken ct)

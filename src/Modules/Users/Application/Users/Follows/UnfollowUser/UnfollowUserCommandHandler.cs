@@ -9,10 +9,10 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.UnfollowUser;
 
 public class UnfollowUserCommandHandler(
-    ApplicationDbContext context,
+    UsersDbContext context,
     IUnitOfWork unitOfWork) : ICommandHandler<UnfollowUserCommand>
 {
-    private readonly ApplicationDbContext _context = context;
+    private readonly UsersDbContext _context = context;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<HandlerResponse> ExecuteAsync(UnfollowUserCommand command, CancellationToken ct)

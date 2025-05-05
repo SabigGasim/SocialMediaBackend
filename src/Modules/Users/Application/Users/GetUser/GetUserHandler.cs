@@ -10,9 +10,9 @@ namespace SocialMediaBackend.Modules.Users.Application.Users.GetUser;
 
 public class GetUserHandler : IQueryHandler<GetUserQuery, GetUserResponse>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly UsersDbContext _context;
 
-    public GetUserHandler(ApplicationDbContext context)
+    public GetUserHandler(UsersDbContext context)
     {
         _context = context;
     }

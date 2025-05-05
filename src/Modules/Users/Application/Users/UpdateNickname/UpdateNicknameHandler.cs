@@ -7,9 +7,9 @@ namespace SocialMediaBackend.Modules.Users.Application.Users.UpdateNickname;
 
 public class UpdateNicknameHandler : ICommandHandler<UpdateNicknameCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly UsersDbContext _context;
 
-    public UpdateNicknameHandler(ApplicationDbContext context)
+    public UpdateNicknameHandler(UsersDbContext context)
     {
         _context = context;
     }

@@ -47,12 +47,12 @@ public class App : AppFixture<Program>
             services.AddSingleton<IDbConnectionFactory>(_ =>
                 new NpgsqlConnectionFactory(_container.GetConnectionString()));
 
-            services.RemoveAll<ApplicationDbContext>();
+            services.RemoveAll<UsersDbContext>();
             services.AddDbContext<FakeDbContext>(options =>
             {
                 options.UseNpgsql(_container.GetConnectionString());
             });
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<UsersDbContext>(options =>
             {
                 options.UseNpgsql(_container.GetConnectionString());
             });

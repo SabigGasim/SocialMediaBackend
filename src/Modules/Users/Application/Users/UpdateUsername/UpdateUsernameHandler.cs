@@ -8,10 +8,10 @@ namespace SocialMediaBackend.Modules.Users.Application.Users.UpdateUsername;
 
 public class UpdateUsernameHandler : ICommandHandler<UpdateUsernameCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly UsersDbContext _context;
     private readonly IUserExistsChecker _userExistsChecker;
 
-    public UpdateUsernameHandler(ApplicationDbContext context, IUserExistsChecker userExistsChecker)
+    public UpdateUsernameHandler(UsersDbContext context, IUserExistsChecker userExistsChecker)
     {
         _context = context;
         _userExistsChecker = userExistsChecker;
