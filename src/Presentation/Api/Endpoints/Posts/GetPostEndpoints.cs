@@ -1,8 +1,9 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Modules.Users.Api.Abstractions;
-using SocialMediaBackend.Modules.Users.Application.Posts.GetPost;
+using SocialMediaBackend.Api.Abstractions;
+using SocialMediaBackend.Modules.Feed.Application.Posts.GetPost;
+using SocialMediaBackend.Modules.Users.Api.Endpoints;
 
-namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Posts;
+namespace SocialMediaBackend.Api.Endpoints.Posts;
 
 [HttpGet(ApiEndpoints.Posts.Get)]
 public class GetPostEndpoints : RequestEndpoint<GetPostRequest, GetPostResponse>

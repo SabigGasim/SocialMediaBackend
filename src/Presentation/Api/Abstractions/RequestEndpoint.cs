@@ -1,9 +1,8 @@
 ﻿using FastEndpoints;
-using AppCommandAbstractions = SocialMediaBackend.Modules.Users.Application.Abstractions.Requests.Commands;
 using SocialMediaBackend.Modules.Users.Api.Mappings;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 
-namespace SocialMediaBackend.Modules.Users.Api.Abstractions;
+namespace SocialMediaBackend.Api.Abstractions;
 
 public class RequestEndpoint<TRequest> : Endpoint<TRequest> where TRequest : notnull
 {
@@ -26,7 +25,7 @@ public class RequestEndpoint<TRequest> : Endpoint<TRequest> where TRequest : not
     }
 }
 
-public class RequestEndpoint<TRequest, TResponse> : Endpoint<TRequest, TResponse> 
+public class RequestEndpoint<TRequest, TResponse> : Endpoint<TRequest, TResponse>
     where TRequest : notnull
 {
     protected async Task HandleRequestAsync<T>(IRequest<T> request, CancellationToken cancellationToken)

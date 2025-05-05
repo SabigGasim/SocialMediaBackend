@@ -1,8 +1,9 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Modules.Users.Api.Abstractions;
-using SocialMediaBackend.Modules.Users.Application.Posts.DeletePost;
+using SocialMediaBackend.Api.Abstractions;
+using SocialMediaBackend.Modules.Feed.Application.Posts.DeletePost;
+using SocialMediaBackend.Modules.Users.Api.Endpoints;
 
-namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Posts;
+namespace SocialMediaBackend.Api.Endpoints.Posts;
 
 [HttpDelete(ApiEndpoints.Posts.Delete)]
 public class DeletePostEndpoint : RequestEndpoint<DeletePostRequest>

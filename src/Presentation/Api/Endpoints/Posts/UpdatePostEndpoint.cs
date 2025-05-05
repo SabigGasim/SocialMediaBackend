@@ -1,8 +1,9 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Modules.Users.Api.Abstractions;
-using SocialMediaBackend.Modules.Users.Application.Posts.UpdatePost;
+using SocialMediaBackend.Api.Abstractions;
+using SocialMediaBackend.Modules.Feed.Application.Posts.UpdatePost;
+using SocialMediaBackend.Modules.Users.Api.Endpoints;
 
-namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Posts;
+namespace SocialMediaBackend.Api.Endpoints.Posts;
 
 [HttpPatch(ApiEndpoints.Posts.Patch)]
 public class UpdatePostEndpoint : RequestEndpoint<UpdatePostRequest>

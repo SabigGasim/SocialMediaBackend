@@ -1,8 +1,9 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Modules.Users.Api.Abstractions;
-using SocialMediaBackend.Modules.Users.Application.Posts.CreatePost;
+using SocialMediaBackend.Api.Abstractions;
+using SocialMediaBackend.Modules.Feed.Application.Posts.CreatePost;
+using SocialMediaBackend.Modules.Users.Api.Endpoints;
 
-namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Posts;
+namespace SocialMediaBackend.Api.Endpoints.Posts;
 
 [HttpPost(ApiEndpoints.Posts.Create)]
 public class CreatePostEndpoint : RequestEndpoint<CreatePostRequest, CreatePostResponse>
@@ -10,7 +11,7 @@ public class CreatePostEndpoint : RequestEndpoint<CreatePostRequest, CreatePostR
     public override Task HandleAsync(CreatePostRequest req, CancellationToken ct)
     {
         var command = new CreatePostCommand(req.Text, req.MediaItems);
-        
+
         return HandleRequestAsync(command, ct);
     }
 }

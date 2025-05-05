@@ -1,8 +1,9 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Modules.Users.Api.Abstractions;
-using SocialMediaBackend.Modules.Users.Application.Comments.EditComment;
+using SocialMediaBackend.Api.Abstractions;
+using SocialMediaBackend.Modules.Feed.Application.Comments.EditComment;
+using SocialMediaBackend.Modules.Users.Api.Endpoints;
 
-namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Comments;
+namespace SocialMediaBackend.Api.Endpoints.Comments;
 
 [HttpPatch(ApiEndpoints.Comments.Patch)]
 public class EditCommentEndpoint : RequestEndpoint<EditCommentRequest>

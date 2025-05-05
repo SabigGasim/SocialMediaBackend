@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
-using SocialMediaBackend.Modules.Users.Api.Abstractions;
+using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Modules.Users.Application.Users.Follows.FollowUser;
 
 namespace SocialMediaBackend.Modules.Users.Api.Endpoints.Users.Follows;

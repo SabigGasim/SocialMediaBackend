@@ -11,13 +11,14 @@
     <PackageReference Include="FastEndpoints" Version="6.0.0" />
     <PackageReference Include="FastEndpoints.Swagger" Version="6.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.3">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Modules\Feed\Application\SocialMediaBackend.Modules.Feed.Application.csproj" />
     <ProjectReference Include="..\..\Modules\Users\Application\SocialMediaBackend.Modules.Users.Application.csproj" />
   </ItemGroup>
 
