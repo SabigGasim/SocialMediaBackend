@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\BuildingBlocks\SocialMediaBackend.BuildingBlocks.Application\SocialMediaBackend.BuildingBlocks.Application.csproj" />
-    <ProjectReference Include="..\..\..\BuildingBlocks\SocialMediaBackend.BuildingBlocks.Domain\SocialMediaBackend.BuildingBlocks.Domain.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Application\SocialMediaBackend.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Domain\SocialMediaBackend.BuildingBlocks.Domain.csproj" />
     <ProjectReference Include="..\Domain\SocialMediaBackend.Modules.Feed.Domain.csproj" />
     <ProjectReference Include="..\Infrastructure\SocialMediaBackend.Modules.Feed.Infrastructure.csproj" />
   </ItemGroup>
