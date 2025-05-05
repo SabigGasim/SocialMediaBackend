@@ -1,0 +1,24 @@
+﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
+using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
+using SocialMediaBackend.Modules.Feed.Domain.Posts;
+namespace SocialMediaBackend.Modules.Feed.Application.Posts.LikePost;
+
+public class LikePostCommand(Guid postId) : CommandBase, IUserRequest<LikePostCommand>
+{
+    public PostId PostId { get; } = new(postId);
+
+    public Guid UserId { get; private set; } = default!;
+    public bool IsAdmin { get; private set; }
+
+    public LikePostCommand AndAdminRole(bool isAdmin)
+    {
+        IsAdmin = isAdmin;
+        return this;
+    }
+
+    public LikePostCommand WithUserId(Guid userId)
+    {
+        UserId = userId;
+        return this;
+    }
+}

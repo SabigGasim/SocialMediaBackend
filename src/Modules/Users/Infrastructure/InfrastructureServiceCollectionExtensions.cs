@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
-using SocialMediaBackend.Modules.Users.Domain.Common;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 using SocialMediaBackend.Modules.Users.Infrastructure.Data;
-using SocialMediaBackend.Modules.Users.Infrastructure.Domain.Posts;
 using SocialMediaBackend.Modules.Users.Infrastructure.Domain.Users;
 using SocialMediaBackend.Modules.Users.Infrastructure.Processing;
 
@@ -17,7 +15,6 @@ public static class InfrastructureServiceCollectionExtensions
         return services
             .AddSingleton<IDbConnectionFactory>(new NpgsqlConnectionFactory(connectionString))
             .AddSingleton<IUserRepository, UserRepositry>()
-            .AddSingleton<IPostRepository, PostRepository>()
             .AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>()
             .AddDbContext<ApplicationDbContext>(options =>
             {

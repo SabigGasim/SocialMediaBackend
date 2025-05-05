@@ -1,8 +1,10 @@
 ﻿namespace SocialMediaBackend.BuildingBlocks.Domain;
 
-public class AggregateRoot<TId> : AuditableEntity<TId>, IHasDomainEvents
+public abstract class AggregateRoot<TId> : AuditableEntity<TId>, IHasDomainEvents
 {
     private List<IDomainEvent>? _events;
+
+    protected AggregateRoot() : base() {}
 
     public IReadOnlyCollection<IDomainEvent>? DomainEvents => _events?.AsReadOnly();
 

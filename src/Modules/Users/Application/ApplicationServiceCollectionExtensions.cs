@@ -1,11 +1,8 @@
 ﻿using FastEndpoints;
 using Microsoft.Extensions.DependencyInjection;
-using SocialMediaBackend.Modules.Users.Application.Abstractions;
 using SocialMediaBackend.Modules.Users.Application.Auth;
 using SocialMediaBackend.Modules.Users.Application.DomainServices.Users;
 using SocialMediaBackend.Modules.Users.Application.Processing;
-using SocialMediaBackend.Modules.Users.Domain.Feed.Comments;
-using SocialMediaBackend.Modules.Users.Domain.Feed.Posts;
 using SocialMediaBackend.Modules.Users.Domain.Services;
 
 namespace SocialMediaBackend.Modules.Users.Application;

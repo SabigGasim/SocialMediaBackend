@@ -6,4 +6,19 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Migrations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.66" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\SocialMediaBackend.BuildingBlocks.Infrastructure\SocialMediaBackend.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\SocialMediaBackend.Modules.Feed.Domain\SocialMediaBackend.Modules.Feed.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
