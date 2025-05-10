@@ -6,13 +6,16 @@ using FastEndpoints.Swagger;
 using SocialMediaBackend.Api.Modules.Users;
 using SocialMediaBackend.Api.Modules.Feed;
 using SocialMediaBackend.Api.Middlewares;
-using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
+using SocialMediaBackend.Api.Modules.BuildingBlocks;
+using SocialMediaBackend.Api;
+using SocialMediaBackend.Modules.Users.Application.Configuration;
+using SocialMediaBackend.Modules.Feed.Application.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("PostgresConnection")!;
+var config = builder.Configuration;
 
-builder.Services.AddUserModule(builder.Configuration);
+builder.Services.AddBuildingBlocks(config);
 builder.Services.AddFeedModule(builder.Configuration);
 
 builder.Services.AddApi(builder.Configuration);

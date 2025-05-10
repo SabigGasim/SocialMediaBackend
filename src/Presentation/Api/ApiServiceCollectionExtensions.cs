@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using SocialMediaBackend.BuildingBlocks.Domain;
+using System.Reflection;
 
-namespace SocialMediaBackend.Modules.Users.Api;
+namespace SocialMediaBackend.Api;
 
 public static class ApiServiceCollectionExtensions
 {
@@ -38,10 +40,28 @@ public static class ApiServiceCollectionExtensions
                 .Build();
         });
 
-        return services
+        services
             .AddFastEndpoints()
             .SwaggerDocument()
             .AddHttpContextAccessor()
             ;
-    }   
+
+        List<Assembly> applicationAssemblies =
+        [
+            typeof(SocialMediaBackend.Modules.Users.Application.ApplicationServiceCollectionExtensions).Assembly,
+            typeof(SocialMediaBackend.Modules.Feed.Application.ApplicationServciesCollectionExtensions).Assembly
+        ];
+
+        services.Scan(s => s.FromAssemblies(applicationAssemblies)
+            .AddClasses(c => c.AssignableTo(typeof(IDomainEventNotification<>)))
+            .AsImplementedInterfaces()
+            .WithTransientLifetime());
+
+        services.AddMediator(opts =>
+        {
+            opts.ServiceLifetime = ServiceLifetime.Scoped;
+        });
+
+        return services;
+    }
 }
