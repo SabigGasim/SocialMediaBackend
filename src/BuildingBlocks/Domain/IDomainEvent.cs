@@ -1,9 +1,3 @@
-﻿using Mediator;
+﻿namespace SocialMediaBackend.BuildingBlocks.Domain;
 
-namespace SocialMediaBackend.BuildingBlocks.Domain;
-
-
-public interface IDomainEvent : INotification
-{
-    DateTimeOffset OccuredOn { get; }
-}
+public interface IDomainEvent : IEvent;
