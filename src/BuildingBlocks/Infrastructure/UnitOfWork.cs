@@ -1,14 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Autofac;
+using Autofac.Core;
+using Mediator;
+using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.BuildingBlocks.Domain;
-using SocialMediaBackend.BuildingBlocks.Infrastructure;
 
-namespace SocialMediaBackend.Modules.Users.Infrastructure.Processing;
+namespace SocialMediaBackend.BuildingBlocks.Infrastructure;
 
-public class UnitOfWork<TDbContext>(TDbContext context, IDomainEventsDispatcher dispatcher) : IUnitOfWork
-    where TDbContext : DbContext
+public sealed class UnitOfWork(
+    DbContext context, 
+    IDomainEventsDispatcher dispatcher,
+    ILifetimeScope scope) : IUnitOfWork
 {
-    private readonly TDbContext _context = context;
+    private readonly DbContext _context = context;
     private readonly IDomainEventsDispatcher _dispatcher = dispatcher;
+    private readonly ILifetimeScope _scope = scope;
 
     public async Task<int> CommitAsync(CancellationToken ct = default)
     {
@@ -17,17 +22,45 @@ public class UnitOfWork<TDbContext>(TDbContext context, IDomainEventsDispatcher 
            .Where(e => e.DomainEvents?.Count > 0)
            .ToList();
 
-        var events = entitiesWithEvents
+        var domainEvents = entitiesWithEvents
             .SelectMany(e => e.DomainEvents!)
             .ToList();
+
+        List<IDomainEventNotification> domainEventNotifications = [];
+        foreach (var domainEvent in domainEvents)
+        {
+            Type domainEvenNotificationType = typeof(IDomainEventNotification<>);
+
+            var domainNotificationWithGenericType = domainEvenNotificationType.MakeGenericType(domainEvent.GetType());
+            var domainNotification = _scope.ResolveOptional(domainNotificationWithGenericType, new List<Parameter>
+            {
+                new NamedParameter("id", domainEvent.Id),
+                new NamedParameter("domainEvent", domainEvent!)
+            });
+
+            if (domainNotification is not null)
+            {
+                var notification = (IDomainEventNotification)domainNotification;
+
+                domainEventNotifications.Add(notification!);
+            }
+        }
 
         foreach (var entity in entitiesWithEvents)
         {
             entity.ClearDomainEvents();
         }
 
-        await _dispatcher.DispatchAsync(events, ct);
+        await _dispatcher.DispatchAsync(domainEvents, ct);
 
-        return await _context.SaveChangesAsync(ct);
+        foreach (var notification in domainEventNotifications)
+        {
+            var mediator = _scope.Resolve<IMediator>();
+            await mediator.Publish(notification);
+        }
+
+        var result = await _context.SaveChangesAsync(ct);
+
+        return result;
     }
 }
