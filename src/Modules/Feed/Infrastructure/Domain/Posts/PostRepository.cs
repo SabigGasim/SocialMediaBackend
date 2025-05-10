@@ -25,15 +25,15 @@ public class PostRepository(IDbConnectionFactory connectionFactory) : IPostRepos
                 p."Created"              AS CreatedAt,
                 p."LastModified"         AS UpdatedAt,
                 string_agg(m."Url", ',') AS MediaUrls,
-                u."Id"                   AS UserId,
+                u."Id"                   AS AuthorId,
                 u."Username",
                 u."Nickname",
                 u."FollowersCount",
                 u."FollowingCount",
                 u."ProfilePictureUrl"
-            FROM "Posts" p
-            JOIN "Users" u ON p."UserId" = u."Id"
-            LEFT JOIN "Posts_MediaItems" m ON p."Id" = m."PostId"
+            FROM {Schema.Feed}."Posts" p
+            JOIN {Schema.Feed}."Authors" u ON p."AuthorId" = u."Id"
+            LEFT JOIN {Schema.Feed}."Posts_MediaItems" m ON p."Id" = m."PostId"
             {GetFollowsJoin(options)}
             WHERE {string.Join(" AND ", filters)}
             GROUP BY
@@ -47,19 +47,19 @@ public class PostRepository(IDbConnectionFactory connectionFactory) : IPostRepos
         // Query paged items
         var items = await connection.QueryAsync<PostDto, AuthorDto, PostDto>(
             command: new CommandDefinition(baseSql, parameters, cancellationToken: ct),
-            (post, user) =>
+            (post, author) =>
             {
-                post.Author = user;
+                post.Author = author;
                 return post;
             },
-            splitOn: "UserId"
+            splitOn: "AuthorId"
         );
 
         // Query total count
         var countSql = $"""
             SELECT COUNT(*)
-            FROM "Posts" p
-            JOIN "Users" u ON p."UserId" = u."Id"
+            FROM {Schema.Feed}."Posts" p
+            JOIN {Schema.Feed}."Authors" u ON p."AuthorId" = u."Id"
             {GetFollowsJoin(options)}
             WHERE {string.Join(" AND ", filters)};
         """;
@@ -81,10 +81,10 @@ public class PostRepository(IDbConnectionFactory connectionFactory) : IPostRepos
 
         if (!string.IsNullOrWhiteSpace(options.IdOrUsername))
         {
-            if (Guid.TryParse(options.IdOrUsername, out var userId))
+            if (Guid.TryParse(options.IdOrUsername, out var AuthorId))
             {
-                filters.Add("p.\"UserId\" = @UserId");
-                parameters.Add("UserId", userId);
+                filters.Add("p.\"AuthorId\" = @AuthorId");
+                parameters.Add("AuthorId", AuthorId);
             }
             else
             {
@@ -140,7 +140,7 @@ public class PostRepository(IDbConnectionFactory connectionFactory) : IPostRepos
     private static string GetFollowsJoin(GetAllPostsOptions opts)
         => opts.IsAdmin
             ? string.Empty
-            : "LEFT JOIN \"Follows\" f ON f.\"FollowingId\" = u.\"Id\" AND f.\"FollowerId\" = @RequestingUserId";
+            : $"LEFT JOIN {Schema.Feed}.\"Follows\" f ON f.\"FollowingId\" = u.\"Id\" AND f.\"FollowerId\" = @RequestingUserId";
 
     private static string GetGroupByExtras(GetAllPostsOptions opts)
         => opts.IsAdmin
