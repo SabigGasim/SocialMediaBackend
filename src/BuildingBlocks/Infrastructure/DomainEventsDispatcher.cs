@@ -15,11 +15,9 @@ public class DomainEventsDispatcher(IMediator mediator) : IDomainEventsDispatche
 
     public async ValueTask DispatchAsync(IEnumerable<IDomainEvent> domainEvents, CancellationToken ct = default)
     {
-        var tasks = domainEvents.Select(x => _mediator.Publish(x, ct));
-
-        foreach (var task in tasks)
+        foreach (var @event in domainEvents)
         {
-            await task;
+            await _mediator.Publish(@event, ct);
         }
     }
 }

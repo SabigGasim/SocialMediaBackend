@@ -6,8 +6,8 @@ public interface ICommandHandler<in TCommand> : FastEndpoints.ICommandHandler<TC
 
 }
 
-public interface ICommandHandler<in TCommand, TResponse> : FastEndpoints.ICommandHandler<TCommand, HandlerResponse<TResponse>>
-    where TCommand : ICommand<HandlerResponse<TResponse>>
+public interface ICommandHandler<TCommand, TResult> : FastEndpoints.ICommandHandler<TCommand, HandlerResponse<TResult>>
+    where TCommand : ICommand<HandlerResponse<TResult>>
 {
 
 }
