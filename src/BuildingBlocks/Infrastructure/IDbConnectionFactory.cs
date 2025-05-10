@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace SocialMediaBackend.Modules.Feed.Infrastructure.Data;
+namespace SocialMediaBackend.BuildingBlocks.Infrastructure;
 
 public interface IDbConnectionFactory
 {
