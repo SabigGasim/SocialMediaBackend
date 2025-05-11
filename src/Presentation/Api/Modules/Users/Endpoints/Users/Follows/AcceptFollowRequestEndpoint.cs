@@ -1,12 +1,12 @@
 ﻿using FastEndpoints;
-using Microsoft.AspNetCore.Authorization;
 using SocialMediaBackend.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Contracts;
 using SocialMediaBackend.Modules.Users.Application.Users.Follows.AcceptFollowRequest;
 
 namespace SocialMediaBackend.Api.Modules.Users.Endpoints.Users.Follows;
 
 
-public class AcceptFollowRequestEndpoint : RequestEndpoint<AcceptFollowRequestRequest>
+public class AcceptFollowRequestEndpoint(IUsersModule module) : RequestEndpoint<AcceptFollowRequestRequest>(module)
 {
     public override void Configure()
     {

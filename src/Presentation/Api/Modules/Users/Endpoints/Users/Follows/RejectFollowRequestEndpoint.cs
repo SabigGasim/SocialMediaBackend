@@ -1,10 +1,11 @@
 ﻿using FastEndpoints;
 using SocialMediaBackend.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Contracts;
 using SocialMediaBackend.Modules.Users.Application.Users.Follows.RejectFollowRequet;
 
 namespace SocialMediaBackend.Api.Modules.Users.Endpoints.Users.Follows;
 
-public class RejectFollowRequestEndpoint : RequestEndpoint<RejectFollowRequestRequest>
+public class RejectFollowRequestEndpoint(IUsersModule module) : RequestEndpoint<RejectFollowRequestRequest>(module)
 {
     public override void Configure()
     {

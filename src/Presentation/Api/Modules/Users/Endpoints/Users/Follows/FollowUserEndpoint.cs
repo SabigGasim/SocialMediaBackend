@@ -1,11 +1,11 @@
 ﻿using FastEndpoints;
-using Microsoft.AspNetCore.Authorization;
 using SocialMediaBackend.Api.Abstractions;
+using SocialMediaBackend.Modules.Users.Application.Contracts;
 using SocialMediaBackend.Modules.Users.Application.Users.Follows.FollowUser;
 
 namespace SocialMediaBackend.Api.Modules.Users.Endpoints.Users.Follows;
 
-public class FollowUserEndpoint : RequestEndpoint<FollowUserRequest, FollowUserResponse>
+public class FollowUserEndpoint(IUsersModule module) : RequestEndpoint<FollowUserRequest, FollowUserResponse>(module)
 {
     public override void Configure()
     {
@@ -15,6 +15,6 @@ public class FollowUserEndpoint : RequestEndpoint<FollowUserRequest, FollowUserR
 
     public override Task HandleAsync(FollowUserRequest req, CancellationToken ct)
     {
-        return HandleRequestAsync(new FollowUserCommand(req.UserId), ct);
+        return HandleCommandAsync(new FollowUserCommand(req.UserId), ct);
     }
 }

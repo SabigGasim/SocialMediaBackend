@@ -1,10 +1,11 @@
 ﻿using FastEndpoints;
 using SocialMediaBackend.Api.Abstractions;
+using SocialMediaBackend.Modules.Feed.Application.Contracts;
 using SocialMediaBackend.Modules.Feed.Application.Posts.UnlikePost;
 
 namespace SocialMediaBackend.Api.Modules.Feed.Endpoints.Posts;
 
-public class UnlikePostEndpoint : RequestEndpoint<UnlikePostRequest>
+public class UnlikePostEndpoint(IFeedModule module) : RequestEndpoint<UnlikePostRequest>(module)
 {
     public override void Configure()
     {

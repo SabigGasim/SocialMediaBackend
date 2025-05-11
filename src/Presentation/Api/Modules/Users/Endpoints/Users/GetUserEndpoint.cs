@@ -1,16 +1,17 @@
 ﻿using FastEndpoints;
 using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Api.Contracts;
+using SocialMediaBackend.Modules.Users.Application.Contracts;
 using SocialMediaBackend.Modules.Users.Application.Users.GetUser;
 
 namespace SocialMediaBackend.Api.Modules.Users.Endpoints.Users;
 
 [HttpGet(ApiEndpoints.Users.Get)]
-internal class GetUserEndpoint : RequestEndpoint<GetUserRequest, GetUserResponse>
+internal class GetUserEndpoint(IUsersModule module) : RequestEndpoint<GetUserRequest, GetUserResponse>(module)
 {
     public override async Task HandleAsync(GetUserRequest req, CancellationToken ct)
     {
-        await HandleRequestAsync(new GetUserQuery(req.IdOrUsername), ct);
+        await HandleQueryAsync(new GetUserQuery(req.IdOrUsername), ct);
     }
 }
 

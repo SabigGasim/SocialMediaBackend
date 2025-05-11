@@ -1,10 +1,11 @@
 ﻿using FastEndpoints;
 using SocialMediaBackend.Api.Abstractions;
+using SocialMediaBackend.Modules.Feed.Application.Contracts;
 using SocialMediaBackend.Modules.Feed.Application.Posts.LikePost;
 
 namespace SocialMediaBackend.Api.Modules.Feed.Endpoints.Posts;
 
-public class LikePostEndpoint : RequestEndpoint<LikePostRequest>
+public class LikePostEndpoint(IFeedModule module) : RequestEndpoint<LikePostRequest>(module)
 {
     public override void Configure()
     {

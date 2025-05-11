@@ -1,11 +1,12 @@
 ﻿using SocialMediaBackend.Api.Abstractions;
+using SocialMediaBackend.Modules.Feed.Application.Contracts;
 using SocialMediaBackend.Modules.Feed.Application.Posts.GetAllPosts;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Domain.Posts;
 
 namespace SocialMediaBackend.Api.Modules.Feed.Endpoints.Posts;
 
 [FastEndpoints.HttpGet(ApiEndpoints.Posts.GetAll)]
-public class GetAllPostsEndpoints : RequestEndpoint<GetAllPostsRequest, GetAllPostsResponse>
+public class GetAllPostsEndpoints(IFeedModule module) : RequestEndpoint<GetAllPostsRequest, GetAllPostsResponse>(module)
 {
     public override Task HandleAsync(GetAllPostsRequest req, CancellationToken ct)
     {
@@ -16,9 +17,15 @@ public class GetAllPostsEndpoints : RequestEndpoint<GetAllPostsRequest, GetAllPo
             _ => Order.Unordered
         };
 
-        var query = new GetAllPostsQuery(req.Page, req.PageSize, order,
-            req.Text, req.Since, req.Until, req.IdOrUsername);
+        var query = new GetAllPostsQuery(
+            req.Page, 
+            req.PageSize,
+            order,
+            req.Text, 
+            req.Since, 
+            req.Until,
+            req.IdOrUsername);
 
-        return HandleRequestAsync(query, ct);
+        return HandleQueryAsync(query, ct);
     }
 }
