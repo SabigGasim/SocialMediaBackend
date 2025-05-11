@@ -11,12 +11,12 @@ public class UserCreatedIntegrationEventHandler : IIntegrationEventHandler<UserC
 {
     public async ValueTask Handle(UserCreatedIntegrationEvent notification, CancellationToken cancellationToken)
     {
-        await using (var scope = FeedCompositionRoot.BeginLifetimeScope())
+        using (var scope = FeedCompositionRoot.BeginLifetimeScope())
         {
             var scheduler = scope.Resolve<ICommandsScheduler>();
 
             var command = new CreateAuthorCommand(
-                id: Guid.NewGuid(),
+                id: notification.Id,
                 authorId: new AuthorId(notification.UserId),
                 notification.Username,
                 notification.Nickname,
