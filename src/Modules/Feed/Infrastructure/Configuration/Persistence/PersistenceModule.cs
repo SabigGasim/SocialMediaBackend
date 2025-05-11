@@ -12,20 +12,12 @@ public class PersistenceModule(IConfiguration config) : Module
 
     protected override void Load(ContainerBuilder builder)
     {
-        var connectionString = _config.GetConnectionString("PostgresConnection");
+        var connectionString = _config.GetConnectionString("PostgresConnection")!;
 
-        builder.Register(_ =>
-        {
-            var options = new DbContextOptionsBuilder<FeedDbContext>()
-                .UseNpgsql(
-                    connectionString,
-                    npgsqlOptions => npgsqlOptions.MigrationsHistoryTable(
-                        HistoryRepository.DefaultTableName,
-                        Schema.Feed))
-                .Options;
-
-            return new FeedDbContext(options);
-        })
+        builder.Register(_ => new FeedDbContext(
+            FeedDbContextOptionsBuilderFactory
+                .Create(connectionString)
+                .Options))
             .AsSelf()
             .As<DbContext>()
             .InstancePerLifetimeScope();

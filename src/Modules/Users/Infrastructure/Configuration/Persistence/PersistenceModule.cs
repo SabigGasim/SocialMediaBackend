@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
@@ -12,20 +11,12 @@ public class PersistenceModule(IConfiguration config) : Module
 
     protected override void Load(ContainerBuilder builder)
     {
-        var connectionString = _config.GetConnectionString("PostgresConnection");
+        var connectionString = _config.GetConnectionString("PostgresConnection")!;
 
-        builder.Register(_ =>
-        {
-            var options = new DbContextOptionsBuilder<UsersDbContext>()
-                .UseNpgsql(
-                    connectionString,
-                    npgsqlOptions => npgsqlOptions.MigrationsHistoryTable(
-                        HistoryRepository.DefaultTableName,
-                        Schema.Users))
-                .Options;
-
-            return new UsersDbContext(options);
-        })
+        builder.Register(_ => new UsersDbContext(
+            UsersDbContextOptionsBuilderFactory
+                .Create(connectionString)
+                .Options))
             .AsSelf()
             .As<DbContext>()
             .InstancePerLifetimeScope();
