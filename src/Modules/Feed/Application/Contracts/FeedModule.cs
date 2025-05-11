@@ -2,19 +2,18 @@
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
-using SocialMediaBackend.Modules.Users.Application.Contracts;
-using SocialMediaBackend.Modules.Users.Infrastructure.Configuration;
+using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration;
 
-namespace SocialMediaBackend.Modules.Users.Application;
+namespace SocialMediaBackend.Modules.Feed.Application.Contracts;
 
-internal class UsersModule : IUsersModule
+internal class FeedModule : IFeedModule
 {
     public async Task<HandlerResponse<TResult>> ExecuteCommandAsync<TCommand, TResult>(
         TCommand command,
         CancellationToken ct = default)
         where TCommand : ICommand<HandlerResponse<TResult>>
     {
-        using (var scope = UsersCompositionRoot.BeginLifetimeScope())
+        using (var scope = FeedCompositionRoot.BeginLifetimeScope())
         {
             var handler = scope.Resolve<ICommandHandler<TCommand, TResult>>();
 
@@ -24,10 +23,10 @@ internal class UsersModule : IUsersModule
 
     public async Task<HandlerResponse> ExecuteCommandAsync<TCommand>(
         TCommand command,
-        CancellationToken ct = default) 
+        CancellationToken ct = default)
         where TCommand : ICommand<HandlerResponse>
     {
-        using (var scope = UsersCompositionRoot.BeginLifetimeScope())
+        using (var scope = FeedCompositionRoot.BeginLifetimeScope())
         {
             var handler = scope.Resolve<ICommandHandler<TCommand>>();
 
@@ -40,7 +39,7 @@ internal class UsersModule : IUsersModule
         CancellationToken ct = default)
         where TQuery : IQuery<HandlerResponse<TResult>>
     {
-        using (var scope = UsersCompositionRoot.BeginLifetimeScope())
+        using (var scope = FeedCompositionRoot.BeginLifetimeScope())
         {
             var handler = scope.Resolve<IQueryHandler<TQuery, TResult>>();
 
