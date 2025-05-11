@@ -13,6 +13,7 @@ public class Author : AggregateRoot<AuthorId>
     private Author() { }
 
     private Author(
+        AuthorId authorId,
         string username,
         string nickname,
         Media profilePicture,
@@ -20,6 +21,7 @@ public class Author : AggregateRoot<AuthorId>
         int followersCount,
         int followingCount) : base()
     {
+        Id = authorId;
         Username = username;
         Nickname = nickname;
         ProfilePicture = profilePicture;
@@ -38,7 +40,8 @@ public class Author : AggregateRoot<AuthorId>
     public IReadOnlyCollection<Post> Posts => _posts.AsReadOnly();
     public IReadOnlyCollection<Comment> Comments => _comments.AsReadOnly();
 
-    internal static Author Create(
+    public static Author Create(
+        AuthorId authorId,
         string username,
         string nickname,
         Media profilePicture,
@@ -46,7 +49,7 @@ public class Author : AggregateRoot<AuthorId>
         int followersCount,
         int followingCount)
     {
-        return new Author(username, nickname, profilePicture, profileIsPublic, followersCount, followingCount);
+        return new Author(authorId, username, nickname, profilePicture, profileIsPublic, followersCount, followingCount);
     }
 
     public Post? AddPost(string? text = null, IEnumerable<Media>? mediaItems = null)
