@@ -1,8 +1,10 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 using SocialMediaBackend.Modules.Users.Domain.Services;
+using SocialMediaBackend.Modules.Users.Domain.Users.Events;
 using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
 using SocialMediaBackend.Modules.Users.Domain.Users.Rules;
+using System.Runtime.CompilerServices;
 
 namespace SocialMediaBackend.Modules.Users.Domain.Users;
 
@@ -24,6 +26,14 @@ public class User : AggregateRoot<UserId>
         CreatedBy = "System";
         LastModified = DateTimeOffset.UtcNow;
         LastModifiedBy = "System";
+
+        this.AddDomainEvent(new UserCreatedDomainEvent(
+            this.Id.Value,
+            Username,
+            Nickname,
+            ProfilePicture,
+            DateOfBirth,
+            ProfileIsPublic));
     }
 
     private User() { }
