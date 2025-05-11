@@ -10,7 +10,7 @@ public static class QuartzStartup
         var trigger = TriggerBuilder.Create()
            .StartNow()
            .WithSimpleSchedule(x => x
-               .WithIntervalInSeconds(5)
+               .WithIntervalInSeconds(2)
                .RepeatForever())
            .Build();
 
