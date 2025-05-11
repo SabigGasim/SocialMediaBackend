@@ -10,6 +10,8 @@ internal class InternalCommandEntityTypeConfiguration : IEntityTypeConfiguration
     {
         builder.HasKey(x => x.Id);
 
+        builder.HasIndex(x => x.Id);
+
         builder.Property(x => x.Processed)
             .HasDefaultValue(false);
     }

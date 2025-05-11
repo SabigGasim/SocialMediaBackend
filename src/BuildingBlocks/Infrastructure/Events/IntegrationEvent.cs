@@ -6,7 +6,7 @@ public abstract class IntegrationEvent : IEvent
 {
     protected IntegrationEvent()
     {
-        Id = Guid.NewGuid();
+        Id = Guid.CreateVersion7();
         OccuredOn = TimeProvider.System.GetUtcNow();
     }
 
