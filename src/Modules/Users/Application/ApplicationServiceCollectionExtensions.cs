@@ -1,6 +1,7 @@
 ﻿using FastEndpoints;
 using Microsoft.Extensions.DependencyInjection;
 using SocialMediaBackend.Modules.Users.Application.Auth;
+using SocialMediaBackend.Modules.Users.Application.Contracts;
 using SocialMediaBackend.Modules.Users.Application.DomainServices.Users;
 using SocialMediaBackend.Modules.Users.Application.Processing;
 using SocialMediaBackend.Modules.Users.Domain.Services;
@@ -18,11 +19,7 @@ public static class ApplicationServiceCollectionExtensions
             })
             .AddSingleton<IUserExistsChecker, UserExistsChecker>()
             .AddSingleton<IAuthorizationService, AuthorizationService>()
-            .AddMediator(o =>
-            {
-                o.ServiceLifetime = ServiceLifetime.Scoped;
-                o.Namespace = "SocialMediaBackend.Modules.Users.Application.SourceGenerated.Mediator";
-            })
+            .AddSingleton<IUsersModule, UsersModule>()
             ;
     }
 }
