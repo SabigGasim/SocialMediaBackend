@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Api.Contracts;
+using SocialMediaBackend.BuildingBlocks.Application.Contracts;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
+using SocialMediaBackend.Modules.Users.Application.Contracts;
 using SocialMediaBackend.Modules.Users.Application.Users.CreateUser;
 
 namespace SocialMediaBackend.Api.Modules.Users.Endpoints.Users;
@@ -9,6 +12,13 @@ namespace SocialMediaBackend.Api.Modules.Users.Endpoints.Users;
 [HttpPost(ApiEndpoints.Users.Create), AllowAnonymous]
 public class CreateUserEndpoint : RequestEndpoint<CreateUserRequest, CreateUserResponse>
 {
+    private readonly IUsersModule _usersModule;
+
+    public CreateUserEndpoint(IUsersModule usersModule)
+    {
+        _usersModule = usersModule;
+    }
+
     public override async Task HandleAsync(CreateUserRequest req, CancellationToken ct)
     {
         var command = new CreateUserCommand(
@@ -17,7 +27,7 @@ public class CreateUserEndpoint : RequestEndpoint<CreateUserRequest, CreateUserR
             req.DateOfBirth,
             req.ProfilePicture);
 
-        await HandleRequestAsync(command, ct);
+        await HandleCommandAsync(command, _usersModule, ct);
     }
 }
 
