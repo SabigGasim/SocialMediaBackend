@@ -13,7 +13,9 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Creat
     private readonly IUserExistsChecker _userExistsChecker;
     private readonly UsersDbContext _context;
 
-    public CreateUserCommandHandler(IUserExistsChecker userExistsChecker, UsersDbContext context)
+    public CreateUserCommandHandler(
+        IUserExistsChecker userExistsChecker,
+        UsersDbContext context)
     {
         _userExistsChecker = userExistsChecker;
         _context = context;
@@ -30,7 +32,6 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Creat
         }
 
         _context.Users.Add(user);
-        await _context.SaveChangesAsync(ct);
 
         return (user.MapToCreateResponse(), HandlerResponseStatus.Created);
     }
