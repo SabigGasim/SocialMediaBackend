@@ -23,8 +23,9 @@ public class DeleteUserCommandHandler(UsersDbContext context) : ICommandHandler<
             return ("User was not found", HandlerResponseStatus.NotFound, command.UserId);
         }
 
+        user.Delete();
+
         _context.Remove(user);
-        await _context.SaveChangesAsync(ct);
 
         return HandlerResponseStatus.Deleted;
     }

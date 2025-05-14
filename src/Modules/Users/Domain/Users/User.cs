@@ -4,7 +4,6 @@ using SocialMediaBackend.Modules.Users.Domain.Services;
 using SocialMediaBackend.Modules.Users.Domain.Users.Events;
 using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
 using SocialMediaBackend.Modules.Users.Domain.Users.Rules;
-using System.Runtime.CompilerServices;
 
 namespace SocialMediaBackend.Modules.Users.Domain.Users;
 
@@ -119,9 +118,16 @@ public class User : AggregateRoot<UserId>
 
         ProfileIsPublic = publicProfile;
 
-        return ProfileIsPublic
+        var succeded = ProfileIsPublic
             ? AcceptAllPendingFollowRequests()
             : true;
+
+        if (succeded)
+        {
+            this.AddDomainEvent(new UserInfoUpdatedDomainEvent(this));
+        }
+
+        return succeded;
     }
 
     public bool RejectPendingFollowRequest(UserId userToRejectId)
@@ -172,6 +178,8 @@ public class User : AggregateRoot<UserId>
         await CheckRuleAsync(new UsernameShouldBeUniqueRule(userExistsChecker, username), ct);
 
         Username = username;
+        this.AddDomainEvent(new UserInfoUpdatedDomainEvent(this));
+
         return true;
     }
 
@@ -183,6 +191,13 @@ public class User : AggregateRoot<UserId>
         }
 
         Nickname = nickname;
+        this.AddDomainEvent(new UserInfoUpdatedDomainEvent(this));
+
         return true;
+    }
+
+    public void Delete()
+    {
+        this.AddDomainEvent(new UserDeletedDomainEvent(this.Id));
     }
 }
