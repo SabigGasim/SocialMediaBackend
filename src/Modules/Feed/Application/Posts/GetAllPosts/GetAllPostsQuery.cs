@@ -4,7 +4,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Domain.Posts;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Posts.GetAllPosts;
 
-public class GetAllPostsQuery : QueryBase<GetAllPostsResponse>, IOptionalUserRequest<GetAllPostsQuery>
+public class GetAllPostsQuery : QueryBase<GetAllPostsResponse>, IOptionalUserRequest
 {
     public GetAllPostsQuery(
         int page,
@@ -33,17 +33,14 @@ public class GetAllPostsQuery : QueryBase<GetAllPostsResponse>, IOptionalUserReq
 
     public bool IsAdmin { get => Options.IsAdmin; private set => Options.IsAdmin = value; }
 
-    public GetAllPostsQuery AndAdminRole(bool isAdmin)
+    public void WithAdminRole(bool isAdmin)
     {
         IsAdmin = isAdmin;
-        return this;
     }
 
-    public GetAllPostsQuery WithUserId(Guid userId)
+    public void WithUserId(Guid userId)
     {
         UserId = userId;
         Options.RequestingUserId = userId;
-
-        return this;
     }
 }

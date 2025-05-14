@@ -3,8 +3,7 @@ using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.RejectFollowRequet;
-public class RejectFollowRequestCommand(Guid userToRejectId) : CommandBase, 
-    IUserRequest<RejectFollowRequestCommand>
+public class RejectFollowRequestCommand(Guid userToRejectId) : CommandBase, IUserRequest
 {
     public UserId UserToRejectId { get; } = new(userToRejectId);
 
@@ -12,15 +11,13 @@ public class RejectFollowRequestCommand(Guid userToRejectId) : CommandBase,
 
     public bool IsAdmin { get; private set; }
 
-    public RejectFollowRequestCommand AndAdminRole(bool isAdmin)
+    public void WithAdminRole(bool isAdmin)
     {
         IsAdmin = isAdmin;
-        return this;
     }
 
-    public RejectFollowRequestCommand WithUserId(Guid userId)
+    public void WithUserId(Guid userId)
     {
         UserId = userId;
-        return this;
     }
 }

@@ -5,7 +5,7 @@ using SocialMediaBackend.Modules.Feed.Domain.Posts;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.DeleteComment;
 
-public class DeleteCommentCommand(Guid commentId, Guid postId) : CommandBase, IUserRequest<DeleteCommentCommand>
+public class DeleteCommentCommand(Guid commentId, Guid postId) : CommandBase, IUserRequest
 {
     public CommentId CommentId { get; } = new(commentId);
     public PostId PostId { get; } = new(postId);
@@ -14,15 +14,13 @@ public class DeleteCommentCommand(Guid commentId, Guid postId) : CommandBase, IU
 
     public bool IsAdmin { get; private set; }
 
-    public DeleteCommentCommand AndAdminRole(bool isAdmin)
+    public void WithAdminRole(bool isAdmin)
     {
         IsAdmin = isAdmin;
-        return this;
     }
 
-    public DeleteCommentCommand WithUserId(Guid userId)
+    public void WithUserId(Guid userId)
     {
         UserId = userId;
-        return this;
     }
 }

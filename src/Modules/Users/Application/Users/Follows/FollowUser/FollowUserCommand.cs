@@ -4,8 +4,7 @@ using SocialMediaBackend.Modules.Users.Domain.Users;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.FollowUser;
 
-public class FollowUserCommand(Guid userToFollowId) : CommandBase<FollowUserResponse>,
-    IUserRequest<FollowUserCommand>
+public class FollowUserCommand(Guid userToFollowId) : CommandBase<FollowUserResponse>, IUserRequest
 {
     public UserId UserToFollowId { get; } = new(userToFollowId);
 
@@ -13,15 +12,13 @@ public class FollowUserCommand(Guid userToFollowId) : CommandBase<FollowUserResp
 
     public bool IsAdmin { get; private set; }
 
-    public FollowUserCommand WithUserId(Guid userId)
-    {
-        UserId = userId;
-        return this;
-    }
-
-    public FollowUserCommand AndAdminRole(bool isAdmin)
+    public void WithAdminRole(bool isAdmin)
     {
         IsAdmin = isAdmin;
-        return this;
+    }
+
+    public void WithUserId(Guid userId)
+    {
+        UserId = userId;
     }
 }

@@ -4,7 +4,7 @@ using SocialMediaBackend.Modules.Feed.Domain.Posts;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Posts.DeletePost;
 
-public class DeletePostCommand(Guid postId) : CommandBase, IUserRequest<DeletePostCommand>
+public class DeletePostCommand(Guid postId) : CommandBase, IUserRequest
 {
     public PostId PostId { get; } = new(postId);
 
@@ -12,15 +12,13 @@ public class DeletePostCommand(Guid postId) : CommandBase, IUserRequest<DeletePo
 
     public bool IsAdmin { get; private set; }
 
-    public DeletePostCommand AndAdminRole(bool isAdmin)
+    public void WithAdminRole(bool isAdmin)
     {
         IsAdmin = isAdmin;
-        return this;
     }
 
-    public DeletePostCommand WithUserId(Guid userId)
+    public void WithUserId(Guid userId)
     {
         UserId = userId;
-        return this;
     }
 }

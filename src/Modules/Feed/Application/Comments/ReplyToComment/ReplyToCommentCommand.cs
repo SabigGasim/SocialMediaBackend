@@ -4,8 +4,7 @@ using SocialMediaBackend.Modules.Feed.Domain.Comments;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.ReplyToComment;
 
-public class ReplyToCommentCommand(Guid parentId, string text)
-    : CommandBase<ReplyToCommentResponse>, IUserRequest<ReplyToCommentCommand>
+public class ReplyToCommentCommand(Guid parentId, string text): CommandBase<ReplyToCommentResponse>, IUserRequest
 {
     public CommentId ParentId { get; } = new(parentId);
     public string Text { get; } = text;
@@ -13,15 +12,13 @@ public class ReplyToCommentCommand(Guid parentId, string text)
 
     public bool IsAdmin { get; private set; }
 
-    public ReplyToCommentCommand AndAdminRole(bool isAdmin)
+    public void WithAdminRole(bool isAdmin)
     {
         IsAdmin = isAdmin;
-        return this;
     }
 
-    public ReplyToCommentCommand WithUserId(Guid userId)
+    public void WithUserId(Guid userId)
     {
         UserId = userId;
-        return this;
     }
 }

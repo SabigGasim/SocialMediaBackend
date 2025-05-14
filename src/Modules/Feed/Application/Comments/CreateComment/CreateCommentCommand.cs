@@ -4,8 +4,7 @@ using SocialMediaBackend.Modules.Feed.Domain.Posts;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.CreateComment;
 
-public class CreateCommentCommand(Guid postId, string text)
-    : CommandBase<CreateCommentResponse>, IUserRequest<CreateCommentCommand>
+public class CreateCommentCommand(Guid postId, string text) : CommandBase<CreateCommentResponse>, IUserRequest
 {
     public Guid UserId { get; private set; } = default!;
     public PostId PostId { get; } = new(postId);
@@ -13,15 +12,13 @@ public class CreateCommentCommand(Guid postId, string text)
 
     public bool IsAdmin { get; private set; }
 
-    public CreateCommentCommand AndAdminRole(bool isAdmin)
+    public void WithAdminRole(bool isAdmin)
     {
         IsAdmin = isAdmin;
-        return this;
     }
 
-    public CreateCommentCommand WithUserId(Guid userId)
+    public void WithUserId(Guid userId)
     {
         UserId = userId;
-        return this;
     }
 }

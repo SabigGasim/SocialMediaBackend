@@ -1,18 +1,18 @@
 ﻿namespace SocialMediaBackend.BuildingBlocks.Application.Requests;
-public interface IUserRequestBase<TRequest> : IRequest
+public interface IUserRequestBase : IRequest
 {
-    TRequest WithUserId(Guid userId);
-    TRequest AndAdminRole(bool isAdmin);
+    void WithUserId(Guid userId);
+    void WithAdminRole(bool isAdmin);
 }
 
-public interface IUserRequest<TRequest> : IUserRequestBase<TRequest>
+public interface IUserRequest : IUserRequestBase
 {
     Guid UserId { get; }
     bool IsAdmin { get; }
 }
 
 
-public interface IOptionalUserRequest<TRequest> : IUserRequestBase<TRequest>
+public interface IOptionalUserRequest : IUserRequestBase
 {
     Guid? UserId { get; }
     bool IsAdmin { get; }

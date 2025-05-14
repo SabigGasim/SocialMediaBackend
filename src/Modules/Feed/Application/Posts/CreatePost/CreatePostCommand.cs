@@ -5,7 +5,7 @@ namespace SocialMediaBackend.Modules.Feed.Application.Posts.CreatePost;
 
 public class CreatePostCommand(
     string text,
-    IEnumerable<string> mediaItems) : CommandBase<CreatePostResponse>, IUserRequest<CreatePostCommand>
+    IEnumerable<string> mediaItems) : CommandBase<CreatePostResponse>, IUserRequest
 {
     public string Text { get; } = text;
     public IEnumerable<string> MediaItems { get; } = mediaItems;
@@ -13,15 +13,13 @@ public class CreatePostCommand(
     public Guid UserId { get; private set; } = default!;
     public bool IsAdmin { get; private set; }
 
-    public CreatePostCommand AndAdminRole(bool isAdmin)
+    public void WithAdminRole(bool isAdmin)
     {
         IsAdmin = isAdmin;
-        return this;
     }
 
-    public CreatePostCommand WithUserId(Guid userId)
+    public void WithUserId(Guid userId)
     {
         UserId = userId;
-        return this;
     }
 }

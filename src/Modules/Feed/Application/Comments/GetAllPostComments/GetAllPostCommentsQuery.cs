@@ -4,8 +4,8 @@ using SocialMediaBackend.Modules.Feed.Domain.Posts;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.GetAllPostComments;
 
-public class GetAllPostCommentsQuery(Guid postId, int page, int pageSize)
-    : QueryBase<GetAllPostCommentsResponse>, IOptionalUserRequest<GetAllPostCommentsQuery>
+public class GetAllPostCommentsQuery(Guid postId, int page, int pageSize) 
+    : QueryBase<GetAllPostCommentsResponse>, IOptionalUserRequest
 {
     public PostId PostId { get; } = new(postId);
     public int Page { get; } = page;
@@ -15,15 +15,13 @@ public class GetAllPostCommentsQuery(Guid postId, int page, int pageSize)
 
     public bool IsAdmin { get; private set; }
 
-    public GetAllPostCommentsQuery AndAdminRole(bool isAdmin)
+    public void WithAdminRole(bool isAdmin)
     {
         IsAdmin = isAdmin;
-        return this;
     }
 
-    public GetAllPostCommentsQuery WithUserId(Guid userId)
+    public void WithUserId(Guid userId)
     {
         UserId = userId;
-        return this;
     }
 }

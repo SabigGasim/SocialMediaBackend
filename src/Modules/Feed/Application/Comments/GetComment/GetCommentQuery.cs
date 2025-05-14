@@ -4,8 +4,7 @@ using SocialMediaBackend.Modules.Feed.Domain.Comments;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.GetComment;
 
-public class GetCommentQuery(Guid commentId)
-    : QueryBase<GetCommentResponse>, IOptionalUserRequest<GetCommentQuery>
+public class GetCommentQuery(Guid commentId) : QueryBase<GetCommentResponse>, IOptionalUserRequest
 {
     public CommentId CommentId { get; } = new(commentId);
 
@@ -13,15 +12,13 @@ public class GetCommentQuery(Guid commentId)
 
     public bool IsAdmin { get; private set; }
 
-    public GetCommentQuery AndAdminRole(bool isAdmin)
+    public void WithAdminRole(bool isAdmin)
     {
         IsAdmin = isAdmin;
-        return this;
     }
 
-    public GetCommentQuery WithUserId(Guid userId)
+    public void WithUserId(Guid userId)
     {
         UserId = userId;
-        return this;
     }
 }

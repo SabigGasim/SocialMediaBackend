@@ -2,22 +2,19 @@
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.GetFullUserDetails;
-public class GetFullUserDetailsQuery : QueryBase<GetFullUserDetailsResponse>,
-    IUserRequest<GetFullUserDetailsQuery>
+public class GetFullUserDetailsQuery : QueryBase<GetFullUserDetailsResponse>, IUserRequest
 {
     public Guid UserId { get; private set; } = default!;
 
     public bool IsAdmin { get; private set; }
 
-    public GetFullUserDetailsQuery AndAdminRole(bool isAdmin)
+    public void WithAdminRole(bool isAdmin)
     {
         IsAdmin = isAdmin;
-        return this;
     }
 
-    public GetFullUserDetailsQuery WithUserId(Guid userId)
+    public void WithUserId(Guid userId)
     {
         UserId = userId;
-        return this;
     }
 }

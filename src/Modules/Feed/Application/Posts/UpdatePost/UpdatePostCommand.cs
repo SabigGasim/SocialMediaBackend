@@ -4,7 +4,7 @@ using SocialMediaBackend.Modules.Feed.Domain.Posts;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Posts.UpdatePost;
 
-public class UpdatePostCommand(Guid postId, string text) : CommandBase, IUserRequest<UpdatePostCommand>
+public class UpdatePostCommand(Guid postId, string text) : CommandBase, IUserRequest
 {
     public PostId PostId { get; } = new(postId);
     public string Text { get; } = text;
@@ -12,15 +12,13 @@ public class UpdatePostCommand(Guid postId, string text) : CommandBase, IUserReq
     public Guid UserId { get; private set; } = default!;
     public bool IsAdmin { get; private set; }
 
-    public UpdatePostCommand AndAdminRole(bool isAdmin)
+    public void WithAdminRole(bool isAdmin)
     {
         IsAdmin = isAdmin;
-        return this;
     }
 
-    public UpdatePostCommand WithUserId(Guid userId)
+    public void WithUserId(Guid userId)
     {
         UserId = userId;
-        return this;
     }
 }

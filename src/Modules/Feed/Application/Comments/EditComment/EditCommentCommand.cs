@@ -4,7 +4,7 @@ using SocialMediaBackend.Modules.Feed.Domain.Comments;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.EditComment;
 
-public class EditCommentCommand(Guid commentId, string text) : CommandBase, IUserRequest<EditCommentCommand>
+public class EditCommentCommand(Guid commentId, string text) : CommandBase, IUserRequest
 {
     public CommentId CommentId { get; } = new(commentId);
     public string Text { get; } = text;
@@ -13,15 +13,13 @@ public class EditCommentCommand(Guid commentId, string text) : CommandBase, IUse
 
     public bool IsAdmin { get; private set; }
 
-    public EditCommentCommand AndAdminRole(bool isAdmin)
+    public void WithAdminRole(bool isAdmin)
     {
         IsAdmin = isAdmin;
-        return this;
     }
 
-    public EditCommentCommand WithUserId(Guid userId)
+    public void WithUserId(Guid userId)
     {
         UserId = userId;
-        return this;
     }
 }

@@ -4,22 +4,20 @@ using SocialMediaBackend.Modules.Users.Domain.Users;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.DeleteUser;
 
-public class DeleteUserCommand(Guid userToDeleteId) : CommandBase, IUserRequest<DeleteUserCommand>
+public class DeleteUserCommand(Guid userToDeleteId) : CommandBase, IUserRequest
 {
     public Guid UserId { get; private set; } = default!;
     public UserId UserToDeleteId { get; } = new(userToDeleteId);
 
     public bool IsAdmin { get; private set; }
 
-    public DeleteUserCommand AndAdminRole(bool isAdmin)
+    public void WithAdminRole(bool isAdmin)
     {
         IsAdmin = isAdmin;
-        return this;
     }
 
-    public DeleteUserCommand WithUserId(Guid userId)
+    public void WithUserId(Guid userId)
     {
         UserId = userId;
-        return this;
     }
 }
