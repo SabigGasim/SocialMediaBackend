@@ -1,9 +1,11 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
+using SocialMediaBackend.Modules.Feed.Application.Auth;
 using SocialMediaBackend.Modules.Feed.Infrastructure;
 using System.Reflection;
 
@@ -12,12 +14,12 @@ namespace SocialMediaBackend.Modules.Feed.Application.Configuration.Mediator;
 public class CQRSModule : Autofac.Module
 {
     //As the time writing this comment, Autofac fails to register
-    //the UnitOfWorkCommandHandlerWithResultDecorator decorator, as
-    //it seems to poor support for complex open generic registerations.
+    //the UnitOfWorkCommandHandlerWithResultDecorator, as t seems
+    //to have poor support for complex open generic registerations.
     //Normally, we would have the handler registerations under a
-    //MediatorModule and the decorators under the ProcessingModule,
-    //but now that we're doing both in the same module, I decided
-    //to call it the CQRSModule.
+    //MediatorModule, and the decorators under the ProcessingModule,
+    //Now that we're doing both in the same module, I decided to call
+    //it the CQRSModule.
 
     protected override void Load(ContainerBuilder builder)
     {
@@ -31,24 +33,22 @@ public class CQRSModule : Autofac.Module
 
         services.Scan(scan => scan
             .FromAssemblies(assemblies)
-            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)))
+            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>)))
             .AsImplementedInterfaces()
             .WithScopedLifetime());
 
         services.Scan(scan => scan
             .FromAssemblies(assemblies)
-            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)))
-            .AsImplementedInterfaces()
-            .WithScopedLifetime());
-
-        services.Scan(scan => scan
-            .FromAssemblies(assemblies)
-            .AddClasses(classes => classes.AssignableTo(typeof(IQueryHandler<,>)))
+            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>)))
             .AsImplementedInterfaces()
             .WithScopedLifetime());
 
         services.Decorate(typeof(ICommandHandler<>), typeof(UnitOfWorkCommandHandlerDecorator<>));
         services.Decorate(typeof(ICommandHandler<,>), typeof(UnitOfWorkCommandHandlerWithResultDecorator<,>));
+        
+        services.Decorate(typeof(IQueryHandler<,>), typeof(AuthQueryHandlerDecorator<,>));
+        services.Decorate(typeof(ICommandHandler<>), typeof(AuthCommandHandlerDecorator<>));
+        services.Decorate(typeof(ICommandHandler<,>), typeof(AuthCommandHandlerWithResultDecorator<,>));
 
         builder.Populate(services);
     }

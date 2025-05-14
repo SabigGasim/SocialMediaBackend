@@ -29,5 +29,10 @@
 	</ItemGroup>
 
 
+	<ItemGroup>
+	  <Folder Include="Processing\" />
+	</ItemGroup>
+
+
 
 </Project>
