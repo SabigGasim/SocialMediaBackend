@@ -11,7 +11,8 @@ public class CommandsScheduler(IDbConnectionFactory connectionFactory) : IComman
 {
     private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
 
-    public async ValueTask EnqueueAsync<T>(ICommand<T> command)
+    public async ValueTask EnqueueAsync<TInternalCommand>(TInternalCommand command)
+        where TInternalCommand : InternalCommandBase
     {
         using (var connection = await _connectionFactory.CreateAsync())
         {

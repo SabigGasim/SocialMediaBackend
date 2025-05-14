@@ -1,8 +1,7 @@
-﻿using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
-
-namespace SocialMediaBackend.BuildingBlocks.Infrastructure.InternalCommands;
+﻿namespace SocialMediaBackend.BuildingBlocks.Infrastructure.InternalCommands;
 
 public interface ICommandsScheduler
 {
-    ValueTask EnqueueAsync<T>(ICommand<T> command);
+    ValueTask EnqueueAsync<TInternalCommand>(TInternalCommand command)
+        where TInternalCommand : InternalCommandBase;
 }
