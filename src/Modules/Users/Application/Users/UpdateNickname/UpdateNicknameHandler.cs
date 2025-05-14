@@ -1,6 +1,7 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
+using SocialMediaBackend.Modules.Users.Domain.Users;
 using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.UpdateNickname;
@@ -16,7 +17,7 @@ public class UpdateNicknameHandler : ICommandHandler<UpdateNicknameCommand>
 
     public async Task<HandlerResponse> ExecuteAsync(UpdateNicknameCommand command, CancellationToken ct)
     {
-        var user = await _context.Users.FindAsync([command.UserId], ct);
+        var user = await _context.Users.FindAsync([new UserId(command.UserId)], ct);
         if (user is null)
         {
             return ("No user exists with the given Id", HandlerResponseStatus.NotFound, command.UserId);
