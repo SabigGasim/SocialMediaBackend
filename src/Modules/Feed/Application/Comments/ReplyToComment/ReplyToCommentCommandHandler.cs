@@ -31,7 +31,6 @@ public class ReplyToCommentCommandHandler(
         var reply = parent.AddReply(new(command.UserId), command.Text);
 
         _context.Add(reply);
-        await _context.SaveChangesAsync(ct);
 
         return (reply.MapToReplyResponse(), HandlerResponseStatus.Created);
     }

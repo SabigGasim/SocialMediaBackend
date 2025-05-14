@@ -8,14 +8,9 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.GetUser;
 
-public class GetUserHandler : IQueryHandler<GetUserQuery, GetUserResponse>
+public class GetUserQueryHandler(UsersDbContext context) : IQueryHandler<GetUserQuery, GetUserResponse>
 {
-    private readonly UsersDbContext _context;
-
-    public GetUserHandler(UsersDbContext context)
-    {
-        _context = context;
-    }
+    private readonly UsersDbContext _context = context;
 
     public async Task<HandlerResponse<GetUserResponse>> ExecuteAsync(GetUserQuery query, CancellationToken ct)
     {

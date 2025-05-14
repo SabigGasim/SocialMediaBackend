@@ -36,7 +36,6 @@ internal class LikeCommentCommandHandler(
             return ("User already liked this comment", HandlerResponseStatus.Conflict, comment.AuthorId);
 
         _context.Add(like);
-        await _context.SaveChangesAsync(ct);
 
         return HandlerResponseStatus.Created;
     }

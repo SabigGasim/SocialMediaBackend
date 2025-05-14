@@ -2,7 +2,6 @@
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
-using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Feed.Application.Auth;
 using SocialMediaBackend.Modules.Feed.Domain.Authors;
 using SocialMediaBackend.Modules.Feed.Domain.Comments;
@@ -12,11 +11,9 @@ namespace SocialMediaBackend.Modules.Feed.Application.Comments.DeleteComment;
 
 public class DeleteCommentCommandHandler(
     FeedDbContext context,
-    IUnitOfWork unitOfWork,
     IAuthorizationHandler<Comment, CommentId> authorizationHandler) : ICommandHandler<DeleteCommentCommand>
 {
     private readonly FeedDbContext _context = context;
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IAuthorizationHandler<Comment, CommentId> _authorizationHandler = authorizationHandler;
 
     public async Task<HandlerResponse> ExecuteAsync(DeleteCommentCommand command, CancellationToken ct)
@@ -45,8 +42,6 @@ public class DeleteCommentCommandHandler(
         {
             return ("Comment with the given Id was not found", HandlerResponseStatus.NotFound, command.CommentId);
         }
-
-        await _unitOfWork.CommitAsync(ct);
 
         return HandlerResponseStatus.NoContent;
     }

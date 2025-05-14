@@ -9,13 +9,10 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.RejectFollowRequet;
 
-public class RejectFollowRequestCommandHandler(
-    UsersDbContext context,
-    IUnitOfWork unitOfWork)
+public class RejectFollowRequestCommandHandler(UsersDbContext context)
     : ICommandHandler<RejectFollowRequestCommand>
 {
     private readonly UsersDbContext _context = context;
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<HandlerResponse> ExecuteAsync(RejectFollowRequestCommand command, CancellationToken ct)
     {
@@ -26,8 +23,6 @@ public class RejectFollowRequestCommandHandler(
         var rejected = user.RejectPendingFollowRequest(command.UserToRejectId);
         if (!rejected)
             return ("User with the given Id did not send a follow request", HandlerResponseStatus.Conflict, command.UserToRejectId);
-
-        await _unitOfWork.CommitAsync(ct);
 
         return HandlerResponseStatus.Deleted;
     }

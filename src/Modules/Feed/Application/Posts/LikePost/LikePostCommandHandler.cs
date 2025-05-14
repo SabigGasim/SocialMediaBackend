@@ -38,7 +38,6 @@ public class LikePostCommandHandler(
             return ("User already liked this post", HandlerResponseStatus.Conflict, post.AuthorId);
 
         _context.Add(like);
-        await _context.SaveChangesAsync(ct);
 
         return HandlerResponseStatus.Created;
     }

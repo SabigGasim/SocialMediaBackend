@@ -8,12 +8,9 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.UnfollowUser;
 
-public class UnfollowUserCommandHandler(
-    UsersDbContext context,
-    IUnitOfWork unitOfWork) : ICommandHandler<UnfollowUserCommand>
+public class UnfollowUserCommandHandler(UsersDbContext context) : ICommandHandler<UnfollowUserCommand>
 {
     private readonly UsersDbContext _context = context;
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<HandlerResponse> ExecuteAsync(UnfollowUserCommand command, CancellationToken ct)
     {
@@ -25,8 +22,6 @@ public class UnfollowUserCommandHandler(
 
         if (!followed)
             return ("User with the given Id isn't followed", HandlerResponseStatus.Conflict, command.UserToUnfollow);
-
-        await _unitOfWork.CommitAsync(ct);
 
         return HandlerResponseStatus.Deleted;
     }

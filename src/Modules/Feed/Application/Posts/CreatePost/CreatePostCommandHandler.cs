@@ -23,8 +23,6 @@ public class CreatePostCommandHandler(FeedDbContext context) : ICommandHandler<C
 
         _context.Posts.Add(post);
 
-        await _context.SaveChangesAsync(ct);
-
         return (post.MapToCreateResponse(), HandlerResponseStatus.Created);
     }
 }

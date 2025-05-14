@@ -2,18 +2,14 @@
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
-using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.AcceptFollowRequest;
 
-public class AcceptFollowRequetCommandHandler(
-    UsersDbContext context,
-    IUnitOfWork unitOfWork) : ICommandHandler<AcceptFollowRequetCommand>
+public class AcceptFollowRequetCommandHandler(UsersDbContext context) : ICommandHandler<AcceptFollowRequetCommand>
 {
     private readonly UsersDbContext _context = context;
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<HandlerResponse> ExecuteAsync(AcceptFollowRequetCommand command, CancellationToken ct)
     {
@@ -27,8 +23,6 @@ public class AcceptFollowRequetCommandHandler(
         {
             return ("User with the given Id didn't request a follow", HandlerResponseStatus.Conflict, command.UserToAcceptId);
         }
-
-        await _unitOfWork.CommitAsync(ct);
 
         return HandlerResponseStatus.NoContent;
     }

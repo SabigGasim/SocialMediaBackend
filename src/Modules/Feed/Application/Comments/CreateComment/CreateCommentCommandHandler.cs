@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.CreateComment;
 
-public class CreateCommentHandler(
+public class CreateCommentCommandHandler(
     FeedDbContext context,
     IAuthorizationHandler<Post, PostId> authorizationHandler)
     : ICommandHandler<CreateCommentCommand, CreateCommentResponse>
@@ -31,7 +31,6 @@ public class CreateCommentHandler(
         var comment = post.AddComment(command.Text, new(command.UserId));
 
         _context.Add(comment);
-        await _context.SaveChangesAsync(ct);
 
         return (comment.MapToCreateResponse(), HandlerResponseStatus.Created);
     }

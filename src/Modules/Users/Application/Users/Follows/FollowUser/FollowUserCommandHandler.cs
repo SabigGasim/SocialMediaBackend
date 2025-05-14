@@ -8,12 +8,9 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.FollowUser;
 
-public class FollowUserCommandHandler(
-    UsersDbContext context, 
-    IUnitOfWork unitOfWork) : ICommandHandler<FollowUserCommand, FollowUserResponse>
+public class FollowUserCommandHandler(UsersDbContext context) : ICommandHandler<FollowUserCommand, FollowUserResponse>
 {
     private readonly UsersDbContext _context = context;
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<HandlerResponse<FollowUserResponse>> ExecuteAsync(FollowUserCommand command, CancellationToken ct)
     {
@@ -34,8 +31,6 @@ public class FollowUserCommandHandler(
         
         _context.Add(follow);
         
-        await _unitOfWork.CommitAsync(ct);
-
         return (follow.MapToFollowResponse(), HandlerResponseStatus.Created);
     }
 }

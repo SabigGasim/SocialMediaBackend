@@ -29,8 +29,6 @@ public class EditCommentCommandHandler(
 
         comment.Edit(command.Text);
 
-        await _context.SaveChangesAsync(ct);
-
         return HandlerResponseStatus.NoContent;
     }
 }

@@ -38,7 +38,7 @@ public class DeletePostCommandHandler(
         if (user is null)
         {
             // This will only execute if the deleter is not the post owner
-            // rather, an admin. If the admin provided an Invalid PostId,
+            // AND an admin. If the admin provided an Invalid PostId,
             // The query will not return the user associated with it
             // as it runs backwards.
             // Horrible sql, but the P in EF Core stands for "Performance",
@@ -51,8 +51,6 @@ public class DeletePostCommandHandler(
         {
             return ("Post with the given Id was not found or is not associated with the given user", HandlerResponseStatus.NotFound, command.PostId);
         }
-
-        await _context.SaveChangesAsync(ct);
 
         return HandlerResponseStatus.NoContent;
     }

@@ -28,8 +28,6 @@ public class UpdatePostCommandHandler(
 
         post.UpdatePost(command.Text);
 
-        await _context.SaveChangesAsync(ct);
-
         return HandlerResponseStatus.Modified;
     }
 }

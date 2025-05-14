@@ -25,8 +25,6 @@ public class UnlikePostCommandHandler(FeedDbContext context) : ICommandHandler<U
         if (!removed)
             return ("User with the given Id didn't like this post", HandlerResponseStatus.Conflict, command.UserId);
 
-        await _context.SaveChangesAsync(ct);
-
         return HandlerResponseStatus.Deleted;
     }
 }
