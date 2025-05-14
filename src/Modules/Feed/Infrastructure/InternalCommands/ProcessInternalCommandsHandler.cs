@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using Polly;
-using Autofac;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.BuildingBlocks.Application;
@@ -8,6 +7,8 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 using Commands = SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration;
 using System.Text.Json;
+using Autofac;
+using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 
 namespace SocialMediaBackend.Modules.Feed.Infrastructure.InternalCommands;
 
@@ -85,9 +86,9 @@ public class ProcessInternalCommandsCommandHandler : Commands.ICommandHandler<Pr
 
         dynamic commandToProcess = JsonSerializer.Deserialize(internalCommand.Data, type)!;
 
-        using (var scope = FeedCompositionRoot.BeginLifetimeScope())
+        await using (var scope = FeedCompositionRoot.BeginLifetimeScope())
         {
-            var handlerType = typeof(Commands.ICommandHandler<>).MakeGenericType(type);
+            var handlerType = typeof(ICommandHandler<>).MakeGenericType(type);
             var handler = (dynamic)scope.Resolve(handlerType);
 
             await handler.ExecuteAsync(commandToProcess, CancellationToken.None);
