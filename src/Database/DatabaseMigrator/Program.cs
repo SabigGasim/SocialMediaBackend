@@ -1,3 +1,5 @@
+using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.Persistence;
+using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration.Persistence;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 using SocialMediaBackend.Modules.Users.Infrastructure.Configuration.Persistence;
@@ -10,6 +12,8 @@ var connectionString = builder.Configuration.GetConnectionString("PostgresConnec
 builder.Services.AddDbContext<UsersDbContext>(builder => builder.ConfigureUsersOptionsBuilder(connectionString));
 
 builder.Services.AddDbContext<FeedDbContext>(builder => builder.ConfigureFeedOptionsBuilder(connectionString));
+
+builder.Services.AddDbContext<ChatDbContext>(builder => builder.ConfigureChatOptionsBuilder(connectionString));
 
 var app = builder.Build();
 

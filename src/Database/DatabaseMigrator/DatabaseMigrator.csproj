@@ -16,12 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Modules\Chat\Infrastructure\SocialMediaBackend.Modules.Chat.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Modules\Feed\Infrastructure\SocialMediaBackend.Modules.Feed.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Modules\Users\Infrastructure\SocialMediaBackend.Modules.Users.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Scripts\" />
   </ItemGroup>
 
 </Project>
