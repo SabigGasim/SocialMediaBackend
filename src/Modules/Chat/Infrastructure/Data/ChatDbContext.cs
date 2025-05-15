@@ -6,6 +6,8 @@ namespace SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 public class ChatDbContext : DbContext
 {
+    public DbSet<InternalCommand> InternalCommands { get; set; } = default!;
+
     protected ChatDbContext() { }
 
     public ChatDbContext(DbContextOptions<ChatDbContext> options) : base(options) { }
