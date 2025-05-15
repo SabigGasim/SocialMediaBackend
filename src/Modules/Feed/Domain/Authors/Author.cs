@@ -1,6 +1,8 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 using SocialMediaBackend.Modules.Feed.Domain.Comments;
+using SocialMediaBackend.Modules.Feed.Domain.Follows;
+using SocialMediaBackend.Modules.Feed.Domain.Follows.Events;
 using SocialMediaBackend.Modules.Feed.Domain.Posts;
 
 namespace SocialMediaBackend.Modules.Feed.Domain.Authors;
@@ -9,6 +11,8 @@ public class Author : AggregateRoot<AuthorId>
 {
     private readonly List<Post> _posts = new();
     private readonly List<Comment> _comments = new();
+    private readonly List<Follow> _followers = new();
+    private readonly List<Follow> _followings = new();
 
     private Author() { }
 
@@ -39,6 +43,8 @@ public class Author : AggregateRoot<AuthorId>
 
     public IReadOnlyCollection<Post> Posts => _posts.AsReadOnly();
     public IReadOnlyCollection<Comment> Comments => _comments.AsReadOnly();
+    public IReadOnlyCollection<Follow> Followers => _followers.AsReadOnly();
+    public IReadOnlyCollection<Follow> Followings => _followings.AsReadOnly();
 
     public static Author Create(
         AuthorId authorId,
