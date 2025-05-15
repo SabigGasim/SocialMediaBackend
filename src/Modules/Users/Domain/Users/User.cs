@@ -75,7 +75,7 @@ public class User : AggregateRoot<UserId>
             : Follow.CreateFollowRequest(followerId, this.Id);
 
         if(follow.Status == FollowStatus.Following)
-            this.AddDomainEvent(new UserFollowedEvent(follow.FollowerId, follow.FollowingId));
+            this.AddDomainEvent(new UserFollowedEvent(follow.FollowerId, follow.FollowingId, follow.FollowedAt));
 
         _followers.Add(follow);
 

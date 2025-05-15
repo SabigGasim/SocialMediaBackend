@@ -2,7 +2,7 @@
 
 namespace SocialMediaBackend.Modules.Users.Domain.Users.Follows;
 
-public abstract class FollowEventBase(UserId followerId, UserId followingId) : DomainEventBase
+public abstract class FollowEventBase(UserId followerId, UserId followingId) : DomainEventBase()
 {
     public UserId FollowerId { get; } = followerId;
     public UserId FollowingId { get; } = followingId;
