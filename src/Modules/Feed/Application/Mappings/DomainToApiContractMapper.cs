@@ -15,25 +15,25 @@ namespace SocialMediaBackend.Modules.Feed.Application.Mappings;
 
 public static class DomainToApiContractMapper
 {
-    public static GetAuthorResponse MapToGetResponse(this Author user)
+    public static GetAuthorResponse MapToGetResponse(this Author author)
     {
         return new GetAuthorResponse(
-            user.Id.Value,
-            user.Username,
-            user.Nickname,
-            user.FollowersCount,
-            user.FollowingCount,
-            user.ProfilePicture.Url
+            author.Id.Value,
+            author.Username,
+            author.Nickname,
+            author.FollowersCount,
+            author.FollowingCount,
+            author.ProfilePicture.Url
             );
     }
 
-    public static GetAllAuthorsResponse MapToResponse(this IEnumerable<Author> users, int pageNumber, int pageSize, int totalCount)
+    public static GetAllAuthorsResponse MapToResponse(this IEnumerable<Author> authors, int pageNumber, int pageSize, int totalCount)
     {
         return new GetAllAuthorsResponse(
             pageNumber,
             pageSize,
             totalCount,
-            users.Select(MapToGetResponse));
+            authors.Select(MapToGetResponse));
     }
 
     public static CreatePostResponse MapToCreateResponse(this Post post) => new(post.Id.Value);

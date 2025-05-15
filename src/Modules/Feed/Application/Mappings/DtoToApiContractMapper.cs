@@ -27,7 +27,7 @@ internal static class DtoToApiContractMapper
             post.LikesCount,
             post.CommentsCount,
             new GetAuthorResponse(
-                post.Author.UserId,
+                post.Author.AuthorId,
                 post.Author.Username,
                 post.Author.Nickname,
                 post.Author.FollowersCount,
