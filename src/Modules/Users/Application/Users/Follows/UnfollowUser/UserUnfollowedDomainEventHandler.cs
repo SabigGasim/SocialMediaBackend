@@ -4,7 +4,7 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.UnfollowUser;
 
-public sealed class UserUnfollowedEventHandler(UsersDbContext context)
+public sealed class UserUnfollowedDomainEventHandler(UsersDbContext context)
     : FollowUserEventHandlerBase<UserUnfollowedEvent>(context)
 {
     private readonly UsersDbContext _context = context;
