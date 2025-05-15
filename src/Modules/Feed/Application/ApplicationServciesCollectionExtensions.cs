@@ -3,7 +3,7 @@ using SocialMediaBackend.Modules.Feed.Application.Contracts;
 
 namespace SocialMediaBackend.Modules.Feed.Application;
 
-public static class ApplicationServciesCollectionExtensions
+public static class ApplicationServcieCollectionExtensions
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {

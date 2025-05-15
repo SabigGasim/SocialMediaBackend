@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SocialMediaBackend.Modules.Users.Tests.Core.Common;
 using SocialMediaBackend.Modules.Users.Tests.Core.Common.Users;
 using SocialMediaBackend.Modules.Feed.Domain.Follows;
+using SocialMediaBackend.Modules.Chat.Domain.Follows;
 
 namespace SocialMediaBackend.Modules.Users.Tests.UnitTests.Domain;
 

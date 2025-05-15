@@ -3,7 +3,6 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using SocialMediaBackend.Modules.Feed.Application.Configuration.Auth;
 using SocialMediaBackend.Modules.Feed.Application.Configuration.Mediator;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration;

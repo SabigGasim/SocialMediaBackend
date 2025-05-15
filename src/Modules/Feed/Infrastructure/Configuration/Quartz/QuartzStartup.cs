@@ -15,7 +15,7 @@ public static class QuartzStartup
            .Build();
 
         var job = JobBuilder.Create<ProcessInternalCommandsJob>()
-            .WithIdentity("ProcessInternalCommandsJob")
+            .WithIdentity("Feed.ProcessInternalCommandsJob")
             .Build();
 
         var schedulerFactory = SchedulerBuilder.Create()

@@ -1,4 +1,5 @@
-﻿using SocialMediaBackend.Modules.Feed.Domain.Follows;
+﻿using SocialMediaBackend.Modules.Chat.Domain.Follows;
+using SocialMediaBackend.Modules.Feed.Domain.Follows;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
 using SocialMediaBackend.Modules.Users.Tests.Core.Common.Comments;

@@ -10,6 +10,7 @@ using System.Net;
 using SocialMediaBackend.Api.Modules.Users.Endpoints.Users;
 using SocialMediaBackend.Api.Modules.Users.Endpoints.Users.Follows;
 using SocialMediaBackend.Modules.Feed.Domain.Follows;
+using SocialMediaBackend.Modules.Chat.Domain.Follows;
 
 namespace SocialMediaBackend.Modules.Users.Tests.IntegrationTests.Api.Users;
 
