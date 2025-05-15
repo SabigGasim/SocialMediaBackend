@@ -2,7 +2,6 @@
 using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 using SocialMediaBackend.Modules.Feed.Domain.Comments;
 using SocialMediaBackend.Modules.Feed.Domain.Follows;
-using SocialMediaBackend.Modules.Feed.Domain.Follows.Events;
 using SocialMediaBackend.Modules.Feed.Domain.Posts;
 
 namespace SocialMediaBackend.Modules.Feed.Domain.Authors;

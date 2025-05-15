@@ -9,23 +9,23 @@ public interface IAuthorizationHandler<TResource, TResourceId>
 {
     IQueryable<TResource> AuthorizeQueryable(
         IQueryable<TResource> resource,
-        AuthorId? userId,
+        AuthorId? authorId,
         TResourceId resourceId,
         AuthOptions options);
 
     IQueryable<TResource> AuthorizeQueryable(
         IQueryable<TResource> resource,
-        AuthorId? userId,
+        AuthorId? authorId,
         AuthOptions options);
 
     Task<bool> AuthorizeAsync(
-        AuthorId? userId,
+        AuthorId? authorId,
         TResourceId resourceId,
         AuthOptions options,
         CancellationToken ct = default);
 
     Task<bool> IsAdminOrResourceOwnerAsync(
-        AuthorId? userId,
+        AuthorId? authorId,
         TResourceId resourceId,
         AuthOptions options,
         CancellationToken ct = default);

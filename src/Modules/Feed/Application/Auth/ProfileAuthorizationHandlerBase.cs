@@ -17,20 +17,20 @@ public abstract class ProfileAuthorizationHandlerBase<TUserResource, TId>
         _context = context;
     }
 
-    public virtual Task<bool> AuthorizeAsync(AuthorId? userId, TId resourceId, AuthOptions options, CancellationToken ct = default)
+    public virtual Task<bool> AuthorizeAsync(AuthorId? authorId, TId resourceId, AuthOptions options, CancellationToken ct = default)
     {
         var queryable = _context
             .Set<TUserResource>()
             .AsNoTracking();
 
-        var fullQuery = AuthorizeQueryable(queryable, userId, resourceId, options);
+        var fullQuery = AuthorizeQueryable(queryable, authorId, resourceId, options);
 
         return fullQuery.AnyAsync(ct);
     }
 
-    public virtual Task<bool> IsAdminOrResourceOwnerAsync(AuthorId? userId, TId resourceId, AuthOptions options, CancellationToken ct = default)
+    public virtual Task<bool> IsAdminOrResourceOwnerAsync(AuthorId? authorId, TId resourceId, AuthOptions options, CancellationToken ct = default)
     {
-        if (UserIsAdmin(userId, options))
+        if (UserIsAdmin(authorId, options))
         {
             return Task.FromResult(true);
         }
@@ -38,44 +38,44 @@ public abstract class ProfileAuthorizationHandlerBase<TUserResource, TId>
         return _context
             .Set<TUserResource>()
             .AsNoTracking()
-            .Where(x => x.Id == resourceId && x.AuthorId == userId)
+            .Where(x => x.Id == resourceId && x.AuthorId == authorId)
             .AnyAsync(ct);
     }
 
-    public virtual IQueryable<TUserResource> AuthorizeQueryable(IQueryable<TUserResource> queryable, AuthorId? userId, AuthOptions options)
+    public virtual IQueryable<TUserResource> AuthorizeQueryable(IQueryable<TUserResource> queryable, AuthorId? authorId, AuthOptions options)
     {
-        if (UserIsAdmin(userId, options))
+        if (UserIsAdmin(authorId, options))
         {
             return queryable;
         }
 
-        if (UserIsNotAdmin(userId, options))
+        if (UserIsNotAdmin(authorId, options))
         {
             return queryable.Where(x =>
-                       x.AuthorId == userId
+                       x.AuthorId == authorId
                     || x.Author.ProfileIsPublic
-                    //|| x.Author.Followers.Any(x => x.FollowerId == userId)
+                    || x.Author.Followers.Any(x => x.FollowerId == authorId)
                     );
         }
 
         return queryable.Where(x => x.Author.ProfileIsPublic);
     }
 
-    public virtual IQueryable<TUserResource> AuthorizeQueryable(IQueryable<TUserResource> queryable, AuthorId? userId, TId resourceId, AuthOptions options)
+    public virtual IQueryable<TUserResource> AuthorizeQueryable(IQueryable<TUserResource> queryable, AuthorId? authorId, TId resourceId, AuthOptions options)
     {
         queryable = queryable
             .Where(x => x.Id == resourceId);
 
-        return AuthorizeQueryable(queryable, userId, options);
+        return AuthorizeQueryable(queryable, authorId, options);
     }
 
-    private static bool UserIsAdmin(AuthorId? userId, AuthOptions options)
+    private static bool UserIsAdmin(AuthorId? authorId, AuthOptions options)
     {
-        return userId is not null && options.IsAdmin;
+        return authorId is not null && options.IsAdmin;
     }
 
-    private static bool UserIsNotAdmin(AuthorId? userId, AuthOptions options)
+    private static bool UserIsNotAdmin(AuthorId? authorId, AuthOptions options)
     {
-        return userId is not null && !options.IsAdmin;
+        return authorId is not null && !options.IsAdmin;
     }
 }
