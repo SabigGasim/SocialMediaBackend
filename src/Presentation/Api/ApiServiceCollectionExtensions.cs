@@ -49,7 +49,8 @@ public static class ApiServiceCollectionExtensions
         List<Assembly> applicationAssemblies =
         [
             typeof(SocialMediaBackend.Modules.Users.Application.ApplicationServiceCollectionExtensions).Assembly,
-            typeof(SocialMediaBackend.Modules.Feed.Application.ApplicationServciesCollectionExtensions).Assembly
+            typeof(SocialMediaBackend.Modules.Feed.Application.ApplicationServcieCollectionExtensions).Assembly,
+            typeof(SocialMediaBackend.Modules.Chat.Application.ApplicationServiceCollectionExtensions).Assembly
         ];
 
         services.Scan(s => s.FromAssemblies(applicationAssemblies)
