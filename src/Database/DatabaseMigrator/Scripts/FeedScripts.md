@@ -11,3 +11,6 @@ dotnet ef database update <Migration> --project src/Modules/Feed/Infrastructure 
 
 ### Remove Migrations
 dotnet ef migrations remove --project src/Modules/Feed/Infrastructure --context FeedDbContext --startup-project src/Database/DatabaseMigrator
+
+### List Migrations
+dotnet ef migrations list --project src/Modules/Feed/Infrastructure --context FeedDbContext --startup-project src/Database/DatabaseMigrator
