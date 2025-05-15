@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Shouldly;
+using SocialMediaBackend.Modules.Feed.Domain.Follows;
 using SocialMediaBackend.Modules.Users.Application.Auth;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 using SocialMediaBackend.Modules.Users.Domain.Users.Follows;

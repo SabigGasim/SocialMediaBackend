@@ -8,6 +8,7 @@ using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
 using Microsoft.Extensions.DependencyInjection;
 using SocialMediaBackend.Modules.Users.Tests.Core.Common;
 using SocialMediaBackend.Modules.Users.Tests.Core.Common.Users;
+using SocialMediaBackend.Modules.Feed.Domain.Follows;
 
 namespace SocialMediaBackend.Modules.Users.Tests.UnitTests.Domain;
 
