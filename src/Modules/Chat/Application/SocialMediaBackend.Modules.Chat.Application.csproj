@@ -6,4 +6,22 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="8.3.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
+    <PackageReference Include="Scrutor" Version="6.0.1" />
+    <PackageReference Include="System.Reflection.Metadata" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Application\SocialMediaBackend.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Infrastructure\SocialMediaBackend.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Users\IntegrationEvents\SocialMediaBackend.Modules.Users.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\Domain\SocialMediaBackend.Modules.Chat.Domain.csproj" />
+    <ProjectReference Include="..\Infrastructure\SocialMediaBackend.Modules.Chat.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
