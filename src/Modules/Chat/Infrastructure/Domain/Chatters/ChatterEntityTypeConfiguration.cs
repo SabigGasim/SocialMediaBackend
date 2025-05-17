@@ -27,5 +27,8 @@ internal class ChatterEntityTypeConfiguration : IEntityTypeConfiguration<Chatter
 
         builder.HasIndex(u => u.Username)
             .IsUnique();
+
+        builder.Property(x => x.IsOnline)
+            .HasDefaultValue(false);
     }
 }
