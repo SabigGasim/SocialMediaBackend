@@ -7,6 +7,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration;
 using SocialMediaBackend.Modules.Chat.Application.Configuration.Mediator;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.Persistence;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.Quartz;
+using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.Processing;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Configuration;
 
