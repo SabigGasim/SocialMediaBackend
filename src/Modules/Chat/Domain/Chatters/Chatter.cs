@@ -50,4 +50,6 @@ public sealed class Chatter : AggregateRoot<ChatterId>
     public bool ProfileIsPublic { get; private set; }
     public int FollowersCount { get; private set; }
     public int FollowingCount { get; private set; }
+    public bool IsOnline { get; private set; }
+    public DateTimeOffset LastSeen { get; private set; }
 }
