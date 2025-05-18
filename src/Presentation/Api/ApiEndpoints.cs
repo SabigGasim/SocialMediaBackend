@@ -62,4 +62,12 @@ public static class ApiEndpoints
         public const string Like = $"{Base}/{{CommentId}}/likes";
         public const string Unlike = $"{Base}/{{CommentId}}/likes";
     }
+
+    public static class DirectChat
+    {
+        public const string Base = $"{ApiBase}/chats/direct";
+
+        public const string CreateDirectChat = Base;
+        public const string SendDirectMessage = $"{Base}/{{ChatId}}";
+    }
 }
