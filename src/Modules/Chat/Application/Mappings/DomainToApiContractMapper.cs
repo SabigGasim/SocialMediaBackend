@@ -1,6 +1,10 @@
 ﻿using SocialMediaBackend.Modules.Chat.Application.Chatters.GetAllChatters;
 using SocialMediaBackend.Modules.Chat.Application.Chatters.GetChatter;
+using SocialMediaBackend.Modules.Chat.Application.DirectMessaging.CreateDirectChat;
+using SocialMediaBackend.Modules.Chat.Application.DirectMessaging.SendDirectMessage;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
+using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
+using SocialMediaBackend.Modules.Chat.Domain.Messages.DirectMessages;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Mappings;
 
@@ -25,5 +29,15 @@ public static class DomainToApiContractMapper
             pageSize,
             totalCount,
             chatters.Select(MapToGetResponse));
+    }
+
+    public static CreateDirectChatResponse MapToResponse(this DirectChat chat)
+    {
+        return new CreateDirectChatResponse(chat.Id.Value);
+    }
+
+    public static SendDirectMessageResponse MapToResponse(this DirectMessage message)
+    {
+        return new SendDirectMessageResponse(message.Id.Value, message.Status);
     }
 }
