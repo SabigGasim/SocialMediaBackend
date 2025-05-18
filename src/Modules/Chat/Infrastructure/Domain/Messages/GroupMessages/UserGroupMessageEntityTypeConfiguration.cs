@@ -17,11 +17,6 @@ internal class UserGroupMessageEntityTypeConfiguration : IEntityTypeConfiguratio
                 id => id.Value,
                 value => new(value));
 
-        builder.HasOne(x => x.Sender)
-            .WithMany()
-            .HasForeignKey(x => x.SenderId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.HasOne(x => x.GroupMessage)
             .WithMany()
             .HasForeignKey(x => x.GroupMessageId)

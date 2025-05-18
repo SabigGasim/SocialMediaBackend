@@ -17,11 +17,6 @@ internal class UserDirectMessageEntityTypeConfiguration : IEntityTypeConfigurati
                 id => id.Value,
                 value => new(value));
 
-        builder.HasOne(x => x.Sender)
-            .WithMany()
-            .HasForeignKey(x => x.SenderId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.HasOne(x => x.DirectMessage)
             .WithMany()
             .HasForeignKey(x => x.DirectMessageId)
