@@ -8,6 +8,7 @@ using SocialMediaBackend.Modules.Chat.Application.Configuration.Mediator;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.Persistence;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.Quartz;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.Processing;
+using SocialMediaBackend.Modules.Chat.Application.Configuration.Auth;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Configuration;
 
@@ -34,6 +35,7 @@ public static class ChatStartup
         containerBuilder.RegisterModule(new CQRSModule());
         containerBuilder.RegisterModule(new QuartzModule());
         containerBuilder.RegisterModule(new ProcessingModule());
+        containerBuilder.RegisterModule(new AuthModule());
 
         var container = containerBuilder.Build();
 
