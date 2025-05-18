@@ -13,7 +13,7 @@ public class ChatDbContext : DbContext
     public DbSet<Chatter> Chatters { get; set; } = default!;
     public DbSet<GroupChat> GroupChats { get; set; } = default!;
     public DbSet<GroupMessage> GroupMessages { get; set; } = default!;
-    public DbSet<UserGroupChat> UserGroupChat { get; set; } = default!;
+    public DbSet<UserGroupChat> UserGroupChats { get; set; } = default!;
     public DbSet<UserGroupMessage> UserGroupMessages { get; set; } = default!;
     public DbSet<DirectChat> DirectChats { get; set; } = default!;
     public DbSet<DirectMessage> DirectMessages { get; set; } = default!;
