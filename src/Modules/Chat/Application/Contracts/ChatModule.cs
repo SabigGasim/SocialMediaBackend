@@ -2,7 +2,7 @@
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
-using SocialMediaBackend.Modules.Chat.Application.Requests;
+using SocialMediaBackend.Modules.Chat.Application.Helpers;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Contracts;
