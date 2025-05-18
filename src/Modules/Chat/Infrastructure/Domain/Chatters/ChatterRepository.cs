@@ -1,0 +1,32 @@
+﻿using Dapper;
+using SocialMediaBackend.BuildingBlocks.Infrastructure;
+using SocialMediaBackend.Modules.Chat.Domain.Chatters;
+using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
+
+namespace SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Chatters;
+
+internal class ChatterRepository(IDbConnectionFactory factory) : IChatterRepository
+{
+    private readonly IDbConnectionFactory _factory = factory;
+
+    public async Task<bool> ExistsAsync(ChatterId chatterId, CancellationToken ct = default)
+    {
+        const string sql = $"""
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM {Schema.Chat}."Chatters"
+                    WHERE "Id" = @Id
+                );
+                """;
+
+        using (var connection = await _factory.CreateAsync(ct))
+        {
+            return await connection.ExecuteScalarAsync<bool>(new CommandDefinition(
+                sql, new
+                { 
+                    Id = chatterId.Value 
+                },
+                cancellationToken: ct));
+        }
+    }
+}

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
-using SocialMediaBackend.BuildingBlocks.Infrastructure;
+using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Chatters;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Auth;
 
@@ -11,8 +11,8 @@ internal sealed class AuthCommandHandlerDecorator<TRequest>
 {
     public AuthCommandHandlerDecorator(
         ICommandHandler<TRequest> decorated,
-        IDbConnectionFactory dbConnectionFactory,
-        IHttpContextAccessor httpContextAccessor) : base(decorated, dbConnectionFactory, httpContextAccessor)
+        IChatterRepository chatterRepository,
+        IHttpContextAccessor httpContextAccessor) : base(decorated, chatterRepository, httpContextAccessor)
     {
     }
 }

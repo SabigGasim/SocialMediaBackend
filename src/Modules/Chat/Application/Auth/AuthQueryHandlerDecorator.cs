@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
-using SocialMediaBackend.BuildingBlocks.Infrastructure;
+using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Chatters;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Auth;
 
@@ -12,8 +12,8 @@ internal sealed class AuthQueryHandlerDecorator<TRequest, TResult>
 {
     public AuthQueryHandlerDecorator(
         IQueryHandler<TRequest, TResult> decorated,
-        IDbConnectionFactory dbConnectionFactory,
-        IHttpContextAccessor httpContextAccessor) : base(decorated, dbConnectionFactory, httpContextAccessor)
+        IChatterRepository chatterRepository,
+        IHttpContextAccessor httpContextAccessor) : base(decorated, chatterRepository, httpContextAccessor)
     {
     }
 }

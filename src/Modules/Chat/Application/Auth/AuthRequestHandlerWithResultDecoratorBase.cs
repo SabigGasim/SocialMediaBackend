@@ -1,9 +1,8 @@
-﻿using Dapper;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
-using SocialMediaBackend.BuildingBlocks.Infrastructure;
-using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
+using SocialMediaBackend.Modules.Chat.Domain.Chatters;
+using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Chatters;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Auth;
 
@@ -13,16 +12,16 @@ internal class AuthRequestHandlerWithResultDecoratorBase<TRequest, TResult, TReq
     where TRequestHandler : IRequestHandler<TRequest, TResult>
 {
     private readonly TRequestHandler _decorated;
-    private readonly IDbConnectionFactory _dbConnectionFactory;
+    private readonly IChatterRepository _chatterRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public AuthRequestHandlerWithResultDecoratorBase(
         TRequestHandler decorated,
-        IDbConnectionFactory dbConnectionFactory,
+        IChatterRepository chatterRepository,
         IHttpContextAccessor httpContextAccessor)
     {
         _decorated = decorated;
-        _dbConnectionFactory = dbConnectionFactory;
+        _chatterRepository = chatterRepository;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -36,23 +35,9 @@ internal class AuthRequestHandlerWithResultDecoratorBase<TRequest, TResult, TReq
             return ("Access token is expired or doesn't contain a user Id", HandlerResponseStatus.Unauthorized, userId);
         }
 
-        using (var connection = await _dbConnectionFactory.CreateAsync(ct))
+        if (!await _chatterRepository.ExistsAsync(new ChatterId(userId), ct))
         {
-            const string sql = $"""
-                SELECT EXISTS (
-                    SELECT 1
-                    FROM {Schema.Chat}."Chatter"
-                    WHERE "Id" = @Id
-                );
-                """;
-
-            var userExists = await connection.ExecuteScalarAsync<bool>(
-                new CommandDefinition(sql, new { Id = userId }, cancellationToken: ct));
-
-            if (!userExists)
-            {
-                return ("This user doesn't exist", HandlerResponseStatus.Unauthorized, userId);
-            }
+            return ("This user doesn't exist", HandlerResponseStatus.Unauthorized, userId);
         }
 
         var adminClaim = _httpContextAccessor.HttpContext!.User.Claims
