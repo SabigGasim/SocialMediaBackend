@@ -2,6 +2,7 @@
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
+using SocialMediaBackend.Modules.Chat.Application.Requests;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Contracts;
@@ -13,12 +14,7 @@ internal class ChatModule : IChatModule
         CancellationToken ct = default)
         where TCommand : ICommand<HandlerResponse<TResult>>
     {
-        using (var scope = ChatCompositionRoot.BeginLifetimeScope())
-        {
-            var handler = scope.Resolve<ICommandHandler<TCommand, TResult>>();
-
-            return await handler.ExecuteAsync(command, ct);
-        }
+        return await CommandExecutor.ExecuteAsync<TCommand, TResult>(command, ct);
     }
 
     public async Task<HandlerResponse> ExecuteCommandAsync<TCommand>(
@@ -26,12 +22,7 @@ internal class ChatModule : IChatModule
         CancellationToken ct = default)
         where TCommand : ICommand<HandlerResponse>
     {
-        using (var scope = ChatCompositionRoot.BeginLifetimeScope())
-        {
-            var handler = scope.Resolve<ICommandHandler<TCommand>>();
-
-            return await handler.ExecuteAsync(command, ct);
-        }
+        return await CommandExecutor.ExecuteAsync(command, ct);
     }
 
     public async Task<HandlerResponse<TResult>> ExecuteQueryAsync<TQuery, TResult>(
