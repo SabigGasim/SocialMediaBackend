@@ -1,12 +1,13 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
+using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats.Events;
 using SocialMediaBackend.Modules.Chat.Domain.Messages.DirectMessages;
 
 namespace SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 
 public class DirectChat : AggregateRoot<DirectChatId>
 {
-    private readonly List<DirectMessage>? _messages;
+    private List<DirectMessage>? _messages;
 
     private DirectChat() { }
 
@@ -16,6 +17,12 @@ public class DirectChat : AggregateRoot<DirectChatId>
         FirstChatterId = firstChatterId;
         SecondChatterId = secondChatterId;
         CreatedAt = createdAt;
+
+        this.AddDomainEvent(new DirectChatCreatedDomainEvent(
+            Id,
+            FirstChatterId,
+            SecondChatterId,
+            CreatedAt));
     }
 
     public ChatterId FirstChatterId { get; private set; } = default!;
@@ -32,5 +39,45 @@ public class DirectChat : AggregateRoot<DirectChatId>
         DateTimeOffset createdAt)
     {
         return new DirectChat(firstChatterId, secondChatterId, createdAt);
+    }
+
+    public DirectMessage? AddMessage(ChatterId senderId, string text)
+    {
+        var receiverId = GetReceiverId(senderId);
+        if (receiverId is null)
+        {
+            return null;
+        }
+
+        var message = DirectMessage.Create(senderId, this.Id, text, DateTimeOffset.UtcNow, MessageStatus.Sent);
+
+        _messages ??= new(1);
+        _messages.Add(message);
+
+        this.AddDomainEvent(new DirectMessageAddedDomainEvent(
+            message.Id,
+            this.Id,
+            senderId,
+            receiverId,
+            message.Text,
+            message.SentAt,
+            message.Status));
+
+        return message;
+    }
+
+    private ChatterId? GetReceiverId(ChatterId senderId)
+    {
+        if (senderId == FirstChatterId)
+        {
+            return SecondChatterId;
+        }
+
+        if (senderId == SecondChatterId)
+        {
+            return FirstChatterId;
+        }
+
+        return null;
     }
 }

@@ -1,4 +1,5 @@
-﻿using SocialMediaBackend.BuildingBlocks.Domain;
+﻿using Mediator;
+using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Messages.DirectMessages;
 
@@ -23,8 +24,19 @@ public class UserDirectChat : AggregateRoot<UserDirectChatId>
     public DirectChat DirectChat { get; private set; } = default!;
     public IReadOnlyCollection<UserDirectMessage>? Messages => _messages?.AsReadOnly();
 
-    public UserDirectChat Create(ChatterId chatterId, DirectChatId directChatId)
+    public static UserDirectChat Create(ChatterId chatterId, DirectChatId directChatId)
     {
-        return new UserDirectChat(ChatterId, directChatId);
+        return new UserDirectChat(chatterId, directChatId);
+    }
+
+    public UserDirectMessage AddMessage(DirectMessageId messageId)
+    {
+        var message = UserDirectMessage.Create(messageId, this.Id);
+
+        _messages ??= new(1);
+
+        _messages.Add(message);
+
+        return message;
     }
 }
