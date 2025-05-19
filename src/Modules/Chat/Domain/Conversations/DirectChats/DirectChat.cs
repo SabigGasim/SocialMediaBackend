@@ -62,6 +62,23 @@ public class DirectChat : AggregateRoot<DirectChatId>
         return message;
     }
 
+    public bool DeleteMessage(DirectMessageId messageId)
+    {
+        var message = _messages.Find(x => x.Id == messageId);
+        if (message is null)
+        {
+            return false;
+        }
+
+        CheckRule(new MessageMustBeSentAtMostOneHourAgoToBeDeletedForEveryoneRule(message.SentAt));
+
+        _messages.Remove(message);
+
+        this.AddDomainEvent(new DirectMessageDeletedDomainEvent(messageId));
+
+        return true;
+    }
+
     private ChatterId GetReceiverId(ChatterId senderId)
     {
         return senderId == FirstChatterId
