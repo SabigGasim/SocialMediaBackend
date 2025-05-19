@@ -4,7 +4,7 @@ using SocialMediaBackend.Modules.Chat.Domain.Messages.DirectMessages;
 
 namespace SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 
-public class UserDirectChat : AggregateRoot<UserDirectChatId>, IUserResource
+public class UserDirectChat : AggregateRoot<UserDirectChatId>
 {
     private readonly List<UserDirectMessage> _messages = new();
 
