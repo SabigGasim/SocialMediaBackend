@@ -11,11 +11,11 @@ public class AuthModule : Module
     {
         builder.RegisterType<CommentAuthorizationHandler>()
             .As<IAuthorizationHandler<Comment, CommentId>>()
-            .InstancePerDependency();
+            .InstancePerLifetimeScope();
 
         builder.RegisterType<PostAuthorizationHandler>()
             .As<IAuthorizationHandler<Post, PostId>>()
-            .InstancePerDependency();
+            .InstancePerLifetimeScope();
 
         builder.RegisterType<AuthorizationService>()
             .As<IAuthorizationService>()
