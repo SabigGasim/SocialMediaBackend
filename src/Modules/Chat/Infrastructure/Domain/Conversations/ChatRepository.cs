@@ -34,6 +34,56 @@ internal class ChatRepository(IDbConnectionFactory factory) : IChatRepository
         }
     }
 
+    public async Task<IEnumerable<DirectMessageDto>> GetAllDirectChatMessages(
+        ChatterId chatterId, 
+        DirectChatId directChatId,
+        int page,
+        int pageSize,
+        CancellationToken ct = default)
+    {
+        const string sql = $"""
+            SELECT
+              dm."Id"        AS "MessageId",
+              dm."SenderId"  AS "SenderId",
+              dm."Text"      AS "Text",
+              dm."SentAt"    AS "SentAt",
+              dm."Status"    AS "Status"
+            FROM {Schema.Chat}."DirectMessages" dm
+
+            -- find the UserDirectChat record for this chatter + chat
+            JOIN {Schema.Chat}."UserDirectChats" udc
+              ON udc."ChatterId"    = @{nameof(chatterId)}
+             AND udc."DirectChatId" = @{nameof(directChatId)}
+
+            -- ensure the message actually belongs to that user's chat-view
+            JOIN {Schema.Chat}."UserDirectMessages" udm
+              ON udm."DirectMessageId" = dm."Id"
+             AND udm."UserDirectChatId" = udc."Id"
+
+            WHERE dm."ChatId" = @{nameof(directChatId)}
+            ORDER BY dm."Id"
+            LIMIT  @{nameof(pageSize)}
+            OFFSET @{nameof(page)};
+            """;
+
+        var parameters = new
+        {
+            chatterId = chatterId.Value,
+            directChatId = directChatId.Value,
+            pageSize,
+            page = (page - 1) * pageSize
+        };
+
+        using (var connection = await _factory.CreateAsync(ct))
+        {
+            var messages = await connection.QueryAsync<DirectMessageDto>(new CommandDefinition(
+                sql, parameters, cancellationToken: ct)
+                );
+
+            return messages;
+        }
+    }
+
     public async Task<bool> ExistsAsync(DirectChatId chatId, CancellationToken ct = default)
     {
         const string sql = $"""

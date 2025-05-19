@@ -6,6 +6,12 @@ namespace SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Conversations;
 
 public interface IChatRepository
 {
+    Task<IEnumerable<DirectMessageDto>> GetAllDirectChatMessages(
+        ChatterId chatterId,
+        DirectChatId directChatId,
+        int page,
+        int pageSize,
+        CancellationToken ct = default);
     Task<bool> ExistsAsync(DirectChatId chatId, CancellationToken ct = default);
     Task<bool> ExistsAsync(GroupChatId chatId, CancellationToken ct = default);
     Task<bool> ExistsAsync(UserGroupChatId chatId, CancellationToken ct = default);
