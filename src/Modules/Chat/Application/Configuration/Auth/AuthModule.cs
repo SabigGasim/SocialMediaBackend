@@ -10,5 +10,9 @@ public class AuthModule : Module
         builder.RegisterAssemblyTypes(typeof(IApplicationMarker).Assembly)
             .AsClosedTypesOf(typeof(IAuthorizationHandler<>))
             .SingleInstance();
+    
+        builder.RegisterAssemblyTypes(typeof(IApplicationMarker).Assembly)
+            .AsClosedTypesOf(typeof(IAuthorizationHandler<,>))
+            .SingleInstance();
     }
 }

@@ -8,3 +8,11 @@ public interface IAuthorizationHandler<TResource>
         ChatterId? chatterId,
         TResource resource);
 }
+
+public interface IAuthorizationHandler<TResource, TResourceId>
+{
+    Task<bool> AuthorizeAsync(
+        ChatterId chatterId,
+        TResourceId resourceId,
+        CancellationToken ct = default);
+}

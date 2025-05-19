@@ -46,7 +46,7 @@ public class CQRSModule : Autofac.Module
         services.Decorate(typeof(ICommandHandler<>), typeof(UnitOfWorkCommandHandlerDecorator<>));
         services.Decorate(typeof(ICommandHandler<,>), typeof(UnitOfWorkCommandHandlerWithResultDecorator<,>));
 
-        //services.Decorate(typeof(IQueryHandler<,>), typeof(AuthQueryHandlerDecorator<,>));
+        services.Decorate(typeof(IQueryHandler<,>), typeof(AuthQueryHandlerDecorator<,>));
         services.Decorate(typeof(ICommandHandler<>), typeof(AuthCommandHandlerDecorator<>));
         services.Decorate(typeof(ICommandHandler<,>), typeof(AuthCommandHandlerWithResultDecorator<,>));
 
