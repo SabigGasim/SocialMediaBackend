@@ -71,6 +71,7 @@ public static class ApiEndpoints
         public const string SendDirectMessage = $"{Base}/{{ChatId}}";
         public const string DeleteMessageForMe = $"{Base}/{{ChatId}}/messages/{{MessageId}}/delete-for-me";
         public const string DeleteMessageForEveryone = $"{Base}/{{ChatId}}/messages/{{MessageId}}/delete-for-everyone";
+        public const string GetAllMessages = $"{Base}/{{ChatId}}/messages";
 
         public const string SetMessageAsRead = $"{Base}/{{ChatId}}/messages/{{MessageId}}";
     }
