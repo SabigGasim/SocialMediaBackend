@@ -1,13 +1,14 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats.Events;
+using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats.Rules;
 using SocialMediaBackend.Modules.Chat.Domain.Messages.DirectMessages;
 
 namespace SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 
 public class DirectChat : AggregateRoot<DirectChatId>
 {
-    private List<DirectMessage>? _messages;
+    private readonly List<DirectMessage> _messages = new();
 
     private DirectChat() { }
 
@@ -31,7 +32,7 @@ public class DirectChat : AggregateRoot<DirectChatId>
 
     public Chatter FirstChatter { get; private set; } = default!;
     public Chatter SecondChatter { get; private set; } = default!;
-    public IReadOnlyCollection<DirectMessage>? Messages => _messages?.AsReadOnly();
+    public IReadOnlyCollection<DirectMessage> Messages => _messages.AsReadOnly();
     
     public static DirectChat Create(
         ChatterId firstChatterId, 
@@ -41,17 +42,12 @@ public class DirectChat : AggregateRoot<DirectChatId>
         return new DirectChat(firstChatterId, secondChatterId, createdAt);
     }
 
-    public DirectMessage? AddMessage(ChatterId senderId, string text)
+    public DirectMessage AddMessage(ChatterId senderId, string text)
     {
         var receiverId = GetReceiverId(senderId);
-        if (receiverId is null)
-        {
-            return null;
-        }
 
         var message = DirectMessage.Create(senderId, this.Id, text, DateTimeOffset.UtcNow, MessageStatus.Sent);
 
-        _messages ??= new(1);
         _messages.Add(message);
 
         this.AddDomainEvent(new DirectMessageAddedDomainEvent(
@@ -66,18 +62,10 @@ public class DirectChat : AggregateRoot<DirectChatId>
         return message;
     }
 
-    private ChatterId? GetReceiverId(ChatterId senderId)
+    private ChatterId GetReceiverId(ChatterId senderId)
     {
-        if (senderId == FirstChatterId)
-        {
-            return SecondChatterId;
-        }
-
-        if (senderId == SecondChatterId)
-        {
-            return FirstChatterId;
-        }
-
-        return null;
+        return senderId == FirstChatterId
+            ? SecondChatterId
+            : FirstChatterId;
     }
 }
