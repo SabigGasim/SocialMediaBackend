@@ -9,6 +9,7 @@ using SocialMediaBackend.Modules.Users.Application.Configuration;
 using SocialMediaBackend.Modules.Feed.Application.Configuration;
 using SocialMediaBackend.Modules.Chat.Application.Configuration;
 using Autofac.Extensions.DependencyInjection;
+using SocialMediaBackend.Modules.Chat.Application.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 

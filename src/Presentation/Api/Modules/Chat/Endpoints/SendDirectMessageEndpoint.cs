@@ -4,6 +4,7 @@ using SocialMediaBackend.Api.Services;
 using SocialMediaBackend.Modules.Chat.Application.Contracts;
 using SocialMediaBackend.Modules.Chat.Application.DirectMessaging.CreateDirectMessage;
 using SocialMediaBackend.Modules.Chat.Application.DirectMessaging.SendDirectMessage;
+using SocialMediaBackend.Modules.Chat.Application.Hubs;
 
 namespace SocialMediaBackend.Api.Modules.Chat.Endpoints;
 

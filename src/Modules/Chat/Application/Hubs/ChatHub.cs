@@ -1,13 +1,18 @@
 ﻿using Autofac;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using SocialMediaBackend.Modules.Chat.Application.Hubs;
+using SocialMediaBackend.Modules.Chat.Application.DirectMessaging.MarkDirectMessageAsSeen;
+using SocialMediaBackend.Modules.Chat.Application.Helpers;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
+using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
+using SocialMediaBackend.Modules.Chat.Domain.Messages.DirectMessages;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Conversations;
 
-namespace SocialMediaBackend.Api;
+namespace SocialMediaBackend.Modules.Chat.Application.Hubs;
 
+[Authorize]
 public class ChatHub : Hub<IChatHub>
 {
     private readonly IChatterRepository _chatterRepository;

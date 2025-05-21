@@ -9,6 +9,7 @@ using System.Reflection;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
 using SocialMediaBackend.Api.Services;
+using SocialMediaBackend.Modules.Chat.Application.Hubs;
 
 namespace SocialMediaBackend.Api;
 
