@@ -9,9 +9,23 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="FastEndpoints.Testing" Version="6.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageReference Include="xunit" Version="2.9.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageReference Include="Shouldly" Version="4.3.0" />
+    <PackageReference Include="Testcontainers" Version="4.4.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.4.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="xunit.v3" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\Identity.Api\Identity.Api.csproj" />
+    <ProjectReference Include="..\..\..\..\BuildingBlocks\Tests\SocialMediaBackend.BuildingBlocks.Tests.csproj" />
+    <ProjectReference Include="..\..\..\..\Presentation\Api\Api.csproj" />
+    <ProjectReference Include="..\Tests.Core\SocialMediaBackend.Modules.Chat.Tests.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
