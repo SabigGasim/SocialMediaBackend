@@ -12,6 +12,7 @@ public interface IChatRepository
         int page,
         int pageSize,
         CancellationToken ct = default);
+    Task<IEnumerable<string>> GetChattersWithDirectOrGroupChatWith(ChatterId chatterId);
     Task<bool> ExistsAsync(DirectChatId chatId, CancellationToken ct = default);
     Task<bool> ExistsAsync(GroupChatId chatId, CancellationToken ct = default);
     Task<bool> ExistsAsync(UserGroupChatId chatId, CancellationToken ct = default);

@@ -63,7 +63,7 @@ internal class ChatRepository(IDbConnectionFactory factory) : IChatRepository
             WHERE dm."ChatId" = @{nameof(directChatId)}
             ORDER BY dm."Id"
             LIMIT  @{nameof(pageSize)}
-            OFFSET @{nameof(page)};
+            OFFSET @OFFSET;
             """;
 
         var parameters = new
@@ -71,7 +71,7 @@ internal class ChatRepository(IDbConnectionFactory factory) : IChatRepository
             chatterId = chatterId.Value,
             directChatId = directChatId.Value,
             pageSize,
-            page = (page - 1) * pageSize
+            OFFSET = (page - 1) * pageSize
         };
 
         using (var connection = await _factory.CreateAsync(ct))
@@ -81,6 +81,39 @@ internal class ChatRepository(IDbConnectionFactory factory) : IChatRepository
                 );
 
             return messages;
+        }
+    }
+
+    public async Task<IEnumerable<string>> GetChattersWithDirectOrGroupChatWith(ChatterId chatterId)
+    {
+        const string sql = $"""
+            WITH DirectChatMembers AS (
+                SELECT 
+                    CASE 
+                        WHEN "FirstChatterId" = @ChatterId THEN "SecondChatterId"
+                        ELSE "FirstChatterId"
+                    END AS "ChatterId"
+                FROM {Schema.Chat}."DirectChats"
+                WHERE "FirstChatterId" = @ChatterId OR "SecondChatterId" = @ChatterId
+            ),
+            GroupChatMembers AS (
+                SELECT DISTINCT "Member"."ChatterId"
+                FROM {Schema.Chat}."GroupChat_Chatters" AS "Member"
+                INNER JOIN {Schema.Chat}."GroupChat_Chatters" AS "Target"
+                    ON "Member"."GroupChatId" = "Target"."GroupChatId"
+                WHERE "Target"."ChatterId" = @ChatterId
+                  AND "Member"."ChatterId" != @ChatterId
+            )
+            SELECT DISTINCT "ChatterId"::TEXT
+            FROM DirectChatMembers
+            UNION
+            SELECT DISTINCT "ChatterId"::TEXT
+            FROM GroupChatMembers;
+            """;
+
+        using (var connection = await _factory.CreateAsync())
+        {
+            return await connection.QueryAsync<string>(sql, new { ChatterId = chatterId.Value });
         }
     }
 
