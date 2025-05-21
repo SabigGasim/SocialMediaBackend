@@ -27,8 +27,8 @@ internal class ChatRepository(IDbConnectionFactory factory) : IChatRepository
             return await connection.ExecuteScalarAsync<bool>(new CommandDefinition(
                 sql, new
                 {
-                    firstChatterId,
-                    secondChatterId
+                    firstChatterId = firstChatterId.Value,
+                    secondChatterId = secondChatterId.Value
                 },
                 cancellationToken: ct));
         }
