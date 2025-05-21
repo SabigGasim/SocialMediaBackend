@@ -1,14 +1,15 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
-using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
+using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands.Realtime;
+using SocialMediaBackend.Modules.Chat.Application.DirectMessaging.SendDirectMessage;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 
-namespace SocialMediaBackend.Modules.Chat.Application.DirectMessaging.SendDirectMessage;
-public class CreateDirectMessageCommand(Guid directChatId, string text) 
-    : CommandBase<SendDirectMessageResponse>, IUserRequest
+namespace SocialMediaBackend.Modules.Chat.Application.DirectMessaging.CreateDirectMessage;
+public class CreateDirectMessageCommand(Guid directChatId, string text)
+    : SingleUserCommandBase<DirectMessageMessage, SendDirectMessageResponse>, IUserRequest
 {
     public string Text { get; } = text;
     public DirectChatId DirectChatId { get; } = new(directChatId);
-    public Guid UserId { get; private set;  }
+    public Guid UserId { get; private set; }
 
     public bool IsAdmin { get; private set; }
 

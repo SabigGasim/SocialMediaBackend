@@ -1,6 +1,8 @@
-﻿using SocialMediaBackend.Modules.Chat.Application.Chatters.GetAllChatters;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
+using SocialMediaBackend.Modules.Chat.Application.Chatters.GetAllChatters;
 using SocialMediaBackend.Modules.Chat.Application.Chatters.GetChatter;
 using SocialMediaBackend.Modules.Chat.Application.DirectMessaging.CreateDirectChat;
+using SocialMediaBackend.Modules.Chat.Application.DirectMessaging.CreateDirectMessage;
 using SocialMediaBackend.Modules.Chat.Application.DirectMessaging.SendDirectMessage;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
@@ -36,8 +38,17 @@ public static class DomainToApiContractMapper
         return new CreateDirectChatResponse(chat.Id.Value);
     }
 
-    public static SendDirectMessageResponse MapToResponse(this DirectMessage message)
+    public static SingleUserResponse<DirectMessageMessage, SendDirectMessageResponse> MapToResponse(
+        this DirectMessage message,
+        ChatterId recieverId,
+        string method)
     {
-        return new SendDirectMessageResponse(message.Id.Value, message.Status);
+        return new SingleUserResponse<DirectMessageMessage, SendDirectMessageResponse>
+        {
+            Identifier = recieverId.Value.ToString(),
+            Message = new(message.Id.Value, message.ChatId.Value, message.Text, message.SentAt),
+            Method = method,
+            Payload = new(message.Id.Value, message.Status)
+        };
     }
 }

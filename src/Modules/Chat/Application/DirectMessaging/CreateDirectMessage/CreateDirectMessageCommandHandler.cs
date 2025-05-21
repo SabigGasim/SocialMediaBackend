@@ -1,23 +1,26 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using SocialMediaBackend.BuildingBlocks.Application;
+﻿using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
-using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
+using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands.Realtime;
 using SocialMediaBackend.Modules.Chat.Application.Auth;
+using SocialMediaBackend.Modules.Chat.Application.DirectMessaging.SendDirectMessage;
 using SocialMediaBackend.Modules.Chat.Application.Mappings;
+using SocialMediaBackend.Modules.Chat.Domain;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
-namespace SocialMediaBackend.Modules.Chat.Application.DirectMessaging.SendDirectMessage;
+namespace SocialMediaBackend.Modules.Chat.Application.DirectMessaging.CreateDirectMessage;
 
 public class CreateDirectMessageCommandHandler(
     ChatDbContext context,
-    IAuthorizationHandler<DirectChat> authorizationHandler) : ICommandHandler<CreateDirectMessageCommand, SendDirectMessageResponse>
+    IAuthorizationHandler<DirectChat> authorizationHandler
+    )
+    : ISingleUserCommandHandler<CreateDirectMessageCommand, DirectMessageMessage, SendDirectMessageResponse>
 {
     private readonly ChatDbContext _context = context;
     private readonly IAuthorizationHandler<DirectChat> _authorizationHandler = authorizationHandler;
 
-    public async Task<HandlerResponse<SendDirectMessageResponse>> ExecuteAsync(CreateDirectMessageCommand command, CancellationToken ct)
+    public async Task<HandlerResponse<SingleUserResponse<DirectMessageMessage, SendDirectMessageResponse>>> ExecuteAsync(CreateDirectMessageCommand command, CancellationToken ct)
     {
         var chat = await _context.DirectChats.FindAsync([command.DirectChatId], ct);
         if (chat is null)
@@ -27,7 +30,7 @@ public class CreateDirectMessageCommandHandler(
 
         var senderId = new ChatterId(command.UserId);
 
-        if(!_authorizationHandler.Authorize(senderId, chat))
+        if (!_authorizationHandler.Authorize(senderId, chat))
         {
             return ("You're unauthorized to send messages in this chat", HandlerResponseStatus.Unauthorized);
         }
@@ -36,6 +39,10 @@ public class CreateDirectMessageCommandHandler(
 
         _context.Add(message);
 
-        return (message.MapToResponse(), HandlerResponseStatus.Created);
+        var recieverId = chat.GetReceiverId(senderId);
+
+        var response = message.MapToResponse(recieverId, ChatHubMethods.SendDirectMessage);
+
+        return (response, HandlerResponseStatus.Created);
     }
 }
