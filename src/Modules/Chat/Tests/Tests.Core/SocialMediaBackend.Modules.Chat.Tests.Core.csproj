@@ -6,5 +6,10 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\..\BuildingBlocks\Tests\SocialMediaBackend.BuildingBlocks.Tests.csproj" />
+	  <ProjectReference Include="..\..\Application\SocialMediaBackend.Modules.Chat.Application.csproj" />
+	</ItemGroup>
+
 </Project>
 
