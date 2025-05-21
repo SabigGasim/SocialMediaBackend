@@ -29,4 +29,18 @@ internal class ChatterRepository(IDbConnectionFactory factory) : IChatterReposit
                 cancellationToken: ct));
         }
     }
+
+    public async Task SetOnlineStatus(ChatterId chatterId, bool status)
+    {
+        const string sql = $"""
+            UPDATE {Schema.Chat}."Chatters"
+            SET "IsOnline" = FALSE
+            WHERE "Id" = @Id;
+            """;
+
+        using (var connection = await _factory.CreateAsync())
+        {
+            await connection.ExecuteAsync(sql, new { Id = chatterId.Value });
+        }
+    }
 }

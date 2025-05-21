@@ -3,5 +3,6 @@
 namespace SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Chatters;
 public interface IChatterRepository
 {
-    public Task<bool> ExistsAsync(ChatterId chatterId, CancellationToken ct = default);
+    Task<bool> ExistsAsync(ChatterId chatterId, CancellationToken ct = default);
+    Task SetOnlineStatus(ChatterId chatterId, bool status);
 }
