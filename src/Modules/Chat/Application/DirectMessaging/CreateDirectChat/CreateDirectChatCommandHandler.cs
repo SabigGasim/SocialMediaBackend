@@ -1,8 +1,6 @@
-﻿using Dapper;
-using SocialMediaBackend.BuildingBlocks.Application;
+﻿using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
-using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Chat.Application.Mappings;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
@@ -37,7 +35,7 @@ public class CreateDirectChatCommandHandler : ICommandHandler<CreateDirectChatCo
 
         var firstChatterId = new ChatterId(command.UserId);
 
-        if (!await _chatRepository.DirectChatExistsAsync(firstChatterId, command.OtherChatterId, ct))
+        if (await _chatRepository.DirectChatExistsAsync(firstChatterId, command.OtherChatterId, ct))
         {
             return ("A direct chat with the same users already exists", HandlerResponseStatus.Conflict);
         }

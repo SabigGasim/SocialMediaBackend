@@ -79,7 +79,7 @@ public class DirectChat : AggregateRoot<DirectChatId>
         return true;
     }
 
-    private ChatterId GetReceiverId(ChatterId senderId)
+    public ChatterId GetReceiverId(ChatterId senderId)
     {
         return senderId == FirstChatterId
             ? SecondChatterId

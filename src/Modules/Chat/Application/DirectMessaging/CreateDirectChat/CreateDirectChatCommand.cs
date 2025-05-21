@@ -4,7 +4,8 @@ using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 
 namespace SocialMediaBackend.Modules.Chat.Application.DirectMessaging.CreateDirectChat;
 
-public class CreateDirectChatCommand(Guid otherChatterId) : CommandBase<CreateDirectChatResponse>, IUserRequest
+public class CreateDirectChatCommand(Guid otherChatterId) 
+    : CommandBase<CreateDirectChatResponse>, IUserRequest
 {
     public Guid UserId { get; private set; }
 

@@ -91,6 +91,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Chat.Tests.Core", "src\Modules\Chat\Tests\Tests.Core\SocialMediaBackend.Modules.Chat.Tests.Core.csproj", "{88A47969-0965-4CBB-BE47-221EDCCF782E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.BuildingBlocks.Tests", "src\BuildingBlocks\Tests\SocialMediaBackend.BuildingBlocks.Tests.csproj", "{B457CD93-2760-4327-A1BE-204508D81D5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -209,6 +211,10 @@ Global
 		{88A47969-0965-4CBB-BE47-221EDCCF782E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88A47969-0965-4CBB-BE47-221EDCCF782E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88A47969-0965-4CBB-BE47-221EDCCF782E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B457CD93-2760-4327-A1BE-204508D81D5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B457CD93-2760-4327-A1BE-204508D81D5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B457CD93-2760-4327-A1BE-204508D81D5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B457CD93-2760-4327-A1BE-204508D81D5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -252,5 +258,6 @@ Global
 		{4D098B82-9FD3-4659-8326-11CB43F4E5E5} = {98EA45F1-8D26-44F9-ABE2-B135B604D317}
 		{C2B34921-1EEB-4EE7-B0EB-CF3BB1ADEAB0} = {98EA45F1-8D26-44F9-ABE2-B135B604D317}
 		{88A47969-0965-4CBB-BE47-221EDCCF782E} = {98EA45F1-8D26-44F9-ABE2-B135B604D317}
+		{B457CD93-2760-4327-A1BE-204508D81D5C} = {1C2E08F2-6A68-4742-8859-1A70B40D35F2}
 	EndGlobalSection
 EndGlobal
