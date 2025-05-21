@@ -1,6 +1,7 @@
 ﻿using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
+using SocialMediaBackend.Modules.Chat.Domain.Messages.DirectMessages;
 
 namespace SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Conversations;
 
@@ -18,4 +19,6 @@ public interface IChatRepository
     Task<bool> ExistsAsync(UserGroupChatId chatId, CancellationToken ct = default);
     Task<bool> ExistsAsync(UserDirectChatId chatId, CancellationToken ct = default);
     Task<bool> DirectChatExistsAsync(ChatterId firstChatter, ChatterId secondChatter, CancellationToken ct = default);
+    Task<string?> GetReceiverIdAsync(DirectChatId chatId, ChatterId senderId, CancellationToken ct = default);
+    Task MarkDirectMessageAsSeenAsync(DirectChatId chatId, DirectMessageId lastSeenMessageId);
 }

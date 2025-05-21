@@ -37,6 +37,22 @@ public class ChatHub : Hub<IChatHub>
         await _chatterRepository.SetOnlineStatus(chatterId, true);
     }
 
+    public async Task DirectChatNotifyTyping(Guid chatId, bool isTyping)
+    {
+        var senderId = new ChatterId(Guid.Parse(Context.UserIdentifier!));
+        var directChatId = new DirectChatId(chatId);
+
+        var receiverId = await _chatRepository.GetReceiverIdAsync(directChatId, senderId, Context.ConnectionAborted);
+
+        if (receiverId is null)
+        {
+            //TODO: unauthorized
+            Context.Abort();
+        }
+
+        await Clients.User(receiverId!).UpdateDirectChatTypingStatus(chatId, isTyping);
+    }
+
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         var chatterId = new ChatterId(Guid.Parse(Context.UserIdentifier!));
