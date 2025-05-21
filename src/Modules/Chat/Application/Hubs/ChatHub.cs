@@ -53,6 +53,25 @@ public class ChatHub : Hub<IChatHub>
         await Clients.User(receiverId!).UpdateDirectChatTypingStatus(chatId, isTyping);
     }
 
+    public async Task MarkDirectMessageAsSeen(Guid chatId, Guid lastSeenMessageId, bool isTyping)
+    {
+        var senderId = new ChatterId(Guid.Parse(Context.UserIdentifier!));
+        var directChatId = new DirectChatId(chatId);
+        var messageId = new DirectMessageId(lastSeenMessageId);
+
+        var command = new MarkDirectMessageAsSeenCommand(directChatId, messageId);
+
+        var result = await CommandExecutor.ExecuteAsync(command);
+
+        if (!result.IsSuccess)
+        {
+            return;
+        }
+
+        var receiverId = await _chatRepository.GetReceiverIdAsync(directChatId, senderId);
+        await Clients.User(receiverId!).UpdateDirectChatTypingStatus(chatId, isTyping);
+    }
+
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         var chatterId = new ChatterId(Guid.Parse(Context.UserIdentifier!));

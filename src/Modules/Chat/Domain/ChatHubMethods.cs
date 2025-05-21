@@ -3,6 +3,7 @@
 public static class ChatHubMethods
 {
     public const string SendDirectMessage = "SendDirectMessage";
+    public const string DeleteDirectMessage = "DeleteDirectMessage";
     public const string UserConnected = "UserConnected";
     public const string UserDisconnected = "UserDisconnected";
 }
