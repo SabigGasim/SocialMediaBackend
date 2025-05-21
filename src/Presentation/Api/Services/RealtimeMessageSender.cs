@@ -16,15 +16,15 @@ public class RealtimeMessageSender<THub>(IHubContext<THub> context) : IRealtimeM
         var task = response.Recipients switch
         {
             Recipients.SingleUser => _context.Clients
-                .User(response.Identifier as string ?? throw IdentifierException)
+                .User(response.ReceiverId as string ?? throw IdentifierException)
                 .SendAsync(response.Method, response.Message),
 
             Recipients.MultipleUsers => _context.Clients
-                .Users(response.Identifier as IEnumerable<string> ?? throw IdentifierException)
+                .Users(response.ReceiverId as IEnumerable<string> ?? throw IdentifierException)
                 .SendAsync(response.Method, response.Message),
 
             Recipients.Group => _context.Clients
-                .Group(response.Identifier as string ?? throw IdentifierException)
+                .Group(response.ReceiverId as string ?? throw IdentifierException)
                 .SendAsync(response.Method, response.Message),
 
             _ => throw new InvalidOperationException("")

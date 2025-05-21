@@ -45,7 +45,7 @@ public static class DomainToApiContractMapper
     {
         return new SingleUserResponse<DirectMessageMessage, SendDirectMessageResponse>
         {
-            Identifier = recieverId.Value.ToString(),
+            ReceiverId = recieverId.Value.ToString(),
             Message = new(message.Id.Value, message.ChatId.Value, message.Text, message.SentAt),
             Method = method,
             Payload = new(message.Id.Value, message.Status)

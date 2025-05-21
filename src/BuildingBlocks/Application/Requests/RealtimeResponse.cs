@@ -14,7 +14,7 @@ public interface IRealtimeResponse<TMessage>
 
 public interface IRealtimeResponse<TMessage, TIdentifier> : IRealtimeResponse<TMessage>
 {
-    TIdentifier Identifier { get; }
+    TIdentifier ReceiverId { get; }
 }
 
 public interface IRealtimeWithPayloadResponse<TMessage, TPayload> : IRealtimeResponse<TMessage>
@@ -34,7 +34,7 @@ public abstract class RealtimeResponse<TMessage> : IRealtimeResponse<TMessage>
 
 public abstract class RealtimeResponse<TMessage, TIdentifier> : RealtimeResponse<TMessage>, IRealtimeResponse<TMessage, TIdentifier>
 {
-    public required TIdentifier Identifier { get; init; }
+    public required TIdentifier ReceiverId { get; init; }
 }
 
 public abstract class RealtimeResponse<TMessage, TPayload, TIdentifier> 
