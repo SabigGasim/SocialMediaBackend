@@ -3,6 +3,7 @@ using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
+using SocialMediaBackend.Modules.Chat.Domain.Messages.DirectMessages;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Conversations;
@@ -137,6 +138,26 @@ internal class ChatRepository(IDbConnectionFactory factory) : IChatRepository
                 SenderId = senderId.Value,
                 ChatId = chatId.Value,
             }, cancellationToken: ct));
+        }
+    }
+
+    public async Task MarkDirectMessageAsSeenAsync(DirectChatId chatId, DirectMessageId lastSeenMessageId)
+    {
+        const string sql = $"""
+            UPDATE {Schema.Chat}."DirectMessages"
+            SET "Status" = @SeenStatus
+            WHERE "DirectChatId" = @ChatId
+              AND "Id" < @LastSeenMessageId;
+            """;
+
+        using (var connection = await _factory.CreateAsync())
+        {
+            await connection.ExecuteAsync(sql, new
+            {
+                ChatId = chatId.Value,
+                LastSeenMessageId = lastSeenMessageId.Value,
+                SeenStatus = MessageStatus.Seen,
+            });
         }
     }
 
