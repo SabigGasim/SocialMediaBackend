@@ -117,6 +117,29 @@ internal class ChatRepository(IDbConnectionFactory factory) : IChatRepository
         }
     }
 
+    public async Task<string?> GetReceiverIdAsync(DirectChatId chatId, ChatterId senderId, CancellationToken ct = default)
+    {
+        const string sql = $"""
+            SELECT
+              CASE
+                WHEN "FirstChatterId" = @SenderId THEN "SecondChatterId"
+                WHEN "SecondChatterId" = @SenderId THEN "FirstChatterId"
+                ELSE NULL
+              END AS "ReceiverId"::TEXT
+            FROM {Schema.Chat}."DirectChats"
+            WHERE "Id" = @ChatId
+            """;
+
+        using (var connection = await _factory.CreateAsync())
+        {
+            return await connection.QuerySingleOrDefaultAsync<string>(new CommandDefinition(sql, new
+            {
+                SenderId = senderId.Value,
+                ChatId = chatId.Value,
+            }, cancellationToken: ct));
+        }
+    }
+
     public async Task<bool> ExistsAsync(DirectChatId chatId, CancellationToken ct = default)
     {
         const string sql = $"""
