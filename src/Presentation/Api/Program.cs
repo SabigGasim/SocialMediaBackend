@@ -4,7 +4,6 @@ using SocialMediaBackend.Api.Modules.Users;
 using SocialMediaBackend.Api.Modules.Feed;
 using SocialMediaBackend.Api.Modules.Chat;
 using SocialMediaBackend.Api.Middlewares;
-using SocialMediaBackend.Api.Modules.BuildingBlocks;
 using SocialMediaBackend.Api;
 using SocialMediaBackend.Modules.Users.Application.Configuration;
 using SocialMediaBackend.Modules.Feed.Application.Configuration;
@@ -28,11 +27,11 @@ var app = builder.Build();
 
 if (!environment.IsEnvironment("Testing"))
 {
-await Task.WhenAll(
+    await Task.WhenAll(
         UsersStartup.InitializeAsync(builder.Services, connectionString, environment),
         FeedStartup.InitializeAsync(builder.Services, connectionString, environment),
         ChatStartup.InitializeAsync(builder.Services, connectionString, environment)
-    );
+        );
 }
 
 app.UseMiddleware<ExceptionStatusCodeMiddleware>();
@@ -44,8 +43,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapFastEndpoints();
-app.UseSwaggerGen();
 
+app.MapHub<ChatHub>($"/{ApiEndpoints.ChatHub.Connect}");
+
+app.UseSwaggerGen();
 
 app.Run();
 

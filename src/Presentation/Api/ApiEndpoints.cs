@@ -75,4 +75,11 @@ public static class ApiEndpoints
 
         public const string SetMessageAsRead = $"{Base}/{{ChatId}}/messages/{{MessageId}}";
     }
+
+    public static class ChatHub
+    {
+        public const string Base = $"{ApiBase}/chathub";
+
+        public const string Connect = $"{Base}/connect";
+    }
 }

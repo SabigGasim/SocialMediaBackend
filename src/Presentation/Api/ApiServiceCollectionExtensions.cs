@@ -6,6 +6,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SocialMediaBackend.BuildingBlocks.Domain;
 using System.Reflection;
+using SocialMediaBackend.BuildingBlocks.Infrastructure;
+using Microsoft.AspNetCore.SignalR;
+using SocialMediaBackend.Api.Services;
 
 namespace SocialMediaBackend.Api;
 
@@ -57,13 +60,16 @@ public static class ApiServiceCollectionExtensions
                 .Build();
         });
 
+        services.AddSignalR();
         services
             .AddFastEndpoints()
             .SwaggerDocument()
             .AddHttpContextAccessor()
+            .AddSingleton<IUserIdProvider, UserIdProvider>()
+            .AddSingleton<IRealtimeMessageSender<ChatHub>, RealtimeMessageSender<ChatHub>>()
             ;
 
-        List<Assembly> applicationAssemblies =
+        List <Assembly> applicationAssemblies =
         [
             typeof(SocialMediaBackend.Modules.Users.Application.ApplicationServiceCollectionExtensions).Assembly,
             typeof(SocialMediaBackend.Modules.Feed.Application.ApplicationServcieCollectionExtensions).Assembly,
