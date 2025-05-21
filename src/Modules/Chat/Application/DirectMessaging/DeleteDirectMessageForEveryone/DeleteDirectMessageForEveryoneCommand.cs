@@ -1,11 +1,12 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
-using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
+using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands.Realtime;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 using SocialMediaBackend.Modules.Chat.Domain.Messages.DirectMessages;
 
 namespace SocialMediaBackend.Modules.Chat.Application.DirectMessaging.DeleteDirectMessageForEveryone;
 
-public class DeleteDirectMessageForEveryoneCommand(Guid chatId, Guid messageId) : CommandBase, IUserRequest
+public class DeleteDirectMessageForEveryoneCommand(Guid chatId, Guid messageId) 
+    : SingleUserCommandBase<DeleteDirectMessageMessage>, IUserRequest
 {
     public Guid UserId { get; private set; }
 

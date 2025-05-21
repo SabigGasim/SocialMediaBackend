@@ -1,15 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
-using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
+using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands.Realtime;
 using SocialMediaBackend.Modules.Chat.Application.Auth;
+using SocialMediaBackend.Modules.Chat.Domain;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.DirectMessaging.DeleteDirectMessageForEveryone;
 
-public class DeleteDirectMessageForEveryoneCommandHandler : ICommandHandler<DeleteDirectMessageForEveryoneCommand>
+public class DeleteDirectMessageForEveryoneCommandHandler 
+    : ISingleUserCommandHandler<DeleteDirectMessageForEveryoneCommand, DeleteDirectMessageMessage>
 {
     private readonly ChatDbContext _context;
     private readonly IAuthorizationHandler<DirectChat> _authorizationHandler;
@@ -22,7 +24,7 @@ public class DeleteDirectMessageForEveryoneCommandHandler : ICommandHandler<Dele
         _authorizationHandler = authorizationHandler;
     }
 
-    public async Task<HandlerResponse> ExecuteAsync(DeleteDirectMessageForEveryoneCommand command, CancellationToken ct)
+    public async Task<HandlerResponse<SingleUserResponse<DeleteDirectMessageMessage>>> ExecuteAsync(DeleteDirectMessageForEveryoneCommand command, CancellationToken ct)
     {
         var chat = await _context.DirectChats
             .Where(x => x.Id == command.ChatId)
@@ -42,9 +44,21 @@ public class DeleteDirectMessageForEveryoneCommandHandler : ICommandHandler<Dele
         }
 
         var deleted = chat.DeleteMessage(command.MessageId);
-        
-        return deleted
-            ? HandlerResponseStatus.NoContent
-            : ("Message with the given Id was not found",  HandlerResponseStatus.NotFound, command.MessageId.Value);
+
+        if (!deleted)
+        {
+            return ("Message with the given Id was not found", HandlerResponseStatus.NotFound, command.MessageId.Value);
+        }
+
+        var receiverId = chat.GetReceiverId(chatterId);
+
+        var response = new SingleUserResponse<DeleteDirectMessageMessage>
+        {
+            ReceiverId = receiverId.Value.ToString(),
+            Message = new(command.MessageId.Value),
+            Method = ChatHubMethods.DeleteDirectMessage
+        };
+
+        return (response, HandlerResponseStatus.NoContent);
     }
 }
