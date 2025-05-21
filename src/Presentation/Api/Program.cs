@@ -16,23 +16,28 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 var config = builder.Configuration;
+var connectionString = config.GetConnectionString("PostgresConnection")!;
 var environment = builder.Environment;
 
-builder.Services.AddBuildingBlocks(config);
 builder.Services.AddFeedModule();
 builder.Services.AddUserModule();
 builder.Services.AddChatModule();
 builder.Services.AddApi(config);
 
-await Task.WhenAll(
-    UsersStartup.InitializeAsync(builder.Services, config, environment),
-    FeedStartup.InitializeAsync(builder.Services, config, environment),
-    ChatStartup.InitializeAsync(builder.Services, config, environment)
-    );
-
 var app = builder.Build();
 
+if (!environment.IsEnvironment("Testing"))
+{
+await Task.WhenAll(
+        UsersStartup.InitializeAsync(builder.Services, connectionString, environment),
+        FeedStartup.InitializeAsync(builder.Services, connectionString, environment),
+        ChatStartup.InitializeAsync(builder.Services, connectionString, environment)
+    );
+}
+
 app.UseMiddleware<ExceptionStatusCodeMiddleware>();
+
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 

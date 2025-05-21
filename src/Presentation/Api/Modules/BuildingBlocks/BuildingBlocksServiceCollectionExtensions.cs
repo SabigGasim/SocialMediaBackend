@@ -6,8 +6,8 @@ internal static class BuildingBlocksServiceCollectionExtensions
 {
     public static IServiceCollection AddBuildingBlocks(
         this IServiceCollection services,
-        IConfiguration config)
+        string connectionString)
     {
-        return services.AddInfrastructureBuildingBlocks(config);
+        return services.AddInfrastructureBuildingBlocks(connectionString);
     }
 }

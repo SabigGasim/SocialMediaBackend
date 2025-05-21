@@ -16,23 +16,23 @@ public static class FeedStartup
 {
     public static async Task InitializeAsync(
         IServiceCollection serviceCollection,
-        IConfiguration config,
+        string connectionString,
         IWebHostEnvironment env)
     {
-        ConfigureCompositionRoot(serviceCollection, config);
+        ConfigureCompositionRoot(serviceCollection, connectionString);
 
         await QuartzStartup.InitializeAsync();
         await PersistenceStartup.InitializeAsync(env);
     }
 
-    private static void ConfigureCompositionRoot(IServiceCollection serviceCollection, IConfiguration config)
+    private static void ConfigureCompositionRoot(IServiceCollection serviceCollection, string connectionString)
     {
         var containerBuilder = new ContainerBuilder();
 
         containerBuilder.Populate(serviceCollection);
 
         containerBuilder.RegisterModule(new QuartzModule());
-        containerBuilder.RegisterModule(new PersistenceModule(config));
+        containerBuilder.RegisterModule(new PersistenceModule(connectionString));
         containerBuilder.RegisterModule(new CQRSModule());
         containerBuilder.RegisterModule(new ProcessingModule());
         containerBuilder.RegisterModule(new AuthModule());

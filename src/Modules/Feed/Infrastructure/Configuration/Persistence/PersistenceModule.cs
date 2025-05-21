@@ -1,25 +1,26 @@
 ﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.Extensions.Configuration;
+using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Infrastructure.Configuration.Persistence;
 
-public class PersistenceModule(IConfiguration config) : Module
+public class PersistenceModule(string connectionString) : Module
 {
-    private readonly IConfiguration _config = config;
+    private readonly string _connectionString = connectionString;
 
     protected override void Load(ContainerBuilder builder)
     {
-        var connectionString = _config.GetConnectionString("PostgresConnection")!;
-
         builder.Register(_ => new FeedDbContext(
             FeedDbContextOptionsBuilderFactory
-                .Create(connectionString)
+                .Create(_connectionString)
                 .Options))
             .AsSelf()
             .As<DbContext>()
             .InstancePerLifetimeScope();
+
+        builder.Register(_ => new NpgsqlConnectionFactory(_connectionString))
+            .As<IDbConnectionFactory>()
+            .SingleInstance();
     }
 }
