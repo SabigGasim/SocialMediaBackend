@@ -16,10 +16,5 @@ internal class GroupChatEntityTypeConfiguration : IEntityTypeConfiguration<Group
             .HasConversion(
                 id => id.Value,
                 value => new(value));
-
-        builder.HasOne(x => x.Owner)
-            .WithMany()
-            .HasForeignKey(x => x.OwnerId)
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }
