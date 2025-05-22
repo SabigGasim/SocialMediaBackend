@@ -7,18 +7,17 @@ namespace SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
 
 public class UserGroupChat : AggregateRoot<UserGroupChatId>
 {
-    private readonly List<DateTimeOffset> _joinLeaveTimeline = new();
     private readonly List<UserGroupMessage> _messages = new();
 
     private UserGroupChat() { }
 
-    private UserGroupChat(ChatterId chatterId, GroupChatId groupChatId, DateTimeOffset joinedAt)
+    private UserGroupChat(ChatterId chatterId, GroupChatId groupChatId)
     {
         Id = UserGroupChatId.New();
         ChatterId = chatterId;
         GroupChatId = groupChatId;
 
-        Join(joinedAt);
+        Join();
     }
 
     public ChatterId ChatterId { get; private set; } = default!;
@@ -29,14 +28,10 @@ public class UserGroupChat : AggregateRoot<UserGroupChatId>
     public GroupChat GroupChat { get; private set; } = default!;
 
     public IReadOnlyCollection<UserGroupMessage>? Messages => _messages?.AsReadOnly();
-    public IReadOnlyCollection<DateTimeOffset> JoinLeaveTimeline => _joinLeaveTimeline.AsReadOnly();
 
-    public static UserGroupChat CreateJoined(
-        ChatterId chatterId,
-        GroupChatId groupChatId,
-        DateTimeOffset joinedAt)
+    public static UserGroupChat CreateJoined(ChatterId chatterId, GroupChatId groupChatId)
     {
-        return new UserGroupChat(chatterId, groupChatId, joinedAt);
+        return new UserGroupChat(chatterId, groupChatId);
     }
 
     public UserGroupMessage AddMessage(GroupMessageId messageId)
@@ -48,19 +43,17 @@ public class UserGroupChat : AggregateRoot<UserGroupChatId>
         return message;
     }
 
-    public void Join(DateTimeOffset joinedAt)
+    public void Join()
     {
-        CheckRule(new GroupChatMustNotBeAlreadyJoinedRule(IsJoined, _joinLeaveTimeline));
+        CheckRule(new GroupChatMustNotBeAlreadyJoinedRule(IsJoined));
 
         IsJoined = true;
-        _joinLeaveTimeline.Add(joinedAt);
     }
 
-    public void Leave(DateTimeOffset leftAt)
+    public void Leave()
     {
-        CheckRule(new GroupChatMustNotBeAlreadyLeftRule(IsJoined, _joinLeaveTimeline));
+        CheckRule(new GroupChatMustNotBeAlreadyLeftRule(IsJoined));
 
         IsJoined = false;
-        _joinLeaveTimeline.Add(leftAt);
     }
 }

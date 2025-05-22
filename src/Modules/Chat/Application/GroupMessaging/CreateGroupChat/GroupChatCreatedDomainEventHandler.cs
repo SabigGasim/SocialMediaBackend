@@ -13,10 +13,7 @@ public class GroupChatCreatedDomainEventHandler(ChatDbContext context) : INotifi
     {
         foreach (var memberId in notification.Members)
         {
-            var userGroupChat = UserGroupChat.CreateJoined(
-                memberId, 
-                notification.GroupChatId, 
-                notification.JoinedAt);
+            var userGroupChat = UserGroupChat.CreateJoined(memberId, notification.GroupChatId);
 
             _context.Add(userGroupChat);
         }
