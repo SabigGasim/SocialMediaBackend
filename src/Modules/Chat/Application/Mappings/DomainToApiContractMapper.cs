@@ -12,14 +12,12 @@ namespace SocialMediaBackend.Modules.Chat.Application.Mappings;
 
 public static class DomainToApiContractMapper
 {
-    public static GetChatterResponse MapToGetResponse(this Chatter chatter)
+    public static GetChatterShortResponse MapToGetResponse(this Chatter chatter)
     {
-        return new GetChatterResponse(
+        return new GetChatterShortResponse(
             chatter.Id.Value,
             chatter.Username,
             chatter.Nickname,
-            chatter.FollowersCount,
-            chatter.FollowingCount,
             chatter.ProfilePicture.Url
             );
     }
