@@ -6,13 +6,11 @@ using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats.Events;
 using SocialMediaBackend.Modules.Chat.Domain.Messages.DirectMessages;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
-namespace SocialMediaBackend.Modules.Chat.Application.DirectMessaging.SendDirectMessage;
+namespace SocialMediaBackend.Modules.Chat.Application.DirectMessaging.CreateDirectMessage;
 
-public class DirectMessageAddedDomainEventHandler : INotificationHandler<DirectMessageAddedDomainEvent>
+public class DirectMessageAddedDomainEventHandler(ChatDbContext context) : INotificationHandler<DirectMessageAddedDomainEvent>
 {
-    private readonly ChatDbContext _context;
-
-    public DirectMessageAddedDomainEventHandler(ChatDbContext context) => _context = context;
+    private readonly ChatDbContext _context = context;
 
     public async ValueTask Handle(DirectMessageAddedDomainEvent notification, CancellationToken cancellationToken)
     {
@@ -20,7 +18,7 @@ public class DirectMessageAddedDomainEventHandler : INotificationHandler<DirectM
             .Where(x => x.DirectChatId == notification.ChatId)
             .ToListAsync();
 
-        var senderChat   = userDirectChats.FirstOrDefault(x => x.ChatterId == notification.SenderId);
+        var senderChat = userDirectChats.FirstOrDefault(x => x.ChatterId == notification.SenderId);
         var receiverChat = userDirectChats.FirstOrDefault(x => x.ChatterId == notification.ReceiverId);
 
         AddMessageToUserDirectChat(
@@ -39,7 +37,7 @@ public class DirectMessageAddedDomainEventHandler : INotificationHandler<DirectM
     private void AddMessageToUserDirectChat(
         DirectMessageId messageId,
         DirectChatId directChatId,
-        UserDirectChat? userDirectChat, 
+        UserDirectChat? userDirectChat,
         ChatterId chatterId)
     {
         if (userDirectChat is null)
@@ -51,7 +49,7 @@ public class DirectMessageAddedDomainEventHandler : INotificationHandler<DirectM
         }
 
         var message = userDirectChat.AddMessage(messageId);
-        
+
         _context.UserDirectMessages.Add(message);
     }
 }
