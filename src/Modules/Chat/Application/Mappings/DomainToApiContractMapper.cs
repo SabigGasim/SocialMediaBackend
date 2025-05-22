@@ -49,4 +49,11 @@ public static class DomainToApiContractMapper
             Payload = new(message.Id.Value, message.Status)
         };
     }
+    public static CreateGroupChatMessage MapToMessage(this GroupChat groupChat, IEnumerable<Chatter> members)
+    {
+        return new CreateGroupChatMessage(
+            groupChat.Id.Value,
+            groupChat.Name,
+            members.Select(x => x.MapToGetResponse()));
+    }
 }
