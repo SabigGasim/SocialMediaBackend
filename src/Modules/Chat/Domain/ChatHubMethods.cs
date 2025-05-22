@@ -6,4 +6,6 @@ public static class ChatHubMethods
     public const string DeleteDirectMessage = "DeleteDirectMessage";
     public const string UserConnected = "UserConnected";
     public const string UserDisconnected = "UserDisconnected";
+    public const string ReceiveGroupChatCreated = "ReceiveGroupChatCreated";
+    public const string ReceiveGroupMessage = "ReceiveGroupMessage";
 }
