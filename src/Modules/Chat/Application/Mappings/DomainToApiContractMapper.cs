@@ -79,9 +79,9 @@ public static class DomainToApiContractMapper
         };
     }
 
-    public static MultipleUsersResponse<CreateGroupMessageMessage, CreateGroupMessageResponse> MapToCreateResponse(this GroupMessage message, GroupChat groupChat)
+    public static MultipleUsersResponse<CreateGroupMessageMessage, SendGroupMessageResponse> MapToCreateResponse(this GroupMessage message, GroupChat groupChat)
     {
-        return new MultipleUsersResponse<CreateGroupMessageMessage, CreateGroupMessageResponse>
+        return new MultipleUsersResponse<CreateGroupMessageMessage, SendGroupMessageResponse>
         {
             Method = ChatHubMethods.ReceiveGroupMessage,
             Message = new(message.Id.Value, groupChat.Id.Value, message.SenderId.Value, message.Text, message.SentAt),

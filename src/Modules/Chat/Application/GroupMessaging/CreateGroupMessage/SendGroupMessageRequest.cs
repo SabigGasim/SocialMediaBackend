@@ -1,3 +1,3 @@
 ﻿namespace SocialMediaBackend.Modules.Chat.Application.GroupMessaging.CreateGroupMessage;
 
-public record CreateGroupMessageRequest(Guid GroupId, string Text);
+public record SendGroupMessageRequest(Guid GroupId, string Text);
