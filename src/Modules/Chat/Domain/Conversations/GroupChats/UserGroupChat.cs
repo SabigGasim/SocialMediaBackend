@@ -8,7 +8,7 @@ namespace SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
 public class UserGroupChat : AggregateRoot<UserGroupChatId>
 {
     private readonly List<DateTimeOffset> _joinLeaveTimeline = new();
-    private List<UserGroupMessage>? _messages = default!;
+    private readonly List<UserGroupMessage> _messages = new();
 
     private UserGroupChat() { }
 
@@ -33,10 +33,19 @@ public class UserGroupChat : AggregateRoot<UserGroupChatId>
 
     public static UserGroupChat CreateJoined(
         ChatterId chatterId,
-        GroupChatId groupChatId, 
+        GroupChatId groupChatId,
         DateTimeOffset joinedAt)
     {
         return new UserGroupChat(chatterId, groupChatId, joinedAt);
+    }
+
+    public UserGroupMessage AddMessage(GroupMessageId messageId)
+    {
+        var message = UserGroupMessage.Create(messageId, this.Id);
+
+        _messages.Add(message);
+
+        return message;
     }
 
     public void Join(DateTimeOffset joinedAt)
