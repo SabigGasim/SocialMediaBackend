@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Chat.Application.Hubs;
 
 namespace SocialMediaBackend.Api.Modules.Chat.Endpoints;
 
-[HttpPost(ApiEndpoints.DirectChat.SendDirectMessage)]
+[HttpPost(ApiEndpoints.DirectChat.SendMessage)]
 public class SendDirectMessageEndpoint(
     IChatModule module,
     IRealtimeMessageSender<ChatHub> sender) 

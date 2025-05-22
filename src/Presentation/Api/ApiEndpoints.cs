@@ -68,7 +68,20 @@ public static class ApiEndpoints
         public const string Base = $"{ApiBase}/chats/direct";
 
         public const string CreateDirectChat = Base;
-        public const string SendDirectMessage = $"{Base}/{{ChatId}}";
+        public const string SendMessage = $"{Base}/{{ChatId}}";
+        public const string DeleteMessageForMe = $"{Base}/{{ChatId}}/messages/{{MessageId}}/delete-for-me";
+        public const string DeleteMessageForEveryone = $"{Base}/{{ChatId}}/messages/{{MessageId}}/delete-for-everyone";
+        public const string GetAllMessages = $"{Base}/{{ChatId}}/messages";
+
+        public const string SetMessageAsRead = $"{Base}/{{ChatId}}/messages/{{MessageId}}";
+    }
+
+    public static class GroupChat
+    {
+        public const string Base = $"{ApiBase}/chats/groups";
+
+        public const string CreateGroupChat = Base;
+        public const string SendMessage = $"{Base}/{{ChatId}}";
         public const string DeleteMessageForMe = $"{Base}/{{ChatId}}/messages/{{MessageId}}/delete-for-me";
         public const string DeleteMessageForEveryone = $"{Base}/{{ChatId}}/messages/{{MessageId}}/delete-for-everyone";
         public const string GetAllMessages = $"{Base}/{{ChatId}}/messages";
@@ -79,7 +92,6 @@ public static class ApiEndpoints
     public static class ChatHub
     {
         public const string Base = $"{ApiBase}/chathub";
-
         public const string Connect = $"{Base}/connect";
     }
 }
