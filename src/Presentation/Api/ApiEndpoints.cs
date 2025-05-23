@@ -87,6 +87,7 @@ public static class ApiEndpoints
         public const string GetAllMessages = $"{Base}/{{ChatId}}/messages";
 
         public const string SetMessageAsRead = $"{Base}/{{ChatId}}/messages/{{MessageId}}";
+        public const string KickGroupMember = $"{Base}/{{ChatId}}/members/{{MemberId}}/kick";
     }
 
     public static class ChatHub

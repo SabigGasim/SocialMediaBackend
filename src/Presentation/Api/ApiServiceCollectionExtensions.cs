@@ -10,6 +10,8 @@ using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
 using SocialMediaBackend.Api.Services;
 using SocialMediaBackend.Modules.Chat.Application.Hubs;
+using SocialMediaBackend.Modules.Chat.Infrastructure;
+using SocialMediaBackend.BuildingBlocks.Application;
 
 namespace SocialMediaBackend.Api;
 
@@ -68,6 +70,7 @@ public static class ApiServiceCollectionExtensions
             .AddHttpContextAccessor()
             .AddSingleton<IUserIdProvider, UserIdProvider>()
             .AddSingleton<IRealtimeMessageSender<ChatHub>, RealtimeMessageSender<ChatHub>>()
+            .AddSingleton<IHubConnectionTracker, InMemoryHubConnectionTracker>()
             ;
 
         List <Assembly> applicationAssemblies =
@@ -79,6 +82,11 @@ public static class ApiServiceCollectionExtensions
 
         services.Scan(s => s.FromAssemblies(applicationAssemblies)
             .AddClasses(c => c.AssignableTo(typeof(IDomainEventNotification<>)))
+            .AsImplementedInterfaces()
+            .WithTransientLifetime());
+
+        services.Scan(s => s.FromAssemblies(applicationAssemblies)
+            .AddClasses(c => c.AssignableTo(typeof(IRealtimeSideEffect<>)))
             .AsImplementedInterfaces()
             .WithTransientLifetime());
 
