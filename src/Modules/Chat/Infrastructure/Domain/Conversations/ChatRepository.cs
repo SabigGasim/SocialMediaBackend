@@ -262,4 +262,48 @@ internal class ChatRepository(IDbConnectionFactory factory) : IChatRepository
                 cancellationToken: ct));
         }
     }
+
+    public async Task<IEnumerable<GroupMessageDto>> GetAllGroupChatMessages(ChatterId chatterId, GroupChatId groupChatId, int page, int pageSize, CancellationToken ct)
+    {
+        const string sql = $"""
+            SELECT
+              gm."Id"        AS "MessageId",
+              gm."SenderId"  AS "SenderId",
+              gm."Text"      AS "Text",
+              gm."SentAt"    AS "SentAt"
+            FROM {Schema.Chat}."GroupMessage" gm
+
+            -- find the UserGroupChat record for this chatter + chat
+            JOIN {Schema.Chat}."UserGroupChats" ugc
+              ON ugc."ChatterId"   = @{nameof(chatterId)}
+             AND ugc."GroupChatId" = @{nameof(groupChatId)}
+
+            -- ensure the message actually belongs to that user's chat-view
+            JOIN {Schema.Chat}."UserGroupMessages" ugm
+              ON ugm."GroupMessageId" = gm."Id"
+             AND ugm."UserGroupChatId" = ugm."Id"
+
+            WHERE gm."GroupChatId" = @{nameof(groupChatId)}
+            ORDER BY gm."Id"
+            LIMIT  @{nameof(pageSize)}
+            OFFSET @OFFSET;
+            """;
+
+        var parameters = new
+        {
+            chatterId = chatterId.Value,
+            groupChatId = groupChatId.Value,
+            pageSize,
+            OFFSET = (page - 1) * pageSize
+        };
+
+        using (var connection = await _factory.CreateAsync(ct))
+        {
+            var messages = await connection.QueryAsync<GroupMessageDto>(new CommandDefinition(
+                sql, parameters, cancellationToken: ct)
+                );
+
+            return messages;
+        }
+    }
 }

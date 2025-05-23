@@ -22,4 +22,5 @@ public interface IChatRepository
     Task<string?> GetReceiverIdAsync(DirectChatId chatId, ChatterId senderId, CancellationToken ct = default);
     Task MarkDirectMessageAsSeenAsync(DirectChatId chatId, DirectMessageId lastSeenMessageId);
     Task<IEnumerable<string>> GetJoinedUserGroupChats(ChatterId chatterId, CancellationToken ct = default);
+    Task<IEnumerable<GroupMessageDto>> GetAllGroupChatMessages(ChatterId chatterId, GroupChatId groupChatId, int page, int pageSize, CancellationToken ct);
 }
