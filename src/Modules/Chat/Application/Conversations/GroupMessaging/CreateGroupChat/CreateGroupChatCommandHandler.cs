@@ -23,7 +23,7 @@ public class CreateGroupChatCommandHandler(ChatDbContext context)
             .ToArray();
 
         var members = await _context.Chatters
-            .Where(x => x.Id == ownerId || requestedMemberIds.Contains(ownerId))
+            .Where(x => x.Id == ownerId || requestedMemberIds.Contains(x.Id))
             .ToArrayAsync(ct);
 
         var groupChat = GroupChat.Create(ownerId, command.GroupName, members.Select(x => x.Id));
