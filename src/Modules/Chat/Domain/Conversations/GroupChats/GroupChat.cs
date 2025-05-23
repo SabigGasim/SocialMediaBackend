@@ -39,7 +39,6 @@ public class GroupChat : AggregateRoot<GroupChatId>
     }
 
     public string Name { get; private set; } = default!;
-
     public IReadOnlyCollection<GroupChatMember> Members => _chatters.AsReadOnly();
     public IReadOnlyCollection<GroupMessage> Messages => _messages.AsReadOnly();
 
@@ -62,5 +61,22 @@ public class GroupChat : AggregateRoot<GroupChatId>
         this.AddDomainEvent(new GroupMessageCreatedDomainEvent(this.Id, message.Id));
 
         return message;
+    }
+
+    public bool DeleteMessage(GroupMessageId messageId)
+    {
+        var message = _messages.Find(x => x.Id == messageId);
+        if (message is null)
+        {
+            return false;
+        }
+
+        CheckRule(new MessageMustBeSentAtMostFourHoursAgoToBeDeletedForEveryoneRule(message.SentAt));
+
+        _messages.Remove(message);
+
+        this.AddDomainEvent(new GroupMessageDeletedDomainEvent(messageId));
+
+        return true;
     }
 }
