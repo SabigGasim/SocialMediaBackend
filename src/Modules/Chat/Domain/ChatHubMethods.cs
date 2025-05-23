@@ -8,4 +8,5 @@ public static class ChatHubMethods
     public const string UserDisconnected = "UserDisconnected";
     public const string ReceiveGroupChatCreated = "ReceiveGroupChatCreated";
     public const string ReceiveGroupMessage = "ReceiveGroupMessage";
+    public const string DeleteGroupMessage = "DeleteGroupMessage";
 }
