@@ -116,17 +116,17 @@ internal class ChatRepository(IDbConnectionFactory factory) : IChatRepository
                 WHERE "FirstChatterId" = @ChatterId OR "SecondChatterId" = @ChatterId
             ),
             GroupChatMembers AS (
-                SELECT DISTINCT "Member"."ChatterId"
-                FROM {Schema.Chat}."GroupChat_Chatters" AS "Member"
-                INNER JOIN {Schema.Chat}."GroupChat_Chatters" AS "Target"
+                SELECT DISTINCT "Member"."MemberId"
+                FROM {Schema.Chat}."GroupChatMembers" AS "Member"
+                INNER JOIN {Schema.Chat}."GroupChatMembers" AS "Target"
                     ON "Member"."GroupChatId" = "Target"."GroupChatId"
-                WHERE "Target"."ChatterId" = @ChatterId
-                  AND "Member"."ChatterId" != @ChatterId
+                WHERE "Target"."MemberId" = @ChatterId
+                  AND "Member"."MemberId" != @ChatterId
             )
             SELECT DISTINCT "ChatterId"::TEXT
             FROM DirectChatMembers
             UNION
-            SELECT DISTINCT "ChatterId"::TEXT
+            SELECT DISTINCT "MemberId"::TEXT
             FROM GroupChatMembers;
             """;
 
