@@ -34,7 +34,26 @@ public class ChatHub : Hub<IChatHub>
 
         await Clients.Users(users).UserConnected(chatterId.Value);
 
+        var groups = await _chatRepository.GetJoinedUserGroupChats(chatterId);
+
+        await Task.WhenAll(
+            groups.Select(x => Groups.AddToGroupAsync(Context.ConnectionId, x, Context.ConnectionAborted))
+        );
+
         await _chatterRepository.SetOnlineStatus(chatterId, true);
+    }
+
+    public async Task JoinGroup(Guid groupChatId)
+    {
+        var chatterId = new ChatterId(Guid.Parse(Context.UserIdentifier!));
+        var groupId = new GroupChatId(groupChatId);
+
+        var handler = _scope.Resolve<IAuthorizationHandler<GroupChat, GroupChatId>>();
+
+        if (await handler.AuthorizeAsync(chatterId, groupId, Context.ConnectionAborted))
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupChatId.ToString(), Context.ConnectionAborted);
+        }
     }
 
     public async Task DirectChatNotifyTyping(Guid chatId, bool isTyping)
