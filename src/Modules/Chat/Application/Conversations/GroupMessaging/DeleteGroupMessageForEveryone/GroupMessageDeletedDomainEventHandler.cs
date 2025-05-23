@@ -1,0 +1,4 @@
+﻿namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.DeleteGroupMessageForEveryone;
+internal class GroupMessageDeletedDomainEventHandler
+{
+}

@@ -1,7 +1,7 @@
 ﻿using FastEndpoints;
 using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Modules.Chat.Application.Contracts;
-using SocialMediaBackend.Modules.Chat.Application.DirectMessaging.GetAllDirectMessages;
+using SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.GetAllDirectMessages;
 
 namespace SocialMediaBackend.Api.Modules.Chat.Endpoints;
 

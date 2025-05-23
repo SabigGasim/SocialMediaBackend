@@ -1,7 +1,7 @@
 ﻿using FastEndpoints;
 using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Modules.Chat.Application.Contracts;
-using SocialMediaBackend.Modules.Chat.Application.GroupMessaging.DeleteGroupMessageForMe;
+using SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.DeleteGroupMessageForMe;
 
 namespace SocialMediaBackend.Api.Modules.Chat.Endpoints;
 

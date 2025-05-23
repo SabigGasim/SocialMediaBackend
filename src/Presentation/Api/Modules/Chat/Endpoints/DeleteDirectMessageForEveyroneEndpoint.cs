@@ -2,7 +2,7 @@
 using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Api.Services;
 using SocialMediaBackend.Modules.Chat.Application.Contracts;
-using SocialMediaBackend.Modules.Chat.Application.DirectMessaging.DeleteDirectMessageForEveryone;
+using SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.DeleteDirectMessageForEveryone;
 using SocialMediaBackend.Modules.Chat.Application.Hubs;
 
 namespace SocialMediaBackend.Api.Modules.Chat.Endpoints;

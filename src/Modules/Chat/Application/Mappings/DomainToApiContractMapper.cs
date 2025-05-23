@@ -1,11 +1,10 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.Modules.Chat.Application.Chatters.GetAllChatters;
 using SocialMediaBackend.Modules.Chat.Application.Chatters.GetChatter;
-using SocialMediaBackend.Modules.Chat.Application.DirectMessaging.CreateDirectChat;
-using SocialMediaBackend.Modules.Chat.Application.DirectMessaging.CreateDirectMessage;
-using SocialMediaBackend.Modules.Chat.Application.DirectMessaging.SendDirectMessage;
-using SocialMediaBackend.Modules.Chat.Application.GroupMessaging.CreateGroupChat;
-using SocialMediaBackend.Modules.Chat.Application.GroupMessaging.CreateGroupMessage;
+using SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.CreateDirectChat;
+using SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.CreateDirectMessage;
+using SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.CreateGroupChat;
+using SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.CreateGroupMessage;
 using SocialMediaBackend.Modules.Chat.Domain;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
