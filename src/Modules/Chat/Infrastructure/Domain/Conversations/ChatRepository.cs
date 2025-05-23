@@ -35,6 +35,24 @@ internal class ChatRepository(IDbConnectionFactory factory) : IChatRepository
         }
     }
 
+    public async Task<IEnumerable<string>> GetJoinedUserGroupChats(ChatterId chatterId, CancellationToken ct = default)
+    {
+        const string sql = $"""
+            SELECT "GroupChatId"::TEXT
+            FROM {Schema.Chat}."UserGroupChats"
+            WHERE "ChatterId" = @ChatterId
+              AND "IsJoined" = TRUE;
+            """;
+
+        using (var connection = await _factory.CreateAsync(ct))
+        {
+            return await connection.QueryAsync<string>(new CommandDefinition(sql, new
+            {
+                ChatterId = chatterId.Value
+            }, cancellationToken: ct));
+        }
+    }
+
     public async Task<IEnumerable<DirectMessageDto>> GetAllDirectChatMessages(
         ChatterId chatterId, 
         DirectChatId directChatId,
