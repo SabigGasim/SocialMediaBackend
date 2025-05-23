@@ -1,10 +1,13 @@
 ﻿using Autofac;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using SocialMediaBackend.BuildingBlocks.Infrastructure;
+using SocialMediaBackend.Modules.Chat.Application.Auth;
 using SocialMediaBackend.Modules.Chat.Application.DirectMessaging.MarkDirectMessageAsSeen;
 using SocialMediaBackend.Modules.Chat.Application.Helpers;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
+using SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
 using SocialMediaBackend.Modules.Chat.Domain.Messages.DirectMessages;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Chatters;
@@ -28,6 +31,10 @@ public class ChatHub : Hub<IChatHub>
 
     public override async Task OnConnectedAsync()
     {
+        var connectionTracker = _scope.Resolve<IHubConnectionTracker>();
+
+        await connectionTracker.AddConnectionAsync(Context.UserIdentifier!, Context.ConnectionId);
+
         var chatterId = new ChatterId(Guid.Parse(Context.UserIdentifier!));
 
         var users = await _chatRepository.GetChattersWithDirectOrGroupChatWith(chatterId);
@@ -93,6 +100,10 @@ public class ChatHub : Hub<IChatHub>
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
+        var connectionTracker = _scope.Resolve<IHubConnectionTracker>();
+        
+        await connectionTracker.RemoveConnectionAsync(Context.UserIdentifier!, Context.ConnectionId);
+
         var chatterId = new ChatterId(Guid.Parse(Context.UserIdentifier!));
 
         var users = await _chatRepository.GetChattersWithDirectOrGroupChatWith(chatterId);
