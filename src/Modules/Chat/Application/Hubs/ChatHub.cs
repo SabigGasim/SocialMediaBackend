@@ -21,19 +21,19 @@ public class ChatHub : Hub<IChatHub>
     private readonly IChatterRepository _chatterRepository;
     private readonly IChatRepository _chatRepository;
     private readonly ILifetimeScope _scope;
+    private readonly IHubConnectionTracker _connectionTracker;
 
-    public ChatHub()
+    public ChatHub(IHubConnectionTracker hubConnectionTracker)
     {
         _scope = ChatCompositionRoot.BeginLifetimeScope();
         _chatterRepository = _scope.Resolve<IChatterRepository>();
         _chatRepository = _scope.Resolve<IChatRepository>();
+        _connectionTracker = hubConnectionTracker;
     }
 
     public override async Task OnConnectedAsync()
     {
-        var connectionTracker = _scope.Resolve<IHubConnectionTracker>();
-
-        await connectionTracker.AddConnectionAsync(Context.UserIdentifier!, Context.ConnectionId);
+        await _connectionTracker.AddConnectionAsync(Context.UserIdentifier!, Context.ConnectionId);
 
         var chatterId = new ChatterId(Guid.Parse(Context.UserIdentifier!));
 
@@ -43,9 +43,10 @@ public class ChatHub : Hub<IChatHub>
 
         var groups = await _chatRepository.GetJoinedUserGroupChats(chatterId);
 
-        await Task.WhenAll(
-            groups.Select(x => Groups.AddToGroupAsync(Context.ConnectionId, x, Context.ConnectionAborted))
-        );
+        foreach (var group in groups)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, group, Context.ConnectionAborted);
+        }
 
         await _chatterRepository.SetOnlineStatus(chatterId, true);
     }
@@ -100,9 +101,7 @@ public class ChatHub : Hub<IChatHub>
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        var connectionTracker = _scope.Resolve<IHubConnectionTracker>();
-        
-        await connectionTracker.RemoveConnectionAsync(Context.UserIdentifier!, Context.ConnectionId);
+        await _connectionTracker.RemoveConnectionAsync(Context.UserIdentifier!, Context.ConnectionId);
 
         var chatterId = new ChatterId(Guid.Parse(Context.UserIdentifier!));
 

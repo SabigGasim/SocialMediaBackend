@@ -8,7 +8,7 @@ namespace SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
 
 public class GroupChat : AggregateRoot<GroupChatId>
 {
-    private readonly List<GroupChatMember> _chatters = new();
+    private readonly List<GroupChatMember> _members = new();
     private readonly List<GroupMessage> _messages = new();
 
     private GroupChat() { }
@@ -23,11 +23,11 @@ public class GroupChat : AggregateRoot<GroupChatId>
         
         var now = DateTimeOffset.UtcNow;
 
-        _chatters.AddRange(membersIds.Select(x => GroupChatMember.Create(this.Id, x, DateTimeOffset.UtcNow)));
+        _members.AddRange(membersIds.Select(x => GroupChatMember.Create(this.Id, x, DateTimeOffset.UtcNow)));
 
         if (!membersIds.Contains(creatorId))
         {
-            _chatters.Add(GroupChatMember.Create(this.Id, creatorId, DateTimeOffset.UtcNow, Membership.Owner));
+            _members.Add(GroupChatMember.Create(this.Id, creatorId, DateTimeOffset.UtcNow, Membership.Owner));
         }
 
         Created = now;
@@ -39,7 +39,7 @@ public class GroupChat : AggregateRoot<GroupChatId>
     }
 
     public string Name { get; private set; } = default!;
-    public IReadOnlyCollection<GroupChatMember> Members => _chatters.AsReadOnly();
+    public IReadOnlyCollection<GroupChatMember> Members => _members.AsReadOnly();
     public IReadOnlyCollection<GroupMessage> Messages => _messages.AsReadOnly();
 
     public static GroupChat Create(
@@ -78,5 +78,15 @@ public class GroupChat : AggregateRoot<GroupChatId>
         this.AddDomainEvent(new GroupMessageDeletedDomainEvent(messageId));
 
         return true;
+    }
+
+    public void RemoveMember(GroupChatMember kickerMember, GroupChatMember memberToKick)
+    {
+        CheckRule(new ModeratorsCantKickThemselvesRule(kickerMember, memberToKick));
+        CheckRule(new ModeratorMembershipMustBeHigherThanTheMemberToKick(kickerMember, memberToKick));
+
+        _members.Remove(memberToKick);
+
+        this.AddDomainEvent(new GroupMemberKickedDomainEvent(memberToKick.MemberId));
     }
 }

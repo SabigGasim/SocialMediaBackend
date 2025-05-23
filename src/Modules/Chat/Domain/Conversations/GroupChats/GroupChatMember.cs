@@ -4,7 +4,9 @@ namespace SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
 
 public enum Membership
 {
-    Member, Moderator, Owner
+    Member = 0,
+    Moderator = 1,
+    Owner = 2
 }
 
 public class GroupChatMember
