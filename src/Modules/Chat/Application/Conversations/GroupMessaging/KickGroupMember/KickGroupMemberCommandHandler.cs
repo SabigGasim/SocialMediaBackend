@@ -2,6 +2,7 @@
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands.Realtime;
+using SocialMediaBackend.Modules.Chat.Application.Auth;
 using SocialMediaBackend.Modules.Chat.Domain;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
@@ -9,39 +10,35 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.KickGroupMember;
 
-public class KickGroupMemberCommandHandler(ChatDbContext context)
+public class KickGroupMemberCommandHandler(
+    ChatDbContext context,
+    IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler)
     : IGroupCommandHandler<KickGroupMemberCommand, KickGroupMemberMessage>
 {
     private readonly ChatDbContext _context = context;
+    private readonly IAuthorizationHandler<GroupChat, GroupChatId> _authorizationHandler = authorizationHandler;
 
     public async Task<HandlerResponse<GroupResponse<KickGroupMemberMessage>>> ExecuteAsync(KickGroupMemberCommand command, CancellationToken ct)
     {
         var kickerId = new ChatterId(command.UserId);
 
-        var result = await _context.GroupChats
+        if(!await _authorizationHandler.AuthorizeAsync(kickerId, command.GroupChatId, ct))
+        {
+            return ("You're unauthorized to view this group", HandlerResponseStatus.Unauthorized);
+        }
+
+        var groupChat = await _context.GroupChats
             .Include(x => x.Members.Where(x =>
                    x.MemberId == kickerId
                 || x.MemberId == command.ChatterId))
             .Where(x => x.Id == command.GroupChatId)
-            .Select(x => new
-            {
-                Kicker = x.Members.FirstOrDefault(x => x.MemberId == kickerId),
-                ToKick = x.Members.FirstOrDefault(x => x.MemberId == command.ChatterId),
-                GroupChat = x
-            })
-            .FirstOrDefaultAsync(ct);
+            .FirstAsync(ct);
 
-        var error = ValidateKickRequest(result?.GroupChat, result?.Kicker, result?.ToKick, command.ChatterId);
-        if (error is not null)
+        var result = groupChat.KickMember(kickerId, command.ChatterId);
+        if (!result.IsSuccess)
         {
-            return error;
+            return result;
         }
-
-        var groupChat = result!.GroupChat!;
-        var memberToKick = result!.ToKick!;
-        var kickerMember = result!.Kicker!;
-
-        groupChat.KickMember(kickerMember, memberToKick);
 
         var response = new GroupResponse<KickGroupMemberMessage>
         {
@@ -51,26 +48,5 @@ public class KickGroupMemberCommandHandler(ChatDbContext context)
         };
 
         return (response, HandlerResponseStatus.NoContent);
-    }
-
-    private static HandlerResponse<GroupResponse<KickGroupMemberMessage>>? ValidateKickRequest(
-        GroupChat? groupChat,
-        GroupChatMember? kickerMember,
-        GroupChatMember? memberToKick,
-        ChatterId requestedToKickId)
-    {
-        return (groupChat, kickerMember, memberToKick) switch
-        {
-            { groupChat: null } => ("Group chat with the given Id was not found", HandlerResponseStatus.NotFound),
-            { kickerMember: null } => ("You're unauthorized to view this group chat", HandlerResponseStatus.Unauthorized),
-            { memberToKick: null } => ("Member with the given Id was not found", HandlerResponseStatus.NotFound, requestedToKickId.Value),
-            //{ kickerMember: var kicker, memberToKick: var toKick }
-            //  when kicker.MemberId == toKick.MemberId
-            //    => ("You can't kick yourself", HandlerResponseStatus.Conflict),
-            //{ kickerMember: var kicker, memberToKick: var toKick }
-            //  when kicker.Membership <= toKick.Membership
-            //    => ("You can't kick a member that has the same membership as yours or higher", HandlerResponseStatus.Unauthorized),
-            _ => null
-        };
     }
 }

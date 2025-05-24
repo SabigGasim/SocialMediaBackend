@@ -96,14 +96,24 @@ public class GroupChat : AggregateRoot<GroupChatId>
         return true;
     }
 
-    public void KickMember(GroupChatMember kickerMember, GroupChatMember memberToKick)
+    public Result KickMember(ChatterId kickerId, ChatterId targetId)
     {
-        CheckRule(new ModeratorsCantKickThemselvesRule(kickerMember, memberToKick));
-        CheckRule(new ModeratorMembershipMustBeHigherThanTheMemberToKick(kickerMember, memberToKick));
+        var kicker = _members.Find(x => x.MemberId == kickerId);
+        var target = _members.Find(x => x.MemberId == targetId);
 
-        _members.Remove(memberToKick);
+        if (kicker is null || target is null)
+        {
+            return Result.Failure(FailureCode.NotFound, "Kicker", "Target");
+        }
 
-        this.AddDomainEvent(new GroupMemberKickedDomainEvent(memberToKick.MemberId));
+        CheckRule(new ModeratorsCantKickThemselvesRule(kicker, target));
+        CheckRule(new ModeratorMembershipMustBeHigherThanTheMemberToKick(kicker, target));
+
+        _members.Remove(target);
+
+        this.AddDomainEvent(new GroupMemberKickedDomainEvent(kicker.MemberId));
+
+        return Result.Success();
     }
 
     public bool Leave(ChatterId memberId)
