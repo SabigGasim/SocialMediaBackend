@@ -105,4 +105,19 @@ public class GroupChat : AggregateRoot<GroupChatId>
 
         this.AddDomainEvent(new GroupMemberKickedDomainEvent(memberToKick.MemberId));
     }
+
+    public bool Leave(ChatterId memberId)
+    {
+        var member = _members.Find(x => x.MemberId == memberId);
+        if (member is null)
+        {
+            return false;
+        }
+
+        _members.Remove(member);
+
+        this.AddDomainEvent(new GroupChatLeftDomainEvent(this.Id, memberId));
+
+        return true;
+    }
 }
