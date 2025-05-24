@@ -7,7 +7,7 @@ public class ModeratorsCantKickThemselvesRule(GroupChatMember moderator, GroupCh
     private readonly GroupChatMember _moderator = moderator;
     private readonly GroupChatMember _memberToKick = memberToKick;
 
-    public string Message => throw new NotImplementedException();
+    public string Message { get; } = "Moderators can't kick themselves";
 
     public bool IsBroken()
     {

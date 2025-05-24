@@ -130,4 +130,28 @@ public class GroupChat : AggregateRoot<GroupChatId>
 
         return true;
     }
+
+    public Result PromoteMember(ChatterId promoterId, ChatterId targetId, Membership membership)
+    {
+        var promoter = _members.Find(x => x.MemberId == promoterId);
+        var target = _members.Find(x => x.MemberId == targetId);
+
+        if (promoter is null || target is null)
+        {
+            return Result.Failure(FailureCode.NotFound, "Target", "promoter");
+        }
+
+        CheckRule(new MembersCantPromoteThemselvesRule(promoter, target));
+        CheckRule(new PromoterMembershipMustBeHigherThanTargetRule(promoter, target));
+        CheckRule(new TargettedMembershipMustNotExceedPromoterMembershipRule(promoter, membership));
+
+        if (membership == Membership.Owner)
+        {
+            promoter.UpdateMembership(Membership.Moderator);
+        }
+
+        target.UpdateMembership(membership);
+
+        return Result.Success();
+    }
 }
