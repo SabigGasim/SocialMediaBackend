@@ -10,4 +10,5 @@ public static class ChatHubMethods
     public const string ReceiveGroupMessage = "ReceiveGroupMessage";
     public const string DeleteGroupMessage = "DeleteGroupMessage";
     public const string KickGroupMember = "KickGroupMember";
+    public const string ReceiveGroupJoined = "ReceiveGroupJoined";
 }
