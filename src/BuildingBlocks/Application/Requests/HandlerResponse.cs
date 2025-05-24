@@ -1,4 +1,6 @@
-﻿namespace SocialMediaBackend.BuildingBlocks.Application.Requests;
+﻿using SocialMediaBackend.BuildingBlocks.Domain;
+
+namespace SocialMediaBackend.BuildingBlocks.Application.Requests;
 
 public interface IHandlerResponse
 {
@@ -59,6 +61,27 @@ public class HandlerResponse : IHandlerResponse
 
     public static implicit operator HandlerResponse((string message, HandlerResponseStatus responseStatus, object[] parameters) response)
         => CreateError(response.message, response.responseStatus, response.parameters);
+
+    public static implicit operator HandlerResponse(Result result)
+    {
+        var status = MapToHandlerStatus(result.FailureStatusCode);
+
+        if (result.IsSuccess)
+        {
+            return CreateSuccess(status);
+        }
+
+        return (result.Message, status);
+    }
+
+    public static HandlerResponseStatus MapToHandlerStatus(FailureCode failureCode)
+    {
+        return failureCode switch
+        {
+            FailureCode.NotFound => HandlerResponseStatus.NotFound,
+            _ => throw new ArgumentOutOfRangeException(nameof(failureCode)),
+        };
+    }
 }
 
 public sealed class HandlerResponse<TResponse> : HandlerResponse, IHandlerResponse<TResponse>
@@ -101,6 +124,30 @@ public sealed class HandlerResponse<TResponse> : HandlerResponse, IHandlerRespon
 
     public static implicit operator HandlerResponse<TResponse>((string message, HandlerResponseStatus responseStatus) response)
         => HandlerResponse<TResponse>.CreateError(response.message, response.responseStatus);
+
+    public static implicit operator HandlerResponse<TResponse>(Result<TResponse> result)
+    {
+        var status = MapToHandlerStatus(result.FailureStatusCode);
+
+        if (result.IsSuccess)
+        {
+            return CreateSuccess(result.Payload, status);
+        }
+
+        return (result.Message, status);
+    }
+
+    public static implicit operator HandlerResponse<TResponse>(Result result)
+    {
+        if (result.IsSuccess)
+        {
+            throw new InvalidOperationException("Can't map payload-less successful result to a typed HandlerResponse");
+        }
+
+        var status = MapToHandlerStatus(result.FailureStatusCode);
+
+        return (result.Message, status);
+    }
 
     public void Deconstruct(out HandlerResponse response, out TResponse result)
     {
