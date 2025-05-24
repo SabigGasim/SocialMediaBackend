@@ -88,6 +88,10 @@ public static class ApiEndpoints
 
         public const string SetMessageAsRead = $"{Base}/{{ChatId}}/messages/{{MessageId}}";
         public const string KickGroupMember = $"{Base}/{{ChatId}}/members/{{MemberId}}/kick";
+        public const string PromoteMember = $"{Base}/{{ChatId}}/members/{{MemberId}}/promote";
+
+        public const string JoinGroupChat = $"{Base}/{{ChatId}}/join";
+        public const string LeaveGroupChat = $"{Base}/{{ChatId}}/leave";
     }
 
     public static class ChatHub
