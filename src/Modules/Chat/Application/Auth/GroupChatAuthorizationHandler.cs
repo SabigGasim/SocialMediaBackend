@@ -12,14 +12,14 @@ internal class GroupChatAuthorizationHandler(
 {
     private readonly IDbConnectionFactory _factory = factory;
 
-    public async Task<bool> AuthorizeAsync(ChatterId chatterId, GroupChatId resourceId, CancellationToken ct = default)
+    public async Task<bool> AuthorizeAsync(ChatterId memberId, GroupChatId resourceId, CancellationToken ct = default)
     {
         const string sql = $"""
             SELECT EXISTS (
                 SELECT 1
                 FROM {Schema.Chat}."GroupChatMembers"
                 WHERE "GroupChatId" = @GroupChatId
-                  AND "ChatterId" = @ChatterId
+                  AND "MemberId" = @MemberId
             );
             """;
 
@@ -27,8 +27,8 @@ internal class GroupChatAuthorizationHandler(
         {
             return await connection.ExecuteScalarAsync<bool>(new CommandDefinition(sql, new
             {
-                ChatterId = chatterId,
-                GroupChatId = resourceId
+                MemberId = memberId.Value,
+                GroupChatId = resourceId.Value
             }, cancellationToken: ct));
         }
     }
