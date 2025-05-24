@@ -26,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Conversations\GroupMessaging\LeaveGroupChat\" />
     <Folder Include="Conversations\GroupMessaging\PromoteMember\" />
   </ItemGroup>
 
