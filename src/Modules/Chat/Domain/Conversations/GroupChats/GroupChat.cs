@@ -111,7 +111,7 @@ public class GroupChat : AggregateRoot<GroupChatId>
 
         _members.Remove(target);
 
-        this.AddDomainEvent(new GroupMemberKickedDomainEvent(kicker.MemberId));
+        this.AddDomainEvent(new GroupMemberKickedDomainEvent(target.MemberId));
 
         return Result.Success();
     }
