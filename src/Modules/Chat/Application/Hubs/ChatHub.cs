@@ -52,19 +52,6 @@ public class ChatHub : Hub<IChatHub>
         await _chatterRepository.SetOnlineStatus(chatterId, true);
     }
 
-    public async Task JoinGroup(Guid groupChatId)
-    {
-        var chatterId = new ChatterId(Guid.Parse(Context.UserIdentifier!));
-        var groupId = new GroupChatId(groupChatId);
-
-        var handler = _scope.Resolve<IAuthorizationHandler<GroupChat, GroupChatId>>();
-
-        if (await handler.AuthorizeAsync(chatterId, groupId, Context.ConnectionAborted))
-        {
-            await Groups.AddToGroupAsync(Context.ConnectionId, groupChatId.ToString(), Context.ConnectionAborted);
-        }
-    }
-
     public async Task DirectChatNotifyTyping(Guid chatId, bool isTyping)
     {
         var senderId = new ChatterId(Guid.Parse(Context.UserIdentifier!));
@@ -74,11 +61,25 @@ public class ChatHub : Hub<IChatHub>
 
         if (receiverId is null)
         {
-            //TODO: unauthorized
-            Context.Abort();
+            return;
         }
 
         await Clients.User(receiverId!).UpdateDirectChatTypingStatus(chatId, isTyping);
+    }
+
+    public async Task GroupChatNotifyTyping(Guid chatId, bool isTyping)
+    {
+        var senderId = new ChatterId(Guid.Parse(Context.UserIdentifier!));
+        var groupChatId = new GroupChatId(chatId);
+
+        var handler = _scope.Resolve<IAuthorizationHandler<GroupChat, GroupChatId>>();
+        
+        if (!await handler.AuthorizeAsync(senderId, groupChatId))
+        {
+            return;
+        }
+
+        await Clients.OthersInGroup(chatId.ToString()).UpdateGroupChatTypingStatus(chatId, isTyping);
     }
 
     public async Task MarkDirectMessageAsSeen(Guid chatId, Guid lastSeenMessageId, bool isTyping)
