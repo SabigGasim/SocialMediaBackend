@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Chat.Application.Auth;
 using SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.MarkDirectMessageAsSeen;
+using SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.MarkGroupMessagAsSeen;
 using SocialMediaBackend.Modules.Chat.Application.Helpers;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
@@ -96,7 +97,29 @@ public class ChatHub : Hub<IChatHub>
         }
 
         var receiverId = await _chatRepository.GetReceiverIdAsync(directChatId, senderId);
-        await Clients.User(receiverId!).UpdateDirectChatTypingStatus(chatId, isTyping);
+        var message = new MarkDirectMessageAsSeenMessage(chatId, lastSeenMessageId);
+
+        await Clients.User(receiverId!).NotifyDirectMessageSeen(message);
+    }
+
+    public async Task MarkGroupMessageAsSeen(Guid groupId, Guid messageId)
+    {
+        var command = new MarkGroupMessageAsSeenCommand(groupId, messageId);
+
+        var result = await CommandExecutor.ExecuteAsync(command);
+
+        if (!result.IsSuccess)
+        {
+            return;
+        }
+
+        var groupName = groupId.ToString();
+        var message = new MarkGroupMessagAsSeenMessage(
+            groupId, 
+            messageId, 
+            Guid.Parse(Context.UserIdentifier!));
+
+        await Clients.OthersInGroup(groupName).NotifyGroupMessageSeen(message);
     }
 
     public override async Task OnDisconnectedAsync(Exception? exception)
