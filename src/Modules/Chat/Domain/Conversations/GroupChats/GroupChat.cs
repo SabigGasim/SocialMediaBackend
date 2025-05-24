@@ -52,6 +52,22 @@ public class GroupChat : AggregateRoot<GroupChatId>
         return new GroupChat(creatorId, name, memberIds);
     }
 
+    public GroupChatMember? Join(ChatterId memberId)
+    {
+        if (_members.Any(x => x.MemberId == memberId))
+        {
+            return null;
+        }
+
+        var member = GroupChatMember.Create(this.Id, memberId, DateTimeOffset.UtcNow);
+
+        _members.Add(member);
+
+        this.AddDomainEvent(new GroupChatJoinedDomainEvent(this.Id, memberId));
+
+        return member;
+    }
+
     public GroupMessage AddMessage(ChatterId senderId, string text)
     {
         var message = GroupMessage.Create(senderId, this.Id, text, DateTimeOffset.UtcNow);
