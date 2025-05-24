@@ -25,4 +25,9 @@
     <ProjectReference Include="..\Infrastructure\SocialMediaBackend.Modules.Chat.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Conversations\GroupMessaging\LeaveGroupChat\" />
+    <Folder Include="Conversations\GroupMessaging\PromoteMember\" />
+  </ItemGroup>
+
 </Project>

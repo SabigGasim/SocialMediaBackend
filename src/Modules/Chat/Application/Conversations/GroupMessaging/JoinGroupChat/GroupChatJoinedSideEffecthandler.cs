@@ -1,0 +1,31 @@
+﻿using Microsoft.AspNetCore.SignalR;
+using SocialMediaBackend.BuildingBlocks.Application;
+using SocialMediaBackend.BuildingBlocks.Infrastructure;
+using SocialMediaBackend.Modules.Chat.Application.Hubs;
+using SocialMediaBackend.Modules.Chat.Domain;
+
+namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.JoinGroupChat;
+
+public class GroupChatJoinedSideEffecthandler(
+    IHubConnectionTracker connectionTracker,
+    IHubContext<ChatHub> hubContext) : IRealtimeSideEffectHandler<GroupChatJoinedSideEffect>
+{
+    private readonly IHubConnectionTracker _connectionTracker = connectionTracker;
+    private readonly IHubContext<ChatHub> _hubContext = hubContext;
+
+    public async ValueTask Handle(GroupChatJoinedSideEffect notification, CancellationToken cancellationToken)
+    {
+        var message = notification.Message;
+
+        var connections = await _connectionTracker.GetConnectionsAsync(message.MemberId.ToString());
+
+        foreach (var connection in connections)
+        {
+            await _hubContext.Groups.AddToGroupAsync(connection, message.GroupId.ToString(), cancellationToken);
+        }
+
+        await _hubContext.Clients
+            .User(message.MemberId.ToString())
+            .SendAsync(ChatHubMethods.ReceiveGroupJoined, message, cancellationToken);
+    }
+}
