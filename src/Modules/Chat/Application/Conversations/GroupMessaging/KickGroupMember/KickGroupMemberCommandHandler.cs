@@ -41,7 +41,7 @@ public class KickGroupMemberCommandHandler(ChatDbContext context)
         var memberToKick = result!.ToKick!;
         var kickerMember = result!.Kicker!;
 
-        groupChat.RemoveMember(kickerMember, memberToKick);
+        groupChat.KickMember(kickerMember, memberToKick);
 
         var response = new GroupResponse<KickGroupMemberMessage>
         {

@@ -80,7 +80,7 @@ public class GroupChat : AggregateRoot<GroupChatId>
         return true;
     }
 
-    public void RemoveMember(GroupChatMember kickerMember, GroupChatMember memberToKick)
+    public void KickMember(GroupChatMember kickerMember, GroupChatMember memberToKick)
     {
         CheckRule(new ModeratorsCantKickThemselvesRule(kickerMember, memberToKick));
         CheckRule(new ModeratorMembershipMustBeHigherThanTheMemberToKick(kickerMember, memberToKick));
