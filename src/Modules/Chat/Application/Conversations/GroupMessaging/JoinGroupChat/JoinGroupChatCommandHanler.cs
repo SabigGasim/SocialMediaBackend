@@ -27,13 +27,13 @@ public class JoinGroupChatCommandHanler(ChatDbContext context)
             return ("Group with the given Id was not found", HandlerResponseStatus.NotFound, command.GroupChatId.Value);
         }
 
-        var member = group.Join(chatterId);
-        if (member is null)
+        var result = group.Join(chatterId);
+        if (!result.IsSuccess)
         {
-            return ("This group chat is already joined", HandlerResponseStatus.Conflict, command.GroupChatId.Value);
+            return result;
         }
 
-        _context.Add(member);
+        _context.Add(result.Payload);
 
         var response = new GroupResponse<GroupChatJoinedMessage>
         {

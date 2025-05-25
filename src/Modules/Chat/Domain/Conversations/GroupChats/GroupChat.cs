@@ -52,11 +52,11 @@ public class GroupChat : AggregateRoot<GroupChatId>
         return new GroupChat(creatorId, name, memberIds);
     }
 
-    public GroupChatMember? Join(ChatterId memberId)
+    public Result<GroupChatMember> Join(ChatterId memberId)
     {
         if (_members.Any(x => x.MemberId == memberId))
         {
-            return null;
+            return Result<GroupChatMember>.FailureWithMessage(FailureCode.Conflict, "Member is already joined");
         }
 
         var member = GroupChatMember.Create(this.Id, memberId, DateTimeOffset.UtcNow);
@@ -79,12 +79,12 @@ public class GroupChat : AggregateRoot<GroupChatId>
         return message;
     }
 
-    public bool DeleteMessage(GroupMessageId messageId)
+    public Result DeleteMessage(GroupMessageId messageId)
     {
         var message = _messages.Find(x => x.Id == messageId);
         if (message is null)
         {
-            return false;
+            return Result.Failure(FailureCode.NotFound, "Message");
         }
 
         CheckRule(new MessageMustBeSentAtMostFourHoursAgoToBeDeletedForEveryoneRule(message.SentAt));
@@ -93,7 +93,7 @@ public class GroupChat : AggregateRoot<GroupChatId>
 
         this.AddDomainEvent(new GroupMessageDeletedDomainEvent(messageId));
 
-        return true;
+        return Result.Success();
     }
 
     public Result KickMember(ChatterId kickerId, ChatterId targetId)
@@ -116,19 +116,19 @@ public class GroupChat : AggregateRoot<GroupChatId>
         return Result.Success();
     }
 
-    public bool Leave(ChatterId memberId)
+    public Result Leave(ChatterId memberId)
     {
         var member = _members.Find(x => x.MemberId == memberId);
         if (member is null)
         {
-            return false;
+            return Result.FailureWithMessage(FailureCode.Conflict, "User is not a member of this group");
         }
 
         _members.Remove(member);
 
         this.AddDomainEvent(new GroupChatLeftDomainEvent(this.Id, memberId));
 
-        return true;
+        return Result.Success();
     }
 
     public Result PromoteMember(ChatterId promoterId, ChatterId targetId, Membership membership)
