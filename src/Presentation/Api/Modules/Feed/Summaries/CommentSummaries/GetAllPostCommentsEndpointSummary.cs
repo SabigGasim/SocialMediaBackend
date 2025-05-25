@@ -12,7 +12,6 @@ public class GetAllPostCommentsEndpointSummary : Summary<GetAllPostCommentsEndpo
         Description = "Fetches a paginated list of comments associated with the specified post.";
         Response<GetAllPostCommentsResponse>(200, "Comments retrieved successfully.");
         Response<ErrorResponse>(404, "Post or comment was not found.");
-        Response<ErrorResponse>(401, "Unauthorized access. User must be logged in to view comments.");
         Response<ErrorResponse>(403, "Forbidden access. User does not have permission to view comments on this post.");
     }
 }

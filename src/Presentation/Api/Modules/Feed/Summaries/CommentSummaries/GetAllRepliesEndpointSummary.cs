@@ -12,7 +12,6 @@ public class GetAllRepliesEndpointSummary : Summary<GetAllRepliesEndpoint>
         Description = "Retrieves all replies to a specific comment, including pagination support.";
         Response<GetAllRepliesResponse>(200, "Replies retrieved successfully");
         Response<ErrorResponse>(404, "Comment not found");
-        Response<ErrorResponse>(401, "User is not authenticated.");
         Response<ErrorResponse>(403, "User is not authorized to view this comment.");
     }
 }
