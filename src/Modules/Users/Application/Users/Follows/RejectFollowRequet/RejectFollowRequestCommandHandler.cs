@@ -22,7 +22,7 @@ public class RejectFollowRequestCommandHandler(UsersDbContext context)
 
         var rejected = user.RejectPendingFollowRequest(command.UserToRejectId);
         if (!rejected)
-            return ("User with the given Id did not send a follow request", HandlerResponseStatus.Conflict, command.UserToRejectId);
+            return ("User with the given Id did not send a follow request", HandlerResponseStatus.NotFound, command.UserToRejectId);
 
         return HandlerResponseStatus.Deleted;
     }
