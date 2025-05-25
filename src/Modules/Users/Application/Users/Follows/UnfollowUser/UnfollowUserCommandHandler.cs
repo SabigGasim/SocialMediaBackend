@@ -21,7 +21,7 @@ public class UnfollowUserCommandHandler(UsersDbContext context) : ICommandHandle
         var followed = user.Unfollow(command.UserToUnfollow);
 
         if (!followed)
-            return ("User with the given Id isn't followed", HandlerResponseStatus.Conflict, command.UserToUnfollow);
+            return ("User with the given Id isn't followed", HandlerResponseStatus.NoContent, command.UserToUnfollow);
 
         return HandlerResponseStatus.Deleted;
     }
