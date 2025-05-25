@@ -4,7 +4,7 @@ using SocialMediaBackend.Modules.Feed.Application.Posts.GetPost;
 
 namespace SocialMediaBackend.Api.Modules.Feed.Summaries.PostSummaries;
 
-public class GetPostEndpointSummary : Summary<GetPostEndpoints>
+public class GetPostEndpointSummary : Summary<GetPostEndpoint>
 {
     public GetPostEndpointSummary()
     {

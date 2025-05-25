@@ -1,7 +1,7 @@
 ﻿using FastEndpoints;
 using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Modules.Users.Application.Contracts;
-using SocialMediaBackend.Modules.Users.Application.Users.Follows.RejectFollowRequet;
+using SocialMediaBackend.Modules.Users.Application.Users.Follows.RejectFollowRequest;
 
 namespace SocialMediaBackend.Api.Modules.Users.Endpoints.Users.Follows;
 

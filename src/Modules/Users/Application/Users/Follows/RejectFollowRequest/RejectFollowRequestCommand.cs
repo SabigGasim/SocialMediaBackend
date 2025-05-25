@@ -2,7 +2,7 @@
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 
-namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.RejectFollowRequet;
+namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.RejectFollowRequest;
 public class RejectFollowRequestCommand(Guid userToRejectId) : CommandBase, IUserRequest
 {
     public UserId UserToRejectId { get; } = new(userToRejectId);

@@ -16,6 +16,6 @@ public class AcceptFollowRequestEndpoint(IUsersModule module) : RequestEndpoint<
 
     public override Task HandleAsync(AcceptFollowRequestRequest req, CancellationToken ct)
     {
-        return HandleCommandAsync(new AcceptFollowRequetCommand(req.UserId), ct);
+        return HandleCommandAsync(new AcceptFollowRequestCommand(req.UserId), ct);
     }
 }

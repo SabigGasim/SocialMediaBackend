@@ -6,7 +6,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Domain.Posts;
 namespace SocialMediaBackend.Api.Modules.Feed.Endpoints.Posts;
 
 [FastEndpoints.HttpGet(ApiEndpoints.Posts.GetAll)]
-public class GetAllPostsEndpoints(IFeedModule module) : RequestEndpoint<GetAllPostsRequest, GetAllPostsResponse>(module)
+public class GetAllPostsEndpoint(IFeedModule module) : RequestEndpoint<GetAllPostsRequest, GetAllPostsResponse>(module)
 {
     public override Task HandleAsync(GetAllPostsRequest req, CancellationToken ct)
     {

@@ -7,11 +7,11 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.AcceptFollowRequest;
 
-public class AcceptFollowRequetCommandHandler(UsersDbContext context) : ICommandHandler<AcceptFollowRequetCommand>
+public class AcceptFollowRequestCommandHandler(UsersDbContext context) : ICommandHandler<AcceptFollowRequestCommand>
 {
     private readonly UsersDbContext _context = context;
 
-    public async Task<HandlerResponse> ExecuteAsync(AcceptFollowRequetCommand command, CancellationToken ct)
+    public async Task<HandlerResponse> ExecuteAsync(AcceptFollowRequestCommand command, CancellationToken ct)
     {
         var user = await _context.Users
             .Include(x => x.Followers)

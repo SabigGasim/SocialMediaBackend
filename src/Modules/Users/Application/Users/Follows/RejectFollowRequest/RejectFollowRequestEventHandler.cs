@@ -2,7 +2,7 @@
 using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
 using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
-namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.RejectFollowRequet;
+namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.RejectFollowRequest;
 
 public class RejectFollowRequestEventHandler(UsersDbContext context)
     : FollowUserEventHandlerBase<FollowRequestRejectedEvent>(context)
