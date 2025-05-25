@@ -21,7 +21,7 @@ public class AcceptFollowRequetCommandHandler(UsersDbContext context) : ICommand
         var accepted = user.AcceptPendingFollowRequest(command.UserToAcceptId);
         if (!accepted)
         {
-            return ("User with the given Id didn't request a follow", HandlerResponseStatus.Conflict, command.UserToAcceptId);
+            return ("User with the given Id didn't request a follow", HandlerResponseStatus.NotFound, command.UserToAcceptId);
         }
 
         return HandlerResponseStatus.NoContent;
