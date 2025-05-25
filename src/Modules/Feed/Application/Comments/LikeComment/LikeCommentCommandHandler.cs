@@ -31,11 +31,13 @@ internal class LikeCommentCommandHandler(
         if (!authorized)
             return ("The author limits who can view their comments", HandlerResponseStatus.Unauthorized, comment.AuthorId);
 
-        var like = comment.AddLike(new(command.UserId));
-        if (like is null)
-            return ("User already liked this comment", HandlerResponseStatus.Conflict, comment.AuthorId);
+        var result = comment.AddLike(new(command.UserId));
+        if (!result.IsSuccess)
+        {
+            return result;
+        }
 
-        _context.Add(like);
+        _context.Add(result.Payload);
 
         return HandlerResponseStatus.Created;
     }

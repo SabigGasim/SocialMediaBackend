@@ -54,11 +54,11 @@ public class Comment : AggregateRoot<CommentId>, IUserResource
         return reply;
     }
 
-    public CommentLike? AddLike(AuthorId userId)
+    public Result<CommentLike> AddLike(AuthorId userId)
     {
         if (_likes.Any(x => x.UserId == userId))
         {
-            return null;
+            return Result<CommentLike>.FailureWithMessage(FailureCode.Duplicate, "Comment is already liked");
         }
 
         var like = CommentLike.Create(userId, Id);
@@ -68,38 +68,38 @@ public class Comment : AggregateRoot<CommentId>, IUserResource
         return like;
     }
 
-    public bool RemoveLike(AuthorId userId)
+    public Result RemoveLike(AuthorId userId)
     {
         var like = _likes.Find(x => x.UserId == userId);
         if (like is null)
-            return false;
+        {
+            return Result.FailureWithMessage(FailureCode.NotFound, "This comment is not liked");
+        }
 
         _likes.Remove(like);
         LikesCount--;
 
-        return true;
+        return Result.Success();
     }
 
-    public bool RemoveReply(CommentId replyId)
+    public Result RemoveReply(CommentId replyId)
     {
         var reply = _replies.Find(x => x.Id == replyId);
         if (reply is null)
         {
-            return false;
+            return Result.Failure(FailureCode.NotFound, "Reply");
         }
 
         _replies.Remove(reply);
         RepliesCount--;
 
-        return true;
+        return Result.Success();
     }
 
-    public bool Edit(string text)
+    public void Edit(string text)
     {
         Text = text;
         LastModified = TimeProvider.System.GetUtcNow();
-        LastModifiedBy = Id.ToString();
-
-        return true;
+        LastModifiedBy = this.Id.ToString();
     }
 }
