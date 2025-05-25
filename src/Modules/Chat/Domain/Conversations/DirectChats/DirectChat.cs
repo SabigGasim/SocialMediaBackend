@@ -62,12 +62,12 @@ public class DirectChat : AggregateRoot<DirectChatId>
         return message;
     }
 
-    public bool DeleteMessage(DirectMessageId messageId)
+    public Result DeleteMessage(DirectMessageId messageId)
     {
         var message = _messages.Find(x => x.Id == messageId);
         if (message is null)
         {
-            return false;
+            return Result.Failure(FailureCode.NotFound, "Message");
         }
 
         CheckRule(new MessageMustBeSentAtMostOneHourAgoToBeDeletedForEveryoneRule(message.SentAt));
@@ -76,7 +76,7 @@ public class DirectChat : AggregateRoot<DirectChatId>
 
         this.AddDomainEvent(new DirectMessageDeletedDomainEvent(messageId));
 
-        return true;
+        return Result.Success();
     }
 
     public ChatterId GetReceiverId(ChatterId senderId)

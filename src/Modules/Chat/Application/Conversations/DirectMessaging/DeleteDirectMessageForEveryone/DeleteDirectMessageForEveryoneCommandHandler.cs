@@ -43,11 +43,11 @@ public class DeleteDirectMessageForEveryoneCommandHandler
             return ("You're unauthorized to access this chat", HandlerResponseStatus.Unauthorized);
         }
 
-        var deleted = chat.DeleteMessage(command.MessageId);
+        var result = chat.DeleteMessage(command.MessageId);
 
-        if (!deleted)
+        if (!result.IsSuccess)
         {
-            return ("Message with the given Id was not found", HandlerResponseStatus.NotFound, command.MessageId.Value);
+            return result;
         }
 
         var receiverId = chat.GetReceiverId(chatterId);
