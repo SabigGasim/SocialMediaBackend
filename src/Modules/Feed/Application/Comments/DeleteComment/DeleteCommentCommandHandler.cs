@@ -18,31 +18,29 @@ public class DeleteCommentCommandHandler(
 
     public async Task<HandlerResponse> ExecuteAsync(DeleteCommentCommand command, CancellationToken ct)
     {
-        var authorized = await _authorizationHandler
-            .IsAdminOrResourceOwnerAsync(new AuthorId(command.UserId), command.CommentId, new AuthOptions(command.IsAdmin), ct);
+        var authorId = new AuthorId(command.UserId);
+        var commentId = command.CommentId;
+        var postId = command.PostId;
 
-        if (!authorized)
+        if (!await _authorizationHandler.IsAdminOrResourceOwnerAsync(authorId, commentId, new(command.IsAdmin), ct))
         {
             return ("Forbidden", HandlerResponseStatus.Unauthorized);
         }
 
-        var query = _context.Posts
-                .Include(x => x.Comments.Where(p => p.Id == command.CommentId))
-                .Where(x => x.Id == command.PostId)
-                .AsQueryable();
+        var post = await _context.Posts
+            .Include(x => x.Comments.Where(p => p.Id == commentId))
+            .Where(x => x.Id == postId)
+            .FirstOrDefaultAsync(ct);
 
-        var post = await query.FirstOrDefaultAsync(ct);
         if (post is null)
         {
-            return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, command.PostId);
+            return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, postId);
         }
 
-        var removed = post.RemoveComment(command.CommentId);
-        if (!removed)
-        {
-            return ("Comment with the given Id was not found", HandlerResponseStatus.NotFound, command.CommentId);
-        }
+        var result = post.RemoveComment(commentId);
 
-        return HandlerResponseStatus.NoContent;
+        return result.IsSuccess
+            ? HandlerResponseStatus.NoContent
+            : result;
     }
 }

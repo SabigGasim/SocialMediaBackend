@@ -25,19 +25,24 @@ public class LikePostCommandHandler(
             .FirstOrDefaultAsync(ct);
 
         if (post is null)
+        {
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, command.PostId);
+        }
 
-        var authorized = await _authorizationHandler
-            .AuthorizeAsync(new AuthorId(command.UserId), command.PostId, new AuthOptions(command.IsAdmin), ct);
+        var authorId = new AuthorId(command.UserId);
 
-        if (!authorized)
+        if (!await _authorizationHandler.AuthorizeAsync(authorId, command.PostId, new(command.IsAdmin), ct))
+        {
             return ("The author limits who can view their posts", HandlerResponseStatus.Unauthorized, post.AuthorId);
+        }
 
-        var like = post.AddLike(new(command.UserId));
-        if (like is null)
-            return ("User already liked this post", HandlerResponseStatus.Conflict, post.AuthorId);
+        var result = post.AddLike(new(command.UserId));
+        if (!result.IsSuccess)
+        {
+            return result;
+        }
 
-        _context.Add(like);
+        _context.Add(result.Payload);
 
         return HandlerResponseStatus.Created;
     }

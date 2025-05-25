@@ -57,19 +57,27 @@ public class Author : AggregateRoot<AuthorId>
         return new Author(authorId, username, nickname, profilePicture, profileIsPublic, followersCount, followingCount);
     }
 
-    public Post? AddPost(string? text = null, IEnumerable<Media>? mediaItems = null)
+    public Result<Post> AddPost(string? text = null, IEnumerable<Media>? mediaItems = null)
     {
-        var post = Post.Create(Id, text, mediaItems as List<Media> ?? mediaItems?.ToList());
-        if (post is null)
-            return null;
+        var result = Post.Create(Id, text, mediaItems as List<Media> ?? mediaItems?.ToList());
+        if (result.IsSuccess)
+        {
+            _posts.Add(result.Payload);
+        }
 
-        _posts.Add(post);
-        return post;
+        return result;
     }
 
-    public bool RemovePost(PostId postId)
+    public Result RemovePost(PostId postId)
     {
         var post = _posts.Find(x => x.Id == postId)!;
-        return _posts.Remove(post);
+        if (post is null)
+        {
+            return Result.Failure(FailureCode.NotFound, "Post");
+        }
+
+        _posts.Remove(post);
+
+        return Result.Success();
     }
 }

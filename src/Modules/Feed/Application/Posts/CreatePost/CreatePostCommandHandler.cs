@@ -16,11 +16,13 @@ public class CreatePostCommandHandler(FeedDbContext context) : ICommandHandler<C
     {
         var user = await _context.Authors.FindAsync([new AuthorId(command.UserId)], ct);
 
-        var post = user!.AddPost(command.Text, command.MediaItems.Select(x => Media.Create(x)));
-        if (post is null)
+        var result = user!.AddPost(command.Text, command.MediaItems.Select(x => Media.Create(x)));
+        if (!result.IsSuccess)
         {
-            return ("An error occured while creating the post", HandlerResponseStatus.InternalError);
+            return result;
         }
+
+        var post = result.Payload;
 
         _context.Posts.Add(post);
 

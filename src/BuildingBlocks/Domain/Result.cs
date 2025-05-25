@@ -57,10 +57,13 @@ public class Result<T> : Result
 
     private Result(FailureCode code, string[] objects) : base(code, objects) { }
 
+    private Result(FailureCode code, string message) : base(code, message) { }
+
     public T Payload { get; } = default!;
 
     public static Result<T> Success(T payload) => new(payload);
     public new static Result<T> Failure(FailureCode code, params string[] objects) => new(code, objects);
+    public new static Result<T> FailureWithMessage(FailureCode code, string message) => new(code, message);
 
     public static implicit operator Result<T>(T payload) => new(payload);
 }

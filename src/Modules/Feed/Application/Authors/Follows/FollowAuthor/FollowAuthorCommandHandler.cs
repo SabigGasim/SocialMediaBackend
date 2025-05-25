@@ -45,7 +45,6 @@ public class FollowAuthorCommandHandler(IDbConnectionFactory factory): ICommandH
                 WHERE "Id" = @{nameof(parameters.FollowerId)};
             
             COMMIT;
-
             """;
 
         using (var connection = await _factory.CreateAsync())

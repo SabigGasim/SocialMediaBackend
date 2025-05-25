@@ -39,20 +39,22 @@ public class Post : AggregateRoot<PostId>, IUserResource
     public IReadOnlyCollection<Comment> Comments => _comments.AsReadOnly();
     public IReadOnlyCollection<Media> MediaItems => _mediaItems.AsReadOnly();
 
-    public static Post? Create(AuthorId authorId, string? text = null, IEnumerable<Media>? mediaItems = null)
+    public static Result<Post> Create(AuthorId authorId, string? text = null, IEnumerable<Media>? mediaItems = null)
     {
         CheckRule(new PostShouldHaveTextOrMediaRule(text, mediaItems));
 
         return new Post(authorId, text, mediaItems);
     }
 
-    public bool UpdatePost(string text)
+    public Result UpdatePost(string text)
     {
+        CheckRule(new PostShouldHaveTextOrMediaRule(text, _mediaItems));
+
         Text = text;
         LastModified = TimeProvider.System.GetUtcNow();
         LastModifiedBy = Id.ToString();
 
-        return true;
+        return Result.Success();
     }
 
     public Comment AddComment(string text, AuthorId authorId)
@@ -65,43 +67,47 @@ public class Post : AggregateRoot<PostId>, IUserResource
         return comment;
     }
 
-    public bool RemoveComment(CommentId commentId)
+    public Result RemoveComment(CommentId commentId)
     {
         var comment = _comments.FirstOrDefault(x => x.Id == commentId);
         if (comment is null)
         {
-            return false;
+            return Result.Failure(FailureCode.NotFound, "Comment");
         }
 
         _comments.Remove(comment);
 
-        AddDomainEvent(new CommentDeletedEvent(commentId));
+        this.AddDomainEvent(new CommentDeletedEvent(commentId));
 
-        return true;
+        return Result.Success();
     }
 
-    public PostLike? AddLike(AuthorId authorId)
+    public Result<PostLike> AddLike(AuthorId authorId)
     {
         if (_likes.Any(l => l.UserId == authorId))
-            return null;
+        {
+            return Result<PostLike>.FailureWithMessage(FailureCode.Duplicate, "Post is already liked");
+        }
 
-        var postLike = PostLike.Create(authorId, Id);
-        _likes.Add(postLike);
+        var like = PostLike.Create(authorId, Id);
+        
+        _likes.Add(like);
         LikesCount++;
 
-        return postLike;
+        return like;
     }
 
-    public bool RemoveLike(AuthorId authorId)
+    public Result RemoveLike(AuthorId authorId)
     {
-        var postLike = _likes.Find(l => l.UserId == authorId);
+        var like = _likes.Find(l => l.UserId == authorId);
+        if (like is null)
+        {
+            return Result.FailureWithMessage(FailureCode.NotFound, "Post is not liked");
+        }
 
-        if (postLike is null)
-            return false;
-
-        _likes.Remove(postLike);
+        _likes.Remove(like);
         LikesCount--;
 
-        return true;
+        return Result.Success();
     }
 }

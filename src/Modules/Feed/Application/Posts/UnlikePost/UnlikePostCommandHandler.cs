@@ -19,12 +19,14 @@ public class UnlikePostCommandHandler(FeedDbContext context) : ICommandHandler<U
             .FirstOrDefaultAsync(ct);
 
         if (comment is null)
+        {
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, command.PostId);
+        }
 
-        var removed = comment.RemoveLike(new AuthorId(command.UserId));
-        if (!removed)
-            return ("User with the given Id didn't like this post", HandlerResponseStatus.Conflict, command.UserId);
+        var result = comment.RemoveLike(new AuthorId(command.UserId));
 
-        return HandlerResponseStatus.Deleted;
+        return result.IsSuccess 
+            ? HandlerResponseStatus.Deleted
+            : result;
     }
 }

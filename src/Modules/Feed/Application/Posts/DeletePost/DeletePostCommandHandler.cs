@@ -46,12 +46,10 @@ public class DeletePostCommandHandler(
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, command.PostId);
         }
 
-        var removed = user.RemovePost(command.PostId);
-        if (!removed)
-        {
-            return ("Post with the given Id was not found or is not associated with the given user", HandlerResponseStatus.NotFound, command.PostId);
-        }
+        var result = user.RemovePost(command.PostId);
 
-        return HandlerResponseStatus.NoContent;
+        return result.IsSuccess
+            ? HandlerResponseStatus.NoContent
+            : result;
     }
 }
