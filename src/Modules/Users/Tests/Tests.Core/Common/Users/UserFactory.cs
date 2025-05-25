@@ -19,7 +19,9 @@ public static class UserFactory
         var service = GetUserExistsService(userExistsChecker);
 
         username = username ?? TextHelper.CreateRandom(8);
-        var user = await User.CreateAsync(username, nickname, dateOfBirth, service, Media.Create(Media.DefaultProfilePicture.Url), ct);
+        var result = await User.CreateAsync(username, nickname, dateOfBirth, service, Media.Create(Media.DefaultProfilePicture.Url), ct);
+
+        var user = result.Payload;
 
         user.ChangeProfilePrivacy(isPublic);
         user.ClearDomainEvents();

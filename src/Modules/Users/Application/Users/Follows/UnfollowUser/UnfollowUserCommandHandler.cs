@@ -18,10 +18,12 @@ public class UnfollowUserCommandHandler(UsersDbContext context) : ICommandHandle
             .Include(u => u.Followings)
             .FirstAsync(x => x.Id == new UserId(command.UserId), ct);
 
-        var followed = user.Unfollow(command.UserToUnfollow);
+        var result = user.Unfollow(command.UserToUnfollow);
 
-        if (!followed)
-            return ("User with the given Id isn't followed", HandlerResponseStatus.NoContent, command.UserToUnfollow);
+        if (!result.IsSuccess)
+        {
+            return result;
+        }
 
         return HandlerResponseStatus.Deleted;
     }

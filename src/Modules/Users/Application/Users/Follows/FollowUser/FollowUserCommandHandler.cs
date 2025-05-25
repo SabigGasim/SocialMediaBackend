@@ -23,12 +23,14 @@ public class FollowUserCommandHandler(UsersDbContext context) : ICommandHandler<
             return ("User with the given Id was not found", HandlerResponseStatus.NotFound, command.UserToFollowId);
         }
 
-        var follow = userToFollow.FollowOrRequestFollow(new(command.UserId));
-        if (follow is null)
+        var result = userToFollow.FollowOrRequestFollow(new(command.UserId));
+        if (!result.IsSuccess)
         {
-            return ("User is already followed", HandlerResponseStatus.Conflict, command.UserToFollowId);
+            return result;
         }
-        
+
+        var follow = result.Payload;
+
         _context.Add(follow);
         
         return (follow.MapToFollowResponse(), HandlerResponseStatus.Created);

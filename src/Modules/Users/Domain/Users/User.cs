@@ -50,7 +50,7 @@ public class User : AggregateRoot<UserId>
     public IReadOnlyCollection<Follow> Followings => _followings.AsReadOnly();
 
 
-    public static async Task<User> CreateAsync(string username, string nickname, DateOnly dateOfBirth, 
+    public static async Task<Result<User>> CreateAsync(string username, string nickname, DateOnly dateOfBirth, 
         IUserExistsChecker userExistsChecker,
         Media? profilePicture = null,
         CancellationToken ct = default)
@@ -62,12 +62,12 @@ public class User : AggregateRoot<UserId>
         return new User(username, nickname, dateOfBirth, pfp);
     }
 
-    public Follow? FollowOrRequestFollow(UserId followerId)
+    public Result<Follow> FollowOrRequestFollow(UserId followerId)
     {
         var followExists = _followers.Any(x => x.FollowerId == followerId);
         if (followExists)
         {
-            return null;
+            return Result<Follow>.Failure(FailureCode.Duplicate, "Follow or follow request");
         }
 
         var follow = ProfileIsPublic
@@ -75,104 +75,97 @@ public class User : AggregateRoot<UserId>
             : Follow.CreateFollowRequest(followerId, this.Id);
 
         if(follow.Status == FollowStatus.Following)
+        {
             this.AddDomainEvent(new UserFollowedEvent(follow.FollowerId, follow.FollowingId, follow.FollowedAt));
+        }
 
         _followers.Add(follow);
 
         return follow;
     }
 
-    public bool AcceptFollowRequest(UserId followerId)
-    {
-        var follow = _followers.Find(x => x.FollowerId == followerId);
-        if (follow is null || !follow.AcceptFollowRequest())
-        {
-            return false;
-        }
-
-        this.AddDomainEvent(new FollowRequestAcceptedEvent(follow.FollowerId, follow.FollowingId));
-
-        return true;
-    }
-
-    public bool Unfollow(UserId userToUnfollowId)
+    public Result Unfollow(UserId userToUnfollowId)
     {
         var follow = _followings.Find(x => x.FollowingId == userToUnfollowId);
 
         if(follow is null)
-            return false;
+        {
+            return Result.Failure(FailureCode.NotFound, "Follow");
+        }
 
         _followings.Remove(follow);
 
         this.AddDomainEvent(new UserUnfollowedEvent(this.Id, userToUnfollowId));
-        return true;
+        
+        return Result.Success();
     }
 
     public void IncrementFollowingCount(int amount) => FollowingCount += amount;
     public void IncrementFollowersCount(int amount) => FollowersCount += amount;
 
-    public bool ChangeProfilePrivacy(bool publicProfile)
+    public Result ChangeProfilePrivacy(bool publicProfile)
     {
         if (publicProfile == ProfileIsPublic)
-            return true;
+        {
+            return Result.FailureWithMessage(FailureCode.Duplicate, "Profile is already public");
+        }
 
         ProfileIsPublic = publicProfile;
 
-        var succeded = ProfileIsPublic
-            ? AcceptAllPendingFollowRequests()
-            : true;
+        AcceptAllFollowRequests();
 
-        if (succeded)
-        {
-            this.AddDomainEvent(new UserInfoUpdatedDomainEvent(this));
-        }
+        this.AddDomainEvent(new UserInfoUpdatedDomainEvent(this));
 
-        return succeded;
+        return Result.Success();
     }
 
-    public bool RejectPendingFollowRequest(UserId userToRejectId)
+    public Result RejectPendingFollowRequest(UserId userToRejectId)
     {
         var follow = _followers.Find(x => x.FollowerId == userToRejectId);
-        if(follow is null) 
-            return false;
+        if(follow is null)
+        {
+            return Result.Failure(FailureCode.NotFound, "Follow request");
+        }
 
         _followers.Remove(follow);
+        
         this.AddDomainEvent(new FollowRequestRejectedEvent(userToRejectId, this.Id));
 
-        return true;
+        return Result.Success();
     }
 
-    public bool AcceptPendingFollowRequest(UserId userToAcceptId)
+    public Result AcceptFollowRequest(UserId userToAcceptId)
     {
-        var followRequest = _followers.Find(x => x.FollowerId == userToAcceptId);
-        if (followRequest is null)
-            return false;
+        var follow = _followers.Find(x => x.FollowerId == userToAcceptId);
+        if (follow is null)
+        {
+            return Result.Failure(FailureCode.NotFound, "Follow request");
+        }
 
-        var accepted = followRequest.AcceptFollowRequest();
-        if(!accepted)
-            return false;
+        var result = follow.AcceptFollowRequest();
+        if (result.IsSuccess)
+        {
+            this.AddDomainEvent(new FollowRequestAcceptedEvent(follow.FollowerId, follow.FollowingId));
+        }
 
-        this.AddDomainEvent(new FollowRequestAcceptedEvent(userToAcceptId, this.Id));
-        return true;
+        return result;
     }
 
-    public bool AcceptAllPendingFollowRequests()
+    private void AcceptAllFollowRequests()
     {
         foreach (var follow in _followers.Where(x => x.Status == FollowStatus.Pending))
         {
             follow.AcceptFollowRequest();
             this.AddDomainEvent(new FollowRequestAcceptedEvent(follow.FollowerId, follow.FollowingId));
         }
-
-        return true;
     }
 
-    public async Task<bool> ChangeUsernameAsync(string username, IUserExistsChecker userExistsChecker,
+    public async Task<Result> ChangeUsernameAsync(string username, IUserExistsChecker userExistsChecker,
         CancellationToken ct = default)
     {
         if(Username == username)
         {
-            return false;
+            return Result.FailureWithMessage(FailureCode.Duplicate, $"Username is already {username}");
         }
 
         await CheckRuleAsync(new UsernameShouldBeUniqueRule(userExistsChecker, username), ct);
@@ -180,20 +173,20 @@ public class User : AggregateRoot<UserId>
         Username = username;
         this.AddDomainEvent(new UserInfoUpdatedDomainEvent(this));
 
-        return true;
+        return Result.Success();
     }
 
-    public bool ChangeNickname(string nickname)
+    public Result ChangeNickname(string nickname)
     {
         if (Nickname == nickname)
         {
-            return false;
+            return Result.FailureWithMessage(FailureCode.NotFound, $"Nickname is already {nickname}");
         }
 
         Nickname = nickname;
         this.AddDomainEvent(new UserInfoUpdatedDomainEvent(this));
 
-        return true;
+        return Result.Success();
     }
 
     public void Delete()

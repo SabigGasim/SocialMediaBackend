@@ -3,7 +3,9 @@ namespace SocialMediaBackend.BuildingBlocks.Domain;
 
 public enum FailureCode
 {
-    NotFound = 404
+    NotFound = 1,
+    Duplicate = 2,
+    Conflict = 3,
 }
 
 public class Result
@@ -17,12 +19,20 @@ public class Result
         Message = GetErrorMessage(code, objects);
     }
 
+    protected Result(FailureCode code, string message)
+    {
+        IsSuccess = false;
+        FailureStatusCode = code;
+        Message = message;
+    }
+
     public bool IsSuccess { get; }
     public FailureCode FailureStatusCode { get; }
-    public string Message { get; private set; } = default!;
+    public string? Message { get; private set; }
 
     public static Result Success() => new();
     public static Result Failure(FailureCode code, params string[] objects) => new(code, objects);
+    public static Result FailureWithMessage(FailureCode code, string message) => new(code, message);
 
     private static string GetErrorMessage(FailureCode code, string[] objects)
     {
@@ -31,6 +41,7 @@ public class Result
         return code switch
         {
             FailureCode.NotFound => $"{string.Join(", ", objects)} {(plural ? "was" : "were")} not found",
+            FailureCode.Duplicate => $"{string.Join(", ", objects)} already exist{(plural ? "" : "s")}",
             _ => throw new ArgumentOutOfRangeException(nameof(code))
         };
     }
@@ -46,8 +57,10 @@ public class Result<T> : Result
 
     private Result(FailureCode code, string[] objects) : base(code, objects) { }
 
+    public T Payload { get; } = default!;
+
     public static Result<T> Success(T payload) => new(payload);
     public new static Result<T> Failure(FailureCode code, params string[] objects) => new(code, objects);
 
-    public T Payload { get; } = default!;
+    public static implicit operator Result<T>(T payload) => new(payload);
 }

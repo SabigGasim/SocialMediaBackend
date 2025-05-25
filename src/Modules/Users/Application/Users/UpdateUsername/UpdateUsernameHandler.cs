@@ -26,10 +26,10 @@ public class UpdateUsernameHandler : ICommandHandler<UpdateUsernameCommand>
             return ("No user exists with the given Id", HandlerResponseStatus.NotFound, command.UserId);
         }
 
-        var usernameIsModified = await user.ChangeUsernameAsync(command.Username, _userExistsChecker, ct);
-        if(!usernameIsModified)
+        var result = await user.ChangeUsernameAsync(command.Username, _userExistsChecker, ct);
+        if(!result.IsSuccess)
         {
-            return ("Username was not modified", HandlerResponseStatus.BadRequest, command.Username);
+            return result;
         }
 
         await _context.SaveChangesAsync(ct);

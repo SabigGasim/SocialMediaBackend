@@ -23,13 +23,19 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Creat
 
     public async Task<HandlerResponse<CreateUserResponse>> ExecuteAsync(CreateUserCommand command, CancellationToken ct)
     {
-        var user = await User.CreateAsync(command.Username, command.Nickname, command.DateOfBirth,
-            _userExistsChecker, command.ProfilePicture, ct);
+        var result = await User.CreateAsync(
+            command.Username, 
+            command.Nickname, 
+            command.DateOfBirth,
+            _userExistsChecker, 
+            command.ProfilePicture, ct);
 
-        if(user is null)
+        if (!result.IsSuccess)
         {
-            return ("User was not created", HandlerResponseStatus.BadRequest, command);
+            return result;
         }
+
+        var user = result.Payload;
 
         _context.Users.Add(user);
 

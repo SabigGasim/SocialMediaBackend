@@ -18,10 +18,10 @@ public class AcceptFollowRequestCommandHandler(UsersDbContext context) : IComman
             .ThenInclude(x => x.Follower)
             .FirstAsync(x => x.Id == new UserId(command.UserId), ct);
 
-        var accepted = user.AcceptPendingFollowRequest(command.UserToAcceptId);
-        if (!accepted)
+        var result = user.AcceptFollowRequest(command.UserToAcceptId);
+        if (!result.IsSuccess)
         {
-            return ("User with the given Id didn't request a follow", HandlerResponseStatus.NotFound, command.UserToAcceptId);
+            return result;
         }
 
         return HandlerResponseStatus.NoContent;

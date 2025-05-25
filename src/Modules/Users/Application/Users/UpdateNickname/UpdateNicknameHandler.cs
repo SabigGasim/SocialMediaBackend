@@ -6,27 +6,18 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.UpdateNickname;
 
-public class UpdateNicknameHandler : ICommandHandler<UpdateNicknameCommand>
+public class UpdateNicknameHandler(UsersDbContext context) : ICommandHandler<UpdateNicknameCommand>
 {
-    private readonly UsersDbContext _context;
-
-    public UpdateNicknameHandler(UsersDbContext context)
-    {
-        _context = context;
-    }
+    private readonly UsersDbContext _context = context;
 
     public async Task<HandlerResponse> ExecuteAsync(UpdateNicknameCommand command, CancellationToken ct)
     {
         var user = await _context.Users.FindAsync([new UserId(command.UserId)], ct);
-        if (user is null)
-        {
-            return ("No user exists with the given Id", HandlerResponseStatus.NotFound, command.UserId);
-        }
 
-        var nicknameIsModified = user.ChangeNickname(command.Nickname);
-        if(!nicknameIsModified)
+        var result = user!.ChangeNickname(command.Nickname);
+        if(!result.IsSuccess)
         {
-            return ("Nickname was not modified", HandlerResponseStatus.BadRequest, command.Nickname);
+            return result;
         }
 
         await _context.SaveChangesAsync(ct);

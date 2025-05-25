@@ -71,7 +71,7 @@ public class HandlerResponse : IHandlerResponse
             return CreateSuccess(status);
         }
 
-        return (result.Message, status);
+        return (result.Message!, status);
     }
 
     public static HandlerResponseStatus MapToHandlerStatus(FailureCode failureCode)
@@ -79,6 +79,7 @@ public class HandlerResponse : IHandlerResponse
         return failureCode switch
         {
             FailureCode.NotFound => HandlerResponseStatus.NotFound,
+            FailureCode.Duplicate or FailureCode.Conflict => HandlerResponseStatus.Conflict,
             _ => throw new ArgumentOutOfRangeException(nameof(failureCode)),
         };
     }
@@ -134,7 +135,7 @@ public sealed class HandlerResponse<TResponse> : HandlerResponse, IHandlerRespon
             return CreateSuccess(result.Payload, status);
         }
 
-        return (result.Message, status);
+        return (result.Message!, status);
     }
 
     public static implicit operator HandlerResponse<TResponse>(Result result)
@@ -146,7 +147,7 @@ public sealed class HandlerResponse<TResponse> : HandlerResponse, IHandlerRespon
 
         var status = MapToHandlerStatus(result.FailureStatusCode);
 
-        return (result.Message, status);
+        return (result.Message!, status);
     }
 
     public void Deconstruct(out HandlerResponse response, out TResponse result)

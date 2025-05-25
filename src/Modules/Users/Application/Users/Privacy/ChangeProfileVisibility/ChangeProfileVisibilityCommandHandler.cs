@@ -19,7 +19,11 @@ public class ChangeProfileVisibilityCommandHandler(UsersDbContext context)
             .Include(x => x.Followers.Where(x => x.Status == FollowStatus.Pending))
             .FirstAsync(x => x.Id == new UserId(command.UserId), ct);
 
-        user.ChangeProfilePrivacy(command.IsPublic);
+        var result = user.ChangeProfilePrivacy(command.IsPublic);
+        if (!result.IsSuccess)
+        {
+            return result;
+        }
 
         return HandlerResponseStatus.NoContent;
     }

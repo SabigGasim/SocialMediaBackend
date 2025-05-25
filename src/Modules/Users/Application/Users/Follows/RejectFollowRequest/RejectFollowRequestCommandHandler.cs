@@ -19,9 +19,11 @@ public class RejectFollowRequestCommandHandler(UsersDbContext context)
             .Include(x => x.Followers.Where(f => f.Status == FollowStatus.Pending))
             .FirstAsync(x => x.Id == new UserId(command.UserId), ct);
 
-        var rejected = user.RejectPendingFollowRequest(command.UserToRejectId);
-        if (!rejected)
-            return ("User with the given Id did not send a follow request", HandlerResponseStatus.NotFound, command.UserToRejectId);
+        var result = user.RejectPendingFollowRequest(command.UserToRejectId);
+        if (!result.IsSuccess)
+        {
+            return result;
+        }
 
         return HandlerResponseStatus.Deleted;
     }

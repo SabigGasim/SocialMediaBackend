@@ -10,6 +10,7 @@ using SocialMediaBackend.Modules.Users.Tests.Core.Common;
 using SocialMediaBackend.Modules.Users.Tests.Core.Common.Users;
 using SocialMediaBackend.Modules.Feed.Domain.Follows;
 using SocialMediaBackend.Modules.Chat.Domain.Follows;
+using SocialMediaBackend.BuildingBlocks.Domain;
 
 namespace SocialMediaBackend.Modules.Users.Tests.UnitTests.Domain;
 
@@ -29,9 +30,13 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         checker.CheckAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(false);
 
         //Act
-        var user = await User.CreateAsync(username, nickname, dateOfBirth, checker, profilePicture, ct: TestContext.Current.CancellationToken);
+        var result = await User.CreateAsync(username, nickname, dateOfBirth, checker, profilePicture, ct: TestContext.Current.CancellationToken);
 
         //Assert
+        result.IsSuccess.ShouldBeTrue();
+
+        var user = result.Payload;
+
         user.Username.ShouldBe(username);
         user.Nickname.ShouldBe(nickname);
         user.DateOfBirth.ShouldBe(dateOfBirth);
@@ -59,9 +64,13 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         var user = await UserFactory.CreateAsync(isPublic: true, ct: TestContext.Current.CancellationToken);
 
         //Act
-        var follow = user.FollowOrRequestFollow(follower.Id);
+        var result = user.FollowOrRequestFollow(follower.Id);
 
         //Assert
+        result.IsSuccess.ShouldBeTrue();
+
+        var follow = result.Payload;
+
         follow.ShouldNotBeNull();
         follow.FollowerId.ShouldBe(follower.Id);
         follow.FollowingId.ShouldBe(user.Id);
@@ -88,10 +97,10 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         user.ClearDomainEvents();
 
         //Act
-        var follow = user.FollowOrRequestFollow(follower.Id);
+        var result = user.FollowOrRequestFollow(follower.Id);
 
         //Assert
-        follow.ShouldBeNull();
+        result.IsSuccess.ShouldBeFalse();
         user.DomainEvents?.ShouldBeEmpty();
     }
 
@@ -103,10 +112,13 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         var user = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
 
         //Act
-        var follow = user.FollowOrRequestFollow(follower.Id);
+        var result = user.FollowOrRequestFollow(follower.Id);
 
         //Assert
-        follow.ShouldNotBeNull();
+        result.IsSuccess.ShouldBeTrue();
+        
+        var follow = result.Payload;
+
         follow.Status.ShouldBe(FollowStatus.Pending);
         follow.FollowerId.ShouldBe(follower.Id);
         follow.FollowingId.ShouldBe(user.Id);
@@ -150,10 +162,10 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         //Act
-        var accepted = user.AcceptFollowRequest(randomUserId);
+        var result = user.AcceptFollowRequest(randomUserId);
 
         //Assert
-        accepted.ShouldBeFalse();
+        result.IsSuccess.ShouldBeFalse();
         user.DomainEvents.ShouldBeNull();
     }
 
@@ -201,7 +213,7 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         var result = follower.Unfollow(user.Id);
 
         // Assert
-        result.ShouldBeTrue();
+        result.IsSuccess.ShouldBeTrue();
         follower.Followings.Any(f => f.FollowingId == user.Id)
             .ShouldBeFalse();
         follower.DomainEvents!.Count.ShouldBe(1);
@@ -220,10 +232,10 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         var randomUserId = UserId.New();
 
         //Act
-        var accepted = user.Unfollow(randomUserId);
+        var result = user.Unfollow(randomUserId);
 
         //Assert
-        accepted.ShouldBeFalse();
+        result.IsSuccess.ShouldBeFalse();
         user.DomainEvents.ShouldBeNull();
     }
 
@@ -240,7 +252,7 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         var result = user.RejectPendingFollowRequest(follower.Id);
 
         // Assert
-        result.ShouldBeTrue();
+        result.IsSuccess.ShouldBeTrue();
         user.Followers.Any(f => f.FollowerId == follower.Id)
             .ShouldBeFalse();
         user.DomainEvents!.Count.ShouldBe(1);
@@ -259,10 +271,10 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         var randomUserId = UserId.New();
 
         //Act
-        var accepted = user.RejectPendingFollowRequest(randomUserId);
+        var result = user.RejectPendingFollowRequest(randomUserId);
 
         //Assert
-        accepted.ShouldBeFalse();
+        result.IsSuccess.ShouldBeFalse();
         user.DomainEvents.ShouldBeNull();
     }
 
@@ -279,7 +291,7 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         var result = await user.ChangeUsernameAsync(username, checker, TestContext.Current.CancellationToken);
 
         // Assert
-        result.ShouldBeTrue();
+        result.IsSuccess.ShouldBeTrue();
         user.Username.ShouldBe(username);
     }
 
@@ -295,7 +307,7 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         var result = await user.ChangeUsernameAsync(username, Substitute.For<IUserExistsChecker>(), token);
 
         // Assert
-        result.ShouldBeFalse();
+        result.IsSuccess.ShouldBeFalse();
     }
 
     [Fact]
@@ -323,7 +335,7 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         var result = user.ChangeNickname(nickname);
 
         // Assert
-        result.ShouldBeTrue();
+        result.IsSuccess.ShouldBeTrue();
         user.Nickname.ShouldBe(nickname);
     }
 
@@ -338,6 +350,6 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         var result = user.ChangeNickname(nickname);
 
         // Assert
-        result.ShouldBeFalse();
+        result.IsSuccess.ShouldBeFalse();
     }
 }

@@ -39,14 +39,15 @@ public class Follow : Entity<Unit>
         return new Follow(followerId, followingId, FollowStatus.Following);
     }
 
-    internal bool AcceptFollowRequest()
+    internal Result AcceptFollowRequest()
     {
         if (Status == FollowStatus.Pending)
         {
             Status = FollowStatus.Following;
-            return true;
+            
+            return Result.Success();
         }
 
-        return false;
+        return Result.FailureWithMessage(FailureCode.Conflict, "User is already followed");
     }
 }
