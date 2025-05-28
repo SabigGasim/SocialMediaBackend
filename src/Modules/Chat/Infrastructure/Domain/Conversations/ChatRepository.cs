@@ -4,6 +4,7 @@ using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
 using SocialMediaBackend.Modules.Chat.Domain.Messages.DirectMessages;
+using SocialMediaBackend.Modules.Chat.Domain.Messages.GroupMessages;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Conversations;
@@ -175,6 +176,75 @@ internal class ChatRepository(IDbConnectionFactory factory) : IChatRepository
                 ChatId = chatId.Value,
                 LastSeenMessageId = lastSeenMessageId.Value,
                 SeenStatus = MessageStatus.Seen,
+            });
+        }
+    }
+
+    public async Task MarkGroupMessagesAsSeenAsync(GroupChatId chatId, ChatterId chatterId)
+    {
+        const string sql = $"""
+            DO $$
+            BEGIN
+            IF EXISTS (
+                SELECT 1
+                FROM {Schema.Chat}."GroupChatMembers" gcm
+                JOIN {Schema.Chat}."UserGroupChats" ugc
+                    ON ugc."ChatterId" = gcm."ChatterId"
+                   AND ugc."GroupChatId" = gcm."GroupChatId"
+                WHERE gcm."ChatterId" = @ChatterId
+                  AND gcm."GroupChatId" = @GroupChatId
+            ) THEN
+
+                BEGIN;
+
+                INSERT INTO {Schema.Chat}."GroupMessage_SeenBy" ("MessageId", "ChatterId")
+                SELECT gm."Id", @ChatterId
+                FROM {Schema.Chat}."GroupMessages" gm
+                JOIN {Schema.Chat}."GroupChatMembers" gcm
+                    ON gcm."ChatterId" = @ChatterId
+                   AND gcm."GroupChatId" = @GroupChatId
+                JOIN {Schema.Chat}."UserGroupChats" ugc
+                    ON ugc."ChatterId" = @ChatterId
+                   AND ugc."GroupChatId" = @GroupChatId
+                WHERE gm."GroupChatId" = @GroupChatId
+                  AND (
+                        (
+                            (ugc."LastSeenMessageId" IS NOT NULL AND gm."Id" > ugc."LastSeenMessageId")
+                            OR (ugc."LastSeenMessageId" IS NULL AND gm."SentAt" > gcm."JoinedAt")
+                        )
+                        AND gm."Id" <= ugc."LastReceivedMessageId"
+                  );
+
+                UPDATE {Schema.Chat}."UserGroupChats"
+                SET "LastSeenMessageId" = (
+                    SELECT MAX(gm."Id")
+                    FROM {Schema.Chat}."GroupMessages" gm
+                    JOIN {Schema.Chat}."GroupChatMembers" gcm
+                        ON gcm."ChatterId" = @ChatterId
+                       AND gcm."GroupChatId" = @GroupChatId
+                    JOIN {Schema.Chat}."UserGroupChats" ugc
+                        ON ugc."ChatterId" = @ChatterId
+                       AND ugc."GroupChatId" = @GroupChatId
+                    WHERE gm."GroupChatId" = @GroupChatId
+                      AND gm."SentAt" > gcm."JoinedAt"
+                      AND gm."Id" <= ugc."LastReceivedMessageId"
+                )
+                WHERE "ChatterId" = @ChatterId
+                  AND "GroupChatId" = @GroupChatId;
+
+                COMMIT;
+
+                END IF;
+            END $$;
+            
+            """;
+
+        using (var connection = await _factory.CreateAsync())
+        {
+            await connection.ExecuteAsync(sql, new
+            {
+                GroupChatId = chatId.Value,
+                ChatterId = chatterId.Value
             });
         }
     }
