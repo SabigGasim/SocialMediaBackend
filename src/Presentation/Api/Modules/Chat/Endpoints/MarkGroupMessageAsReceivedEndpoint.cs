@@ -1,9 +1,11 @@
-﻿using SocialMediaBackend.Api.Abstractions;
+﻿using FastEndpoints;
+using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Modules.Chat.Application.Contracts;
 using SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.MarkGroupMessageAsReceived;
 
 namespace SocialMediaBackend.Api.Modules.Chat.Endpoints;
 
+[HttpPost(ApiEndpoints.GroupChat.MarkMessageAsReceived)]
 public class MarkGroupMessageAsReceivedEndpoint(IChatModule module)
     : RequestEndpoint<MarkGroupMessageAsReceivedRequest>(module)
 {
