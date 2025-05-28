@@ -74,7 +74,9 @@ public class ChatHub : Hub<IChatHub>
 
         var handler = _scope.Resolve<IAuthorizationHandler<GroupChat, GroupChatId>>();
         
-        if (!await handler.AuthorizeAsync(senderId, groupChatId))
+        var authorizationResult = await handler.AuthorizeAsync(senderId, groupChatId);
+
+        if (!authorizationResult.IsSuccess)
         {
             return;
         }
