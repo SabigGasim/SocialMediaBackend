@@ -84,7 +84,7 @@ public static class DomainToApiContractMapper
         {
             Method = ChatHubMethods.ReceiveGroupMessage,
             Message = new(message.Id.Value, groupChat.Id.Value, message.SenderId.Value, message.Text, message.SentAt),
-            Payload = new(groupChat.Id.Value),
+            Payload = new(message.Id.Value),
             ReceiverId = groupChat.Members.Select(x => x.MemberId.Value.ToString())
         };
     }

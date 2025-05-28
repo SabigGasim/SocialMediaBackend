@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands.Realtime;
 using SocialMediaBackend.Modules.Chat.Application.Auth;
-using SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.KickGroupMember;
 using SocialMediaBackend.Modules.Chat.Domain;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
@@ -24,9 +22,11 @@ public class PromoteMemberCommandHandler(
     {
         var promoterId = new ChatterId(command.UserId);
 
-        if (!await _authorizationHandler.AuthorizeAsync(promoterId, command.GroupChatId, ct))
+        var authorizationResult = await _authorizationHandler.AuthorizeAsync(promoterId, command.GroupChatId, ct);
+
+        if (!authorizationResult.IsSuccess)
         {
-            return ("You're unauthorized to view this group", HandlerResponseStatus.Unauthorized);
+            return authorizationResult;
         }
 
         var group = await _context.GroupChats

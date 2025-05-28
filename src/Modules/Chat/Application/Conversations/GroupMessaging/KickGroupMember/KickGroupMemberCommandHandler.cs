@@ -22,9 +22,11 @@ public class KickGroupMemberCommandHandler(
     {
         var kickerId = new ChatterId(command.UserId);
 
-        if(!await _authorizationHandler.AuthorizeAsync(kickerId, command.GroupChatId, ct))
+        var authorizationResult = await _authorizationHandler.AuthorizeAsync(kickerId, command.GroupChatId, ct);
+
+        if (!authorizationResult.IsSuccess)
         {
-            return ("You're unauthorized to view this group", HandlerResponseStatus.Unauthorized);
+            return authorizationResult;
         }
 
         var groupChat = await _context.GroupChats

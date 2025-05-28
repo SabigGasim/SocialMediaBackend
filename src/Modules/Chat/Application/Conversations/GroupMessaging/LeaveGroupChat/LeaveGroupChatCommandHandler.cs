@@ -27,10 +27,10 @@ public class LeaveGroupChatCommandHandler(ChatDbContext context)
             return ("Group with the given Id was not found", HandlerResponseStatus.NotFound, command.GroupChatId.Value);
         }
 
-        var success = group.Leave(chatterId);
-        if (!success)
+        var result = group.Leave(chatterId);
+        if (!result.IsSuccess)
         {
-            return ("This group chat is already left", HandlerResponseStatus.Conflict, command.GroupChatId.Value);
+            return result;
         }
 
         var response = new GroupResponse<GroupChatLeftMessage>
