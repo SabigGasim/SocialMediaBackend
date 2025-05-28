@@ -13,4 +13,5 @@ public static class ChatHubMethods
     public const string ReceiveGroupJoined = "ReceiveGroupJoined";
     public const string ReceiveGroupLeft = "ReceiveGroupLeft";
     public const string ReceiveMemberPromoted = "ReceiveMemberPromoted";
+    public const string MarkGroupMessageAsSeen = "MarkGroupMessageAsSeen";
 }
