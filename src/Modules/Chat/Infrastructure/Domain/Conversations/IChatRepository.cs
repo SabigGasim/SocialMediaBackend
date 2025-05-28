@@ -2,6 +2,7 @@
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
 using SocialMediaBackend.Modules.Chat.Domain.Messages.DirectMessages;
+using SocialMediaBackend.Modules.Chat.Domain.Messages.GroupMessages;
 
 namespace SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Conversations;
 
@@ -24,4 +25,5 @@ public interface IChatRepository
     Task<IEnumerable<string>> GetJoinedUserGroupChats(ChatterId chatterId, CancellationToken ct = default);
     Task<IEnumerable<GroupMessageDto>> GetAllGroupChatMessages(ChatterId chatterId, GroupChatId groupChatId, int page, int pageSize, CancellationToken ct);
     Task MarkGroupMessagesAsSeenAsync(GroupChatId chatId, ChatterId chatterId);
+    Task MarkGroupMessageAsReceivedAsync(GroupChatId chatId, ChatterId chatterId, GroupMessageId messageId);
 }

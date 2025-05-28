@@ -180,6 +180,27 @@ internal class ChatRepository(IDbConnectionFactory factory) : IChatRepository
         }
     }
 
+    public async Task MarkGroupMessageAsReceivedAsync(GroupChatId chatId, ChatterId chatterId, GroupMessageId messageId)
+    {
+        const string sql = $"""
+            UPDATE {Schema.Chat}."UserGroupChats"
+            SET "LastReceivedMessageId" = @MessageId
+            WHERE "ChatterId" = @ChatterId
+              AND "GroupChatId" = @GroupChatId
+              AND ( "LastReceivedMessageId" IS NULL OR "LastReceivedMessageId" < @MessageId );
+            """;
+
+        using (var connection = await _factory.CreateAsync())
+        {
+            await connection.ExecuteAsync(sql, new
+            {
+                GroupChatId = chatId.Value,
+                ChatterId = chatterId.Value,
+                MessageId = messageId.Value
+            });
+        }
+    }
+
     public async Task MarkGroupMessagesAsSeenAsync(GroupChatId chatId, ChatterId chatterId)
     {
         const string sql = $"""
