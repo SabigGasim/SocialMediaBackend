@@ -27,6 +27,16 @@ internal class UserGroupChatEntityTypeConfiguration : IEntityTypeConfiguration<U
             .HasForeignKey(x => x.ChatterId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasOne(x => x.LastSeenMessage)
+            .WithMany()
+            .HasForeignKey(x => x.LastSeenMessageId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne(x => x.LastReceivedMessage)
+            .WithMany()
+            .HasForeignKey(x => x.LastReceivedMessageId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         builder.Property(x => x.IsJoined)
             .HasDefaultValue(false);
     }

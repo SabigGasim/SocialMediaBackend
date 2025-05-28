@@ -23,9 +23,13 @@ public class UserGroupChat : AggregateRoot<UserGroupChatId>
     public ChatterId ChatterId { get; private set; } = default!;
     public GroupChatId GroupChatId { get; private set; } = default!;
     public bool IsJoined { get; private set; }
+    public GroupMessageId? LastSeenMessageId { get; private set; } = default!;
+    public GroupMessageId? LastReceivedMessageId { get; private set; } = default!;
 
     public Chatter Chatter { get; private set; } = default!;
     public GroupChat GroupChat { get; private set; } = default!;
+    public GroupMessage? LastSeenMessage { get; private set; } = default!;
+    public GroupMessage? LastReceivedMessage { get; private set; } = default!;
 
     public IReadOnlyCollection<UserGroupMessage>? Messages => _messages?.AsReadOnly();
 

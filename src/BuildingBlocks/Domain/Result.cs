@@ -6,6 +6,7 @@ public enum FailureCode
     NotFound = 1,
     Duplicate = 2,
     Conflict = 3,
+    Forbidden = 4,
 }
 
 public class Result
