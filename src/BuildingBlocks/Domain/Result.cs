@@ -43,6 +43,7 @@ public class Result
         {
             FailureCode.NotFound => $"{string.Join(", ", objects)} {(plural ? "was" : "were")} not found",
             FailureCode.Duplicate => $"{string.Join(", ", objects)} already exist{(plural ? "" : "s")}",
+            FailureCode.Forbidden => $"User is unauthorized to access this {string.Join(", ", objects)}",
             _ => throw new ArgumentOutOfRangeException(nameof(code))
         };
     }
