@@ -10,6 +10,7 @@ using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
 using SocialMediaBackend.Modules.Chat.Domain.Messages.DirectMessages;
+using SocialMediaBackend.Modules.Chat.Domain.Messages.GroupMessages;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Conversations;
@@ -105,24 +106,27 @@ public class ChatHub : Hub<IChatHub>
         await Clients.User(receiverId!).NotifyDirectMessageSeen(message);
     }
 
-    public async Task MarkGroupMessageAsSeen(Guid groupId, Guid messageId)
+    public async Task<Guid> MarkGroupMessageAsSeen(Guid groupId)
     {
-        var command = new MarkGroupMessageAsSeenCommand(groupId, messageId);
+        var command = new MarkGroupMessageAsSeenCommand(groupId);
 
-        var result = await CommandExecutor.ExecuteAsync(command);
+        var result = await CommandExecutor.ExecuteAsync<MarkGroupMessageAsSeenCommand, GroupMessageId?>(command);
 
         if (!result.IsSuccess)
         {
-            return;
+            return Guid.Empty;
         }
-
+        
         var groupName = groupId.ToString();
+        var lastSeenMessageId = result.Payload!.Value;
         var message = new MarkGroupMessagAsSeenMessage(
             groupId, 
-            messageId, 
+            lastSeenMessageId,
             Guid.Parse(Context.UserIdentifier!));
 
         await Clients.OthersInGroup(groupName).NotifyGroupMessageSeen(message);
+
+        return lastSeenMessageId;
     }
 
     public override async Task OnDisconnectedAsync(Exception? exception)
