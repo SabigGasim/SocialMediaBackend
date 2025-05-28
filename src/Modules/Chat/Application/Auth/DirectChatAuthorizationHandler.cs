@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
@@ -20,7 +21,7 @@ internal class DirectChatByIdAuthorizationHandler(IDbConnectionFactory factory)
 {
     private readonly IDbConnectionFactory _factory = factory;
 
-    public async Task<bool> AuthorizeAsync(ChatterId chatterId, DirectChatId chatId, CancellationToken ct = default)
+    public async Task<Result> AuthorizeAsync(ChatterId chatterId, DirectChatId chatId, CancellationToken ct = default)
     {
         const string sql = $"""
             SELECT CASE
@@ -48,7 +49,13 @@ internal class DirectChatByIdAuthorizationHandler(IDbConnectionFactory factory)
                 },
                 cancellationToken: ct));
 
-            return result == ResourceStatus.ExistsAndAuthorized;
+            return result switch
+            {
+                ResourceStatus.DoesntExists => Result.Failure(FailureCode.NotFound, "Direct chat"),
+                ResourceStatus.ExistsAndUnauthorized => Result.Failure(FailureCode.Forbidden, "Direct chat"),
+                ResourceStatus.ExistsAndAuthorized => Result.Success(),
+                _ => throw new NotImplementedException($"Unknown resource status: {result}"),
+            };
         }
     }
 }

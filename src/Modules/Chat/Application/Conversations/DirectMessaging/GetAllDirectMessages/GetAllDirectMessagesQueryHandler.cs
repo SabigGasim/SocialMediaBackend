@@ -1,11 +1,13 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
+using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.Modules.Chat.Application.Auth;
 using SocialMediaBackend.Modules.Chat.Application.Mappings;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Conversations;
+using System.Reflection.Metadata.Ecma335;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.GetAllDirectMessages;
 
@@ -21,9 +23,11 @@ public class GetAllDirectMessagesQueryHandler(
     {
         var chatterId = new ChatterId(query.UserId);
 
-        if (!await _authorizationHandler.AuthorizeAsync(chatterId, query.DirectChatId))
+        var authorizationResult = await _authorizationHandler.AuthorizeAsync(chatterId, query.DirectChatId, ct);
+
+        if (!authorizationResult.IsSuccess)
         {
-            return ("You're unauthorized to access this chat", HandlerResponseStatus.Unauthorized);
+            return authorizationResult;
         }
 
         var messages = await _chatRepository

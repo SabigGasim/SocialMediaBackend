@@ -22,9 +22,11 @@ public class DeleteGroupMessageForEveryoneCommandHandler(
     {
         var chatterId = new ChatterId(command.UserId);
 
-        if (!await _authorizationHandler.AuthorizeAsync(chatterId, command.ChatId, ct))
+        var authorizationResult = await _authorizationHandler.AuthorizeAsync(chatterId, command.ChatId, ct);
+
+        if (!authorizationResult.IsSuccess)
         {
-            return ("You're unauthorized to view this group chat", HandlerResponseStatus.Unauthorized);
+            return authorizationResult;
         }
 
         var chat = await _context.GroupChats

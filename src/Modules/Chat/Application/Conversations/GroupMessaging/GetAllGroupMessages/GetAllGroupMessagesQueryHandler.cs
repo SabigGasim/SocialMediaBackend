@@ -21,9 +21,11 @@ public class GetAllGroupMessagesQueryHandler(
     {
         var chatterId = new ChatterId(query.UserId);
 
-        if (!await _authorizationHandler.AuthorizeAsync(chatterId, query.GroupChatId))
+        var authorizationResult = await _authorizationHandler.AuthorizeAsync(chatterId, query.GroupChatId, ct);
+
+        if (!authorizationResult.IsSuccess)
         {
-            return ("You're unauthorized to access this chat", HandlerResponseStatus.Unauthorized);
+            return authorizationResult;
         }
 
         var messages = await _chatRepository

@@ -22,9 +22,11 @@ public class CreateGroupMessageCommandHandler(
     {
         var senderId = new ChatterId(command.UserId);
 
-        if (!await _authorizationHandler.AuthorizeAsync(senderId, command.ChatId, ct))
+        var authorizationResult = await _authorizationHandler.AuthorizeAsync(senderId, command.ChatId, ct);
+
+        if (!authorizationResult.IsSuccess)
         {
-            return ("You're unauthorized to view this group chat", HandlerResponseStatus.Unauthorized);
+            return authorizationResult;
         }
 
         var groupChat = await _context.GroupChats

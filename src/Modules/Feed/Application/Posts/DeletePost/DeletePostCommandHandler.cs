@@ -18,10 +18,9 @@ public class DeletePostCommandHandler(
 
     public async Task<HandlerResponse> ExecuteAsync(DeletePostCommand command, CancellationToken ct)
     {
-        var authorized = await _authorizationHandler
-            .IsAdminOrResourceOwnerAsync(new AuthorId(command.UserId), command.PostId, new AuthOptions(command.IsAdmin), ct);
+        var authorId = new AuthorId(command.UserId);
 
-        if (!authorized)
+        if (!await _authorizationHandler.IsAdminOrResourceOwnerAsync(authorId, command.PostId, new(command.IsAdmin), ct))
         {
             return ("Forbidden", HandlerResponseStatus.Unauthorized);
         }
@@ -31,18 +30,15 @@ public class DeletePostCommandHandler(
                 .AsQueryable();
 
         query = command.IsAdmin
-            ? query.Where(x => x.Id == new AuthorId(command.UserId) || x.Posts.Any(p => p.Id == command.PostId))
-            : query.Where(x => x.Id == new AuthorId(command.UserId));
+            ? query.Where(x => x.Id == authorId || x.Posts.Any(p => p.Id == command.PostId))
+            : query.Where(x => x.Id == authorId);
 
         var user = await query.FirstOrDefaultAsync(ct);
         if (user is null)
         {
-            // This will only execute if the deleter is not the post owner
-            // AND an admin. If the admin provided an Invalid PostId,
-            // The query will not return the user associated with it
-            // as it runs backwards.
-            // Horrible sql, but the P in EF Core stands for "Performance",
-            // so should we even care? Maybe...
+            // This will only execute if the deleter is an admin That isn't
+            // the resource owner, and has provided an invalid PostId.
+            // (command.IsAdmin && Post.AuthorId != authorId && PostId is doesn't exist)
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, command.PostId);
         }
 

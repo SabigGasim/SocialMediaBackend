@@ -1,4 +1,5 @@
-﻿using SocialMediaBackend.Modules.Chat.Domain.Chatters;
+﻿using SocialMediaBackend.BuildingBlocks.Domain;
+using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Auth;
 
@@ -11,7 +12,7 @@ public interface IAuthorizationHandler<TResource>
 
 public interface IAuthorizationHandler<TResource, TResourceId>
 {
-    Task<bool> AuthorizeAsync(
+    Task<Result> AuthorizeAsync(
         ChatterId chatterId,
         TResourceId resourceId,
         CancellationToken ct = default);

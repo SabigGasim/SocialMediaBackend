@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
@@ -12,7 +13,7 @@ internal class GroupChatAuthorizationHandler(
 {
     private readonly IDbConnectionFactory _factory = factory;
 
-    public async Task<bool> AuthorizeAsync(ChatterId memberId, GroupChatId resourceId, CancellationToken ct = default)
+    public async Task<Result> AuthorizeAsync(ChatterId memberId, GroupChatId resourceId, CancellationToken ct = default)
     {
         const string sql = $"""
             SELECT EXISTS (
@@ -25,11 +26,15 @@ internal class GroupChatAuthorizationHandler(
 
         using (var connection = await _factory.CreateAsync(ct))
         {
-            return await connection.ExecuteScalarAsync<bool>(new CommandDefinition(sql, new
+            var result = await connection.ExecuteScalarAsync<bool>(new CommandDefinition(sql, new
             {
                 MemberId = memberId.Value,
                 GroupChatId = resourceId.Value
             }, cancellationToken: ct));
+
+            return result
+                ? Result.Success()
+                : Result.Failure(FailureCode.Forbidden, "You are not a member of this group chat.");
         }
     }
 }

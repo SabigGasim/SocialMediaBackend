@@ -20,9 +20,11 @@ public class MarkDirectMessageAsSeenCommandHandler(
     {
         var chatterId = new ChatterId(command.UserId);
 
-        if (!await _authorizationHandler.AuthorizeAsync(chatterId, command.DirectChatId))
+        var authorizationResult = await _authorizationHandler.AuthorizeAsync(chatterId, command.DirectChatId);
+
+        if (!authorizationResult.IsSuccess)
         {
-            return ("You're unauthorzied to view this chat", HandlerResponseStatus.Unauthorized);
+            return authorizationResult;
         }
 
         await _chatRepository.MarkDirectMessageAsSeenAsync(command.DirectChatId, command.DirectMessageId);

@@ -57,7 +57,7 @@ public class Author : AggregateRoot<AuthorId>
         return new Author(authorId, username, nickname, profilePicture, profileIsPublic, followersCount, followingCount);
     }
 
-    public Result<Post> AddPost(string? text = null, IEnumerable<Media>? mediaItems = null)
+    public Result<Post> CreatePost(string text, IEnumerable<Media>? mediaItems = null)
     {
         var result = Post.Create(Id, text, mediaItems as List<Media> ?? mediaItems?.ToList());
         if (result.IsSuccess)
