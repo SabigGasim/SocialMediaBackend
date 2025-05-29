@@ -18,44 +18,33 @@ namespace SocialMediaBackend.Modules.Chat.Tests.IntegrationTests.GroupChat;
 public class MessageSentAndReceivedTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 {
     private readonly App _app = app;
+    private static HttpClient _userClient = default!;
+    private static HubConnection _adminHubClient = default!;
+    private static Guid _userId = Guid.Empty;
+    private static readonly SemaphoreSlim _setupLocker = new(1, 1);
+
+    protected override async ValueTask SetupAsync()
+    {
+        await base.SetupAsync();
+
+        await InitializeAsync();
+    }
 
     [Theory]
     [InlineData(1)]
     [InlineData(5)]
     [InlineData(50)]
     [InlineData(1000)]
-    public async Task MessageSentAndReceivedFlow_ShouldWorkAsExpected(int messagesCount)
+    public async Task MessageSentAndReceivedFlow_ShouldWork_WhenAdminReadsMessages_AfterReceivingThemAll(int messagesCount)
     {
-        var userId = Guid.NewGuid();
         var messagesMarkedAsReceived = 0;
         var locker = new SemaphoreSlim(1, 1);
         await locker.WaitAsync(TestContext.Current.CancellationToken);
 
-        // 1. Create a second user and get their token
-        var userToken = await CreateUserAndTokenAsync(userId);
-
-        // 2. Connect both users to the ChatHub & make an http client for second user
-        using var userClient = BuildHttpClient(userToken);
-
-        await using var adminHubClient = BuildSignalRClient(AdminAuthToken);
-        await using var userHubClient = BuildSignalRClient(userToken);
-
-        adminHubClient.On(ChatHubMethods.ReceiveGroupMessage, async (CreateGroupMessageMessage msg) =>
-        {
-            await SendMarkMessageAsReceivedRequest(msg);
-            messagesMarkedAsReceived++;
-            if (messagesMarkedAsReceived == messagesCount)
-            {
-                locker.Release();
-            }
-        });
-
-        await StartHubClients(adminHubClient, userHubClient);
-
-        // 3. Create a group chat between the two users
+        // 1. Create a group chat between the two users
         var createGroupChatReq = new CreateGroupChatRequest(
             Name: "GroupName",
-            Members: [AdminId.Value, userId]);
+            Members: [AdminId.Value, _userId]);
 
         var (groupChatResult, groupChatRespone) = await _app.Client
             .POSTAsync<CreateGroupChatEndpoint,
@@ -64,23 +53,39 @@ public class MessageSentAndReceivedTests(AuthFixture auth, App app) : AppTestBas
 
         groupChatResult.EnsureSuccessStatusCode();
 
-        var groupChatId = groupChatRespone.Id;
+        Guid groupChatId = groupChatRespone.Id;
 
-        // 4. The new user sends messages to the group chat
+        // 2. Subscribe to this group chat via SignalR
+        using var subscription = _adminHubClient.On(ChatHubMethods.ReceiveGroupMessage, async (CreateGroupMessageMessage msg) =>
+        {
+            if (msg.GroupId != groupChatId)
+            {
+                return;
+            }
+
+            await SendMarkMessageAsReceivedRequest(msg);
+            messagesMarkedAsReceived++;
+            if (messagesMarkedAsReceived == messagesCount)
+            {
+                locker.Release();
+            }
+        });
+
+        // 3. The new user sends messages to the group chat
         var sendMessageTasks = Enumerable.Range(0, messagesCount)
-            .Select(i => SendMessageToGroupChat(userClient, groupChatId, $"Message {i}"))
+            .Select(i => SendMessageToGroupChat(_userClient, groupChatId, $"Message {i}"))
             .ToArray();
 
         await Task.WhenAll(sendMessageTasks);
 
-        var lastMessageId = await GetLastMessageId(groupChatId);
+        GroupMessageId lastMessageId = await GetLastMessageId(groupChatId);
 
-        // 5. Admin marks all messages as seen via ChatHub
+        // 4. Admin marks all messages as seen via ChatHub
         await WaitForHubClientToTriggerMessageReceived(locker);
 
-        await adminHubClient.InvokeAsync(ChatHubMethods.MarkGroupMessageAsSeen, groupChatId, TestContext.Current.CancellationToken);
+        await _adminHubClient.InvokeAsync(ChatHubMethods.MarkGroupMessageAsSeen, groupChatId, TestContext.Current.CancellationToken);
 
-        // 6. Assert all messages sent by the other user are marked as received and seen by admin
+        // 5. Assert
         var messages = await GetAllGroupMessages(groupChatId);
 
         foreach (var message in messages)
@@ -166,5 +171,23 @@ public class MessageSentAndReceivedTests(AuthFixture auth, App app) : AppTestBas
         result.Response.EnsureSuccessStatusCode();
 
         return result;
+    }
+
+    private async Task InitializeAsync()
+    {
+        if (_userId == Guid.Empty)
+        {
+            await _setupLocker.WaitAsync(TestContext.Current.CancellationToken);
+            if (_userId == Guid.Empty)
+            {
+                _userId = Guid.NewGuid();
+                var userToken = await CreateUserAndTokenAsync(_userId);
+                _userClient = BuildHttpClient(userToken);
+                _adminHubClient = BuildSignalRClient(AdminAuthToken);
+                await _adminHubClient.StartAsync(TestContext.Current.CancellationToken);
+
+            }
+            _setupLocker.Release();
+        }
     }
 }

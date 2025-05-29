@@ -37,6 +37,7 @@ public abstract class AppTestBase(AuthFixture auth, App app) : TestBase<App>
 
         if (AdminAuthToken is not null)
         {
+            _locker.Release();
             return;
         }
 
