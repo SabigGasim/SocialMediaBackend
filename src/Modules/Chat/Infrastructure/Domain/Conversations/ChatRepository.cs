@@ -225,14 +225,12 @@ internal class ChatRepository(IDbConnectionFactory factory) : IChatRepository
                );
 
             UPDATE {Schema.Chat}."UserGroupChats"
-            SET "LastSeenMessageId" = "LastReceivedMessageId";
+            SET "LastSeenMessageId" = "LastReceivedMessageId"
+            WHERE "ChatterId" = @ChatterId
+              AND "GroupChatId" = @GroupChatId
+            RETURNING "LastSeenMessageId";
 
             COMMIT;
-            
-            SELECT "LastSeenMessageId"
-            FROM {Schema.Chat}."UserGroupChats"
-            WHERE "ChatterId" = @ChatterId
-              AND "GroupChatId" = @GroupChatId;
             """;
 
         using (var connection = await _factory.CreateAsync())
