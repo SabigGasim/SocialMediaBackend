@@ -29,9 +29,7 @@ public class CreateGroupMessageCommandHandler(
             return authorizationResult;
         }
 
-        var groupChat = await _context.GroupChats
-            .Include(x => x.Members)
-            .FirstAsync(ct);
+        var groupChat = await _context.GroupChats.FirstAsync(x => x.Id == command.ChatId, ct);
 
         var message = groupChat.AddMessage(senderId, command.Text);
 
