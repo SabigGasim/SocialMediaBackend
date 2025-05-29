@@ -99,6 +99,74 @@ public class MessageSentAndReceivedTests(AuthFixture auth, App app) : AppTestBas
         adminGroup.LastReceivedMessageId.ShouldBe(lastMessageId);
     }
 
+    [Theory]
+    [InlineData(1)]
+    [InlineData(5)]
+    [InlineData(50)]
+    [InlineData(1000)]
+    public async Task MessageSentAndReceivedFlow_ShouldWork_WhenAdminReadsMessages_RightAfterReceivingAny(int messagesCount)
+    {
+        var messagesMarkedAsReceived = 0;
+        var locker = new SemaphoreSlim(1, 1);
+        await locker.WaitAsync(TestContext.Current.CancellationToken);
+
+        // 1. Create a group chat between the two users
+        var createGroupChatReq = new CreateGroupChatRequest(
+            Name: "GroupName",
+            Members: [AdminId.Value, _userId]);
+
+        var (groupChatResult, groupChatRespone) = await _app.Client
+            .POSTAsync<CreateGroupChatEndpoint,
+                       CreateGroupChatRequest,
+                       CreateGroupChatResponse>(createGroupChatReq);
+
+        groupChatResult.EnsureSuccessStatusCode();
+
+        Guid groupChatId = groupChatRespone.Id;
+
+        // 2. Subscribe to this group chat via SignalR
+        using var subscription = _adminHubClient.On(ChatHubMethods.ReceiveGroupMessage, async (CreateGroupMessageMessage msg) =>
+        {
+            if (msg.GroupId != groupChatId)
+            {
+                return;
+            }
+
+            await SendMarkMessageAsReceivedRequest(msg);
+            await _adminHubClient.InvokeAsync(ChatHubMethods.MarkGroupMessageAsSeen, groupChatId, TestContext.Current.CancellationToken);
+            
+            messagesMarkedAsReceived++;
+            if (messagesMarkedAsReceived == messagesCount)
+            {
+                locker.Release();
+            }
+        });
+
+        // 3. The new user sends messages to the group chat
+        var sendMessageTasks = Enumerable.Range(0, messagesCount)
+            .Select(i => SendMessageToGroupChat(_userClient, groupChatId, $"Message {i}"))
+            .ToArray();
+
+        await Task.WhenAll(sendMessageTasks);
+
+        GroupMessageId lastMessageId = await GetLastMessageId(groupChatId);
+        
+        // 4. Assert
+        await WaitForHubClientToTriggerMessageReceived(locker);
+
+        var messages = await GetAllGroupMessages(groupChatId);
+
+        foreach (var message in messages)
+        {
+            message.SeenBy.Single(x => x.Id == AdminId).ShouldNotBeNull();
+        }
+
+        var adminGroup = await GetAdminGroupChat(groupChatId);
+
+        adminGroup.LastSeenMessageId.ShouldBe(lastMessageId);
+        adminGroup.LastReceivedMessageId.ShouldBe(lastMessageId);
+    }
+
     private static async Task WaitForHubClientToTriggerMessageReceived(SemaphoreSlim locker)
     {
         await locker.WaitAsync(TestContext.Current.CancellationToken);
