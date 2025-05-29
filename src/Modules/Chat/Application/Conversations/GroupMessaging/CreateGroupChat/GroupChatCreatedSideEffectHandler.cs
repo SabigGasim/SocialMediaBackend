@@ -18,12 +18,12 @@ public class GroupChatCreatedSideEffectHandler(
         var groupName = message.Id.ToString();
 
         var connectionTasks = message.Members
-            .Select(x => x.ToString())
-            .Select(x => _connectionTracker.GetConnectionsAsync(x));
+            .Select(x => x.Id.ToString())
+            .Select(_connectionTracker.GetConnectionsAsync);
 
-        var groupTasks = await Task.WhenAll(connectionTasks);
+        var users = await Task.WhenAll(connectionTasks);
 
-        var addTasks = groupTasks
+        var addTasks = users
             .SelectMany(connections => connections)
             .Select(connectionId => _hubContext.Groups.AddToGroupAsync(connectionId, groupName));
 

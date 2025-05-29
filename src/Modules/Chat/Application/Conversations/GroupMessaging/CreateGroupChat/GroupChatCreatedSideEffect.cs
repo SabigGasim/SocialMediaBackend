@@ -1,5 +1,4 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application;
-using SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.CreateGroupMessage;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.CreateGroupChat;
 
