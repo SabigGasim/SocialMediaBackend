@@ -1,19 +1,13 @@
-﻿using System.Text;
-using System.Text.Json;
-using Autofac;
+﻿using Autofac;
 using FastEndpoints;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 using Shouldly;
-using SocialMediaBackend.Api;
 using SocialMediaBackend.Api.Modules.Chat.Endpoints;
-using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
-using SocialMediaBackend.BuildingBlocks.Tests;
 using SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.CreateGroupChat;
 using SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.CreateGroupMessage;
 using SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.MarkGroupMessageAsReceived;
 using SocialMediaBackend.Modules.Chat.Domain;
-using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
 using SocialMediaBackend.Modules.Chat.Domain.Messages.GroupMessages;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration;
@@ -24,29 +18,48 @@ namespace SocialMediaBackend.Modules.Chat.Tests.IntegrationTests.GroupChat;
 public class MessageSentAndReceivedTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 {
     private readonly App _app = app;
-    private readonly AuthFixture _auth = auth;
 
-    [Fact]
-    public async Task MessageSentAndReceivedFlow_WorksAsExpected()
+    [Theory]
+    [InlineData(1)]
+    [InlineData(5)]
+    [InlineData(50)]
+    [InlineData(1000)]
+    public async Task MessageSentAndReceivedFlow_ShouldWorkAsExpected(int messagesCount)
     {
+        var userId = Guid.NewGuid();
+        var messagesMarkedAsReceived = 0;
+        var locker = new SemaphoreSlim(1, 1);
+        await locker.WaitAsync(TestContext.Current.CancellationToken);
+
         // 1. Create a second user and get their token
-        var (userId, userToken) = await CreateUserAndTokenAsync();
+        var userToken = await CreateUserAndTokenAsync(userId);
 
         // 2. Connect both users to the ChatHub & make an http client for second user
         using var userClient = BuildHttpClient(userToken);
 
         await using var adminHubClient = BuildSignalRClient(AdminAuthToken);
         await using var userHubClient = BuildSignalRClient(userToken);
+
+        adminHubClient.On(ChatHubMethods.ReceiveGroupMessage, async (CreateGroupMessageMessage msg) =>
+        {
+            await SendMarkMessageAsReceivedRequest(msg);
+            messagesMarkedAsReceived++;
+            if (messagesMarkedAsReceived == messagesCount)
+            {
+                locker.Release();
+            }
+        });
+
         await StartHubClients(adminHubClient, userHubClient);
 
         // 3. Create a group chat between the two users
         var createGroupChatReq = new CreateGroupChatRequest(
             Name: "GroupName",
-            Members: [AdminId.Value, Guid.Parse(userId)]);
+            Members: [AdminId.Value, userId]);
 
         var (groupChatResult, groupChatRespone) = await _app.Client
             .POSTAsync<CreateGroupChatEndpoint,
-                       CreateGroupChatRequest, 
+                       CreateGroupChatRequest,
                        CreateGroupChatResponse>(createGroupChatReq);
 
         groupChatResult.EnsureSuccessStatusCode();
@@ -54,132 +67,104 @@ public class MessageSentAndReceivedTests(AuthFixture auth, App app) : AppTestBas
         var groupChatId = groupChatRespone.Id;
 
         // 4. The new user sends messages to the group chat
-        GroupMessageId lastMessageId = default!;
-        for (int i = 0; i < 20; i++)
-        {
-            var sendMessageRequest = new SendGroupMessageRequest(groupChatId, $"Message {i + 1}");
-            var (res, rsp) = await userClient
-                .POSTAsync<SendGroupMessageEndpoint, SendGroupMessageRequest, SendGroupMessageResponse>(sendMessageRequest);
+        var sendMessageTasks = Enumerable.Range(0, messagesCount)
+            .Select(i => SendMessageToGroupChat(userClient, groupChatId, $"Message {i}"))
+            .ToArray();
 
-            res.EnsureSuccessStatusCode();
+        await Task.WhenAll(sendMessageTasks);
 
-            lastMessageId = new(rsp.Id);
-        }
+        var lastMessageId = await GetLastMessageId(groupChatId);
 
-        // 5. Admin marks the last received message as received
-        var markReceivedReq = new MarkGroupMessageAsReceivedRequest(groupChatId, lastMessageId.Value);
-        var markReceivedResp = await _app.Client
-            .POSTAsync<MarkGroupMessageAsReceivedEndpoint, MarkGroupMessageAsReceivedRequest>(markReceivedReq);
+        // 5. Admin marks all messages as seen via ChatHub
+        await WaitForHubClientToTriggerMessageReceived(locker);
 
-        markReceivedResp.EnsureSuccessStatusCode();
-
-        // 6. Assert UserGroupChat.LastReceivedMessageId is set for admin
-        using (var scope = ChatCompositionRoot.BeginLifetimeScope())
-        {
-            var db = scope.Resolve<ChatDbContext>();
-            var adminGroup = await db.UserGroupChats
-                .Where(x => x.ChatterId == AdminId && x.GroupChatId == new GroupChatId(groupChatId))
-                .FirstAsync(TestContext.Current.CancellationToken);
-
-            lastMessageId.ShouldBe(adminGroup!.LastReceivedMessageId);
-        }
-
-        // 7. Admin marks all messages as seen via ChatHub
         await adminHubClient.InvokeAsync(ChatHubMethods.MarkGroupMessageAsSeen, groupChatId, TestContext.Current.CancellationToken);
 
-        // 8. Assert all messages sent by the other user are marked as seen by admin
-        using (var scope = ChatCompositionRoot.BeginLifetimeScope())
+        // 6. Assert all messages sent by the other user are marked as received and seen by admin
+        var messages = await GetAllGroupMessages(groupChatId);
+
+        foreach (var message in messages)
+        {
+            message.SeenBy.Single(x => x.Id == AdminId).ShouldNotBeNull();
+        }
+
+        var adminGroup = await GetAdminGroupChat(groupChatId);
+
+        adminGroup.LastSeenMessageId.ShouldBe(lastMessageId);
+        adminGroup.LastReceivedMessageId.ShouldBe(lastMessageId);
+    }
+
+    private static async Task WaitForHubClientToTriggerMessageReceived(SemaphoreSlim locker)
+    {
+        await locker.WaitAsync(TestContext.Current.CancellationToken);
+        locker.Release();
+    }
+
+    private static async Task<UserGroupChat> GetAdminGroupChat(Guid groupChatId)
+    {
+        await using (var scope = ChatCompositionRoot.BeginLifetimeScope())
         {
             var db = scope.Resolve<ChatDbContext>();
-            var messages = await db.GroupMessages
+            
+            return await db.UserGroupChats
+                .Where(x => x.ChatterId == AdminId && x.GroupChatId == new GroupChatId(groupChatId))
+                .FirstAsync(TestContext.Current.CancellationToken);
+        }
+    }
+
+    private static async Task<List<GroupMessage>> GetAllGroupMessages(Guid groupChatId)
+    {
+        await using (var scope = ChatCompositionRoot.BeginLifetimeScope())
+        {
+            var db = scope.Resolve<ChatDbContext>();
+
+            return await db.GroupMessages
                 .Include(x => x.SeenBy)
                 .Where(m => m.ChatId == new GroupChatId(groupChatId))
                 .ToListAsync(TestContext.Current.CancellationToken);
+        }
+    }
 
-            foreach (var msg in messages)
-            {
-                msg.SeenBy.ShouldContain(x => x.Id == AdminId);
-            }
+    private async Task SendMarkMessageAsReceivedRequest(CreateGroupMessageMessage msg)
+    {
+        var groupChatId = msg.GroupId;
+        var messageId = msg.MessageId;
 
-            messages.Last().Id.ShouldBe(lastMessageId);
+        var markReceivedReq = new MarkGroupMessageAsReceivedRequest(groupChatId, messageId);
+        var markReceivedResp = await _app.Client
+            .POSTAsync<MarkGroupMessageAsReceivedEndpoint,
+                       MarkGroupMessageAsReceivedRequest>(markReceivedReq);
 
-            var userGroupChat = await db.UserGroupChats
-                .Where(x => x.ChatterId == AdminId && x.GroupChatId == new GroupChatId(groupChatId))
+        markReceivedResp.EnsureSuccessStatusCode();
+    }
+
+    private static async Task<GroupMessageId> GetLastMessageId(Guid groupChatId)
+    {
+        await using (var scope = ChatCompositionRoot.BeginLifetimeScope())
+        {
+            var db = scope.Resolve<ChatDbContext>();
+            var lastMessage = await db.GroupMessages
+                .Where(m => m.ChatId == new GroupChatId(groupChatId))
+                .OrderByDescending(x => x.Id)
                 .FirstAsync(TestContext.Current.CancellationToken);
 
-            userGroupChat.LastSeenMessageId.ShouldBe(lastMessageId);
+            return lastMessage.Id;
         }
     }
 
-    private static async Task StartHubClients(params HubConnection[] clients)
+    private static async Task<TestResult<SendGroupMessageResponse>> SendMessageToGroupChat(
+        HttpClient userClient, 
+        Guid groupChatId, 
+        string message)
     {
-        await Task.WhenAll(clients.Select(x => x.StartAsync(TestContext.Current.CancellationToken)));
-    }
+        var sendMessageRequest = new SendGroupMessageRequest(groupChatId, message);
+        var result = await userClient
+            .POSTAsync<SendGroupMessageEndpoint,
+                       SendGroupMessageRequest,
+                       SendGroupMessageResponse>(sendMessageRequest);
 
-    private HttpClient BuildHttpClient(string userToken)
-    {
-        return _app.CreateClient(c =>
-        {
-            c.DefaultRequestHeaders.Authorization = new("Bearer", userToken);
-        });
-    }
+        result.Response.EnsureSuccessStatusCode();
 
-    private async Task<(string userId, string token)> CreateUserAndTokenAsync()
-    {
-        var userId = Guid.NewGuid().ToString();
-        var body = new
-        {
-            userid = userId,
-            email = $"{userId}@test.com",
-            customClaims = new { admin = false }
-        };
-
-        var json = JsonSerializer.Serialize(body);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-        using var client = _auth.CreateClient(o => o.BaseAddress = new Uri("https://localhost:7272"));
-        var response = await client.PostAsync("/token", content);
-        var token = await response.Content.ReadAsStringAsync();
-
-        // Ensure user exists in ChatDb
-        await EnsureChatterExistsAsync(userId);
-
-        return (userId, token);
-    }
-
-    // Helper: Ensure a chatter exists in the database
-    private static async Task EnsureChatterExistsAsync(string userId)
-    {
-        using var scope = ChatCompositionRoot.BeginLifetimeScope();
-        var context = scope.Resolve<ChatDbContext>();
-        var chatterId = new ChatterId(Guid.Parse(userId));
-        if (!await context.Chatters.AnyAsync(x => x.Id == chatterId))
-        {
-            var chatter = Chatter.Create(
-                chatterId,
-                username: TextHelper.CreateRandom(8),
-                nickname: TextHelper.CreateRandom(8),
-                Media.Create(Media.DefaultProfilePicture.Url, Media.DefaultProfilePicture.FilePath),
-                profileIsPublic: true,
-                followersCount: 0,
-                followingCount: 0
-            );
-            await context.Chatters.AddAsync(chatter);
-            await context.SaveChangesAsync();
-        }
-    }
-
-    private HubConnection BuildSignalRClient(string token)
-    {
-        var baseUrl = _app.Client.BaseAddress!;
-
-        return new HubConnectionBuilder()
-            .WithUrl($"{baseUrl}{ApiEndpoints.ChatHub.Connect}", options =>
-            {
-                options.HttpMessageHandlerFactory = _ => _app.Server.CreateHandler();
-                options.AccessTokenProvider = () => Task.FromResult(token)!;
-            })
-            .WithAutomaticReconnect()
-            .Build();
+        return result;
     }
 }
