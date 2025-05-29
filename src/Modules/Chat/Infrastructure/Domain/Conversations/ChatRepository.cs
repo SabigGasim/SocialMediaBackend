@@ -225,23 +225,7 @@ internal class ChatRepository(IDbConnectionFactory factory) : IChatRepository
                );
 
             UPDATE {Schema.Chat}."UserGroupChats"
-            SET "LastSeenMessageId" = (
-                SELECT gm."Id"
-                FROM {Schema.Chat}."GroupMessages" gm
-                JOIN {Schema.Chat}."GroupChatMembers" gcm
-                    ON gcm."MemberId" = @ChatterId
-                   AND gcm."GroupChatId" = @GroupChatId
-                JOIN {Schema.Chat}."UserGroupChats" ugc
-                    ON ugc."ChatterId" = @ChatterId
-                   AND ugc."GroupChatId" = @GroupChatId
-                WHERE gm."ChatId" = @GroupChatId
-                  AND gm."SentAt" > gcm."MemberSince"
-                  AND gm."Id" <= ugc."LastReceivedMessageId"
-                ORDER BY gm."SentAt" DESC
-                LIMIT 1
-            )
-            WHERE "ChatterId" = @ChatterId
-              AND "GroupChatId" = @GroupChatId;
+            SET "LastSeenMessageId" = "LastReceivedMessageId";
 
             COMMIT;
             
