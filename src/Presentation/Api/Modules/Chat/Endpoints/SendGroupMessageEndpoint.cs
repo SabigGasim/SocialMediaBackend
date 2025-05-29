@@ -15,6 +15,6 @@ public class SendGroupMessageEndpoint(
 {
     public override Task HandleAsync(SendGroupMessageRequest req, CancellationToken ct)
     {
-        return HandleMultipleUsersCommandAsync(new CreateGroupMessageCommand(req.GroupId, req.Text), ct);
+        return HandleGroupCommandAsync(new CreateGroupMessageCommand(req.GroupId, req.Text), ct);
     }
 }

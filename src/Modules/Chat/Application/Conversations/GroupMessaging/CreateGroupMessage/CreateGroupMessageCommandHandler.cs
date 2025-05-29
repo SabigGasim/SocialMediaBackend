@@ -13,12 +13,12 @@ namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessagi
 public class CreateGroupMessageCommandHandler(
     ChatDbContext context,
     IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler)
-    : IMultipleUsersCommandHandler<CreateGroupMessageCommand, CreateGroupMessageMessage, SendGroupMessageResponse>
+    : IGroupCommandHandler<CreateGroupMessageCommand, CreateGroupMessageMessage, SendGroupMessageResponse>
 {
     private readonly ChatDbContext _context = context;
     private readonly IAuthorizationHandler<GroupChat, GroupChatId> _authorizationHandler = authorizationHandler;
 
-    public async Task<HandlerResponse<MultipleUsersResponse<CreateGroupMessageMessage, SendGroupMessageResponse>>> ExecuteAsync(CreateGroupMessageCommand command, CancellationToken ct)
+    public async Task<HandlerResponse<GroupResponse<CreateGroupMessageMessage, SendGroupMessageResponse>>> ExecuteAsync(CreateGroupMessageCommand command, CancellationToken ct)
     {
         var senderId = new ChatterId(command.UserId);
 

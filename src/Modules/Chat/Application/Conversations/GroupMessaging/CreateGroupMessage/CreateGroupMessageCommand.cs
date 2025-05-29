@@ -5,7 +5,7 @@ using SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.CreateGroupMessage;
 
 public class CreateGroupMessageCommand(Guid chatId, string text)
-    : MultipleUsersCommandBase<CreateGroupMessageMessage, SendGroupMessageResponse>, IUserRequest
+    : GroupCommandBase<CreateGroupMessageMessage, SendGroupMessageResponse>, IUserRequest
 {
     public GroupChatId ChatId { get; } = new(chatId);
     public string Text { get; } = text;
