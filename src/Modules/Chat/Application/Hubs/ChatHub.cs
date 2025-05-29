@@ -106,7 +106,7 @@ public class ChatHub : Hub<IChatHub>
         await Clients.User(receiverId!).NotifyDirectMessageSeen(message);
     }
 
-    public async Task<Guid> MarkGroupMessageAsSeen(Guid groupId)
+    public async Task MarkGroupMessageAsSeen(Guid groupId)
     {
         var command = new MarkGroupMessageAsSeenCommand(groupId);
 
@@ -114,7 +114,7 @@ public class ChatHub : Hub<IChatHub>
 
         if (!result.IsSuccess)
         {
-            return Guid.Empty;
+            return;
         }
         
         var groupName = groupId.ToString();
@@ -125,8 +125,6 @@ public class ChatHub : Hub<IChatHub>
             Guid.Parse(Context.UserIdentifier!));
 
         await Clients.OthersInGroup(groupName).NotifyGroupMessageSeen(message);
-
-        return lastSeenMessageId;
     }
 
     public override async Task OnDisconnectedAsync(Exception? exception)

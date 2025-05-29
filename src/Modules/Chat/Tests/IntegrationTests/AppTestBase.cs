@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using FastEndpoints.Testing;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
+using SocialMediaBackend.Api;
 using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 using SocialMediaBackend.BuildingBlocks.Tests;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
@@ -26,51 +28,36 @@ public abstract class AppTestBase(AuthFixture auth, App app) : TestBase<App>
     protected override async ValueTask SetupAsync()
     {
         await base.SetupAsync();
+        await EnsureAdminCreated();
+    }
+
+    private async Task EnsureAdminCreated()
+    {
+        await _locker.WaitAsync(TestContext.Current.CancellationToken);
+
         if (AdminAuthToken is not null)
         {
-            await CreateUserIfNotExists();
             return;
         }
 
-        using var client = _auth.CreateClient(o => o.BaseAddress = new Uri("https://localhost:7272"));
-        var body = new
-        {
-            userid = _adminId,
-            email = "sabig@moanyn.com",
-            customClaims = new
-            {
-                admin = "true"
-            }
-        };
-
-        var json = JsonSerializer.Serialize(body);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-        var response = await client.PostAsync("/token", content, TestContext.Current.CancellationToken);
-
-        AdminAuthToken = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        AdminAuthToken = await CreateUserAndTokenAsync(AdminId.Value, isAdmin: true);
 
         _app.Client.DefaultRequestHeaders.Authorization = new("Bearer", AdminAuthToken);
 
-        await CreateUserIfNotExists();
+        _locker.Release();
     }
 
-
-    private async Task CreateUserIfNotExists()
+    protected static async Task EnsureChatterCreated(ChatterId userId, CancellationToken token)
     {
-        var token = TestContext.Current.CancellationToken;
-
         await using (var scope = ChatCompositionRoot.BeginLifetimeScope())
         {
             var context = scope.Resolve<ChatDbContext>();
 
-            await _locker.WaitAsync(token);
-
-            var adminExists = await context.Chatters.AnyAsync(x => x.Id == AdminId, token);
-            if (!adminExists)
+            var userExists = await context.Chatters.AnyAsync(x => x.Id == userId, token);
+            if (!userExists)
             {
                 var chatter = Chatter.Create(
-                    AdminId,
+                    userId,
                     username: TextHelper.CreateRandom(8),
                     nickname: TextHelper.CreateRandom(8),
                     Media.Create(Media.DefaultProfilePicture.Url, Media.DefaultProfilePicture.FilePath),
@@ -82,9 +69,55 @@ public abstract class AppTestBase(AuthFixture auth, App app) : TestBase<App>
                 await context.Chatters.AddAsync(chatter, token);
                 await context.SaveChangesAsync(token);
             }
-
-            _locker.Release();
         }
     }
-}
 
+    protected async Task<string> CreateUserAndTokenAsync(Guid userId, bool isAdmin = false)
+    {
+        var body = new
+        {
+            userid = userId,
+            email = $"{userId}@test.com",
+            customClaims = new { admin = isAdmin }
+        };
+
+        var json = JsonSerializer.Serialize(body);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        using var client = _auth.CreateClient(o => o.BaseAddress = new Uri("https://localhost:7272"));
+        var response = await client.PostAsync("/token", content);
+        var token = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        // Ensure user exists in ChatDb
+        await EnsureChatterCreated(new ChatterId(userId), TestContext.Current.CancellationToken);
+
+        return token;
+    }
+
+    protected HubConnection BuildSignalRClient(string token)
+    {
+        var baseUrl = _app.Client.BaseAddress!;
+
+        return new HubConnectionBuilder()
+            .WithUrl($"{baseUrl}{ApiEndpoints.ChatHub.Connect}", options =>
+            {
+                options.HttpMessageHandlerFactory = _ => _app.Server.CreateHandler();
+                options.AccessTokenProvider = () => Task.FromResult(token)!;
+            })
+            .WithAutomaticReconnect()
+            .Build();
+    }
+
+    protected static async Task StartHubClients(params HubConnection[] clients)
+    {
+        await Task.WhenAll(clients.Select(x => x.StartAsync(TestContext.Current.CancellationToken)));
+    }
+
+    protected HttpClient BuildHttpClient(string accessToken)
+    {
+        return _app.CreateClient(c =>
+        {
+            c.DefaultRequestHeaders.Authorization = new("Bearer", accessToken);
+        });
+    }
+}

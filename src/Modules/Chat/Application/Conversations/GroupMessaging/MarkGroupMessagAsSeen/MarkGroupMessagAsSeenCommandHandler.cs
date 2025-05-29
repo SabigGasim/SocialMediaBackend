@@ -1,4 +1,5 @@
-﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
+﻿using SocialMediaBackend.BuildingBlocks.Application;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.Modules.Chat.Application.Auth;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
@@ -30,7 +31,7 @@ public class MarkGroupMessagAsSeenCommandHandler(
         var messageId = await _chatRepository.MarkGroupMessagesAsSeenAsync(command.GroupChatId, chatterId);
 
         return messageId.HasValue
-            ? new GroupMessageId(messageId.Value)
-            : null;
+            ? (new GroupMessageId(messageId.Value), HandlerResponseStatus.OK)
+            : (string.Empty, HandlerResponseStatus.NotModified);
     }
 }
