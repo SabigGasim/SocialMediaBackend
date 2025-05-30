@@ -15,25 +15,29 @@ public static class ChatStartup
 {
     public static async Task InitializeAsync(
         IServiceCollection serviceCollection,
-        string connectionString,
+        string databaseConnection,
+        string redisConnection,
         IWebHostEnvironment env)
     {
-        ConfigureCompositionRoot(serviceCollection, connectionString);
+        ConfigureCompositionRoot(serviceCollection, databaseConnection, redisConnection);
 
         await PersistenceStartup.InitializeAsync(env);
         await QuartzStartup.InitializeAsync();
     }
 
-    private static void ConfigureCompositionRoot(IServiceCollection serviceCollection, string connectionString)
+    private static void ConfigureCompositionRoot(
+        IServiceCollection serviceCollection,
+        string databaseConnection,
+        string redisConnection)
     {
         var containerBuilder = new ContainerBuilder();
 
         containerBuilder.Populate(serviceCollection);
 
-        containerBuilder.RegisterModule(new PersistenceModule(connectionString));
+        containerBuilder.RegisterModule(new PersistenceModule(databaseConnection));
         containerBuilder.RegisterModule(new CQRSModule());
         containerBuilder.RegisterModule(new QuartzModule());
-        containerBuilder.RegisterModule(new ProcessingModule());
+        containerBuilder.RegisterModule(new ProcessingModule(redisConnection));
         containerBuilder.RegisterModule(new AuthModule());
 
         var container = containerBuilder.Build();

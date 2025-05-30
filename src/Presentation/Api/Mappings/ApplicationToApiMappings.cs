@@ -20,7 +20,8 @@ public static class ApplicationToApiMappings
             HandlerResponseStatus.NotFound => HttpStatusCode.NotFound,
             HandlerResponseStatus.NotModified => HttpStatusCode.NotModified,
             HandlerResponseStatus.Unauthorized => HttpStatusCode.Unauthorized,
-    
+            HandlerResponseStatus.Timeout => HttpStatusCode.RequestTimeout,
+
             _ => HttpStatusCode.InternalServerError
         };
     }

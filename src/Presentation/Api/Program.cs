@@ -16,7 +16,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 var config = builder.Configuration;
-var connectionString = config.GetConnectionString("PostgresConnection")!;
 var environment = builder.Environment;
 
 builder.Services.AddFeedModule();
@@ -28,10 +27,13 @@ var app = builder.Build();
 
 if (!environment.IsEnvironment("Testing"))
 {
+    var connectionString = config.GetConnectionString("PostgresConnection")!;
+    var redisConnection = config.GetConnectionString("RedisConnection")!;
+
     await Task.WhenAll(
         UsersStartup.InitializeAsync(builder.Services, connectionString, environment),
         FeedStartup.InitializeAsync(builder.Services, connectionString, environment),
-        ChatStartup.InitializeAsync(builder.Services, connectionString, environment)
+        ChatStartup.InitializeAsync(builder.Services, connectionString, redisConnection, environment)
         );
 }
 

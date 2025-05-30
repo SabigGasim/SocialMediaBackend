@@ -2,11 +2,14 @@
 using SocialMediaBackend.BuildingBlocks.Infrastructure.InternalCommands;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Chat.Infrastructure.InternalCommands;
+using StackExchange.Redis;
 
 namespace SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.Processing;
 
-public class ProcessingModule : Module
+public class ProcessingModule(string connectionString) : Module
 {
+    private readonly string _connectionString = connectionString;
+
     protected override void Load(ContainerBuilder builder)
     {
         builder.RegisterType<DomainEventsDispatcher>()
@@ -19,6 +22,14 @@ public class ProcessingModule : Module
 
         builder.RegisterType<CommandsScheduler>()
             .As<ICommandsScheduler>()
+            .SingleInstance();
+
+        builder.Register(_ => ConnectionMultiplexer.Connect(_connectionString))
+            .As<IConnectionMultiplexer>()
+            .SingleInstance();
+
+        builder.RegisterType<UserLockManager>()
+            .As<IUserLockMangaer>()
             .SingleInstance();
     }
 }
