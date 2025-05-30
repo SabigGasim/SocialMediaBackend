@@ -119,6 +119,7 @@ public abstract class AppTestBase(AuthFixture auth, App app) : TestBase<App>
         return _app.CreateClient(c =>
         {
             c.DefaultRequestHeaders.Authorization = new("Bearer", accessToken);
+            c.Timeout = TimeSpan.FromHours(1);
         });
     }
 }

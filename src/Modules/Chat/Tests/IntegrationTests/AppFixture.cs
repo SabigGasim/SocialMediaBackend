@@ -4,23 +4,30 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SocialMediaBackend.Modules.Chat.Application.Configuration;
 using Testcontainers.PostgreSql;
+using Testcontainers.Redis;
 
 namespace SocialMediaBackend.Modules.Chat.Tests.IntegrationTests;
 
 public class App : AppFixture<Program>
 {
-    private PostgreSqlContainer _container = default!;
+    private PostgreSqlContainer _databaseContainer = default!;
+    private RedisContainer _redisContainer = default!;
 
     protected override async ValueTask PreSetupAsync()
     {
-        _container = new PostgreSqlBuilder()
+        _databaseContainer = new PostgreSqlBuilder()
             .WithImage("postgres:latest")
             .WithDatabase("social-media-backend-tests")
             .WithUsername("username")
             .WithPassword("password")
             .Build();
 
-        await _container.StartAsync();
+        _redisContainer = new RedisBuilder()
+            .WithImage("redis:latest")
+            .Build();
+
+        await _databaseContainer.StartAsync();
+        await _redisContainer.StartAsync();
 
     }
 
@@ -36,7 +43,10 @@ public class App : AppFixture<Program>
         using (var scope = serviceProvider.CreateScope())
         {
             var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
-            ChatStartup.InitializeAsync(s, _container.GetConnectionString(), env).GetAwaiter().GetResult();
+            var dbConnection = _databaseContainer.GetConnectionString();
+            var redisConnection = _redisContainer.GetConnectionString();
+
+            ChatStartup.InitializeAsync(s, dbConnection, redisConnection, env).GetAwaiter().GetResult();
         }
     }
 }

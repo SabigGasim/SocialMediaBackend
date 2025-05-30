@@ -1,6 +1,7 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
+using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Chat.Application.Auth;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
@@ -11,11 +12,13 @@ namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessagi
 
 public class MarkGroupMessagAsSeenCommandHandler(
     IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler,
-    IChatRepository chatRepository)
+    IChatRepository chatRepository,
+    IUserLockMangaer lockMangaer)
     : ICommandHandler<MarkGroupMessageAsSeenCommand, GroupMessageId?>
 {
     private readonly IAuthorizationHandler<GroupChat, GroupChatId> _authorizationHandler = authorizationHandler;
     private readonly IChatRepository _chatRepository = chatRepository;
+    private readonly IUserLockMangaer _lockMangaer = lockMangaer;
 
     public async Task<HandlerResponse<GroupMessageId?>> ExecuteAsync(MarkGroupMessageAsSeenCommand command, CancellationToken ct)
     {
@@ -28,10 +31,13 @@ public class MarkGroupMessagAsSeenCommandHandler(
             return authorizationResult;
         }
 
-        var messageId = await _chatRepository.MarkGroupMessagesAsSeenAsync(command.GroupChatId, chatterId);
+        await using (await _lockMangaer.AcquireLockAsync(command.UserId.ToString(), $"MarkGroupMessage({command.GroupChatId.Value})"))
+        {
+            var messageId = await _chatRepository.MarkGroupMessagesAsSeenAsync(command.GroupChatId, chatterId);
 
-        return messageId.HasValue
-            ? (new GroupMessageId(messageId.Value), HandlerResponseStatus.OK)
-            : (string.Empty, HandlerResponseStatus.NotModified);
+            return messageId.HasValue
+                ? (new GroupMessageId(messageId.Value), HandlerResponseStatus.OK)
+                : (string.Empty, HandlerResponseStatus.NotModified);
+        }
     }
 }
