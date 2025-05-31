@@ -16,7 +16,7 @@ using Xunit.Internal;
 
 namespace SocialMediaBackend.Modules.Chat.Tests.IntegrationTests.GroupChat;
 
-public class MessageSentAndReceivedTests(ITestOutputHelper output, AuthFixture auth, App app) 
+public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper output, AuthFixture auth, App app) 
     : AppTestBase(auth, app)
 {
     private readonly ITestOutputHelper _output = output;
@@ -197,7 +197,7 @@ public class MessageSentAndReceivedTests(ITestOutputHelper output, AuthFixture a
         Guid groupChatId = groupChatRespone.Id;
 
         // 2. Subscribe to this group chat via SignalR
-        var taskLimiterSemaphor = new SemaphoreSlim(Environment.ProcessorCount * 2);
+        var taskLimiterSemaphor = new SemaphoreSlim(Environment.ProcessorCount * 2); // To prevent task exaustion
 
         Task SendMarkMessageAsReceivedAndSeenAsync(CreateGroupMessageMessage msg, HubConnection hub, int device)
         {

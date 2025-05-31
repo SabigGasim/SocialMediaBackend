@@ -24,7 +24,7 @@ public class ProcessingModule(string connectionString) : Module
             .As<ICommandsScheduler>()
             .SingleInstance();
 
-        builder.Register(_ => ConnectionMultiplexer.Connect(_connectionString))
+        builder.Register(_ => ConnectionMultiplexer.Connect(_connectionString, c => c.AbortOnConnectFail = false))
             .As<IConnectionMultiplexer>()
             .SingleInstance();
 
