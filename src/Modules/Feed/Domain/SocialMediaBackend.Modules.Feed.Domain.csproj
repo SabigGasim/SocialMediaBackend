@@ -10,4 +10,9 @@
     <ProjectReference Include="..\..\..\BuildingBlocks\Domain\SocialMediaBackend.BuildingBlocks.Domain.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="SocialMediaBackend.Modules.Feed.Tests.Core" />
+		<InternalsVisibleTo Include="SocialMediaBackend.Modules.Feed.Tests.UnitTests" />
+	</ItemGroup>
+
 </Project>

@@ -1,13 +1,17 @@
-﻿using FastEndpoints.Testing;
+﻿using Autofac;
+using FastEndpoints.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using SocialMediaBackend.Modules.Users.Domain.Users;
-using SocialMediaBackend.Modules.Users.Tests.Core.Common.Users;
+using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
+using SocialMediaBackend.BuildingBlocks.Tests;
+using SocialMediaBackend.Modules.Feed.Domain.Authors;
+using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration;
+using SocialMediaBackend.Modules.Feed.Tests.Core.Common.Users;
 using System.Text;
 using System.Text.Json;
 using Xunit;
 
-namespace SocialMediaBackend.Modules.Users.Tests.Core.Common;
+namespace SocialMediaBackend.Modules.Feed.Tests.Core.Common;
 
 
 [Collection("Api & Auth")]
@@ -19,7 +23,7 @@ public abstract class AppTestBase(AuthFixture auth, App app) : TestBase<App>
 
     private const string _adminId = "e593a99a-56d0-48ff-b3b9-abed820a8bd1";
 
-    public static UserId AdminId { get; } = new UserId(Guid.Parse(_adminId));
+    public static AuthorId AdminId { get; } = new(Guid.Parse(_adminId));
     public static string AdminAuthToken { get; private set; } = default!;
 
     protected override async ValueTask SetupAsync()
@@ -59,19 +63,28 @@ public abstract class AppTestBase(AuthFixture auth, App app) : TestBase<App>
     {
         var token = TestContext.Current.CancellationToken;
 
-        await using var scope = _app.Services.CreateAsyncScope();
-
-        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
-
         await _locker.WaitAsync(token);
 
-        var adminExists = await context.Users.AnyAsync(x => x.Id == AdminId, token);
-        if (!adminExists)
+        await using (var scope = FeedCompositionRoot.BeginLifetimeScope())
         {
-            var user = await UserFactory.CreateAsync(isPublic: true, ct: token);
-            context.Entry(user).Property(x => x.Id).CurrentValue = AdminId;
-            await context.Users.AddAsync(user, token);
-            await context.SaveChangesAsync(token);
+            var context = scope.Resolve<FakeDbContext>();
+
+            var userExists = await context.Set<Author>().AnyAsync(x => x.Id == AdminId, token);
+            if (!userExists)
+            {
+                var author = Author.Create(
+                    AdminId,
+                    username: TextHelper.CreateRandom(8),
+                    nickname: TextHelper.CreateRandom(8),
+                    Media.Create(Media.DefaultProfilePicture.Url, Media.DefaultProfilePicture.FilePath),
+                    profileIsPublic: true,
+                    followersCount: 0,
+                    followingCount: 0
+                    );
+
+                await context.Authors.AddAsync(author, token);
+                await context.SaveChangesAsync(token);
+            }
         }
 
         _locker.Release();

@@ -1,47 +1,53 @@
-﻿using SocialMediaBackend.Modules.Chat.Domain.Follows;
+﻿using SocialMediaBackend.Modules.Feed.Domain.Authors;
+using SocialMediaBackend.Modules.Feed.Domain.Comments;
 using SocialMediaBackend.Modules.Feed.Domain.Follows;
-using SocialMediaBackend.Modules.Users.Domain.Users;
-using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
-using SocialMediaBackend.Modules.Users.Tests.Core.Common.Comments;
-using SocialMediaBackend.Modules.Users.Tests.Core.Common.Posts;
-using SocialMediaBackend.Modules.Users.Tests.Core.Common.Users;
+using SocialMediaBackend.Modules.Feed.Domain.Posts;
+using SocialMediaBackend.Modules.Feed.Tests.Core.Common.Comments;
+using SocialMediaBackend.Modules.Feed.Tests.Core.Common.Posts;
+using SocialMediaBackend.Modules.Feed.Tests.Core.Common.Users;
 
-namespace SocialMediaBackend.Modules.Users.Tests.Core.Common;
+namespace SocialMediaBackend.Modules.Feed.Tests.Core.Common;
 
 public static class DbContextExtensions
 {
-    public static async Task<(User user, User follower, Follow follow)> CreateUserWithFollowerAsync(
+    public static async Task<(Author user, Author follower, Follow follow)> CreateAuthorWithFollowerAsync(
         this FakeDbContext context, FollowStatus status = FollowStatus.Following)
     {
 
-        var user = await UserFactory.CreateAsync(isPublic: status == FollowStatus.Following);
-        var follower = await UserFactory.CreateAsync();
-        var follow = status == FollowStatus.Following
-            ? Follow.Create(follower.Id, user.Id)
-            : Follow.CreateFollowRequest(follower.Id, user.Id);
+        var user = AuthorFactory.Create(isPublic: status == FollowStatus.Following);
+        var follower = AuthorFactory.Create();
+
+        var follow = Follow.Create(
+            follower.Id,
+            user.Id,
+            DateTimeOffset.UtcNow,
+            status);
 
         context.Add(user);
         context.Add(follower);
         context.Add(follow);
+
         await context.SaveChangesAsync();
 
         return (user, follower, follow);
     }
 
-    public static async Task<(User user, List<User> followers, List<Follow> follows)> CreateUserWithFollowerAsync(
+    public static async Task<(Author user, List<Author> followers, List<Follow> follows)> CreateAuthorWithFollowerAsync(
         this FakeDbContext context, FollowStatus status = FollowStatus.Following, int followersCount = 1)
     {
 
-        var user = await UserFactory.CreateAsync(isPublic: status == FollowStatus.Following);
-        var followers = new List<User>(followersCount);
+        var user = AuthorFactory.Create(isPublic: status == FollowStatus.Following);
+        var followers = new List<Author>(followersCount);
         var follows = new List<Follow>(followersCount);
 
         for (int i = 0; i < followersCount; i++)
         {
-            var follower = await UserFactory.CreateAsync();
-            var follow = status == FollowStatus.Following
-                ? Follow.Create(follower.Id, user.Id)
-                : Follow.CreateFollowRequest(follower.Id, user.Id);
+            var follower = AuthorFactory.Create();
+                var follow = Follow.Create(
+                follower.Id,
+                user.Id,
+                DateTimeOffset.UtcNow,
+                status);
 
             followers.Add(follower);
             follows.Add(follow);
@@ -56,11 +62,11 @@ public static class DbContextExtensions
     }
 
     public static async Task<Comment> CreateCommentAsync(
-        this FakeDbContext context, PostId? postId = null, UserId? userId = null, CancellationToken ct = default)
+        this FakeDbContext context, PostId? postId = null, AuthorId? userId = null, CancellationToken ct = default)
     {
         if (userId is null)
         {
-            var user = await UserFactory.CreateAsync();
+            var user = AuthorFactory.Create();
             userId = user.Id;
             context.Add(user);
         }
@@ -84,8 +90,8 @@ public static class DbContextExtensions
     public static async Task<(Comment comment, Comment reply)> CreateCommentWithReplyAsync(
         this FakeDbContext context, CancellationToken ct = default)
     {
-        var user = await UserFactory.CreateAsync();
-        var replier = await UserFactory.CreateAsync();
+        var user = AuthorFactory.Create();
+        var replier = AuthorFactory.Create();
         var post = PostFactory.Create(user.Id);
         var comment = CommentFactory.Create(post.Id, user.Id);
         var reply = comment.AddReply(replier.Id, "text")!;

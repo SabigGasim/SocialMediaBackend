@@ -12,6 +12,13 @@ public enum FollowStatus
 public class Follow : Entity<Unit>
 {
     private Follow() { }
+    private Follow(AuthorId followerId, AuthorId followingId, DateTimeOffset followedAt, FollowStatus status)
+    {
+        FollowerId = followerId;
+        FollowingId = followingId;
+        FollowedAt = followedAt;
+        Status = status;
+    }
 
     public AuthorId FollowerId { get; } = default!;
     public AuthorId FollowingId { get; } = default!;
@@ -21,4 +28,9 @@ public class Follow : Entity<Unit>
 
     public Author Follower { get; } = default!;
     public Author Following { get; } = default!;
+
+    internal static Follow Create(AuthorId followerId, AuthorId followingId, DateTimeOffset followedAt, FollowStatus status)
+    {
+        return new Follow(followerId, followingId, followedAt, status);
+    }
 }
