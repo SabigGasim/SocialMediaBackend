@@ -1,5 +1,5 @@
 ﻿using Mediator;
-using SocialMediaBackend.Modules.Users.Domain.Common;
+using SocialMediaBackend.BuildingBlocks.Domain;
 
 namespace SocialMediaBackend.Modules.Users.Tests.Core.Common;
 

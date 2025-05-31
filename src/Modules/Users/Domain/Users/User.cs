@@ -151,13 +151,21 @@ public class User : AggregateRoot<UserId>
         return result;
     }
 
-    private void AcceptAllFollowRequests()
+    internal Result AcceptAllFollowRequests()
     {
-        foreach (var follow in _followers.Where(x => x.Status == FollowStatus.Pending))
+        var followersToAccept = _followers.Where(x => x.Status == FollowStatus.Pending).ToArray();
+        if (followersToAccept.Length == 0)
+        {
+            return Result.Failure(FailureCode.NotFound, "Follow requests to accept");
+        }
+
+        foreach (var follow in followersToAccept)
         {
             follow.AcceptFollowRequest();
             this.AddDomainEvent(new FollowRequestAcceptedEvent(follow.FollowerId, follow.FollowingId));
         }
+
+        return Result.Success();
     }
 
     public async Task<Result> ChangeUsernameAsync(string username, IUserExistsChecker userExistsChecker,

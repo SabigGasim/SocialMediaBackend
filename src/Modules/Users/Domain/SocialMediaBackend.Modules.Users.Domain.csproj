@@ -21,4 +21,9 @@
 	  <ProjectReference Include="..\..\..\BuildingBlocks\Domain\SocialMediaBackend.BuildingBlocks.Domain.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="SocialMediaBackend.Modules.Users.Tests.Core" />
+		<InternalsVisibleTo Include="SocialMediaBackend.Modules.Users.Tests.UnitTests" />
+	</ItemGroup>
+
 </Project>

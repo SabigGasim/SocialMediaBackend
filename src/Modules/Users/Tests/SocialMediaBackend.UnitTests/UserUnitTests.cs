@@ -3,21 +3,17 @@ using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 using SocialMediaBackend.Modules.Users.Domain.Services;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 using Shouldly;
-using SocialMediaBackend.Modules.Users.Domain.Common.Exceptions;
 using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
-using Microsoft.Extensions.DependencyInjection;
-using SocialMediaBackend.Modules.Users.Tests.Core.Common;
-using SocialMediaBackend.Modules.Users.Tests.Core.Common.Users;
-using SocialMediaBackend.Modules.Feed.Domain.Follows;
-using SocialMediaBackend.Modules.Chat.Domain.Follows;
 using SocialMediaBackend.BuildingBlocks.Domain;
+using SocialMediaBackend.Modules.Users.Tests.Core.Common;
+using SocialMediaBackend.Modules.Users.Infrastructure.Configuration;
+using Autofac;
+using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
-namespace SocialMediaBackend.Modules.Users.Tests.UnitTests.Domain;
+namespace SocialMediaBackend.Modules.Users.Tests.UnitTests;
 
 public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 {
-    private readonly App App = app;
-
     [Fact]
     public async Task CreateAsync_ShouldReturnUser()
     {
@@ -128,8 +124,8 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
     public async Task AcceptFollowRequest_ShouldWork()
     {
         //Arrange
-        using var scope = App.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+        await using var scope = UsersCompositionRoot.BeginLifetimeScope();
+        var context = scope.Resolve<UsersDbContext>();
 
         var (user, follower, follow) = await context.CreateUserWithFollowerAsync(FollowStatus.Pending);
 
@@ -137,7 +133,7 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         var accepted = user.AcceptFollowRequest(follower.Id);
 
         //Assert
-        accepted.ShouldBeTrue();
+        accepted.IsSuccess.ShouldBeTrue();
         follow.Status.ShouldBe(FollowStatus.Following);
 
         user.DomainEvents!.Count.ShouldBe(1);
@@ -152,8 +148,8 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
     public async Task AcceptFollowRequest_ShouldNotWork_WhenPendingRequestDoesntExists()
     {
         //Arrange
-        using var scope = App.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+        await using var scope = UsersCompositionRoot.BeginLifetimeScope();
+        var context = scope.Resolve<UsersDbContext>();
 
         var user = await UserFactory.CreateAsync(isPublic: false, ct: TestContext.Current.CancellationToken);
         var randomUserId = UserId.New();
@@ -166,24 +162,24 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 
         //Assert
         result.IsSuccess.ShouldBeFalse();
-        user.DomainEvents.ShouldBeNull();
+        user.DomainEvents.ShouldBeEmpty();
     }
 
     [Fact]
     public async Task AcceptAllPendingFollowRequests_ShouldWork_AndAddDomainEvents_WhenRequestsExists()
     {
         //Arrange
-        using var scope = App.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+        await using var scope = UsersCompositionRoot.BeginLifetimeScope();
+        var context = scope.Resolve<UsersDbContext>();
 
         var (user, followers, requests) = await context
             .CreateUserWithFollowerAsync(FollowStatus.Pending, followersCount: 3);
 
         //Act
-        var accepted = user.AcceptAllPendingFollowRequests();
+        var accepted = user.AcceptAllFollowRequests();
 
         //Assert
-        accepted.ShouldBeTrue();
+        accepted.IsSuccess.ShouldBeTrue();
         user.Followers.Count.ShouldBe(3);
         user.DomainEvents!.Count.ShouldBe(3);
         user.DomainEvents.ShouldAllBe(x => x is FollowRequestAcceptedEvent);
@@ -204,8 +200,8 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
     public async Task Unfollow_ShouldWork_AndAddDomainEvent_WhenFollowingExists()
     {
         // Arrange
-        using var scope = App.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+        await using var scope = UsersCompositionRoot.BeginLifetimeScope();
+        var context = scope.Resolve<UsersDbContext>();
 
         var (user, follower, _) = await context.CreateUserWithFollowerAsync(FollowStatus.Following);
 
@@ -236,15 +232,15 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 
         //Assert
         result.IsSuccess.ShouldBeFalse();
-        user.DomainEvents.ShouldBeNull();
+        user.DomainEvents.ShouldBeEmpty();
     }
 
     [Fact]
     public async Task RejectPendingFollowRequest_ShouldWork_AndAddDomainEvent_WhenRequestExists()
     {
         // Arrange
-        using var scope = App.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<FakeDbContext>();
+        await using var scope = UsersCompositionRoot.BeginLifetimeScope();
+        var context = scope.Resolve<UsersDbContext>();
 
         var (user, follower, _) = await context.CreateUserWithFollowerAsync(FollowStatus.Pending);
 
@@ -275,7 +271,7 @@ public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 
         //Assert
         result.IsSuccess.ShouldBeFalse();
-        user.DomainEvents.ShouldBeNull();
+        user.DomainEvents.ShouldBeEmpty();
     }
 
     [Fact]
