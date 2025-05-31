@@ -11,6 +11,7 @@ using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
+using System.Runtime.CompilerServices;
 
 namespace SocialMediaBackend.Modules.Chat.Tests.IntegrationTests.DirectChat;
 
@@ -24,14 +25,17 @@ public class DirectChatIntegrationTests(AuthFixture authFixture, App app) : AppT
         //Arrange
         var ct = TestContext.Current.CancellationToken;
 
+        var accessToken = await CreateUserAndTokenAsync(AdminId.Value, isAdmin: true);
+        var client = BuildHttpClient(accessToken);
+
         int messagesPerChat = 20;
         int chats = 6;
         int adminViewMessagesToDelete = 30;
         int otherChattersViewMessagesToDelete = 50;
 
         var chatterIds = await CreateChattersAsync(numberOfChatters: chats, ct);
-        var directChats = await SendCreateDirectChatRequests(chatterIds);
-        await SendDirectMessageRequets(messagesPerChat, directChats);
+        var directChats = await client.SendCreateDirectChatRequests(chatterIds);
+        await client.SendDirectMessageRequets(messagesPerChat, directChats);
 
         int totalMessages = 0;
 
@@ -52,7 +56,7 @@ public class DirectChatIntegrationTests(AuthFixture authFixture, App app) : AppT
         }
 
         //Act
-        var userDirectMessages = await SendGetAllDirectMessagesRequest(messagesPerChat, directChats);
+        var userDirectMessages = await client.SendGetAllDirectMessagesRequest(messagesPerChat, directChats);
 
         //Assert
         var viewableMessagesCount = messagesPerChat * chats - adminViewMessagesToDelete;
@@ -62,62 +66,10 @@ public class DirectChatIntegrationTests(AuthFixture authFixture, App app) : AppT
         totalMessages.ShouldBe(messagesPerChat * chats);
     }
 
-    private async Task<GetDirectMessageResponse[]> SendGetAllDirectMessagesRequest(int messagesPerChat, CreateDirectChatResponse[] directChats)
-    {
-        var getAllDirectMessagesTasks = directChats.Select(chat =>
-        {
-            var request = new GetAllDirectMessagesRequest(chat.ChatId)
-            {
-                Page = 1,
-                PageSize = messagesPerChat,
-            };
-
-            return _app.Client.GETAsync<
-                    GetAllDirectMessagesEndpoint,
-                    GetAllDirectMessagesRequest,
-                    GetAllDirectMessagesResponse>(request);
-        });
-
-        return (await Task.WhenAll(getAllDirectMessagesTasks)).Select(x => x.Result).SelectMany(x => x.Messages).ToArray();
-    }
-
-    private async Task SendDirectMessageRequets(int messagesPerChat, IEnumerable<CreateDirectChatResponse> directChats)
-    {
-        var sendDirectMessageRequests = directChats
-                    .SelectMany(chat =>
-                    {
-                        return ArrayOf(messagesPerChat).Select(_ =>
-                        {
-                            return _app.Client.POSTAsync<
-                                SendDirectMessageEndpoint,
-                                SendDirectMessageRequest,
-                                SendDirectMessageResponse>(new SendDirectMessageRequest(
-                                    Text: TextHelper.CreateRandom(10),
-                                    chat.ChatId));
-                        });
-                    });
-
-        await Task.WhenAll(sendDirectMessageRequests);
-    }
-
     private static async Task<ChatterId[]> CreateChattersAsync(int numberOfChatters, CancellationToken ct)
     {
         var tasks = ArrayOf(numberOfChatters).Select(_ => CreateChatterAsync(ct));
         return (await Task.WhenAll(tasks)).ToArray();
-    }
-
-    private async Task<CreateDirectChatResponse[]> SendCreateDirectChatRequests(IEnumerable<ChatterId> chatterIds)
-    {
-        var createDirectChatRequests = chatterIds
-            .Select(x =>
-            {
-                return _app.Client.POSTAsync<
-                    CreateDirectChatEndpoint,
-                    CreateDirectChatRequest,
-                    CreateDirectChatResponse>(new CreateDirectChatRequest(x.Value));
-            });
-
-        return (await Task.WhenAll(createDirectChatRequests)).Select(x => x.Result).ToArray();
     }
 
     private static IEnumerable<int> ArrayOf(int messagesPerChat)
@@ -149,5 +101,63 @@ public class DirectChatIntegrationTests(AuthFixture authFixture, App app) : AppT
         {
             message.UserDirectChat.DeleteMessage(message.DirectMessageId);
         }
+    }
+}
+
+file static class DirectChatIntegrationTestsExtensions
+{
+    public static async Task<CreateDirectChatResponse[]> SendCreateDirectChatRequests(this HttpClient client,
+        IEnumerable<ChatterId> chatterIds)
+    {
+        var createDirectChatRequests = chatterIds
+            .Select(x =>
+            {
+                return client.POSTAsync<
+                    CreateDirectChatEndpoint,
+                    CreateDirectChatRequest,
+                    CreateDirectChatResponse>(new CreateDirectChatRequest(x.Value));
+            });
+
+        return (await Task.WhenAll(createDirectChatRequests)).Select(x => x.Result).ToArray();
+    }
+
+    public static async Task SendDirectMessageRequets(this HttpClient client,
+        int messagesPerChat, IEnumerable<CreateDirectChatResponse> directChats)
+    {
+        var sendDirectMessageRequests = directChats
+                    .SelectMany(chat =>
+                    {
+                        return Enumerable.Range(0, messagesPerChat).Select(_ =>
+                        {
+                            return client.POSTAsync<
+                                SendDirectMessageEndpoint,
+                                SendDirectMessageRequest,
+                                SendDirectMessageResponse>(new SendDirectMessageRequest(
+                                    Text: TextHelper.CreateRandom(10),
+                                    chat.ChatId));
+                        });
+                    });
+
+        await Task.WhenAll(sendDirectMessageRequests);
+    }
+
+    public static async Task<GetDirectMessageResponse[]> SendGetAllDirectMessagesRequest(this HttpClient client,
+        int messagesPerChat, CreateDirectChatResponse[] directChats)
+    {
+        var getAllDirectMessagesTasks = directChats.Select(chat =>
+        {
+            var request = new GetAllDirectMessagesRequest(chat.ChatId)
+            {
+                Page = 1,
+                PageSize = messagesPerChat,
+            };
+
+            return client.GETAsync<
+                    GetAllDirectMessagesEndpoint,
+                    GetAllDirectMessagesRequest,
+                    GetAllDirectMessagesResponse>(request);
+        });
+
+        return (await Task.WhenAll(getAllDirectMessagesTasks)).Select(x => x.Result).SelectMany(x => x.Messages).ToArray();
     }
 }
