@@ -30,6 +30,22 @@ internal class ChatterRepository(IDbConnectionFactory factory) : IChatterReposit
         }
     }
 
+    public async Task<ChatterDto?> GetByIdAsync(ChatterId chatterId, CancellationToken ct = default)
+    {
+        using (var connection = await _factory.CreateAsync(ct)) 
+        {
+            const string sql = $"""
+                SELECT * FROM {Schema.Chat}."Chatters"
+                WHERE "Id" = @Id
+                """;
+                
+            return await connection.QuerySingleOrDefaultAsync<ChatterDto>(new CommandDefinition(sql, new
+            {
+                Id = chatterId.Value
+            }, cancellationToken: ct));
+        }
+    }
+
     public async Task SetOnlineStatus(ChatterId chatterId, bool status)
     {
         const string sql = $"""
