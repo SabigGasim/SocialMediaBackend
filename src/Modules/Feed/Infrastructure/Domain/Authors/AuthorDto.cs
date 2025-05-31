@@ -2,7 +2,7 @@
 
 public class AuthorDto
 {
-    public Guid AuthorId { get; set; }
+    public Guid Id { get; set; }
     public string Username { get; init; } = default!;
     public string Nickname { get; init; } = default!;
     public int FollowersCount { get; init; } = 0;
