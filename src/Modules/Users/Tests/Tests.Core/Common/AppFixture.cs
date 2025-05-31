@@ -50,8 +50,8 @@ public class App : AppFixture<Program>
             var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
 
             UsersStartup.InitializeAsync(s, connectionString, env).GetAwaiter().GetResult();
-            FeedStartup.InitializeAsync(s, connectionString, env).GetAwaiter().GetResult();
             ChatStartup.InitializeAsync(s, connectionString, redistConnection, env).GetAwaiter().GetResult();
+            FeedStartup.InitializeAsync(s, connectionString, env).GetAwaiter().GetResult();
         }
     }
 }

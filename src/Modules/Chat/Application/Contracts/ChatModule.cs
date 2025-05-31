@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Contracts;
 
-internal class ChatModule : IChatModule
+public class ChatModule : IChatModule
 {
     public async Task<HandlerResponse<TResult>> ExecuteCommandAsync<TCommand, TResult>(
         TCommand command,

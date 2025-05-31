@@ -57,6 +57,10 @@ public abstract class AppTestBase(AuthFixture auth, App app) : TestBase<App>
         await CreateUserIfNotExists();
     }
 
+    protected static async Task AssertEventually(IProbe probe, TimeSpan timeout)
+    {
+        await new Poller((int)timeout.TotalMilliseconds).CheckAsync(probe);
+    }
 
     private async Task CreateUserIfNotExists()
     {

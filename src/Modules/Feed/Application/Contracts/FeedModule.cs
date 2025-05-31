@@ -6,7 +6,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Contracts;
 
-internal class FeedModule : IFeedModule
+public class FeedModule : IFeedModule
 {
     public async Task<HandlerResponse<TResult>> ExecuteCommandAsync<TCommand, TResult>(
         TCommand command,

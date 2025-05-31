@@ -21,6 +21,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Chat\Application\SocialMediaBackend.Modules.Chat.Application.csproj" />
+	  <ProjectReference Include="..\..\..\Feed\Application\SocialMediaBackend.Modules.Feed.Application.csproj" />
 	  <ProjectReference Include="..\Tests.Core\SocialMediaBackend.Modules.Users.Tests.Core.csproj" />
 	</ItemGroup>
 	
