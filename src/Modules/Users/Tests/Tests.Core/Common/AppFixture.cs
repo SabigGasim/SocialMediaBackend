@@ -2,25 +2,34 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SocialMediaBackend.Modules.Chat.Application.Configuration;
+using SocialMediaBackend.Modules.Feed.Application.Configuration;
 using SocialMediaBackend.Modules.Users.Application.Configuration;
 using Testcontainers.PostgreSql;
+using Testcontainers.Redis;
 
 namespace SocialMediaBackend.Modules.Users.Tests.Core.Common;
 
 public class App : AppFixture<Program>
 {
-    private PostgreSqlContainer _container = default!;
+    private PostgreSqlContainer _databaseContainer = default!;
+    private RedisContainer _redisContainer = default!;
 
     protected override async ValueTask PreSetupAsync()
     {
-        _container = new PostgreSqlBuilder()
+        _databaseContainer = new PostgreSqlBuilder()
             .WithImage("postgres:latest")
             .WithDatabase("social-media-backend-tests")
             .WithUsername("username")
             .WithPassword("password")
             .Build();
 
-        await _container.StartAsync();
+        _redisContainer = new RedisBuilder()
+            .WithImage("redis:latest")
+            .Build();
+
+        await _databaseContainer.StartAsync();
+        await _redisContainer.StartAsync();
 
     }
 
@@ -32,7 +41,8 @@ public class App : AppFixture<Program>
 
     protected override void ConfigureServices(IServiceCollection s)
     {
-        var connectionString = _container.GetConnectionString();
+        var connectionString = _databaseContainer.GetConnectionString();
+        var redistConnection = _redisContainer.GetConnectionString();
 
         using (var serviceProvider = s.BuildServiceProvider())
         using (var scope = serviceProvider.CreateScope())
@@ -40,6 +50,8 @@ public class App : AppFixture<Program>
             var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
 
             UsersStartup.InitializeAsync(s, connectionString, env).GetAwaiter().GetResult();
+            FeedStartup.InitializeAsync(s, connectionString, env).GetAwaiter().GetResult();
+            ChatStartup.InitializeAsync(s, connectionString, redistConnection, env).GetAwaiter().GetResult();
         }
     }
 }

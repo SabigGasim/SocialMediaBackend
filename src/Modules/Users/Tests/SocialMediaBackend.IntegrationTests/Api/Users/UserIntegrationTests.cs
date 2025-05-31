@@ -9,14 +9,13 @@ using SocialMediaBackend.Modules.Users.Tests.Core.Common;
 using System.Net;
 using SocialMediaBackend.Api.Modules.Users.Endpoints.Users;
 using SocialMediaBackend.Api.Modules.Users.Endpoints.Users.Follows;
-using SocialMediaBackend.Modules.Feed.Domain.Follows;
-using SocialMediaBackend.Modules.Chat.Domain.Follows;
+using SocialMediaBackend.BuildingBlocks.Tests;
 
 namespace SocialMediaBackend.Modules.Users.Tests.IntegrationTests.Api.Users;
 
-public class UserTests(AuthFixture auth, App app) : AppTestBase(auth, app)
+public class UserIntegrationTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 {
-    private readonly App App = app;
+    private readonly App _app = app;
     private static CreateUserRequest CreateUserRequest => new(
             Username: TextHelper.CreateRandom(10),
             Nickname: TextHelper.CreateRandom(10),
@@ -28,7 +27,7 @@ public class UserTests(AuthFixture auth, App app) : AppTestBase(auth, app)
     {
         var request = CreateUserRequest;
 
-        var (rsp, user) = await App.Client.POSTAsync<CreateUserEndpoint, CreateUserRequest, CreateUserResponse>(request);
+        var (rsp, user) = await _app.Client.POSTAsync<CreateUserEndpoint, CreateUserRequest, CreateUserResponse>(request);
 
         rsp.IsSuccessStatusCode.ShouldBeTrue();
         rsp.StatusCode.ShouldBe(HttpStatusCode.Created);
@@ -44,8 +43,8 @@ public class UserTests(AuthFixture auth, App app) : AppTestBase(auth, app)
     {
         var request = CreateUserRequest;
 
-        var (_, user) = await App.Client.POSTAsync<CreateUserEndpoint, CreateUserRequest, CreateUserResponse>(request);
-        var rsp = await App.Client.DELETEAsync<DeleteUserEndpoint, DeleteUserRequest>(new(user.Id));
+        var (_, user) = await _app.Client.POSTAsync<CreateUserEndpoint, CreateUserRequest, CreateUserResponse>(request);
+        var rsp = await _app.Client.DELETEAsync<DeleteUserEndpoint, DeleteUserRequest>(new(user.Id));
 
         rsp.StatusCode.ShouldBe(HttpStatusCode.NoContent);
         rsp.IsSuccessStatusCode.ShouldBeTrue();
@@ -56,29 +55,24 @@ public class UserTests(AuthFixture auth, App app) : AppTestBase(auth, app)
     {
         var request = CreateUserRequest;
 
-        var (_, userToFollow) = await App.Client.POSTAsync<CreateUserEndpoint, CreateUserRequest, CreateUserResponse>(request);
-        var (rsp, res) = await App.Client.POSTAsync<FollowUserEndpoint, FollowUserRequest, FollowUserResponse>(new(userToFollow.Id));
+        var (_, userToFollow) = await _app.Client.POSTAsync<CreateUserEndpoint, CreateUserRequest, CreateUserResponse>(request);
+        var (rsp, res) = await _app.Client.POSTAsync<FollowUserEndpoint, FollowUserRequest, FollowUserResponse>(new(userToFollow.Id));
 
         rsp.IsSuccessStatusCode.ShouldBeTrue();
         rsp.StatusCode.ShouldBe(HttpStatusCode.Created);
         res.FollowStatus.ShouldBe(FollowStatus.Following);
     }
 
-    [Theory]
-    public async Task FollowUserEndpoint_ShouldFail_WhenUserDoesntExist(int x)
+    [Fact]
+    public async Task FollowUserEndpoint_ShouldFail_WhenUserDoesntExist()
     {
         var request = CreateUserRequest;
 
-        var (_, userToFollow) = await App.Client.POSTAsync<CreateUserEndpoint, CreateUserRequest, CreateUserResponse>(request);
-        var (rsp, res) = await App.Client.POSTAsync<FollowUserEndpoint, FollowUserRequest, FollowUserResponse>(new(userToFollow.Id));
-        var mediator = App.Context.< MediatorDecorator > ;
-        TestContext.Current.
+        var (_, userToFollow) = await _app.Client.POSTAsync<CreateUserEndpoint, CreateUserRequest, CreateUserResponse>(request);
+        var (rsp, res) = await _app.Client.POSTAsync<FollowUserEndpoint, FollowUserRequest, FollowUserResponse>(new(userToFollow.Id));
 
         rsp.IsSuccessStatusCode.ShouldBeTrue();
         rsp.StatusCode.ShouldBe(HttpStatusCode.Created);
         res.FollowStatus.ShouldBe(FollowStatus.Following);
-        var followEvent = mediator.PublishedEvents.Single().ShouldBeOfType<UserFollowedEvent>();
-        followEvent.FollowingId.ShouldBe(new(userToFollow.Id));
-        followEvent.FollowerId.ShouldBe(AdminId);
     }
 }
