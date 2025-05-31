@@ -12,7 +12,7 @@ using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 
 namespace SocialMediaBackend.Modules.Feed.Infrastructure.InternalCommands;
 
-public class ProcessInternalCommandsCommandHandler : Commands.ICommandHandler<ProcessInternalCommandsCommand>
+public class ProcessInternalCommandsCommandHandler : ICommandHandler<ProcessInternalCommandsCommand>
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
 
@@ -30,7 +30,7 @@ public class ProcessInternalCommandsCommandHandler : Commands.ICommandHandler<Pr
                                c."Id" AS "{nameof(InternalCommandDto.Id)}", 
                                c."Type" AS "{nameof(InternalCommandDto.Type)}", 
                                c."Data" AS "{nameof(InternalCommandDto.Data)}" 
-                           FROM "{Schema.Feed}"."InternalCommands" AS c 
+                           FROM {Schema.Feed}."InternalCommands" AS c 
                            WHERE c."Processed" = FALSE
                            ORDER BY c."EnqueueDate"
                            """;

@@ -21,8 +21,8 @@ public static class FeedStartup
     {
         ConfigureCompositionRoot(serviceCollection, connectionString);
 
-        await QuartzStartup.InitializeAsync();
         await PersistenceStartup.InitializeAsync(env);
+        await QuartzStartup.InitializeAsync();
     }
 
     private static void ConfigureCompositionRoot(IServiceCollection serviceCollection, string connectionString)
@@ -31,10 +31,10 @@ public static class FeedStartup
 
         containerBuilder.Populate(serviceCollection);
 
-        containerBuilder.RegisterModule(new QuartzModule());
         containerBuilder.RegisterModule(new PersistenceModule(connectionString));
         containerBuilder.RegisterModule(new CQRSModule());
         containerBuilder.RegisterModule(new ProcessingModule());
+        containerBuilder.RegisterModule(new QuartzModule());
         containerBuilder.RegisterModule(new AuthModule());
 
         var container = containerBuilder.Build();

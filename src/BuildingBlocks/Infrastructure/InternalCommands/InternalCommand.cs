@@ -2,6 +2,8 @@
 
 public class InternalCommand
 {
+    private InternalCommand() {}
+
     public Guid Id { get; set; }
     public string Type { get; set; } = default!;
     public string Data { get; set; } = default!;

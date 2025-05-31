@@ -22,9 +22,5 @@ public class PersistenceModule(string connectionString) : Module
         builder.Register(_ => new NpgsqlConnectionFactory(_connectionString))
             .As<IDbConnectionFactory>()
             .SingleInstance();
-
-        builder.Register(_ => new NpgsqlConnectionFactory(_connectionString))
-            .As<IDbConnectionFactory>()
-            .SingleInstance();
     }
 }
