@@ -73,6 +73,13 @@ public abstract class AppTestBase(AuthFixture auth, App app) : TestBase<App>
         }
     }
 
+    protected static async Task<ChatterId> CreateChatterAsync(CancellationToken token = default)
+    {
+        var chatterId = ChatterId.New();
+        await EnsureChatterCreated(chatterId, token);
+        return chatterId;
+    }
+
     protected async Task<string> CreateUserAndTokenAsync(Guid userId, bool isAdmin = false)
     {
         var body = new
