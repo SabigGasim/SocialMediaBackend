@@ -2,7 +2,6 @@
 using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.Modules.Feed.Domain;
 using SocialMediaBackend.Modules.Feed.Domain.Authors;
-using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Auth;
 public abstract class ProfileAuthorizationHandlerBase<TUserResource, TId>
@@ -10,9 +9,9 @@ public abstract class ProfileAuthorizationHandlerBase<TUserResource, TId>
     where TUserResource : Entity<TId>, IUserResource
     where TId : class
 {
-    protected readonly FeedDbContext _context;
+    protected readonly DbContext _context;
 
-    public ProfileAuthorizationHandlerBase(FeedDbContext context)
+    public ProfileAuthorizationHandlerBase(DbContext context)
     {
         _context = context;
     }

@@ -11,14 +11,11 @@ using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
-using System.Runtime.CompilerServices;
 
 namespace SocialMediaBackend.Modules.Chat.Tests.IntegrationTests.DirectChat;
 
 public class DirectChatIntegrationTests(AuthFixture authFixture, App app) : AppTestBase(authFixture, app)
 {
-    private readonly App _app = app;
-
     [Fact]
     public async Task GetAllDirectMessages_ShouldReturnViewableMessages()
     {
