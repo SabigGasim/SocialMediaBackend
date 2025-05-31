@@ -1,4 +1,5 @@
-﻿using SocialMediaBackend.Modules.Feed.Domain.Authors;
+﻿using Microsoft.EntityFrameworkCore;
+using SocialMediaBackend.Modules.Feed.Domain.Authors;
 using SocialMediaBackend.Modules.Feed.Domain.Comments;
 using SocialMediaBackend.Modules.Feed.Domain.Follows;
 using SocialMediaBackend.Modules.Feed.Domain.Posts;
@@ -11,7 +12,7 @@ namespace SocialMediaBackend.Modules.Feed.Tests.Core.Common;
 public static class DbContextExtensions
 {
     public static async Task<(Author user, Author follower, Follow follow)> CreateAuthorWithFollowerAsync(
-        this FakeDbContext context, FollowStatus status = FollowStatus.Following)
+        this DbContext context, FollowStatus status = FollowStatus.Following)
     {
 
         var user = AuthorFactory.Create(isPublic: status == FollowStatus.Following);
@@ -33,7 +34,7 @@ public static class DbContextExtensions
     }
 
     public static async Task<(Author user, List<Author> followers, List<Follow> follows)> CreateAuthorWithFollowerAsync(
-        this FakeDbContext context, FollowStatus status = FollowStatus.Following, int followersCount = 1)
+        this DbContext context, FollowStatus status = FollowStatus.Following, int followersCount = 1)
     {
 
         var user = AuthorFactory.Create(isPublic: status == FollowStatus.Following);
@@ -62,7 +63,7 @@ public static class DbContextExtensions
     }
 
     public static async Task<Comment> CreateCommentAsync(
-        this FakeDbContext context, PostId? postId = null, AuthorId? userId = null, CancellationToken ct = default)
+        this DbContext context, PostId? postId = null, AuthorId? userId = null, CancellationToken ct = default)
     {
         if (userId is null)
         {
@@ -88,7 +89,7 @@ public static class DbContextExtensions
     }
 
     public static async Task<(Comment comment, Comment reply)> CreateCommentWithReplyAsync(
-        this FakeDbContext context, CancellationToken ct = default)
+        this DbContext context, CancellationToken ct = default)
     {
         var user = AuthorFactory.Create();
         var replier = AuthorFactory.Create();
