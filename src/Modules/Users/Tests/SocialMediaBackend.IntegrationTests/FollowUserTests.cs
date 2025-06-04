@@ -1,7 +1,6 @@
 ﻿using FastEndpoints;
 using Shouldly;
 using SocialMediaBackend.Modules.Users.Application.Users.CreateUser;
-using SocialMediaBackend.Modules.Users.Application.Users.DeleteUser;
 using SocialMediaBackend.Modules.Users.Application.Users.Follows.FollowUser;
 using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
@@ -11,9 +10,9 @@ using SocialMediaBackend.Api.Modules.Users.Endpoints.Users;
 using SocialMediaBackend.Api.Modules.Users.Endpoints.Users.Follows;
 using SocialMediaBackend.BuildingBlocks.Tests;
 
-namespace SocialMediaBackend.Modules.Users.Tests.IntegrationTests.Api.Users;
+namespace SocialMediaBackend.Modules.Users.Tests.IntegrationTests;
 
-public class UserIntegrationTests(AuthFixture auth, App app) : AppTestBase(auth, app)
+public class FollowUserTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 {
     private readonly App _app = app;
     private static CreateUserRequest CreateUserRequest => new(
@@ -21,34 +20,6 @@ public class UserIntegrationTests(AuthFixture auth, App app) : AppTestBase(auth,
             Nickname: TextHelper.CreateRandom(10),
             DateOnly.Parse("2000/01/01"),
             Media.DefaultProfilePicture);
-
-    [Fact]
-    public async Task CreateUserEndpoint_ShouldWork()
-    {
-        var request = CreateUserRequest;
-
-        var (rsp, user) = await _app.Client.POSTAsync<CreateUserEndpoint, CreateUserRequest, CreateUserResponse>(request);
-
-        rsp.IsSuccessStatusCode.ShouldBeTrue();
-        rsp.StatusCode.ShouldBe(HttpStatusCode.Created);
-
-        user.Username.ShouldBe(user.Username);
-        user.Nickname.ShouldBe(user.Nickname);
-        user.DateOfBirth.ShouldBe(user.DateOfBirth);
-        user.ProfilePicture.ShouldBe(user.ProfilePicture);
-    }
-
-    [Fact]
-    public async Task DeleteUserEndpoint_ShouldWork_WhenUserExists()
-    {
-        var request = CreateUserRequest;
-
-        var (_, user) = await _app.Client.POSTAsync<CreateUserEndpoint, CreateUserRequest, CreateUserResponse>(request);
-        var rsp = await _app.Client.DELETEAsync<DeleteUserEndpoint, DeleteUserRequest>(new(user.Id));
-
-        rsp.StatusCode.ShouldBe(HttpStatusCode.NoContent);
-        rsp.IsSuccessStatusCode.ShouldBeTrue();
-    }
 
     [Fact]
     public async Task FollowUserEndpoint_ShouldWork_WhenUserExists()

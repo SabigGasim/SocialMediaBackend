@@ -7,9 +7,9 @@ using SocialMediaBackend.Modules.Chat.Application.Contracts;
 using SocialMediaBackend.Modules.Feed.Application.Authors.GetAuthor;
 using SocialMediaBackend.Modules.Feed.Application.Contracts;
 using SocialMediaBackend.Modules.Users.Application.Users.CreateUser;
-using SocialMediaBackend.Modules.Users.Tests.Core.Common;
+using SocialMediaBackend.Tests.SystemTests;
 
-namespace SocialMediaBackend.Modules.Users.Tests.IntegrationTests.Api.Users;
+namespace SocialMediaBackend.Tests.Tests.IntegrationTests.Api.Users;
 
 public class CreateUserTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 {

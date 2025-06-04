@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <UserSecretsId>239ee748-b573-4208-8d26-4f289f5e596d</UserSecretsId>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -21,8 +22,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Chat\Application\SocialMediaBackend.Modules.Chat.Application.csproj" />
-	  <ProjectReference Include="..\..\..\Feed\Application\SocialMediaBackend.Modules.Feed.Application.csproj" />
 	  <ProjectReference Include="..\Tests.Core\SocialMediaBackend.Modules.Users.Tests.Core.csproj" />
 	</ItemGroup>
 	
