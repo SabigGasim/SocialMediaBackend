@@ -7,9 +7,9 @@ public class QuartzModule : Module
 {
     protected override void Load(ContainerBuilder builder)
     {
-        //builder
-        //    .RegisterAssemblyTypes(typeof(IInfrastructureMarker).Assembly)
-        //    .Where(x => typeof(IJob).IsAssignableFrom(x))
-        //    .InstancePerDependency();
+        builder
+            .RegisterAssemblyTypes(typeof(IInfrastructureMarker).Assembly)
+            .Where(x => typeof(IJob).IsAssignableFrom(x))
+            .InstancePerDependency();
     }
 }

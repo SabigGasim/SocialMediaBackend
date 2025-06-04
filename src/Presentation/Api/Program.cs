@@ -37,7 +37,7 @@ if (!environment.IsEnvironment("Testing"))
         UsersStartup.InitializeAsync(builder.Services, connectionString, environment),
         FeedStartup.InitializeAsync(builder.Services, connectionString, environment),
         ChatStartup.InitializeAsync(builder.Services, connectionString, redisConnection, environment),
-        PaymentsStartup.InitializeAsync(builder.Services)
+        PaymentsStartup.InitializeAsync(builder.Services, connectionString, environment)
         );
 }
 
