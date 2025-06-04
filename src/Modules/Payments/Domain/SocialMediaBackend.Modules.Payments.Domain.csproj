@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Domain\SocialMediaBackend.BuildingBlocks.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

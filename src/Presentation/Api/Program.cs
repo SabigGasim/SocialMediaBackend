@@ -10,6 +10,8 @@ using SocialMediaBackend.Modules.Feed.Application.Configuration;
 using SocialMediaBackend.Modules.Chat.Application.Configuration;
 using Autofac.Extensions.DependencyInjection;
 using SocialMediaBackend.Modules.Chat.Application.Hubs;
+using SocialMediaBackend.Modules.Payments.Application.Configuration;
+using SocialMediaBackend.Api.Modules.Payments;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,23 +19,25 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 var config = builder.Configuration;
 var environment = builder.Environment;
+var connectionString = config.GetConnectionString("PostgresConnection")!;
 
 builder.Services.AddFeedModule();
 builder.Services.AddUserModule();
 builder.Services.AddChatModule();
+builder.Services.AddPaymentsModule(environment, connectionString);
 builder.Services.AddApi(config);
 
 var app = builder.Build();
 
 if (!environment.IsEnvironment("Testing"))
 {
-    var connectionString = config.GetConnectionString("PostgresConnection")!;
     var redisConnection = config.GetConnectionString("RedisConnection")!;
 
     await Task.WhenAll(
         UsersStartup.InitializeAsync(builder.Services, connectionString, environment),
         FeedStartup.InitializeAsync(builder.Services, connectionString, environment),
-        ChatStartup.InitializeAsync(builder.Services, connectionString, redisConnection, environment)
+        ChatStartup.InitializeAsync(builder.Services, connectionString, redisConnection, environment),
+        PaymentsStartup.InitializeAsync(builder.Services)
         );
 }
 

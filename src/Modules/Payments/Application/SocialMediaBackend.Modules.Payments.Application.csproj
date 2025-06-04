@@ -6,4 +6,16 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="8.3.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Application\SocialMediaBackend.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Infrastructure\SocialMediaBackend.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\Infrastructure\SocialMediaBackend.Modules.Payments.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
