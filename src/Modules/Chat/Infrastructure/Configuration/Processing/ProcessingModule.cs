@@ -16,7 +16,7 @@ public class ProcessingModule(string connectionString) : Module
             .As<IDomainEventsDispatcher>()
             .InstancePerLifetimeScope();
 
-        builder.RegisterType<UnitOfWork>()
+        builder.RegisterType<EFUnitOfWork>()
             .As<IUnitOfWork>()
             .InstancePerLifetimeScope();
 

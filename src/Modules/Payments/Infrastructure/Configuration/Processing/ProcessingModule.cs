@@ -13,7 +13,7 @@ public class ProcessingModule : Module
             .As<IDomainEventsDispatcher>()
             .InstancePerLifetimeScope();
 
-        builder.RegisterType<UnitOfWork>()
+        builder.RegisterType<EventSourcingUnitOfWork>()
             .As<IUnitOfWork>()
             .InstancePerLifetimeScope();
 

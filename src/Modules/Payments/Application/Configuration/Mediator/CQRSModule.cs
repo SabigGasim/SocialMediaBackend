@@ -42,7 +42,7 @@ public class CQRSModule : Autofac.Module
             .WithScopedLifetime());
 
         services.Decorate(typeof(ICommandHandler<>), typeof(UnitOfWorkCommandHandlerDecorator<>));
-        //services.Decorate(typeof(ICommandHandler<,>), typeof(UnitOfWorkCommandHandlerWithResultDecorator<,>));
+        services.Decorate(typeof(ICommandHandler<,>), typeof(UnitOfWorkCommandHandlerWithResultDecorator<,>));
 
         builder.Populate(services);
     }
