@@ -6,6 +6,8 @@ using SocialMediaBackend.Modules.Chat.Application.Chatters.GetChatter;
 using SocialMediaBackend.Modules.Chat.Application.Contracts;
 using SocialMediaBackend.Modules.Feed.Application.Authors.GetAuthor;
 using SocialMediaBackend.Modules.Feed.Application.Contracts;
+using SocialMediaBackend.Modules.Payments.Application.Contracts;
+using SocialMediaBackend.Modules.Payments.Application.Payers.GetPayer;
 using SocialMediaBackend.Modules.Users.Application.Users.CreateUser;
 using SocialMediaBackend.Tests.SystemTests;
 
@@ -37,9 +39,12 @@ public class CreateUserTests(AuthFixture auth, App app) : AppTestBase(auth, app)
             user.Nickname,
             user.ProfilePicture.Url);
 
+        var payerInfo = new PayerInfo(user.Id, false);
+
         await Task.WhenAll(
             AssertEventually(new GetCreatedUserFromChatProbe(userInfo, new ChatModule()), TimeSpan.FromSeconds(10)),
-            AssertEventually(new GetCreatedUserFromFeedProbe(userInfo, new FeedModule()), TimeSpan.FromSeconds(10))
+            AssertEventually(new GetCreatedUserFromFeedProbe(userInfo, new FeedModule()), TimeSpan.FromSeconds(10)),
+            AssertEventually(new GetCreatedUserFromPaymentsProbe(payerInfo, new PaymentsModule()), TimeSpan.FromSeconds(10))
         );
     }
 
@@ -116,5 +121,41 @@ public class CreateUserTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         }
     }
 
+    private class GetCreatedUserFromPaymentsProbe(PayerInfo expectedPayerInfo, IPaymentsModule module) : IProbe
+    {
+        private readonly PayerInfo _expectedPayerInfo = expectedPayerInfo;
+        private readonly IPaymentsModule _module = module;
+
+        private PayerInfo _actualUserInfo = default!;
+
+        public bool IsSatisfied()
+        {
+            return _actualUserInfo == _expectedPayerInfo;
+        }
+
+        public async Task SampleAsync()
+        {
+            var res = await _module.ExecuteCommandAsync<GetPayerCommand, GetPayerResponse>(new GetPayerCommand(_expectedPayerInfo.Id));
+
+            if (!res.IsSuccess)
+            {
+                return;
+            }
+
+            var payer = res.Payload;
+
+            _actualUserInfo = new PayerInfo(
+                payer.Id,
+                payer.IsDeleted
+                );
+        }
+
+        public string DescribeFailureTo()
+        {
+            return $"Payer with ID {_expectedPayerInfo.Id} was not created in payments module";
+        }
+    }
+
     public record UserInfo(Guid Id, string Username, string Nickname, string ProfilePicture);
+    public record PayerInfo(Guid Id, bool IsDeleted);
 }

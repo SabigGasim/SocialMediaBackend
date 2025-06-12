@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SocialMediaBackend.Modules.Chat.Application.Configuration;
 using SocialMediaBackend.Modules.Feed.Application.Configuration;
+using SocialMediaBackend.Modules.Payments.Application.Configuration;
+using SocialMediaBackend.Modules.Payments.Infrastructure.Configuration;
 using SocialMediaBackend.Modules.Users.Application.Configuration;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
@@ -52,6 +54,7 @@ public class App : AppFixture<Program>
             UsersStartup.InitializeAsync(s, connectionString, env).GetAwaiter().GetResult();
             ChatStartup.InitializeAsync(s, connectionString, redistConnection, env).GetAwaiter().GetResult();
             FeedStartup.InitializeAsync(s, connectionString, env).GetAwaiter().GetResult();
+            PaymentsStartup.InitializeAsync(s, connectionString, env).GetAwaiter().GetResult();
         }
     }
 }
