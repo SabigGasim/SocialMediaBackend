@@ -6,7 +6,7 @@ using SocialMediaBackend.BuildingBlocks.Domain;
 
 namespace SocialMediaBackend.BuildingBlocks.Infrastructure;
 
-public sealed class UnitOfWork(
+public sealed class EFUnitOfWork(
     DbContext context, 
     IDomainEventsDispatcher dispatcher,
     ILifetimeScope scope) : IUnitOfWork
@@ -17,14 +17,15 @@ public sealed class UnitOfWork(
 
     public async Task<int> CommitAsync(CancellationToken ct = default)
     {
-        var entitiesWithEvents = _context.ChangeTracker.Entries<IHasDomainEvents>()
+        var entitiesWithEvents = _context.ChangeTracker
+            .Entries<IHasDomainEvents>()
            .Select(e => e.Entity)
-           .Where(e => e.DomainEvents?.Count > 0)
-           .ToList();
+            .Where(e => e.DomainEvents is { Count: > 0 })
+            .ToArray();
 
         var domainEvents = entitiesWithEvents
             .SelectMany(e => e.DomainEvents!)
-            .ToList();
+            .ToArray();
 
         List<IDomainEventNotification> domainEventNotifications = [];
         foreach (var domainEvent in domainEvents)
@@ -53,13 +54,13 @@ public sealed class UnitOfWork(
 
         await _dispatcher.DispatchAsync(domainEvents, ct);
 
+        var result = await _context.SaveChangesAsync(ct);
+
         foreach (var notification in domainEventNotifications)
         {
             var mediator = _scope.Resolve<IMediator>();
-            await mediator.Publish(notification);
+            await mediator.Publish(notification, CancellationToken.None);
         }
-
-        var result = await _context.SaveChangesAsync(ct);
 
         return result;
     }
