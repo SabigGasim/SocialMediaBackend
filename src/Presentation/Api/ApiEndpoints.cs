@@ -101,4 +101,10 @@ public static class ApiEndpoints
         public const string Base = $"{ApiBase}/chathub";
         public const string Connect = $"{Base}/connect";
     }
+
+    public static class Payments
+    {
+        private const string Base = $"{ApiBase}/payments";
+        public const string GetPayer = $"{Base}/payers/{{PayerId}}";
+    }
 }

@@ -1,4 +1,5 @@
-﻿using SocialMediaBackend.Modules.Payments.Infrastructure;
+﻿using SocialMediaBackend.Modules.Payments.Application;
+using SocialMediaBackend.Modules.Payments.Infrastructure;
 
 namespace SocialMediaBackend.Api.Modules.Payments;
 
@@ -9,6 +10,7 @@ public static class PaymentsServiceCollectionExtensions
         IWebHostEnvironment environment,
         string connectionString)
     {
-        return services.AddInfrastructure(environment, connectionString);
+        return services.AddInfrastructure(environment, connectionString)
+            .AddApplication();
     }
 }
