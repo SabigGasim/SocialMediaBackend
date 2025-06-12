@@ -4,6 +4,7 @@ using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.InternalCommands;
 
 namespace SocialMediaBackend.BuildingBlocks.Infrastructure;
+
 public sealed class UnitOfWorkCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
     where TCommand : ICommand<HandlerResponse>
 {
