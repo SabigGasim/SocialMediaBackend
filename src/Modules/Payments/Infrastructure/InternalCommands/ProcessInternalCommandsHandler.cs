@@ -42,7 +42,7 @@ public class ProcessInternalCommandsCommandHandler : ICommandHandler<ProcessInte
             .WaitAndRetryAsync(
             [
 #if DEBUG
-                TimeSpan.FromHours(1)
+                TimeSpan.FromSeconds(5)
 #else
                 TimeSpan.FromSeconds(1),
                 TimeSpan.FromSeconds(2),
