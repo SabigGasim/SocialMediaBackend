@@ -6,11 +6,11 @@ namespace SocialMediaBackend.Modules.Payments.Domain.Common;
 public abstract class AggregateRoot : IStreamAggregate
 {
     private List<IDomainEvent>? _domainEvents;
-    private readonly List<IStreamEvent> _events = new();
+    private readonly List<IStreamEvent> _streamEvents = new();
 
     public Guid Id { get; protected set; }
     [JsonIgnore]
-    public IReadOnlyCollection<IStreamEvent> Events => _events.AsReadOnly();
+    public IReadOnlyCollection<IStreamEvent> StreamEvents => _streamEvents.AsReadOnly();
     [JsonIgnore]
     public IReadOnlyCollection<IDomainEvent>? DomainEvents => _domainEvents?.AsReadOnly();
 
@@ -19,7 +19,8 @@ public abstract class AggregateRoot : IStreamAggregate
         _domainEvents ??= new();
         _domainEvents.Add(domainEvent);
     }
-    public void ClearDomainEvents() => _domainEvents?.Clear();
+    protected void AddEvent(IStreamEvent streamEvent) => _streamEvents.Add(streamEvent);
 
-    protected void AddEvent(IStreamEvent streamEvent) => _events.Add(streamEvent);
+    public void ClearDomainEvents() => _domainEvents?.Clear();
+    public void ClearStreamEvents() => _streamEvents.Clear();
 }

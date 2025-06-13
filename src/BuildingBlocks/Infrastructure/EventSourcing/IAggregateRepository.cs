@@ -8,4 +8,5 @@ public interface IAggregateRepository
         where TAggregate : class, IStreamAggregate;
     Task SaveChangesAsync(CancellationToken ct = default);
     void StartStream<TAggregate>(TAggregate aggregate) where TAggregate : class, IStreamAggregate;
+    void Append(Guid streamId, IEnumerable<IStreamEvent> events);
 }
