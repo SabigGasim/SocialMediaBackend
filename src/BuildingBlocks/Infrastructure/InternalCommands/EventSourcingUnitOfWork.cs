@@ -56,6 +56,15 @@ public sealed class EventSourcingUnitOfWork(
 
         await _dispatcher.DispatchAsync(domainEvents, ct);
 
+        var entitiesWithStreamEvents = entitiesWithEvents
+            .Where(x => x.StreamEvents is { Count: > 0 })
+            .ToArray();
+
+        foreach (var entity in entitiesWithStreamEvents)
+        {
+            _repository.Append(entity.Id, entity.StreamEvents);
+        }
+
         await _repository.SaveChangesAsync(ct);
 
         if (_context.ChangeTracker.HasChanges())

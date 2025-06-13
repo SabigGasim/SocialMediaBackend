@@ -14,7 +14,7 @@ public class CreatePayerCommandHandler(IAggregateRepository repository) : IComma
 
     public Task<HandlerResponse> ExecuteAsync(CreatePayerCommand command, CancellationToken ct)
     {
-        var payer = Payer.Create(new PayerCreated(command.PayerId));
+        var payer = Payer.Create(command.PayerId);
 
         _repository.StartStream(payer);
 
