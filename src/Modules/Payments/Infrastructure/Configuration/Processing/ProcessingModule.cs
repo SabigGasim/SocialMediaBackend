@@ -20,5 +20,9 @@ public class ProcessingModule : Module
         builder.RegisterType<CommandsScheduler>()
             .As<ICommandsScheduler>()
             .SingleInstance();
+
+        builder.RegisterType<StripePaymentService>()
+            .As<IPaymentService>()
+            .SingleInstance();
     }
 }
