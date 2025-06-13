@@ -4,3 +4,4 @@ obj/
 debug/
 release/
 AzureADB2C/
+.env

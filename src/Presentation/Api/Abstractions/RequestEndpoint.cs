@@ -112,3 +112,27 @@ public class RequestEndpointWithoutRequest<TResponse>(IModuleContract module) : 
         await SendErrorsAsync((int)statusCode, cancellation: ct);
     }
 }
+
+
+public abstract class RequestEndpoint(IModuleContract module) : FastEndpoints.EndpointWithoutRequest
+{
+    private readonly IModuleContract _module = module;
+
+    protected async Task HandleCommandAsync<TCommand>(TCommand command, CancellationToken ct)
+        where TCommand : ICommand<HandlerResponse>
+    {
+        var handlerResponse = await _module.ExecuteCommandAsync(command, ct);
+
+        var statusCode = handlerResponse.ResponseStatus.MapToHttpStatusCode();
+
+        if (handlerResponse.IsSuccess)
+        {
+            await SendNoContentAsync(ct);
+            return;
+        }
+
+        AddError(handlerResponse.Message, statusCode.ToString());
+
+        await SendErrorsAsync((int)statusCode, cancellation: ct);
+    }
+}

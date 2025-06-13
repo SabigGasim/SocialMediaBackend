@@ -12,6 +12,8 @@ using Autofac.Extensions.DependencyInjection;
 using SocialMediaBackend.Modules.Chat.Application.Hubs;
 using SocialMediaBackend.Modules.Payments.Application.Configuration;
 using SocialMediaBackend.Api.Modules.Payments;
+using Stripe;
+using SocialMediaBackend.Modules.Payments.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,13 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 var config = builder.Configuration;
 var environment = builder.Environment;
 var connectionString = config.GetConnectionString("PostgresConnection")!;
+
+DotNetEnv.Env.Load();
+StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("StripeSecretKey") ?? throw new NullReferenceException($"StripeSecretKey was null. please create a .env file in the root of this project with the template shown in .env.example file");
+builder.Services.Configure<StripeSettings>(options =>
+{
+    options.WebHookSecret = Environment.GetEnvironmentVariable("StripeWebhookSecret") ?? throw new NullReferenceException($"StripeWebhookSecret was null. please create a .env file in the root of this project with the template shown in .env.example file");
+});
 
 builder.Services.AddFeedModule();
 builder.Services.AddUserModule();

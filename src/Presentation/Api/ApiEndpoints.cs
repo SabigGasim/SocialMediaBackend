@@ -105,6 +105,11 @@ public static class ApiEndpoints
     public static class Payments
     {
         private const string Base = $"{ApiBase}/payments";
+        public const string CreatePaymentIntent = $"{Base}/create-payment-intent";
+        public const string StripeWebHooks = $"{ApiBase}/webhooks/stripe";
+        public const string GetPaymentStatus = $"{Base}/status/{{PaymentId}}";
         public const string GetPayer = $"{Base}/payers/{{PayerId}}";
+
+        public const string SubscriteToAppPlan = $"{Base}/subscribe-to-app-plan";
     }
 }
