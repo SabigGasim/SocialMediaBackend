@@ -1,19 +1,24 @@
-﻿using Marten;
-using SocialMediaBackend.BuildingBlocks.Application;
+﻿using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
-using SocialMediaBackend.Modules.Payments.Domain.Payers.Events;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.Exceptions;
+using SocialMediaBackend.Modules.Payments.Domain.Payers;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Payers.DeletePayer;
 
-public class DeletePayerCommandHandler(IDocumentSession documentSession) : ICommandHandler<DeletePayerCommand>
+public class DeletePayerCommandHandler(IAggregateRepository repository) : ICommandHandler<DeletePayerCommand>
 {
-    private readonly IDocumentSession _documentSession = documentSession;
+    private readonly IAggregateRepository _repository = repository;
 
-    public Task<HandlerResponse> ExecuteAsync(DeletePayerCommand command, CancellationToken ct)
+    public async Task<HandlerResponse> ExecuteAsync(DeletePayerCommand command, CancellationToken ct)
     {
-        _documentSession.Events.Append(command.PayerId.Value, new PayerDeleted());
+        var payer = await _repository.LoadAsync<Payer>(command.PayerId.Value, CancellationToken.None);
 
-        return Task.FromResult((HandlerResponse)HandlerResponseStatus.NoContent);
+        NotFoundException.ThrowIfNull(nameof(Payer), payer);
+
+        payer.Delete();
+
+        return HandlerResponseStatus.Deleted;
     }
 }

@@ -33,6 +33,20 @@ public class Payer : AggregateRoot
         this.AddEvent(@event);
     }
 
+    public void Delete()
+    {
+        if (IsDeleted)
+        {
+            return;
+        }
+
+        var @event = new PayerDeleted();
+
+        this.Apply(@event);
+        this.AddEvent(@event);
+        this.AddDomainEvent(new PayerDeletedDomainEvent(new PayerId(this.Id)));
+    }
+
     public void Apply(PayerCreated @event)
     {
         Id = @event.PayerId.Value;
