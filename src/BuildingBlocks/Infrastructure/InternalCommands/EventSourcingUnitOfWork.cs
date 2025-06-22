@@ -57,12 +57,12 @@ public sealed class EventSourcingUnitOfWork(
         await _dispatcher.DispatchAsync(domainEvents, ct);
 
         var entitiesWithStreamEvents = entitiesWithEvents
-            .Where(x => x.StreamEvents is { Count: > 0 })
+            .Where(x => x.UnCommittedEvents is { Count: > 0 })
             .ToArray();
 
         foreach (var entity in entitiesWithStreamEvents)
         {
-            _repository.Append(entity.Id, entity.StreamEvents);
+            _repository.AppendUnCommittedEvents(entity);
         }
 
         await _repository.SaveChangesAsync(ct);

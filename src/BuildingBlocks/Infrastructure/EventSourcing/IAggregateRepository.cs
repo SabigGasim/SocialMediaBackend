@@ -1,4 +1,5 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Domain;
+using System.Linq.Expressions;
 
 namespace SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing;
 
@@ -13,4 +14,5 @@ public interface IAggregateRepository
     Task SaveChangesAsync(CancellationToken ct = default);
     void StartStream<TAggregate>(TAggregate aggregate) where TAggregate : class, IStreamAggregate;
     void Append(Guid streamId, IEnumerable<IStreamEvent> events);
+    void AppendUnCommittedEvents<TAggregate>(TAggregate aggregate) where TAggregate : class, IStreamAggregate;
 }

@@ -84,10 +84,16 @@ public class MartenAggregateRepository(
         return aggregates;
     }
 
+    public void AppendUnCommittedEvents<TAggregate>(TAggregate aggregate)
+        where TAggregate : class, IStreamAggregate
+    {
+        if (aggregate.UnCommittedEvents is not { Count: > 0 })
         {
-            _tracker.Track(aggregate);
+            return;
         }
 
-        return aggregates;
+        _documentSession.Events.Append(aggregate.Id, aggregate.UnCommittedEvents);
+        
+        aggregate.ClearStreamEvents();
     }
 }
