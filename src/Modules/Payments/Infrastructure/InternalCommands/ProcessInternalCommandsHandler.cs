@@ -10,14 +10,10 @@ using SocialMediaBackend.Modules.Payments.Infrastructure.Configuration;
 
 namespace SocialMediaBackend.Modules.Payments.Infrastructure.InternalCommands;
 
-public class ProcessInternalCommandsCommandHandler : ICommandHandler<ProcessInternalCommandsCommand>
+public class ProcessInternalCommandsCommandHandler(IDbConnectionFactory dbConnectionFactory) 
+    : ICommandHandler<ProcessInternalCommandsCommand>
 {
-    private readonly IDbConnectionFactory _dbConnectionFactory;
-
-    public ProcessInternalCommandsCommandHandler(IDbConnectionFactory dbConnectionFactory)
-    {
-        _dbConnectionFactory = dbConnectionFactory;
-    }
+    private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
 
     public async Task<HandlerResponse> ExecuteAsync(ProcessInternalCommandsCommand command, CancellationToken ct)
     {

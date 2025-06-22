@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing;
