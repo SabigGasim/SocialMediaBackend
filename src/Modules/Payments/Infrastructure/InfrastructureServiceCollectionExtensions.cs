@@ -6,7 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SocialMediaBackend.BuildingBlocks.Domain.Serialization;
 using SocialMediaBackend.Modules.Payments.Domain.Payers;
+using SocialMediaBackend.Modules.Payments.Domain.Products;
+using SocialMediaBackend.Modules.Payments.Domain.Subscriptions;
 using SocialMediaBackend.Modules.Payments.Infrastructure.Domain.Payments;
+using SocialMediaBackend.Modules.Payments.Infrastructure.Domain.Products;
+using SocialMediaBackend.Modules.Payments.Infrastructure.Domain.Subscriptions;
 
 namespace SocialMediaBackend.Modules.Payments.Infrastructure;
 
@@ -31,6 +35,9 @@ public static class InfrastructureServiceCollectionExtensions
 
             options.Schema.For<Product>();
             options.Projections.Add<ProductProjection>(ProjectionLifecycle.Inline);
+
+            options.Schema.For<Subscription>();
+            options.Projections.Add<SubscriptionProjection>(ProjectionLifecycle.Inline);
 
             if (!environment.IsProduction())
             {
