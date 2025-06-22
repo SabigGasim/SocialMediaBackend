@@ -28,9 +28,26 @@ public class MartenAggregateRepository(
         return aggregate;
     }
 
+    public async Task<TAggregate?> LoadAsync<TAggregate>(Expression<Func<TAggregate, bool>> expression, CancellationToken ct) 
+        where TAggregate : class, IStreamAggregate
+    {
+        var aggregate = await _documentSession.Query<TAggregate>()
+            .Where(expression)
+            .FirstOrDefaultAsync(ct);
+
+        if (aggregate is null)
+        {
+            return null;
+        }
+
+        _tracker.Track(aggregate);
+
+        return aggregate;
+    }
+
     public void StartStream<TAggregate>(TAggregate aggregate) where TAggregate : class, IStreamAggregate
     {
-        _documentSession.Events.StartStream<TAggregate>(aggregate.Id, aggregate.StreamEvents);
+        _documentSession.Events.StartStream<TAggregate>(aggregate.Id, aggregate.UnCommittedEvents);
 
         aggregate.ClearStreamEvents();
         
