@@ -1,4 +1,4 @@
-﻿namespace SocialMediaBackend.Modules.Payments.Domain.Common;
+﻿namespace SocialMediaBackend.Modules.Payments.Contracts;
 
 public enum Currency
 {
