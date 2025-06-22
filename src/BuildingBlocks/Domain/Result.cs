@@ -47,6 +47,8 @@ public class Result
             _ => throw new ArgumentOutOfRangeException(nameof(code))
         };
     }
+
+    public static implicit operator bool(Result result) => result.IsSuccess;
 }
 
 

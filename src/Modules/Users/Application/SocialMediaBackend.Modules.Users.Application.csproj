@@ -24,6 +24,7 @@
 
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\Payments\Contracts\SocialMediaBackend.Modules.Payments.Contracts.csproj" />
 	  <ProjectReference Include="..\Infrastructure\SocialMediaBackend.Modules.Users.Infrastructure.csproj" />
 	  <ProjectReference Include="..\IntegrationEvents\SocialMediaBackend.Modules.Users.IntegrationEvents.csproj" />
 	</ItemGroup>

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\Domain\SocialMediaBackend.BuildingBlocks.Domain.csproj" />
+    <ProjectReference Include="..\Contracts\SocialMediaBackend.Modules.Payments.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

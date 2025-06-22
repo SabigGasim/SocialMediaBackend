@@ -1,7 +1,7 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application;
 using System.Net;
 
-namespace SocialMediaBackend.Modules.Users.Api.Mappings;
+namespace SocialMediaBackend.Api.Mappings;
 
 public static class ApplicationToApiMappings
 {
@@ -21,6 +21,7 @@ public static class ApplicationToApiMappings
             HandlerResponseStatus.NotModified => HttpStatusCode.NotModified,
             HandlerResponseStatus.Unauthorized => HttpStatusCode.Unauthorized,
             HandlerResponseStatus.Timeout => HttpStatusCode.RequestTimeout,
+            HandlerResponseStatus.NotSupported => HttpStatusCode.NotImplemented,
 
             _ => HttpStatusCode.InternalServerError
         };

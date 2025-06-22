@@ -24,7 +24,7 @@ internal sealed class PostEntityTypeConfiguration : IEntityTypeConfiguration<Pos
             m.Property(p => p.Url).HasColumnName("Url");
             m.Property(p => p.FilePath).HasColumnName("FilePath");
             m.Property(p => p.MediaType).HasColumnName("MediaType");
-        }); ;
+        });
 
         builder.HasOne(p => p.Author)
             .WithMany(u => u.Posts)

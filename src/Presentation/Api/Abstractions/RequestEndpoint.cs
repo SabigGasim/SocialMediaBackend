@@ -1,8 +1,8 @@
-﻿using SocialMediaBackend.Modules.Users.Api.Mappings;
-using SocialMediaBackend.BuildingBlocks.Application.Requests;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Contracts;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
+using SocialMediaBackend.Api.Mappings;
 
 namespace SocialMediaBackend.Api.Abstractions;
 

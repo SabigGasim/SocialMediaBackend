@@ -10,7 +10,7 @@ public abstract class AggregateRoot : IStreamAggregate
 
     public Guid Id { get; protected set; }
     [JsonIgnore]
-    public IReadOnlyCollection<IStreamEvent> StreamEvents => _streamEvents.AsReadOnly();
+    public IReadOnlyCollection<IStreamEvent> UnCommittedEvents => _streamEvents.AsReadOnly();
     [JsonIgnore]
     public IReadOnlyCollection<IDomainEvent>? DomainEvents => _domainEvents?.AsReadOnly();
 

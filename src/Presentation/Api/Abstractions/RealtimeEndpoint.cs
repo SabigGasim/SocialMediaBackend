@@ -1,10 +1,10 @@
-﻿using SocialMediaBackend.Modules.Users.Api.Mappings;
-using SocialMediaBackend.BuildingBlocks.Application.Requests;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Contracts;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using Microsoft.AspNetCore.SignalR;
 using SocialMediaBackend.Api.Services;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands.Realtime;
+using SocialMediaBackend.Api.Mappings;
 
 namespace SocialMediaBackend.Api.Abstractions;
 
