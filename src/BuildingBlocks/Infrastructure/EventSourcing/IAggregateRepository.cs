@@ -8,6 +8,8 @@ public interface IAggregateRepository
         where TAggregate : class, IStreamAggregate;
     Task<TAggregate?> LoadAsync<TAggregate>(Expression<Func<TAggregate, bool>> expression, CancellationToken ct = default)
         where TAggregate : class, IStreamAggregate;
+    Task<IEnumerable<TAggregate>> LoadManyAsync<TAggregate>(Expression<Func<TAggregate, bool>> expression, CancellationToken ct = default)
+        where TAggregate : class, IStreamAggregate;
     Task SaveChangesAsync(CancellationToken ct = default);
     void StartStream<TAggregate>(TAggregate aggregate) where TAggregate : class, IStreamAggregate;
     void Append(Guid streamId, IEnumerable<IStreamEvent> events);

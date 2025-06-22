@@ -8,9 +8,17 @@ public class AggregateTracker : IAggregateTracker
 
     public void Track<TAggregate>(TAggregate aggregate) where TAggregate : IStreamAggregate
     {
-        if (!_trackedAggregates.Contains(aggregate))
+        if (!_trackedAggregates.Any(x => x is TAggregate && x.Id == aggregate.Id))
         {
             _trackedAggregates.Add(aggregate);
+        }
+    }
+
+    public void Track<TAggregate>(IEnumerable<TAggregate> aggregates) where TAggregate : IStreamAggregate
+    {
+        foreach (var aggregate in aggregates)
+        {
+            this.Track(aggregate);
         }
     }
 

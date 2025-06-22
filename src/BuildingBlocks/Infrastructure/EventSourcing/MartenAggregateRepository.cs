@@ -1,5 +1,6 @@
 ﻿using Marten;
 using SocialMediaBackend.BuildingBlocks.Domain;
+using System.Linq.Expressions;
 
 namespace SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing;
 
@@ -64,5 +65,29 @@ public class MartenAggregateRepository(
         await _documentSession.SaveChangesAsync(ct);
         
         _tracker.ClearTrackedAggregates();
+    }
+
+    public async Task<IEnumerable<TAggregate>> LoadManyAsync<TAggregate>(Expression<Func<TAggregate, bool>> expression, CancellationToken ct)
+        where TAggregate : class, IStreamAggregate
+    {
+        var aggregates = await _documentSession.Query<TAggregate>()
+            .Where(expression)
+            .ToListAsync(ct);
+
+        if (aggregates is { Count: > 0 })
+        {
+            return [];
+        }
+
+        _tracker.Track(aggregates);
+
+        return aggregates;
+    }
+
+        {
+            _tracker.Track(aggregate);
+        }
+
+        return aggregates;
     }
 }
