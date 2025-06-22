@@ -101,8 +101,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Payments.Infrastructure", "src\Modules\Payments\Infrastructure\SocialMediaBackend.Modules.Payments.Infrastructure.csproj", "{3011223A-DBC1-48FF-A63C-96D9D095A2EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Payments.IntegrationEvents", "src\Modules\Payments\IntegrationEvents\SocialMediaBackend.Modules.Payments.IntegrationEvents.csproj", "{B19CE26E-C57A-4AF4-A6B9-2FD49FF98826}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{09AA627B-B55C-49FE-9C55-62B4D54DB511}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Payments.Tests.Core", "src\Modules\Payments\Tests\Core\SocialMediaBackend.Modules.Payments.Tests.Core.csproj", "{E7FF6D07-95B9-4DCD-ACC7-E78DD18A3B03}"
@@ -116,6 +114,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Tests.SystemTests", "src\Tests\SystemTests\SocialMediaBackend.Tests.SystemTests.csproj", "{2E27A7F1-2F6E-425E-8696-59E36A7E87E2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Tests.Core", "Core\SocialMediaBackend.Tests.Core.csproj", "{A8561B9F-1872-4751-9833-34B609F3633D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Payments.Contracts", "src\Modules\Payments\Contracts\SocialMediaBackend.Modules.Payments.Contracts.csproj", "{9A4388BC-B914-6EB8-A504-8FBC323F7A46}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -251,10 +251,6 @@ Global
 		{3011223A-DBC1-48FF-A63C-96D9D095A2EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3011223A-DBC1-48FF-A63C-96D9D095A2EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3011223A-DBC1-48FF-A63C-96D9D095A2EE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B19CE26E-C57A-4AF4-A6B9-2FD49FF98826}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B19CE26E-C57A-4AF4-A6B9-2FD49FF98826}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B19CE26E-C57A-4AF4-A6B9-2FD49FF98826}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B19CE26E-C57A-4AF4-A6B9-2FD49FF98826}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E7FF6D07-95B9-4DCD-ACC7-E78DD18A3B03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E7FF6D07-95B9-4DCD-ACC7-E78DD18A3B03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7FF6D07-95B9-4DCD-ACC7-E78DD18A3B03}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -275,6 +271,10 @@ Global
 		{A8561B9F-1872-4751-9833-34B609F3633D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8561B9F-1872-4751-9833-34B609F3633D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8561B9F-1872-4751-9833-34B609F3633D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A4388BC-B914-6EB8-A504-8FBC323F7A46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A4388BC-B914-6EB8-A504-8FBC323F7A46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A4388BC-B914-6EB8-A504-8FBC323F7A46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A4388BC-B914-6EB8-A504-8FBC323F7A46}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -323,7 +323,6 @@ Global
 		{6D64CF93-FDA4-4C9A-B43E-D81CA3B619D4} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{E945130F-2B06-4897-9DCF-F4528BF43714} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{3011223A-DBC1-48FF-A63C-96D9D095A2EE} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{B19CE26E-C57A-4AF4-A6B9-2FD49FF98826} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{09AA627B-B55C-49FE-9C55-62B4D54DB511} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{E7FF6D07-95B9-4DCD-ACC7-E78DD18A3B03} = {09AA627B-B55C-49FE-9C55-62B4D54DB511}
 		{88668B7B-E285-41F6-913B-387F00776CA7} = {09AA627B-B55C-49FE-9C55-62B4D54DB511}
@@ -331,6 +330,7 @@ Global
 		{292EB2BA-750B-4094-8CB2-9F21FC552BC4} = {A2E5176F-DF22-403A-9204-4DBC54BBCA3B}
 		{2E27A7F1-2F6E-425E-8696-59E36A7E87E2} = {292EB2BA-750B-4094-8CB2-9F21FC552BC4}
 		{A8561B9F-1872-4751-9833-34B609F3633D} = {292EB2BA-750B-4094-8CB2-9F21FC552BC4}
+		{9A4388BC-B914-6EB8-A504-8FBC323F7A46} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {29B10521-873A-4835-BA54-A516F6384311}
