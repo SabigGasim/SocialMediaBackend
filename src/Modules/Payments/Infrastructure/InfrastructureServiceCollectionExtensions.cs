@@ -29,6 +29,9 @@ public static class InfrastructureServiceCollectionExtensions
             options.Schema.For<Payer>();
             options.Projections.Add<PayerProjection>(ProjectionLifecycle.Inline);
 
+            options.Schema.For<Product>();
+            options.Projections.Add<ProductProjection>(ProjectionLifecycle.Inline);
+
             if (!environment.IsProduction())
             {
                 options.AutoCreateSchemaObjects = AutoCreate.All;
