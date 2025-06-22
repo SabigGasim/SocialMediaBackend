@@ -1,18 +1,22 @@
-﻿using SocialMediaBackend.Modules.Payments.Domain.Payers;
-using SocialMediaBackend.Modules.Payments.Domain.ValueObjects;
+﻿using SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing;
+using SocialMediaBackend.Modules.Payments.Contracts;
+using SocialMediaBackend.Modules.Payments.Contracts.Gateway;
+using SocialMediaBackend.Modules.Payments.Domain.Payers;
 using Stripe;
+using ProductsDomain = SocialMediaBackend.Modules.Payments.Domain.Products;
 
 namespace SocialMediaBackend.Modules.Payments.Infrastructure;
 
 public class StripePaymentService : IPaymentService
 {
-    public async Task<PaymentIntent> CreatePaymentIntentAsync(MoneyValue moneyValue)
+    public async Task<PaymentIntent> CreatePaymentIntentAsync(string customerId, MoneyValue moneyValue)
     {
         var options = new PaymentIntentCreateOptions
         {
             Amount = moneyValue.Amount,
             Currency = moneyValue.CurrencyCode,
-            PaymentMethodTypes = new List<string> { "card" },
+            PaymentMethodTypes = ["card"],
+            Customer = customerId,
         };
 
         var paymentIntentService = new PaymentIntentService();
@@ -53,8 +57,55 @@ public class StripePaymentService : IPaymentService
         {
             Metadata = new Dictionary<string, string>
             {
-                { "app_user_id",  payerId.Value.ToString() }
+                { "user_id",  payerId.Value.ToString() }
             }
         });
+    }
+
+    public async Task<string> CreateProductAsync(
+        string productReference,
+        string name,
+        string description)
+    {
+        var product = await new ProductService().CreateAsync(new ProductCreateOptions
+        {
+            Name = name,
+            Description = description,
+            Metadata = new Dictionary<string, string>
+            {
+                { "product_reference", productReference }
+            },
+        });
+
+        return product.Id;
+    }
+
+    public async Task ArchiveProductAsync(string stripeProductId)
+    {
+        await new ProductService().UpdateAsync(stripeProductId, new ProductUpdateOptions
+        {
+            Active = false
+        });
+    }
+
+    public async Task<string> CreatePriceAsync(string productId, ProductPrice productPrice)
+    {
+        var price = await new PriceService().CreateAsync(new PriceCreateOptions
+        {
+            Product = productId,
+            UnitAmount = productPrice.MoneyValue.Amount,
+            Currency = productPrice.MoneyValue.CurrencyCode,
+            Recurring = productPrice.PaymentInterval switch
+            {
+                PaymentInterval.OneTime => null,
+                PaymentInterval.Weekly => new() { Interval = "week" },
+                PaymentInterval.Monthly => new() { Interval = "month" },
+                PaymentInterval.HalfYear => new() { Interval = "month", IntervalCount = 6 },
+                PaymentInterval.Yearly => new() { Interval = "year" },
+                _ => throw new ArgumentOutOfRangeException(nameof(productPrice.PaymentInterval), productPrice.PaymentInterval, null)
+            }
+        });
+
+        return price.Id;
     }
 }
