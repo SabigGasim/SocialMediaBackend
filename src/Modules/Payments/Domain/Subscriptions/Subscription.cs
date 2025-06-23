@@ -46,6 +46,18 @@ public class Subscription : AggregateRoot
             );
     }
 
+    public void MarkAsIncomplete()
+    {
+        if (Status == SubscriptionStatus.Incomplete)
+        {
+            return;
+        }
+
+        var @event = new SubscriptionMarkedIncomplete();
+
+        this.Apply(@event);
+        this.AddEvent(@event);
+    }
     public void Cancel()
     {
         if (Status == SubscriptionStatus.Cancelled)
