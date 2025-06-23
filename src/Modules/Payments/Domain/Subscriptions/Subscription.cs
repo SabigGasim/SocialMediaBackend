@@ -4,16 +4,6 @@ using SocialMediaBackend.Modules.Payments.Domain.Subscriptions.Events;
 
 namespace SocialMediaBackend.Modules.Payments.Domain.Subscriptions;
 
-public enum SubscriptionStatus
-{
-    Pending,
-    Active,
-    Processing,
-    Incomplete,
-    PastDue,
-    Cancelled
-}
-
 public class Subscription : AggregateRoot
 {
     public PayerId PayerId { get; private set; }
@@ -38,14 +28,14 @@ public class Subscription : AggregateRoot
         return subscription;
     }
 
-    public void Activate(DateTimeOffset expirationDate)
+    public void Activate(DateTimeOffset activationDate, DateTimeOffset expirationDate)
     {
         if (Status == SubscriptionStatus.Active)
         {
             return;
         }
 
-        var @event = new SubscriptionActivated(Id, DateTimeOffset.UtcNow, expirationDate);
+        var @event = new SubscriptionActivated(Id, activationDate, expirationDate);
 
         this.Apply(@event);
         this.AddEvent(@event);
@@ -60,11 +50,13 @@ public class Subscription : AggregateRoot
     {
         PayerId = @event.PayerId;
         ProductReference = @event.ProductReference;
-        Status = SubscriptionStatus.Pending;
+        Status = SubscriptionStatus.Incomplete;
     }
 
     public void Apply(SubscriptionActivated @event)
     {
         Status = SubscriptionStatus.Active;
+        ActivatedAt = @event.ActivatedAt;
+        ExpiresAt = @event.ExpiresAt;
     }
 }

@@ -1,9 +1,12 @@
-﻿using SocialMediaBackend.BuildingBlocks.Application;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.InternalCommands;
 using SocialMediaBackend.Modules.Payments.Application.Subscriptions.FulfillSubscription;
 using SocialMediaBackend.Modules.Payments.Contracts;
+using SocialMediaBackend.Modules.Payments.Domain.Subscriptions;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Webhooks.StripeWebhookEventReceived;
 
@@ -14,19 +17,14 @@ public class StripeWebhookEventReceivedCommandHandler(
 
     public async Task<HandlerResponse> ExecuteAsync(StripeWebhookEventReceivedCommand command, CancellationToken ct)
     {
-        var stripeObject = command.Event.Object;
-        var eventType = command.Event.Type;
-
         InternalCommandBase? commandToSchedule = command.Event.Type switch
         {
-            //Stripe.EventTypes.CustomerSubscriptionCreated => HandleSubscriptionCreated(command.Event),
-            //Stripe.EventTypes.CustomerSubscriptionDeleted => JsonConvert.DeserializeObject<PaymentIntent>(stripeObject)!,
-            //Stripe.EventTypes.CustomerSubscriptionUpdated => new PaymentIntentCreatedCommand(JsonConvert.DeserializeObject<PaymentIntent>(stripeObject)!),
-            //Stripe.EventTypes.CustomerSubscriptionPaused => new PaymentIntentCreatedCommand(JsonConvert.DeserializeObject<PaymentIntent>(stripeObject)!),
+            Stripe.EventTypes.CustomerSubscriptionCreated => HandleSubscriptionCreated(command.Event),
+            //Stripe.EventTypes.CustomerSubscriptionUpdated => HandleSubscriptionUpdated(command.Event),
+            //Stripe.EventTypes.CustomerSubscriptionDeleted => HandleSubscriptionDeleted(command.Event),
             //Stripe.EventTypes.InvoicePaid => new PaymentIntentCreatedCommand(JsonConvert.DeserializeObject<PaymentIntent>(stripeObject)!),
             _ => null
         };
-
 
         if (commandToSchedule is null)
         {
@@ -42,13 +40,17 @@ public class StripeWebhookEventReceivedCommandHandler(
     {
         var subscription = CreateDto((Stripe.Subscription)@event.Data.Object);
 
-        return new FulfillSubscriptionCommand(
-            subscription.Id,
-            subscription.CustomerId,
-            subscription.PriceId,
-            subscription.StartDate,
-            subscription.ExpirationDate
-        );
+        return subscription.Status switch
+        {
+            SubscriptionStatus.Active or SubscriptionStatus.Trialing => new FulfillSubscriptionCommand(
+                subscription.InternalSubscriptionId,
+                subscription.Status,
+                subscription.StartDate,
+                subscription.ExpirationDate,
+                JsonConvert.SerializeObject(@event)),
+            SubscriptionStatus.Incomplete => throw new NotImplementedException(),
+            _ => throw new ArgumentException($"Subscription status {subscription.Status} is not supported for fulfillment.")
+        };
     }
 
     private static SubscriptionDto CreateDto(Stripe.Subscription subscription)
@@ -59,17 +61,21 @@ public class StripeWebhookEventReceivedCommandHandler(
 
         var paymentInterval = (interval, count) switch
         {
+            ("week", 1) => PaymentInterval.Weekly,
             ("month", 1) => PaymentInterval.Monthly,
             ("month", 6) => PaymentInterval.HalfYear,
             ("year", 1) => PaymentInterval.Yearly,
             _ => throw new ArgumentException($"Unsupported payment interval: {interval}-{count}")
         };
 
+        var internalSubscriptionId = subscription.Metadata.GetValueOrDefault("internal_subscription_id");
+
         return new SubscriptionDto(
             subscription.Id,
+            Guid.Parse(internalSubscriptionId!),
             subscription.CustomerId,
             subscriptionItem.Price.Id,
-            subscription.Status,
+            GetSubscriptionStatus(subscription.Status),
             new DateTimeOffset(subscriptionItem.CurrentPeriodStart, TimeSpan.Zero),
             new DateTimeOffset(subscriptionItem.CurrentPeriodEnd, TimeSpan.Zero),
             new ProductPrice(
@@ -80,13 +86,26 @@ public class StripeWebhookEventReceivedCommandHandler(
             )
         );
     }
+
+    private static SubscriptionStatus GetSubscriptionStatus(string status)
+    {
+        return status switch
+        {
+            Stripe.SubscriptionStatuses.Active => SubscriptionStatus.Active,
+            Stripe.SubscriptionStatuses.Trialing => SubscriptionStatus.Trialing,
+            Stripe.SubscriptionStatuses.Canceled => SubscriptionStatus.Cancelled,
+            Stripe.SubscriptionStatuses.PastDue => SubscriptionStatus.PastDue,
+            _ => SubscriptionStatus.Incomplete
+        };
+    }
 }
 
 record SubscriptionDto(
     string Id, 
+    Guid InternalSubscriptionId,
     string CustomerId, 
-    string PriceId, 
-    string Status, 
+    string PriceId,
+    SubscriptionStatus Status, 
     DateTimeOffset StartDate, 
     DateTimeOffset ExpirationDate, 
     ProductPrice Price);
