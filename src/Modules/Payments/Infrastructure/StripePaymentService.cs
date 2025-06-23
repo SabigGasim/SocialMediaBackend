@@ -1,9 +1,6 @@
-﻿using SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing;
-using SocialMediaBackend.Modules.Payments.Contracts;
-using SocialMediaBackend.Modules.Payments.Contracts.Gateway;
+﻿using SocialMediaBackend.Modules.Payments.Contracts;
 using SocialMediaBackend.Modules.Payments.Domain.Payers;
 using Stripe;
-using ProductsDomain = SocialMediaBackend.Modules.Payments.Domain.Products;
 
 namespace SocialMediaBackend.Modules.Payments.Infrastructure;
 

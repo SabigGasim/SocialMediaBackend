@@ -23,6 +23,7 @@ public class StripeGateway : IPaymentGateway
         {
             Customer = gatewayCustomerId,
             Mode = "subscription",
+            PaymentMethodTypes = ["card"], //Only for testing. Don't use this in production.
             SuccessUrl = successUrl,
             CancelUrl = cancelUrl,
             LineItems =
