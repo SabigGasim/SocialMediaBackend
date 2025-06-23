@@ -30,12 +30,14 @@ public class Subscription : AggregateRoot
 
     public void Activate(DateTimeOffset activationDate, DateTimeOffset expirationDate)
     {
-        if (Status == SubscriptionStatus.Active)
+        if (Status == SubscriptionStatus.Active &&
+            ActivatedAt == activationDate &&
+            ExpiresAt == expirationDate)
         {
             return;
         }
 
-        var @event = new SubscriptionActivated(Id, activationDate, expirationDate);
+        var @event = new SubscriptionActivated(this.Id, activationDate, expirationDate);
 
         this.Apply(@event);
         this.AddEvent(@event);
@@ -58,6 +60,20 @@ public class Subscription : AggregateRoot
         this.Apply(@event);
         this.AddEvent(@event);
     }
+
+    public void MarkAsPastDue()
+    {
+        if (Status == SubscriptionStatus.PastDue)
+        {
+            return;
+        }
+
+        var @event = new SubscriptionPastDue();
+
+        this.Apply(@event);
+        this.AddEvent(@event);
+    }
+
     public void Cancel()
     {
         if (Status == SubscriptionStatus.Cancelled)
@@ -71,6 +87,24 @@ public class Subscription : AggregateRoot
         this.AddEvent(@event);
         this.AddDomainEvent(new SubscriptionCancelledDomainEvent(this.Id, this.ProductReference));
     }
+
+    public void Apply(SubscriptionPastDue @event)
+    {
+        Status = SubscriptionStatus.PastDue;
+    }
+
+    public void Apply(SubscriptionCancelled @event)
+    {
+        Status = SubscriptionStatus.Cancelled;
+        ActivatedAt = null;
+        ExpiresAt = null;
+    }
+
+    public void Apply(SubscriptionMarkedIncomplete @event)
+    {
+        Status = SubscriptionStatus.Incomplete;
+    }
+
     public void Apply(SubscriptionInitiated @event)
     {
         PayerId = @event.PayerId;
