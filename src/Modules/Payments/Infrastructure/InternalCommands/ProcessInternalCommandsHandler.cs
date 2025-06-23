@@ -25,7 +25,7 @@ public class ProcessInternalCommandsCommandHandler(IDbConnectionFactory dbConnec
                                c."Type" AS "{nameof(InternalCommandDto.Type)}", 
                                c."Data" AS "{nameof(InternalCommandDto.Data)}" 
                            FROM {Schema.Payments}."InternalCommands" AS c 
-                           WHERE c."Processed" = FALSE
+                           WHERE c."Processed" = FALSE AND c."Error" IS NULL
                            ORDER BY c."EnqueueDate"
                            """;
 
@@ -37,13 +37,9 @@ public class ProcessInternalCommandsCommandHandler(IDbConnectionFactory dbConnec
             .Handle<Exception>()
             .WaitAndRetryAsync(
             [
-#if DEBUG
-                TimeSpan.FromSeconds(5)
-#else
                 TimeSpan.FromSeconds(1),
                 TimeSpan.FromSeconds(2),
                 TimeSpan.FromSeconds(3)
-#endif
             ]);
 
         foreach (var internalCommand in internalCommandsList)
