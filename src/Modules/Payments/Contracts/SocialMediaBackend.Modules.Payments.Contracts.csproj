@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="IntegrationEvents\" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Infrastructure\SocialMediaBackend.BuildingBlocks.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

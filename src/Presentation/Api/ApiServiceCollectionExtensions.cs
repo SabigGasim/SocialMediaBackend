@@ -77,7 +77,8 @@ public static class ApiServiceCollectionExtensions
         [
             typeof(SocialMediaBackend.Modules.Users.Application.ApplicationServiceCollectionExtensions).Assembly,
             typeof(SocialMediaBackend.Modules.Feed.Application.ApplicationServcieCollectionExtensions).Assembly,
-            typeof(SocialMediaBackend.Modules.Chat.Application.ApplicationServiceCollectionExtensions).Assembly
+            typeof(SocialMediaBackend.Modules.Chat.Application.ApplicationServiceCollectionExtensions).Assembly,
+            typeof(SocialMediaBackend.Modules.Payments.Application.ApplicationServiceCollectionExtensions).Assembly
         ];
 
         services.Scan(s => s.FromAssemblies(applicationAssemblies)

@@ -42,6 +42,8 @@ public class Subscription : AggregateRoot
         this.Apply(@event);
         this.AddEvent(@event);
         this.AddDomainEvent(new SubscriptionActivatedDomainEvent(
+            this.PayerId,
+            this.Id,
             this.ProductReference,
             this.ActivatedAt!.Value,
             this.ExpiresAt!.Value)
@@ -85,7 +87,11 @@ public class Subscription : AggregateRoot
 
         this.Apply(@event);
         this.AddEvent(@event);
-        this.AddDomainEvent(new SubscriptionCancelledDomainEvent(this.Id, this.ProductReference));
+        this.AddDomainEvent(new SubscriptionCancelledDomainEvent(
+            this.PayerId, 
+            this.Id, 
+            this.ProductReference)
+            );
     }
 
     public void Apply(SubscriptionPastDue @event)
