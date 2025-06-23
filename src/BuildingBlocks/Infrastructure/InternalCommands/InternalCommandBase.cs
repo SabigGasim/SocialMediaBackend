@@ -5,5 +5,5 @@ namespace SocialMediaBackend.BuildingBlocks.Infrastructure.InternalCommands;
 
 public abstract class InternalCommandBase(Guid id) : ICommand<HandlerResponse>
 {
-    public Guid Id { get; } = id;
+    public Guid Id { get; } = id != default ? id : Guid.CreateVersion7();
 }
