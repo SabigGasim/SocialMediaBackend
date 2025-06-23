@@ -46,6 +46,19 @@ public class Subscription : AggregateRoot
             );
     }
 
+    public void Cancel()
+    {
+        if (Status == SubscriptionStatus.Cancelled)
+        {
+            return;
+        }
+
+        var @event = new SubscriptionCancelled();
+
+        this.Apply(@event);
+        this.AddEvent(@event);
+        this.AddDomainEvent(new SubscriptionCancelledDomainEvent(this.Id, this.ProductReference));
+    }
     public void Apply(SubscriptionInitiated @event)
     {
         PayerId = @event.PayerId;
