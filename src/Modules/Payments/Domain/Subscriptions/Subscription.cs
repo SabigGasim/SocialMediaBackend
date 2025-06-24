@@ -59,7 +59,24 @@ public class Subscription : AggregateRoot
 
     public void Renew(DateTimeOffset activationDate, DateTimeOffset expirationDate)
     {
-        this.Activate(activationDate, expirationDate);
+        if (Status == SubscriptionStatus.Active &&
+            ActivatedAt == activationDate &&
+            ExpiresAt == expirationDate)
+        {
+            return;
+        }
+
+        var @event = new SubscriptionRenewed(this.Id, activationDate, expirationDate);
+
+        this.Apply(@event);
+        this.AddEvent(@event);
+        this.AddDomainEvent(new SubscriptionActivatedDomainEvent(
+            new(this.PayerId),
+            new(this.Id),
+            this.ProductReference,
+            this.ActivatedAt!.Value,
+            this.ExpiresAt!.Value)
+            );
     }
 
     public void MarkAsIncomplete()
@@ -95,15 +112,19 @@ public class Subscription : AggregateRoot
             return;
         }
 
+        if (Status != SubscriptionStatus.Pending)
+        {
+            this.AddDomainEvent(new SubscriptionCancelledDomainEvent(
+                new(this.PayerId),
+                new(this.Id),
+                this.ProductReference)
+                );
+        }
+
         var @event = new SubscriptionCancelled();
 
         this.Apply(@event);
         this.AddEvent(@event);
-        this.AddDomainEvent(new SubscriptionCancelledDomainEvent(
-            new(this.PayerId), 
-            new(this.Id), 
-            this.ProductReference)
-            );
     }
 
     public void Apply(SubscriptionPastDue @event)
@@ -131,7 +152,7 @@ public class Subscription : AggregateRoot
         this.Status = SubscriptionStatus.Pending;
     }
 
-    private void Apply(SubscriptionCreated @event)
+    public void Apply(SubscriptionCreated @event)
     {
         this.GatewaySubscriptionId = @event.GatewaySubscriptionId;
         
@@ -142,6 +163,13 @@ public class Subscription : AggregateRoot
     }
 
     public void Apply(SubscriptionActivated @event)
+    {
+        this.Status = SubscriptionStatus.Active;
+        this.ActivatedAt = @event.ActivatedAt;
+        this.ExpiresAt = @event.ExpiresAt;
+    }
+
+    public void Apply(SubscriptionRenewed @event)
     {
         this.Status = SubscriptionStatus.Active;
         this.ActivatedAt = @event.ActivatedAt;
