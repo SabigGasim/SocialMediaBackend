@@ -35,7 +35,7 @@ public class Payer : AggregateRoot
 
     public void Delete()
     {
-        if (IsDeleted)
+        if (this.IsDeleted)
         {
             return;
         }
@@ -44,7 +44,7 @@ public class Payer : AggregateRoot
 
         this.Apply(@event);
         this.AddEvent(@event);
-        this.AddDomainEvent(new PayerDeletedDomainEvent(new PayerId(this.Id)));
+        this.AddDomainEvent(new PayerDeletedDomainEvent(new PayerId(this.Id), this.GatewayCustomerId));
     }
 
     public void Apply(PayerCreated @event)
