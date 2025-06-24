@@ -3,4 +3,4 @@ using SocialMediaBackend.Modules.Payments.Domain.Payers;
 
 namespace SocialMediaBackend.Modules.Payments.Domain.Subscriptions.Events;
 
-public record SubscriptionInitiated(PayerId PayerId, string ProductReference) : StreamEventBase;
+public record SubscriptionInitiated(SubscriptionId SubscriptionId, PayerId PayerId, string ProductReference) : StreamEventBase;

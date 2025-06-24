@@ -5,10 +5,10 @@ namespace SocialMediaBackend.Modules.Payments.Domain.Subscriptions.Events;
 
 public class SubscriptionCancelledDomainEvent(
     PayerId payerId,
-    Guid subscriptionId,
+    SubscriptionId subscriptionId,
     string productReference) : DomainEventBase
 {
     public PayerId PayerId { get; } = payerId;
-    public Guid SubscriptionId { get; } = subscriptionId;
+    public SubscriptionId SubscriptionId { get; } = subscriptionId;
     public string ProductReference { get; } = productReference;
 }

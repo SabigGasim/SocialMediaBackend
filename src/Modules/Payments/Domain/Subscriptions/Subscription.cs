@@ -6,7 +6,7 @@ namespace SocialMediaBackend.Modules.Payments.Domain.Subscriptions;
 
 public class Subscription : AggregateRoot
 {
-    public PayerId PayerId { get; private set; }
+    public Guid PayerId { get; private set; }
     public string GatewaySubscriptionId { get; private set; } = default!;
     public string ProductReference { get; private set; } = default!;
     public SubscriptionStatus Status { get; private set; }
@@ -14,13 +14,12 @@ public class Subscription : AggregateRoot
     public DateTimeOffset? ExpiresAt { get; private set; }
 
     private Subscription() { }
-    private Subscription(Guid id) => this.Id = id;
 
     public static Subscription Initiate(PayerId payerId, string productReference)
     {
-        var subscription = new Subscription(Guid.CreateVersion7());
+        var subscription = new Subscription();
         
-        var @event = new SubscriptionInitiated(payerId, productReference);
+        var @event = new SubscriptionInitiated(SubscriptionId.New(), payerId, productReference);
 
         subscription.Apply(@event);
         subscription.AddEvent(@event);
@@ -42,8 +41,8 @@ public class Subscription : AggregateRoot
         this.Apply(@event);
         this.AddEvent(@event);
         this.AddDomainEvent(new SubscriptionActivatedDomainEvent(
-            this.PayerId,
-            this.Id,
+            new(this.PayerId),
+            new(this.Id),
             this.ProductReference,
             this.ActivatedAt!.Value,
             this.ExpiresAt!.Value)
@@ -88,22 +87,22 @@ public class Subscription : AggregateRoot
         this.Apply(@event);
         this.AddEvent(@event);
         this.AddDomainEvent(new SubscriptionCancelledDomainEvent(
-            this.PayerId, 
-            this.Id, 
+            new(this.PayerId), 
+            new(this.Id), 
             this.ProductReference)
             );
     }
 
     public void Apply(SubscriptionPastDue @event)
     {
-        Status = SubscriptionStatus.PastDue;
+        this.Status = SubscriptionStatus.PastDue;
     }
 
     public void Apply(SubscriptionCancelled @event)
     {
-        Status = SubscriptionStatus.Cancelled;
-        ActivatedAt = null;
-        ExpiresAt = null;
+        this.Status = SubscriptionStatus.Cancelled;
+        this.ActivatedAt = null;
+        this.ExpiresAt = null;
     }
 
     public void Apply(SubscriptionMarkedIncomplete @event)
@@ -113,15 +112,26 @@ public class Subscription : AggregateRoot
 
     public void Apply(SubscriptionInitiated @event)
     {
-        PayerId = @event.PayerId;
-        ProductReference = @event.ProductReference;
-        Status = SubscriptionStatus.Incomplete;
+        this.Id = @event.SubscriptionId.Value;
+        this.PayerId = @event.PayerId.Value;
+        this.ProductReference = @event.ProductReference;
+        this.Status = SubscriptionStatus.Pending;
+    }
+
+    private void Apply(SubscriptionCreated @event)
+    {
+        this.GatewaySubscriptionId = @event.GatewaySubscriptionId;
+        
+        if (this.Status == SubscriptionStatus.Pending)
+        {
+            this.Status = SubscriptionStatus.Incomplete;
+        }
     }
 
     public void Apply(SubscriptionActivated @event)
     {
-        Status = SubscriptionStatus.Active;
-        ActivatedAt = @event.ActivatedAt;
-        ExpiresAt = @event.ExpiresAt;
+        this.Status = SubscriptionStatus.Active;
+        this.ActivatedAt = @event.ActivatedAt;
+        this.ExpiresAt = @event.ExpiresAt;
     }
 }

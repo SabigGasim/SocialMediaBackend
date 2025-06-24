@@ -2,7 +2,7 @@
 
 namespace SocialMediaBackend.Modules.Payments.Domain.Subscriptions;
 
-public record SubscriptionId(Guid Id) : TypedIdValueBase<Guid>(Id)
+public record SubscriptionId(Guid Value) : TypedIdValueBase<Guid>(Value)
 {
     public static SubscriptionId New() => new(Guid.NewGuid());
 }

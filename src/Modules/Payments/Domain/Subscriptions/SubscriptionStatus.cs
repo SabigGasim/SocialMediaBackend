@@ -2,8 +2,9 @@
 
 public enum SubscriptionStatus
 {
-    Active,
-    Incomplete,
-    PastDue,
-    Cancelled
+    Pending = 0,
+    Active = 200,
+    Incomplete = 400,
+    PastDue = 401,
+    Cancelled = 402
 }
