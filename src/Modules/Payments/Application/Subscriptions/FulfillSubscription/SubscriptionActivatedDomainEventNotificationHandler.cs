@@ -12,7 +12,7 @@ public class SubscriptionActivatedDomainEventNotificationHandler(IMediator media
     {
         await _mediator.Publish(new SubscriptionActivatedIntegrationEvent(
             notification.Event.PayerId.Value,
-            notification.Event.SubscriptionId,
+            notification.Event.SubscriptionId.Value,
             notification.Event.ProductReference,
             notification.Event.ActivatedAt,
             notification.Event.ExpiresAt),

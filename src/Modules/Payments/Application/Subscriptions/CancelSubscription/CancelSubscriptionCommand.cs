@@ -2,9 +2,12 @@
 
 namespace SocialMediaBackend.Modules.Payments.Application.Subscriptions.CancelSubscription;
 
-public class CancelSubscriptionCommand(Guid internalSubscriptionId, string eventJson, Guid id = default)
+public class CancelSubscriptionCommand(
+    Guid internalSubscriptionId, 
+    string eventId, 
+    Guid id = default)
     : InternalCommandBase(id)
 {
     public Guid InternalSubscriptionId { get; } = internalSubscriptionId;
-    public string EventJson { get; } = eventJson;
+    public string EventId { get; } = eventId;
 }

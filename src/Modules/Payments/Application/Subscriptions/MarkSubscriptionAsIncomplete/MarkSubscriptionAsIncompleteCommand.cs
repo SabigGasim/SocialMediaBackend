@@ -2,9 +2,12 @@
 
 namespace SocialMediaBackend.Modules.Payments.Application.Subscriptions.MarkSubscriptionAsIncomplete;
 
-public class MarkSubscriptionAsIncompleteCommand(Guid internalSubscriptionId, string eventJson, Guid id = default)
+public class MarkSubscriptionAsIncompleteCommand(
+    Guid internalSubscriptionId,
+    string eventId,
+    Guid id = default)
     : InternalCommandBase(id)
 {
     public Guid InternalSubscriptionId { get; } = internalSubscriptionId;
-    public string EventJson { get; } = eventJson;
+    public string EventId { get; } = eventId;
 }

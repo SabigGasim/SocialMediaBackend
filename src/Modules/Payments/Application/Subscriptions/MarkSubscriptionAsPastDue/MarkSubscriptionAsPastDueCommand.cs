@@ -2,9 +2,12 @@
 
 namespace SocialMediaBackend.Modules.Payments.Application.Subscriptions.MarkSubscriptionAsPastDue;
 
-public class MarkSubscriptionAsPastDueCommand(Guid internalSubscriptionId, string eventJson, Guid id = default)
+public class MarkSubscriptionAsPastDueCommand(
+    Guid internalSubscriptionId, 
+    string eventId, 
+    Guid id = default)
     : InternalCommandBase(id)
 {
     public Guid InternalSubscriptionId { get; } = internalSubscriptionId;
-    public string EventJson { get; } = eventJson;
+    public string EventId { get; } = eventId;
 }

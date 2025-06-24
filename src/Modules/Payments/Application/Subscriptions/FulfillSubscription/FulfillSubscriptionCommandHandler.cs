@@ -7,7 +7,8 @@ using SocialMediaBackend.Modules.Payments.Domain.Subscriptions;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Subscriptions.FulfillSubscription;
 
-public class FulfillSubscriptionCommandHandler(IAggregateRepository repository)
+public class FulfillSubscriptionCommandHandler(
+    IAggregateRepository repository)
     : ICommandHandler<FulfillSubscriptionCommand>
 {
     private readonly IAggregateRepository _repository = repository;
@@ -18,7 +19,7 @@ public class FulfillSubscriptionCommandHandler(IAggregateRepository repository)
 
         NotFoundException.ThrowIfNull(nameof(Subscription), subscription);
 
-        subscription.Activate(command.StartDate, command.ExpirationDate);
+        subscription.Activate(command.ActivatedAt, command.ExpiresAt);
 
         return HandlerResponseStatus.OK;
     }
