@@ -32,7 +32,7 @@ public class StripeWebhookEventReceivedCommandHandler(
 
         if (commandToSchedule is not null)
         {
-            await _scheduler.EnqueueAsync(commandToSchedule);
+            await _scheduler.EnqueueAsync(commandToSchedule, command.Event.Id);
         }
 
         return HandlerResponseStatus.OK;
