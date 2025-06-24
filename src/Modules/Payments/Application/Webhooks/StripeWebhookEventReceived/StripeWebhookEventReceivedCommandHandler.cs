@@ -1,15 +1,14 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
-using SocialMediaBackend.BuildingBlocks.Domain.Exceptions;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.InternalCommands;
 using SocialMediaBackend.Modules.Payments.Application.Subscriptions.CancelSubscription;
 using SocialMediaBackend.Modules.Payments.Application.Subscriptions.FulfillSubscription;
 using SocialMediaBackend.Modules.Payments.Application.Subscriptions.MarkSubscriptionAsIncomplete;
 using SocialMediaBackend.Modules.Payments.Application.Subscriptions.MarkSubscriptionAsPastDue;
-using SocialMediaBackend.Modules.Payments.Contracts;
+using SocialMediaBackend.Modules.Payments.Application.Subscriptions.ProcessSubscriptionCreated;
+using SocialMediaBackend.Modules.Payments.Application.Subscriptions.RenewSubscription;
 using SocialMediaBackend.Modules.Payments.Domain.Subscriptions;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Webhooks.StripeWebhookEventReceived;
@@ -39,45 +38,41 @@ public class StripeWebhookEventReceivedCommandHandler(
     }
 
     /// <summary>
-    /// Utilized to handle the case when a subscription succeeds renewal.
+    /// Utilized to handle the case when a subscription is created or succeeds renewal.
     /// We use this instead of customer.subscription.updated because it's easier to know
     /// that a new billing cycle has started, compared to checking previous attributes.
+    /// We use this instead of customer.subscription.created to dodge the case when
+    /// a subscription is created with status of incomplete. Typically, when
+    /// payment_behavior=default_incomplete.
     /// </summary>
-    private static FulfillSubscriptionCommand? HandleInvoicePaid(Stripe.Event @event)
+    private static InternalCommandBase? HandleInvoicePaid(Stripe.Event @event)
     {
         var invoice = CreateDto((Stripe.Invoice)@event.Data.Object);
 
-        if (invoice.Reason != BillingReasons.SubscriptionRenewal)
+        return invoice.Reason switch
         {
-            return null;
-        }
-
-        return new FulfillSubscriptionCommand(
-            invoice.InternalSubscriptionId,
-            SubscriptionStatus.Active,
-            invoice.StartDate,
-            invoice.ExpirationDate,
-            JsonConvert.SerializeObject(@event));
-    }
-
-    private static InternalCommandBase? HandleSubscriptionCreated(Stripe.Event @event)
-    {
-        var subscription = CreateDto((Stripe.Subscription)@event.Data.Object);
-        var eventJson = JsonConvert.SerializeObject(@event);
-
-        return subscription.Status switch
-        {
-            SubscriptionStatus.Active => new FulfillSubscriptionCommand(
-                subscription.InternalSubscriptionId,
-                subscription.Status,
-                subscription.StartDate,
-                subscription.ExpirationDate,
-                eventJson),
-            SubscriptionStatus.Incomplete => new MarkSubscriptionAsIncompleteCommand(
-                subscription.InternalSubscriptionId,
-                eventJson),
+            BillingReasons.SubscriptionCreated => new FulfillSubscriptionCommand(
+                invoice.InternalSubscriptionId,
+                invoice.StartDate,
+                invoice.ExpirationDate,
+                @event.Id),
+            BillingReasons.SubscriptionRenewal => new RenewSubscriptionCommand(
+                invoice.InternalSubscriptionId,
+                invoice.StartDate,
+                invoice.ExpirationDate,
+                @event.Id),
             _ => null
         };
+    }
+
+    private static ProcessSubscriptionCreatedCommand HandleSubscriptionCreated(Stripe.Event @event)
+    {
+        var subscription = CreateShortDto((Stripe.Subscription)@event.Data.Object);
+
+        return new ProcessSubscriptionCreatedCommand(
+            subscription.InternalSubscriptionId,
+            subscription.SubscriptionId,
+            @event.Id);
     }
 
     private static CancelSubscriptionCommand HandleSubscriptionDeleted(Stripe.Event @event)
@@ -86,7 +81,7 @@ public class StripeWebhookEventReceivedCommandHandler(
 
         return new CancelSubscriptionCommand(
             subscription.InternalSubscriptionId,
-            JsonConvert.SerializeObject(@event));
+            @event.Id);
     }
 
     /// <summary>
@@ -103,17 +98,16 @@ public class StripeWebhookEventReceivedCommandHandler(
             return null;
         }
 
-        var subscription = CreateDto((Stripe.Subscription)@event.Data.Object);
-        var eventJson = JsonConvert.SerializeObject(@event);
+        var subscription = CreateShortDto((Stripe.Subscription)@event.Data.Object);
 
         return subscription.Status switch
         {
             SubscriptionStatus.Incomplete => new MarkSubscriptionAsIncompleteCommand(
                 subscription.InternalSubscriptionId,
-                eventJson),
+                @event.Id),
             SubscriptionStatus.PastDue => new MarkSubscriptionAsPastDueCommand(
                 subscription.InternalSubscriptionId,
-                eventJson),
+                @event.Id),
             _ => null
         };
     }
@@ -123,42 +117,9 @@ public class StripeWebhookEventReceivedCommandHandler(
         var internalSubscriptionId = subscription.Metadata.GetValueOrDefault("internal_subscription_id");
 
         return new ShortSubscriptionDto(
-            InternalSubscriptionId: Guid.Parse(internalSubscriptionId!),
-            Status: GetSubscriptionStatus(subscription.Status)
-        );
-    }
-
-    private static SubscriptionDto CreateDto(Stripe.Subscription subscription)
-    {
-        var subscriptionItem = subscription.Items.Data[0];
-
-        var (interval, count) = (subscriptionItem.Price.Recurring.Interval, subscriptionItem.Price.Recurring.IntervalCount);
-
-        var paymentInterval = (interval, count) switch
-        {
-            ("week", 1) => PaymentInterval.Weekly,
-            ("month", 1) => PaymentInterval.Monthly,
-            ("month", 6) => PaymentInterval.HalfYear,
-            ("year", 1) => PaymentInterval.Yearly,
-            _ => throw new ThisWillNeverHappenException($"Unsupported payment interval: {interval}-{count}")
-        };
-
-        var internalSubscriptionId = subscription.Metadata.GetValueOrDefault("internal_subscription_id");
-
-        return new SubscriptionDto(
-            subscription.Id,
             Guid.Parse(internalSubscriptionId!),
-            subscription.CustomerId,
-            subscriptionItem.Price.Id,
-            GetSubscriptionStatus(subscription.Status),
-            new DateTimeOffset(subscriptionItem.CurrentPeriodStart, TimeSpan.Zero),
-            new DateTimeOffset(subscriptionItem.CurrentPeriodEnd, TimeSpan.Zero),
-            new ProductPrice(
-                new MoneyValue(
-                    amount: (int)subscriptionItem.Price.UnitAmount!,
-                    currency: Enum.Parse<Currency>(subscriptionItem.Price.Currency, ignoreCase: true)),
-                paymentInterval: paymentInterval
-            )
+            subscription.Id,
+            Status: GetSubscriptionStatus(subscription.Status)
         );
     }
 
@@ -196,16 +157,6 @@ public class StripeWebhookEventReceivedCommandHandler(
     }
 }
 
-record SubscriptionDto(
-    string Id, 
-    Guid InternalSubscriptionId,
-    string CustomerId, 
-    string PriceId,
-    SubscriptionStatus Status, 
-    DateTimeOffset StartDate, 
-    DateTimeOffset ExpirationDate, 
-    ProductPrice Price);
-
 enum BillingReasons
 {
     SubscriptionCreated,
@@ -219,4 +170,4 @@ record InvoiceDto(
     DateTimeOffset StartDate,
     DateTimeOffset ExpirationDate);
 
-record ShortSubscriptionDto(Guid InternalSubscriptionId, SubscriptionStatus Status);
+record ShortSubscriptionDto(Guid InternalSubscriptionId, string SubscriptionId, SubscriptionStatus Status);
