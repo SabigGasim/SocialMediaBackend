@@ -74,7 +74,7 @@ public class MartenAggregateRepository(
             .Where(expression)
             .ToListAsync(ct);
 
-        if (aggregates is { Count: > 0 })
+        if (aggregates is not { Count: > 0 })
         {
             return [];
         }
