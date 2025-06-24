@@ -14,5 +14,9 @@ internal class InternalCommandEntityTypeConfiguration : IEntityTypeConfiguration
 
         builder.Property(x => x.Processed)
             .HasDefaultValue(false);
+
+        builder.HasIndex(x => x.IdempotencyKey)
+            .IsUnique()
+            .AreNullsDistinct();
     }
 }

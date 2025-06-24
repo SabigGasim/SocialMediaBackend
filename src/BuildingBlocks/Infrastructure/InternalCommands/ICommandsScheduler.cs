@@ -2,6 +2,6 @@
 
 public interface ICommandsScheduler
 {
-    ValueTask EnqueueAsync<TInternalCommand>(TInternalCommand command)
+    ValueTask EnqueueAsync<TInternalCommand>(TInternalCommand command, string? idempotencyKey = null)
         where TInternalCommand : InternalCommandBase;
 }

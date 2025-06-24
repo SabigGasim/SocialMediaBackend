@@ -9,15 +9,15 @@ public class CommandsScheduler(IDbConnectionFactory connectionFactory) : IComman
 {
     private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
 
-    public async ValueTask EnqueueAsync<TInternalCommand>(TInternalCommand command)
+    public async ValueTask EnqueueAsync<TInternalCommand>(TInternalCommand command, string? idempotencyKey = null)
         where TInternalCommand : InternalCommandBase
     {
         using (var connection = await _connectionFactory.CreateAsync())
         {
             const string sqlInsert =
                 $"""
-                INSERT INTO {Schema.Payments}."InternalCommands" ("Id", "EnqueueDate" , "Type", "Data")
-                VALUES (@Id, @EnqueueDate, @Type, @Data)
+                INSERT INTO {Schema.Payments}."InternalCommands" ("Id", "EnqueueDate" , "Type", "Data", "IdempotencyKey")
+                VALUES (@Id, @EnqueueDate, @Type, @Data, @IdempotencyKey)
                 """;
 
             await connection.ExecuteAsync(sqlInsert, new
@@ -25,7 +25,8 @@ public class CommandsScheduler(IDbConnectionFactory connectionFactory) : IComman
                 command.Id,
                 EnqueueDate = TimeProvider.System.GetUtcNow(),
                 Type = $"{command.GetType().FullName}, {command.GetType().Assembly.FullName}",
-                Data = JsonConvert.SerializeObject(command)
+                Data = JsonConvert.SerializeObject(command),
+                IdempotencyKey = idempotencyKey
             });
         }
     }
