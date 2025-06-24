@@ -36,7 +36,7 @@ public static class InfrastructureServiceCollectionExtensions
             options.Schema.For<Product>();
             options.Projections.Add<ProductProjection>(ProjectionLifecycle.Inline);
 
-            options.Schema.For<Subscription>();
+            options.Schema.For<Subscription>().ForeignKey<Payer>(x => x.PayerId);
             options.Projections.Add<SubscriptionProjection>(ProjectionLifecycle.Inline);
 
             if (!environment.IsProduction())
