@@ -42,6 +42,11 @@ public class StripeGateway : IPaymentGateway
                     { "product_reference", productReference },
                 }
             },
+            Metadata = new Dictionary<string, string> 
+            {
+                { "internal_subscription_id", internalSubscriptionId.ToString() },
+                { "product_reference", productReference }
+            },
             ExpiresAt = DateTime.UtcNow.AddMinutes(30)
         };
 

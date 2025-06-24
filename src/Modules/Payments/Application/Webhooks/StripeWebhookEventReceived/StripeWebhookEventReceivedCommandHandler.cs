@@ -25,6 +25,7 @@ public class StripeWebhookEventReceivedCommandHandler(
             Stripe.EventTypes.CustomerSubscriptionCreated => HandleSubscriptionCreated(command.Event),
             Stripe.EventTypes.CustomerSubscriptionUpdated => HandleSubscriptionUpdated(command.Event),
             Stripe.EventTypes.CustomerSubscriptionDeleted => HandleSubscriptionDeleted(command.Event),
+            Stripe.EventTypes.CheckoutSessionExpired => HandleCheckoutSessionExpired(command.Event),
             Stripe.EventTypes.InvoicePaid => HandleInvoicePaid(command.Event),
             _ => null
         };
@@ -81,6 +82,15 @@ public class StripeWebhookEventReceivedCommandHandler(
 
         return new CancelSubscriptionCommand(
             subscription.InternalSubscriptionId,
+            @event.Id);
+    }
+
+    private static CancelSubscriptionCommand HandleCheckoutSessionExpired(Stripe.Event @event)
+    {
+        var session = CreateDto((Stripe.Checkout.Session)@event.Data.Object);
+
+        return new CancelSubscriptionCommand(
+            session.InternalSubscriptionId,
             @event.Id);
     }
 
@@ -144,6 +154,11 @@ public class StripeWebhookEventReceivedCommandHandler(
         );
     }
 
+    private static SessionDto CreateDto(Stripe.Checkout.Session session)
+    {
+        return new SessionDto(Guid.Parse(session.Metadata["internal_subscription_id"].ToString()));
+    }
+
     private static SubscriptionStatus GetSubscriptionStatus(string status)
     {
         return status switch
@@ -169,5 +184,7 @@ record InvoiceDto(
     BillingReasons Reason,
     DateTimeOffset StartDate,
     DateTimeOffset ExpirationDate);
+
+record SessionDto(Guid InternalSubscriptionId);
 
 record ShortSubscriptionDto(Guid InternalSubscriptionId, string SubscriptionId, SubscriptionStatus Status);
