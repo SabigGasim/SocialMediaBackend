@@ -22,6 +22,7 @@ public static class ApplicationToApiMappings
             HandlerResponseStatus.Unauthorized => HttpStatusCode.Unauthorized,
             HandlerResponseStatus.Timeout => HttpStatusCode.RequestTimeout,
             HandlerResponseStatus.NotSupported => HttpStatusCode.NotImplemented,
+            HandlerResponseStatus.Redirect => HttpStatusCode.Redirect,
 
             _ => HttpStatusCode.InternalServerError
         };
