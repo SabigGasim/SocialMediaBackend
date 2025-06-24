@@ -13,4 +13,7 @@ public interface IPaymentService
     Task<string> CreateProductAsync(string productReference, string name, string description);
     Task ArchiveProductAsync(string gatewayProductId);
     Task<string> CreatePriceAsync(string productId, ProductPrice productPrice);
+    Task CancelSubscriptionAsync(string subscriptionId);
+    Task<IEnumerable<string>> GetCustomerPaymentMethodIdsAsync(string GatewayCustomerId);
+    Task DeletePaymentMethodAsync(string paymentMethodId);
 }

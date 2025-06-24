@@ -42,6 +42,7 @@ public class StripeGateway : IPaymentGateway
                     { "product_reference", productReference },
                 }
             },
+            ExpiresAt = DateTime.UtcNow.AddMinutes(30)
         };
 
         var session = await new SessionService().CreateAsync(options, cancellationToken: ct);

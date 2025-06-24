@@ -105,4 +105,21 @@ public class StripePaymentService : IPaymentService
 
         return price.Id;
     }
+
+    public async Task CancelSubscriptionAsync(string subscriptionId)
+    {
+        await new SubscriptionService().CancelAsync(subscriptionId);
+    }
+
+    public async Task<IEnumerable<string>> GetCustomerPaymentMethodIdsAsync(string GatewayCustomerId)
+    {
+        var paymentMethods = await new CustomerPaymentMethodService().ListAsync(GatewayCustomerId);
+
+        return paymentMethods.Select(x => x.Id);
+    }
+
+    public async Task DeletePaymentMethodAsync(string paymentMethodId)
+    {
+        await new PaymentMethodService().DetachAsync(paymentMethodId);
+    }
 }
