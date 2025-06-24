@@ -13,16 +13,15 @@ public class Product : AggregateRoot
     public bool IsDeleted { get; private set; }
 
     private Product() { }
-    private Product(Guid id) => this.Id = id;
 
     public static Product Create(
         string reference,
         string gatewayProductId,
         string owner)
     {
-        var product = new Product(Guid.CreateVersion7());
+        var product = new Product();
 
-        var @event = new ProductCreated(reference, gatewayProductId, owner);
+        var @event = new ProductCreated(ProductId.New(), reference, gatewayProductId, owner);
 
         product.Apply(@event);
         product.AddEvent(@event);
@@ -71,6 +70,7 @@ public class Product : AggregateRoot
 
     public void Apply(ProductCreated @event)
     {
+        this.Id = @event.ProductId.Value;
         this.Reference = @event.Reference;
         this.GatewayProductId = @event.GatewayProductId;
         this.Owner = @event.Owner;
