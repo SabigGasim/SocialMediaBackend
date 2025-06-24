@@ -27,6 +27,14 @@ public class Subscription : AggregateRoot
         return subscription;
     }
 
+    public void MarkCreated(string gatewaySubscriptionId)
+    {
+        var @event = new SubscriptionCreated(gatewaySubscriptionId);
+
+        this.Apply(@event);
+        this.AddEvent(@event);
+    }
+
     public void Activate(DateTimeOffset activationDate, DateTimeOffset expirationDate)
     {
         if (Status == SubscriptionStatus.Active &&
@@ -47,6 +55,11 @@ public class Subscription : AggregateRoot
             this.ActivatedAt!.Value,
             this.ExpiresAt!.Value)
             );
+    }
+
+    public void Renew(DateTimeOffset activationDate, DateTimeOffset expirationDate)
+    {
+        this.Activate(activationDate, expirationDate);
     }
 
     public void MarkAsIncomplete()
@@ -107,7 +120,7 @@ public class Subscription : AggregateRoot
 
     public void Apply(SubscriptionMarkedIncomplete @event)
     {
-        Status = SubscriptionStatus.Incomplete;
+        this.Status = SubscriptionStatus.Incomplete;
     }
 
     public void Apply(SubscriptionInitiated @event)

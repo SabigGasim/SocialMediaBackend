@@ -41,7 +41,7 @@ public class StripeGateway : IPaymentGateway
                     { "internal_subscription_id", internalSubscriptionId.ToString() },
                     { "product_reference", productReference },
                 }
-            }
+            },
         };
 
         var session = await new SessionService().CreateAsync(options, cancellationToken: ct);
