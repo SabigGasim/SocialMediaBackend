@@ -5,11 +5,13 @@ namespace SocialMediaBackend.Modules.Payments.Infrastructure.Gateway;
 public interface IPaymentGateway
 {
     Task<CreateCheckoutSessionResponse> CreateOneTimePaymentCheckoutSessionAsync(
-        Guid userId,
+        string gatewayCustomerId,
         string productReference,
+        string gatewayPriceId,
         string successUrl,
-        string cancelUrl
-        );
+        string cancelUrl,
+        Guid internalPaymentId,
+        CancellationToken ct = default);
 
     Task<CreateCheckoutSessionResponse> CreateSubscriptionCheckoutSessionAsync(
         string gatewayCustomerId, 

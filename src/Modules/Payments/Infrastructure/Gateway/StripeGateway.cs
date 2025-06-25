@@ -5,9 +5,51 @@ namespace SocialMediaBackend.Modules.Payments.Infrastructure.Gateway;
 
 public class StripeGateway : IPaymentGateway
 {
-    public Task<CreateCheckoutSessionResponse> CreateOneTimePaymentCheckoutSessionAsync(Guid userId, string productReference, string successUrl, string cancelUrl)
+    public async Task<CreateCheckoutSessionResponse> CreateOneTimePaymentCheckoutSessionAsync(
+        string gatewayCustomerId, 
+        string productReference,
+        string gatewayPriceId, 
+        string successUrl,
+        string cancelUrl, 
+        Guid internalPaymentId, 
+        CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var metaData = new Dictionary<string, string>
+        {
+            { "internal_payment_id", internalPaymentId.ToString() },
+            { "product_reference", productReference }
+        };
+
+        var options = new SessionCreateOptions
+        {
+            Customer = gatewayCustomerId,
+            Mode = "payment",
+            PaymentMethodTypes = ["card"], //Only for testing. Don't use this in production.
+            SuccessUrl = successUrl,
+            CancelUrl = cancelUrl,
+            LineItems =
+            [
+                new SessionLineItemOptions
+                {
+                    Price = gatewayPriceId,
+                    Quantity = 1
+                }
+            ],
+            PaymentIntentData = new SessionPaymentIntentDataOptions
+            {
+                Metadata = metaData
+            },
+            Metadata = metaData,
+            ExpiresAt = DateTime.UtcNow.AddMinutes(30)
+        };
+
+        var session = await new SessionService().CreateAsync(options, cancellationToken: ct);
+
+        return new CreateCheckoutSessionResponse(
+            session.Id,
+            session.Url,
+            session.ClientSecret
+        );
     }
 
     public async Task<CreateCheckoutSessionResponse> CreateSubscriptionCheckoutSessionAsync(
