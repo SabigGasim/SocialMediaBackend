@@ -1,4 +1,5 @@
-﻿using SocialMediaBackend.Modules.Payments.Contracts.Gateway;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
+using SocialMediaBackend.Modules.Payments.Contracts.Gateway;
 
 namespace SocialMediaBackend.Modules.Payments.Contracts.Proxy;
 
@@ -11,13 +12,15 @@ public interface IPaymentAntiCorruptionLayer
         string owner,
         CancellationToken ct = default);
     Task<Guid> CreatePriceAsync(Guid productId, ProductPrice productPrice, CancellationToken ct = default);
-    Task<CreateCheckoutSessionResponse> CreateOneTimePaymentCheckoutSessionAsync(
+    Task<HandlerResponse<CreateCheckoutSessionResponse>> CreateOneTimePaymentCheckoutSessionAsync(
         Guid userId,
         string productReference,
+        Guid priceId,
         string successUrl,
-        string cancelUrl
-        );
-    Task<CreateCheckoutSessionResponse> CreateSubscriptionCheckoutSessionAsync(
+        string cancelUrl,
+        CancellationToken ct = default);
+
+    Task<HandlerResponse<CreateCheckoutSessionResponse>> CreateSubscriptionCheckoutSessionAsync(
         Guid userId,
         string productReference,
         Guid priceId,

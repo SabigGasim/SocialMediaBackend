@@ -1,4 +1,5 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
+using SocialMediaBackend.Modules.Payments.Application.Payments.CreatePaymentCheckoutSession;
 using SocialMediaBackend.Modules.Payments.Application.Products.CreateProduct;
 using SocialMediaBackend.Modules.Payments.Application.Products.CreateProductPrice;
 using SocialMediaBackend.Modules.Payments.Application.Subscriptions.CreateSubscriptionCheckoutSession;
@@ -13,9 +14,22 @@ namespace SocialMediaBackend.Modules.Payments.Application;
 
 public class PaymentAntiCorruptionLayer : IPaymentAntiCorruptionLayer
 {
-    public Task<CreateCheckoutSessionResponse> CreateOneTimePaymentCheckoutSessionAsync(Guid userId, string productReference, string successUrl, string cancelUrl)
+    public async Task<HandlerResponse<CreateCheckoutSessionResponse>> CreateOneTimePaymentCheckoutSessionAsync(
+        Guid userId, 
+        string productReference,
+        Guid priceId,
+        string successUrl, 
+        string cancelUrl,
+        CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        return await CommandExecutor.ExecuteAsync<CreatePaymentCheckoutSessionCommand, CreateCheckoutSessionResponse>(
+            new CreatePaymentCheckoutSessionCommand(
+                new PayerId(userId),
+                productReference,
+                new ProductPriceId(priceId),
+                successUrl,
+                cancelUrl),
+            ct);
     }
 
     public async Task<HandlerResponse<CreateCheckoutSessionResponse>> CreateSubscriptionCheckoutSessionAsync(
