@@ -1,4 +1,5 @@
-﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
+﻿using SocialMediaBackend.BuildingBlocks.Application;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.Exceptions;
@@ -20,8 +21,23 @@ public class CreateSubscriptionCheckoutSessionCommandHandler(
 
     public async Task<HandlerResponse<CreateCheckoutSessionResponse>> ExecuteAsync(CreateSubscriptionCheckoutSessionCommand command, CancellationToken ct)
     {
-        var payer = await _repository.LoadAsync<Payer>(command.PayerId.Value, ct);
-        var product = await _repository.LoadAsync<Product>(x => x.Reference == command.ProductReference, ct);
+        var oldSubscription = await _repository.LoadAsync<Subscription>(
+            x => x.ProductReference == command.ProductReference &&
+                 x.PayerId == command.PayerId.Value
+            );
+
+        if (oldSubscription is not null)
+        {
+            return ("User is already subscribed to this product", HandlerResponseStatus.Conflict);
+        }
+
+        var payerTask = _repository.LoadAsync<Payer>(command.PayerId.Value, ct);
+        var productTask = _repository.LoadAsync<Product>(x => x.Reference == command.ProductReference, ct);
+
+        await Task.WhenAll(payerTask, productTask);
+
+        var payer = await payerTask;
+        var product = await productTask;
 
         NotFoundException.ThrowIfNull(payer, product);
 

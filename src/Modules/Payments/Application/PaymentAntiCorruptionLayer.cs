@@ -1,4 +1,5 @@
-﻿using SocialMediaBackend.Modules.Payments.Application.Products.CreateProduct;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
+using SocialMediaBackend.Modules.Payments.Application.Products.CreateProduct;
 using SocialMediaBackend.Modules.Payments.Application.Products.CreateProductPrice;
 using SocialMediaBackend.Modules.Payments.Application.Subscriptions.CreateSubscriptionCheckoutSession;
 using SocialMediaBackend.Modules.Payments.Contracts;
@@ -17,7 +18,7 @@ public class PaymentAntiCorruptionLayer : IPaymentAntiCorruptionLayer
         throw new NotImplementedException();
     }
 
-    public async Task<CreateCheckoutSessionResponse> CreateSubscriptionCheckoutSessionAsync(
+    public async Task<HandlerResponse<CreateCheckoutSessionResponse>> CreateSubscriptionCheckoutSessionAsync(
         Guid userId, 
         string productReference, 
         Guid priceId, 
@@ -25,7 +26,7 @@ public class PaymentAntiCorruptionLayer : IPaymentAntiCorruptionLayer
         string cancelUrl, 
         CancellationToken ct = default)
     {
-        var result = await CommandExecutor.ExecuteAsync<CreateSubscriptionCheckoutSessionCommand, CreateCheckoutSessionResponse>(
+        return await CommandExecutor.ExecuteAsync<CreateSubscriptionCheckoutSessionCommand, CreateCheckoutSessionResponse>(
             new CreateSubscriptionCheckoutSessionCommand(
                 new PayerId(userId),
                 productReference,
@@ -33,8 +34,6 @@ public class PaymentAntiCorruptionLayer : IPaymentAntiCorruptionLayer
                 successUrl,
                 cancelUrl),
             ct);
-
-        return result.Payload;
     }
 
     public async Task<Guid> CreateProductAsync(
