@@ -14,12 +14,6 @@ public class StripeGateway : IPaymentGateway
         Guid internalPaymentId, 
         CancellationToken ct = default)
     {
-        var metaData = new Dictionary<string, string>
-        {
-            { "internal_payment_id", internalPaymentId.ToString() },
-            { "product_reference", productReference }
-        };
-
         var options = new SessionCreateOptions
         {
             Customer = gatewayCustomerId,
@@ -37,9 +31,18 @@ public class StripeGateway : IPaymentGateway
             ],
             PaymentIntentData = new SessionPaymentIntentDataOptions
             {
-                Metadata = metaData
+                Metadata = new Dictionary<string, string>
+                {
+                    { "internal_payment_id", internalPaymentId.ToString() },
+                    { "product_reference", productReference }
+                }
             },
-            Metadata = metaData,
+            Metadata = new Dictionary<string, string>
+            {
+                { "mode", "payment" },
+                { "internal_payment_id", internalPaymentId.ToString() },
+                { "product_reference", productReference }
+            },
             ExpiresAt = DateTime.UtcNow.AddMinutes(30)
         };
 
@@ -86,6 +89,7 @@ public class StripeGateway : IPaymentGateway
             },
             Metadata = new Dictionary<string, string> 
             {
+                { "mode", "subscription" },
                 { "internal_subscription_id", internalSubscriptionId.ToString() },
                 { "product_reference", productReference }
             },

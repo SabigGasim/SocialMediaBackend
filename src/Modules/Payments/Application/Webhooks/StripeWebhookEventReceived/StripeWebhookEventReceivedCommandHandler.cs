@@ -3,12 +3,17 @@ using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.InternalCommands;
+using SocialMediaBackend.Modules.Payments.Application.Payments.CancelPurchase;
+using SocialMediaBackend.Modules.Payments.Application.Payments.FulfillPurchase;
+using SocialMediaBackend.Modules.Payments.Application.Payments.ProcessPaymentCreated;
+using SocialMediaBackend.Modules.Payments.Application.Payments.RefundPayment;
 using SocialMediaBackend.Modules.Payments.Application.Subscriptions.CancelSubscription;
 using SocialMediaBackend.Modules.Payments.Application.Subscriptions.FulfillSubscription;
 using SocialMediaBackend.Modules.Payments.Application.Subscriptions.MarkSubscriptionAsIncomplete;
 using SocialMediaBackend.Modules.Payments.Application.Subscriptions.MarkSubscriptionAsPastDue;
 using SocialMediaBackend.Modules.Payments.Application.Subscriptions.ProcessSubscriptionCreated;
 using SocialMediaBackend.Modules.Payments.Application.Subscriptions.RenewSubscription;
+using SocialMediaBackend.Modules.Payments.Domain.Purchase;
 using SocialMediaBackend.Modules.Payments.Domain.Subscriptions;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Webhooks.StripeWebhookEventReceived;
@@ -26,6 +31,10 @@ public class StripeWebhookEventReceivedCommandHandler(
             Stripe.EventTypes.CustomerSubscriptionUpdated => HandleSubscriptionUpdated(command.Event),
             Stripe.EventTypes.CustomerSubscriptionDeleted => HandleSubscriptionDeleted(command.Event),
             Stripe.EventTypes.CheckoutSessionExpired => HandleCheckoutSessionExpired(command.Event),
+            Stripe.EventTypes.PaymentIntentCreated => HandlePaymentIntentCreated(command.Event),
+            Stripe.EventTypes.PaymentIntentSucceeded => HandlePaymentIntentSucceded(command.Event),
+            Stripe.EventTypes.PaymentIntentPaymentFailed => HandlePaymentIntentFailed(command.Event),
+            Stripe.EventTypes.ChargeRefunded => HandleChargeRefunded(command.Event),
             Stripe.EventTypes.InvoicePaid => HandleInvoicePaid(command.Event),
             _ => null
         };
@@ -36,6 +45,44 @@ public class StripeWebhookEventReceivedCommandHandler(
         }
 
         return HandlerResponseStatus.OK;
+    }
+
+    private static RefundPaymentCommand HandleChargeRefunded(Stripe.Event @event)
+    {
+        var charge = CreateDto((Stripe.Charge)@event.Data.Object);
+
+        return new RefundPaymentCommand(new PurchaseId(charge.InternalId), charge.RefundedAt);
+    }
+
+    public static CancelPurchaseCommand? HandlePaymentIntentFailed(Stripe.Event @event)
+    {
+        var paymentIntent = CreateDto((Stripe.PaymentIntent)@event.Data.Object);
+
+        return paymentIntent.PaymentMode == PaymentMode.Payment
+            ? new CancelPurchaseCommand(new(paymentIntent.PaymentId))
+            : null;
+    }
+
+    public static FulfillPurchaseCommand? HandlePaymentIntentSucceded(Stripe.Event @event)
+    {
+        var paymentIntent = CreateDto((Stripe.PaymentIntent)@event.Data.Object);
+
+        return paymentIntent.PaymentMode == PaymentMode.Payment
+            ? new FulfillPurchaseCommand(
+                new(paymentIntent.PaymentId),
+                paymentIntent.PaidAt)
+            : null;
+    }
+
+    public static InternalCommandBase? HandlePaymentIntentCreated(Stripe.Event @event)
+    {
+        var paymentIntent = CreateDto((Stripe.PaymentIntent)@event.Data.Object);
+
+        return paymentIntent.PaymentMode == PaymentMode.Payment
+            ? new ProcessPaymentCreatedCommand(
+                new(paymentIntent.PaymentId),
+                new(paymentIntent.GatewayPaymentId))
+            : null;
     }
 
     /// <summary>
@@ -133,6 +180,23 @@ public class StripeWebhookEventReceivedCommandHandler(
         );
     }
 
+    private static PaymentIntentDto CreateDto(Stripe.PaymentIntent paymentIntent)
+    {
+        var mode = paymentIntent.Metadata.GetValueOrDefault("mode") switch
+        {
+            "payment" => PaymentMode.Payment,
+            _ => PaymentMode.Subscription
+        };
+
+        var id = mode switch
+        {
+            PaymentMode.Payment => paymentIntent.Metadata.GetValueOrDefault("internal_payment_id"),
+            _ => paymentIntent.Metadata.GetValueOrDefault("internal_subscription_id")
+        };
+
+        return new PaymentIntentDto(mode, paymentIntent.Id, Guid.Parse(id!), DateTimeOffset.UtcNow);
+    }
+
     private static InvoiceDto CreateDto(Stripe.Invoice invoice)
     {
         var internalSubscriptionId = invoice.Parent.SubscriptionDetails.Metadata.GetValueOrDefault("internal_subscription_id");
@@ -159,6 +223,12 @@ public class StripeWebhookEventReceivedCommandHandler(
         return new SessionDto(Guid.Parse(session.Metadata["internal_subscription_id"].ToString()));
     }
 
+    private static ChargeDto CreateDto(Stripe.Charge charge)
+    {
+        return new ChargeDto(
+            Guid.Parse(charge.Metadata.GetValueOrDefault("internal_payment_id")!),
+            DateTimeOffset.UtcNow);
+    }
     private static SubscriptionStatus GetSubscriptionStatus(string status)
     {
         return status switch
@@ -179,12 +249,26 @@ enum BillingReasons
     Else
 }
 
+enum PaymentMode
+{
+    Payment, Subscription
+}
+
 record InvoiceDto(
     Guid InternalSubscriptionId, 
     BillingReasons Reason,
     DateTimeOffset StartDate,
     DateTimeOffset ExpirationDate);
 
+record PaymentIntentDto(
+    PaymentMode PaymentMode,
+    string GatewayPaymentId,
+    Guid PaymentId,
+    DateTimeOffset PaidAt
+    );
+
 record SessionDto(Guid InternalSubscriptionId);
+
+record ChargeDto(Guid InternalId, DateTimeOffset RefundedAt);
 
 record ShortSubscriptionDto(Guid InternalSubscriptionId, string SubscriptionId, SubscriptionStatus Status);
