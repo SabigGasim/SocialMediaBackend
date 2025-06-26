@@ -7,6 +7,7 @@ namespace SocialMediaBackend.Modules.Payments.Domain.Purchase;
 public class Purchase : AggregateRoot
 {
     public Guid PayerId { get; private set; }
+    public Guid ProductId { get; private set; }
     public string PaymentGatewayId { get; private set; } = default!;
     public PaymentStatus PaymentStatus { get; private set; }
     public string ProductReference { get; private set; } = default!;
@@ -35,7 +36,7 @@ public class Purchase : AggregateRoot
         this.AddEvent(@event);
     }
 
-    public void MarkPaid(DateTimeOffset purchasedAt)
+    public void Fulfill(DateTimeOffset purchasedAt)
     {
         var @event = new PaymentCompleted(purchasedAt);
 
