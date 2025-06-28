@@ -8,6 +8,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.Persistence;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.Quartz;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.Processing;
 using SocialMediaBackend.Modules.Chat.Application.Configuration.Auth;
+using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.EventBus;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Configuration;
 
@@ -23,6 +24,7 @@ public static class ChatStartup
 
         await PersistenceStartup.InitializeAsync(env);
         await QuartzStartup.InitializeAsync();
+        EventBusStartup.Initialize();
     }
 
     private static void ConfigureCompositionRoot(
@@ -39,6 +41,7 @@ public static class ChatStartup
         containerBuilder.RegisterModule(new QuartzModule());
         containerBuilder.RegisterModule(new ProcessingModule(redisConnection));
         containerBuilder.RegisterModule(new AuthModule());
+        containerBuilder.RegisterModule(new EventBusModule());
 
         var container = containerBuilder.Build();
 
