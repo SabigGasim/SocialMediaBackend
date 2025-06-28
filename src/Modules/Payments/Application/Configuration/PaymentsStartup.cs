@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using SocialMediaBackend.Modules.Payments.Application.Configuration.Mediator;
 using SocialMediaBackend.Modules.Payments.Infrastructure.Configuration;
+using SocialMediaBackend.Modules.Payments.Infrastructure.Configuration.EventBus;
 using SocialMediaBackend.Modules.Payments.Infrastructure.Configuration.Payments;
 using SocialMediaBackend.Modules.Payments.Infrastructure.Configuration.Persistence;
 using SocialMediaBackend.Modules.Payments.Infrastructure.Configuration.Processing;
@@ -22,6 +23,7 @@ public static class PaymentsStartup
 
         await PersistenceStartup.InitializeAsync(environment);
         await QuartzStartup.InitializeAsync();
+        EventBusStartup.Initialize();
     }
 
     private static void ConfigureCompositionRoot(IServiceCollection services, string connectionString)
@@ -35,6 +37,7 @@ public static class PaymentsStartup
         builder.RegisterModule(new QuartzModule());
         builder.RegisterModule(new CQRSModule());
         builder.RegisterModule(new PaymentsAutofacModule());
+        builder.RegisterModule(new EventBusModule());
 
         var container = builder.Build();
 
