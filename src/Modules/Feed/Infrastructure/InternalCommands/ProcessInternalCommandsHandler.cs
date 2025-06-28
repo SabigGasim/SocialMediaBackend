@@ -4,7 +4,6 @@ using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
-using Commands = SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration;
 using System.Text.Json;
 using Autofac;
