@@ -24,7 +24,7 @@ public class CommandsScheduler(IDbConnectionFactory connectionFactory) : IComman
             {
                 command.Id,
                 EnqueueDate = TimeProvider.System.GetUtcNow(),
-                Type = $"{command.GetType().FullName}, {command.GetType().Assembly.FullName}",
+                Type = command.GetType().AssemblyQualifiedName,
                 Data = JsonConvert.SerializeObject(command),
                 IdempotencyKey = idempotencyKey
             });
