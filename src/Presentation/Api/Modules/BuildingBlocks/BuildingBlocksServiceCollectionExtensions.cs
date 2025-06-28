@@ -4,10 +4,8 @@ namespace SocialMediaBackend.Api.Modules.BuildingBlocks;
 
 internal static class BuildingBlocksServiceCollectionExtensions
 {
-    public static IServiceCollection AddBuildingBlocks(
-        this IServiceCollection services,
-        string connectionString)
+    public static IServiceCollection AddBuildingBlocks(this IServiceCollection services)
     {
-        return services.AddInfrastructureBuildingBlocks(connectionString);
+        return services.AddInfrastructureBuildingBlocks();
     }
 }
