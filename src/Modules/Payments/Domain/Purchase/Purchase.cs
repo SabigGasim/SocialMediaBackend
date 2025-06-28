@@ -72,6 +72,7 @@ public class Purchase : AggregateRoot
         this.AddDomainEvent(new PaymentRefundedDomainEvent(
             new(this.Id),
             new(this.PayerId),
+            this.ProductReference,
             this.RefundedAt!.Value)
             );
     }

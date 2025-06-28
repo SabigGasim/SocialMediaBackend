@@ -14,6 +14,7 @@ using SocialMediaBackend.Modules.Payments.Application.Configuration;
 using SocialMediaBackend.Api.Modules.Payments;
 using Stripe;
 using SocialMediaBackend.Modules.Payments.Infrastructure;
+using SocialMediaBackend.Api.Modules.BuildingBlocks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,7 @@ builder.Services.AddFeedModule();
 builder.Services.AddUserModule();
 builder.Services.AddChatModule();
 builder.Services.AddPaymentsModule(environment, connectionString);
+builder.Services.AddBuildingBlocks();
 builder.Services.AddApi(config);
 
 var app = builder.Build();
