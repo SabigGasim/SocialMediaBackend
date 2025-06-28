@@ -1,8 +1,9 @@
 ﻿using Autofac;
 using Autofac.Core;
-using Mediator;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using SocialMediaBackend.BuildingBlocks.Domain;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.Messaging;
 
 namespace SocialMediaBackend.BuildingBlocks.Infrastructure;
 
@@ -19,7 +20,7 @@ public sealed class EFUnitOfWork(
     {
         var entitiesWithEvents = _context.ChangeTracker
             .Entries<IHasDomainEvents>()
-           .Select(e => e.Entity)
+            .Select(e => e.Entity)
             .Where(e => e.DomainEvents is { Count: > 0 })
             .ToArray();
 
@@ -43,7 +44,7 @@ public sealed class EFUnitOfWork(
             {
                 var notification = (IDomainEventNotification)domainNotification;
 
-                domainEventNotifications.Add(notification!);
+                domainEventNotifications.Add(notification);
             }
         }
 
@@ -54,14 +55,19 @@ public sealed class EFUnitOfWork(
 
         await _dispatcher.DispatchAsync(domainEvents, ct);
 
-        var result = await _context.SaveChangesAsync(ct);
-
         foreach (var notification in domainEventNotifications)
         {
-            var mediator = _scope.Resolve<IMediator>();
-            await mediator.Publish(notification, CancellationToken.None);
+            var outboxMessage = new OutboxMessage
+            {
+                Id = notification.Id,
+                Content = JsonConvert.SerializeObject(notification),
+                Type = notification.GetType().AssemblyQualifiedName!,
+                OccurredOn = notification.Event.OccurredOn
+            };
+
+            _context.Set<OutboxMessage>().Add(outboxMessage);
         }
 
-        return result;
+        return await _context.SaveChangesAsync(ct);
     }
 }
