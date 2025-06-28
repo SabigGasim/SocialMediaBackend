@@ -1,20 +1,15 @@
-﻿
+﻿using Newtonsoft.Json;
+
 namespace SocialMediaBackend.BuildingBlocks.Domain;
 
-public abstract class DomainNotificationBase : IDomainEventNotification
-{
-    public Guid Id { get; private set; }
-}
-
-public abstract class DomainNotificationBase<T> : IDomainEventNotification<T>
+[method: JsonConstructor]
+public abstract class DomainNotificationBase<T>(T domainEvent, Guid id) : IDomainEventNotification<T>
     where T : IDomainEvent
 {
-    protected DomainNotificationBase(T domainEvent, Guid id)
-    {
-        Event = domainEvent;
-        Id = id;
-    }
+    [JsonProperty("domainEvent")]
+    public T Event { get; } = domainEvent;
+    public Guid Id { get; } = id;
 
-    public T Event { get; }
-    public Guid Id { get; }
+    [JsonIgnore]
+    IDomainEvent IDomainEventNotification.Event => Event;
 }

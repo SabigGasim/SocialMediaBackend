@@ -5,9 +5,9 @@ public abstract class DomainEventBase : IDomainEvent
     protected DomainEventBase()
     {
         Id = Guid.NewGuid();
-        OccuredOn = TimeProvider.System.GetUtcNow();
+        OccurredOn = TimeProvider.System.GetUtcNow();
     }
 
     public Guid Id { get; }
-    public DateTimeOffset OccuredOn { get; }
+    public DateTimeOffset OccurredOn { get; }
 }

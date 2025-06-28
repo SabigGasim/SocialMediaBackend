@@ -5,7 +5,6 @@ using Microsoft.Extensions.Hosting;
 using SocialMediaBackend.Modules.Chat.Application.Configuration;
 using SocialMediaBackend.Modules.Feed.Application.Configuration;
 using SocialMediaBackend.Modules.Payments.Application.Configuration;
-using SocialMediaBackend.Modules.Payments.Infrastructure.Configuration;
 using SocialMediaBackend.Modules.Users.Application.Configuration;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;

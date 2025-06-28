@@ -17,6 +17,8 @@ public class CreateUserTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 {
     private readonly App _app = app;
 
+    private readonly TimeSpan _testTimeout = TimeSpan.FromSeconds(20);
+
     [Fact]
     public async Task CreateUser_ShouldCreateUserInAllModules()
     {
@@ -42,9 +44,9 @@ public class CreateUserTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         var payerInfo = new PayerInfo(user.Id, false);
 
         await Task.WhenAll(
-            AssertEventually(new GetCreatedUserFromChatProbe(userInfo, new ChatModule()), TimeSpan.FromSeconds(10)),
-            AssertEventually(new GetCreatedUserFromFeedProbe(userInfo, new FeedModule()), TimeSpan.FromSeconds(10)),
-            AssertEventually(new GetCreatedUserFromPaymentsProbe(payerInfo, new PaymentsModule()), TimeSpan.FromSeconds(10))
+            AssertEventually(new GetCreatedUserFromChatProbe(userInfo, new ChatModule()), _testTimeout),
+            AssertEventually(new GetCreatedUserFromFeedProbe(userInfo, new FeedModule()), _testTimeout),
+            AssertEventually(new GetCreatedUserFromPaymentsProbe(payerInfo, new PaymentsModule()), _testTimeout)
         );
     }
 

@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\Infrastructure\SocialMediaBackend.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Users\IntegrationEvents\SocialMediaBackend.Modules.Users.IntegrationEvents.csproj" />
     <ProjectReference Include="..\Contracts\SocialMediaBackend.Modules.Payments.Contracts.csproj" />
     <ProjectReference Include="..\Domain\SocialMediaBackend.Modules.Payments.Domain.csproj" />
   </ItemGroup>

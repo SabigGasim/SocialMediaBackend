@@ -1,13 +1,12 @@
-﻿using System.Text.Json.Serialization;
-
-namespace SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
+﻿namespace SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 
 public record Media : ValueObject
 {
     //TODO
     public static Media DefaultProfilePicture = new("url", "path.extension");
 
-    [JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
+    [Newtonsoft.Json.JsonConstructor]
     private Media(string url, string filePath)
     {
         FilePath = filePath;

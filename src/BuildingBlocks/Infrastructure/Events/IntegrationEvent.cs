@@ -7,9 +7,9 @@ public abstract class IntegrationEvent : IEvent
     protected IntegrationEvent()
     {
         Id = Guid.CreateVersion7();
-        OccuredOn = TimeProvider.System.GetUtcNow();
+        OccurredOn = TimeProvider.System.GetUtcNow();
     }
 
     public Guid Id { get; }
-    public DateTimeOffset OccuredOn { get; }
+    public DateTimeOffset OccurredOn { get; }
 }
