@@ -5,7 +5,7 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows;
 
-public abstract class FollowUserEventHandlerBase<TFollowEventBase>(UsersDbContext context)
+internal abstract class FollowUserEventHandlerBase<TFollowEventBase>(UsersDbContext context)
     : IDomainEventHandler<TFollowEventBase>
     where TFollowEventBase : FollowEventBase
 {

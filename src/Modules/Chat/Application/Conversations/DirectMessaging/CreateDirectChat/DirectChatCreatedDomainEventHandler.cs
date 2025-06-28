@@ -5,7 +5,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.CreateDirectChat;
 
-public class DirectChatCreatedDomainEventHandler : INotificationHandler<DirectChatCreatedDomainEvent>
+internal sealed class DirectChatCreatedDomainEventHandler : INotificationHandler<DirectChatCreatedDomainEvent>
 {
     private readonly ChatDbContext _context;
 

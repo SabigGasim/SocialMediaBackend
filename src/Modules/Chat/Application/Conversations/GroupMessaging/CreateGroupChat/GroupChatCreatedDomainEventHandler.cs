@@ -5,7 +5,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.CreateGroupChat;
 
-public class GroupChatCreatedDomainEventHandler(ChatDbContext context) : INotificationHandler<GroupChatCreatedDomainEvent>
+internal sealed class GroupChatCreatedDomainEventHandler(ChatDbContext context) : INotificationHandler<GroupChatCreatedDomainEvent>
 {
     private readonly ChatDbContext _context = context;
 

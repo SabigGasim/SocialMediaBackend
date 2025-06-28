@@ -7,11 +7,10 @@ using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Users.Infrastructure.Data;
-using System.Text.Json;
 
 namespace SocialMediaBackend.Modules.Users.Infrastructure.Messaging.Outbox;
 
-public class ProcessOutboxMessagesCommandHandler(
+internal sealed class ProcessOutboxMessagesCommandHandler(
     IDbConnectionFactory factory,
     Mediator.IMediator mediator)
     : ICommandHandler<ProcessOutboxMessagesCommand>

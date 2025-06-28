@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.AppPlans.SubscribeToAppPlan;
 
-public class SubscribeToAppPlanCommandHandler(
+internal sealed class SubscribeToAppPlanCommandHandler(
     IPaymentAntiCorruptionLayer paymentAntiCorruptionLayer,
     UsersDbContext context) 
     : ICommandHandler<SubscribeToAppPlanCommand, CreateCheckoutSessionResponse>

@@ -11,7 +11,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration;
 
 namespace SocialMediaBackend.Modules.Chat.Infrastructure.InternalCommands;
 
-public class ProcessInternalCommandsCommandHandler : ICommandHandler<ProcessInternalCommandsCommand>
+internal sealed class ProcessInternalCommandsCommandHandler : ICommandHandler<ProcessInternalCommandsCommand>
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
 

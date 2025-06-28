@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Privacy.ChangeProfileVisibility;
 
-public class ChangeProfileVisibilityCommandHandler(UsersDbContext context)
+internal sealed class ChangeProfileVisibilityCommandHandler(UsersDbContext context)
     : ICommandHandler<ChangeProfileVisibilityCommand>
 {
     private readonly UsersDbContext _context = context;

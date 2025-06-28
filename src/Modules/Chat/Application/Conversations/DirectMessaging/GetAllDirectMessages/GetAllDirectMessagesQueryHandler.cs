@@ -1,17 +1,14 @@
-﻿using SocialMediaBackend.BuildingBlocks.Application;
-using SocialMediaBackend.BuildingBlocks.Application.Requests;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
-using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.Modules.Chat.Application.Auth;
 using SocialMediaBackend.Modules.Chat.Application.Mappings;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Conversations;
-using System.Reflection.Metadata.Ecma335;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.GetAllDirectMessages;
 
-public class GetAllDirectMessagesQueryHandler(
+internal sealed class GetAllDirectMessagesQueryHandler(
     IChatRepository chatRepository,
     IAuthorizationHandler<DirectChat, DirectChatId> authorizationHandler)
     : IQueryHandler<GetAllDirectMessagesQuery, GetAllDirectMessagesResponse>

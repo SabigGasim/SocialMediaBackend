@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Users.IntegrationEvents;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Payers.CreatePayer;
 
-internal class UserCreatedIntegrationEventHandler(IHostEnvironment env) : INotificationHandler<UserCreatedIntegrationEvent>
+internal sealed class UserCreatedIntegrationEventHandler(IHostEnvironment env) : INotificationHandler<UserCreatedIntegrationEvent>
 {
     private readonly IHostEnvironment _env = env;
 

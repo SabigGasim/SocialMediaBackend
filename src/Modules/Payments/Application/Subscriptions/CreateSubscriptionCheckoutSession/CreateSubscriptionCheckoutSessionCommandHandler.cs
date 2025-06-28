@@ -11,7 +11,7 @@ using SocialMediaBackend.Modules.Payments.Infrastructure.Gateway;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Subscriptions.CreateSubscriptionCheckoutSession;
 
-public class CreateSubscriptionCheckoutSessionCommandHandler(
+internal sealed class CreateSubscriptionCheckoutSessionCommandHandler(
     IAggregateRepository repository,
     IPaymentGateway paymentGateway)
     : ICommandHandler<CreateSubscriptionCheckoutSessionCommand, CreateCheckoutSessionResponse>

@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Payments.Domain.Subscriptions;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Subscriptions.RenewSubscription;
 
-public class RenewSubscriptionCommandHandler(IAggregateRepository repository)
+internal sealed class RenewSubscriptionCommandHandler(IAggregateRepository repository)
     : ICommandHandler<RenewSubscriptionCommand>
 {
     private readonly IAggregateRepository _repository = repository;

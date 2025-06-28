@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.ReplyToComment;
 
-public class ReplyToCommentCommandHandler(
+internal sealed class ReplyToCommentCommandHandler(
     FeedDbContext context,
     IAuthorizationHandler<Comment, CommentId> authorizationHandler)
     : ICommandHandler<ReplyToCommentCommand, ReplyToCommentResponse>

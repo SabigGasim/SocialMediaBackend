@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Payments.Domain.Subscriptions;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Subscriptions.CancelSubscription;
 
-public class CancelSubscriptionCommandHandler(IAggregateRepository repository) : ICommandHandler<CancelSubscriptionCommand>
+internal sealed class CancelSubscriptionCommandHandler(IAggregateRepository repository) : ICommandHandler<CancelSubscriptionCommand>
 {
     private readonly IAggregateRepository _repository = repository;
 

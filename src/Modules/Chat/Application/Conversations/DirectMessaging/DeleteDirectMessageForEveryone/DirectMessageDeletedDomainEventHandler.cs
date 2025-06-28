@@ -5,7 +5,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.DeleteDirectMessageForEveryone;
 
-public class DirectMessageDeletedDomainEventHandler(ChatDbContext context) : INotificationHandler<DirectMessageDeletedDomainEvent>
+internal sealed class DirectMessageDeletedDomainEventHandler(ChatDbContext context) : INotificationHandler<DirectMessageDeletedDomainEvent>
 {
     private readonly ChatDbContext _context = context;
 

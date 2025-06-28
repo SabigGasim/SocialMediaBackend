@@ -4,7 +4,7 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.RejectFollowRequest;
 
-public class RejectFollowRequestEventHandler(UsersDbContext context)
+internal sealed class RejectFollowRequestEventHandler(UsersDbContext context)
     : FollowUserEventHandlerBase<FollowRequestRejectedEvent>(context)
 {
     private readonly UsersDbContext _context = context;

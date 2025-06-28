@@ -9,7 +9,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.GetAllReplies;
 
-public class GetAllRepliesQueryHandler(
+internal sealed class GetAllRepliesQueryHandler(
     FeedDbContext context,
     IAuthorizationHandler<Comment, CommentId> authorizationHandler)
     : IQueryHandler<GetAllRepliesQuery, GetAllRepliesResponse>

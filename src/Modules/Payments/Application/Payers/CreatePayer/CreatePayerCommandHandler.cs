@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Payments.Domain.Payers.Events;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Payers.CreatePayer;
 
-public class CreatePayerCommandHandler(IAggregateRepository repository) : ICommandHandler<CreatePayerCommand>
+internal sealed class CreatePayerCommandHandler(IAggregateRepository repository) : ICommandHandler<CreatePayerCommand>
 {
     private readonly IAggregateRepository _repository = repository;
 

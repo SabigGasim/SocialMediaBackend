@@ -10,7 +10,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.PromoteMember;
 
-public class PromoteMemberCommandHandler(
+internal sealed class PromoteMemberCommandHandler(
     ChatDbContext context,
     IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler)
     : IGroupCommandHandler<PromoteMemberCommand, MemberPromotedMessage>

@@ -10,7 +10,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Conversations;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.MarkGroupMessagAsSeen;
 
-public class MarkGroupMessagAsSeenCommandHandler(
+internal sealed class MarkGroupMessagAsSeenCommandHandler(
     IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler,
     IChatRepository chatRepository,
     IUserLockMangaer lockMangaer)

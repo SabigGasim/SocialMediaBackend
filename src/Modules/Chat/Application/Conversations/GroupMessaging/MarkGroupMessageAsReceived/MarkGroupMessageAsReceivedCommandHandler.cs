@@ -10,7 +10,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Conversations;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.MarkGroupMessageAsReceived;
 
-public class MarkGroupMessageAsReceivedCommandHandler(
+internal sealed class MarkGroupMessageAsReceivedCommandHandler(
     IChatRepository repository,
     IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler,
     IUserLockMangaer lockMangaer)

@@ -12,7 +12,7 @@ using SocialMediaBackend.Modules.Payments.Infrastructure.Gateway;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Payments.CreatePaymentCheckoutSession;
 
-public class CreatePaymentCheckoutSessionCommandHandler(
+internal sealed class CreatePaymentCheckoutSessionCommandHandler(
     IAggregateRepository repository,
     IPaymentGateway paymentGateway)
     : ICommandHandler<CreatePaymentCheckoutSessionCommand, CreateCheckoutSessionResponse>

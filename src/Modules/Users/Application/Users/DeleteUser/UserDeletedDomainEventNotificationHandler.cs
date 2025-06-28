@@ -1,15 +1,16 @@
 ﻿using Mediator;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.Messaging;
 using SocialMediaBackend.Modules.Users.IntegrationEvents;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.DeleteUser;
 
-public class UserDeletedDomainEventNotificationHandler(IMediator mediator)
+internal sealed class UserDeletedDomainEventNotificationHandler(IEventBus eventBus)
     : INotificationHandler<UserDeletedDomainEventNotification>
 {
-    private readonly IMediator _mediator = mediator;
+    private readonly IEventBus _eventBus = eventBus;
 
     public async ValueTask Handle(UserDeletedDomainEventNotification notification, CancellationToken cancellationToken)
     {
-        await _mediator.Publish(new UserDeletedIntegrationEvent(notification.Event.UserId.Value));
+        await _eventBus.Publish(new UserDeletedIntegrationEvent(notification.Event.UserId.Value));
     }
 }

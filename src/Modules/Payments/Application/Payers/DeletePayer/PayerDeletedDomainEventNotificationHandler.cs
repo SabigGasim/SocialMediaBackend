@@ -4,7 +4,7 @@ using SocialMediaBackend.Modules.Payments.Application.Payers.CleanUpPayerResourc
 
 namespace SocialMediaBackend.Modules.Payments.Application.Payers.DeletePayer;
 
-public class PayerDeletedDomainEventNotificationHandler(ICommandsScheduler commandsScheduler)
+internal sealed class PayerDeletedDomainEventNotificationHandler(ICommandsScheduler commandsScheduler)
     : INotificationHandler<PayerDeletedDomainEventNotification>
 {
     private readonly ICommandsScheduler _scheduler = commandsScheduler;
@@ -13,7 +13,8 @@ public class PayerDeletedDomainEventNotificationHandler(ICommandsScheduler comma
     {
         await _scheduler.EnqueueAsync(new CleanUpPayerResourcesCommand(
             notification.Event.PayerId,
-            notification.Event.GatewayCustomerId)
+            notification.Event.GatewayCustomerId,
+            notification.Id)
             );
     }
 }

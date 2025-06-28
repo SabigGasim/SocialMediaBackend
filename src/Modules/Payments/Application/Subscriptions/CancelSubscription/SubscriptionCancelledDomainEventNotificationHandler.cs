@@ -1,20 +1,20 @@
 ﻿using Mediator;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.Messaging;
 using SocialMediaBackend.Modules.Payments.Contracts.IntegrationEvents;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Subscriptions.CancelSubscription;
 
-public class SubscriptionCancelledDomainEventNotificationHandler(IMediator mediator)
+internal sealed class SubscriptionCancelledDomainEventNotificationHandler(IEventBus eventBus)
     : INotificationHandler<SubscriptionCancelledDomainEventNotification>
 {
-    private readonly IMediator _mediator = mediator;
+    private readonly IEventBus _eventBus = eventBus;
 
     public async ValueTask Handle(SubscriptionCancelledDomainEventNotification notification, CancellationToken cancellationToken)
     {
-        await _mediator.Publish(new SubscriptionCancelledIntegrationEvent(
+        await _eventBus.Publish(new SubscriptionCancelledIntegrationEvent(
             notification.Event.PayerId.Value,
             notification.Event.SubscriptionId.Value,
-            notification.Event.ProductReference),
-            CancellationToken.None
+            notification.Event.ProductReference)
             );
     }
 }

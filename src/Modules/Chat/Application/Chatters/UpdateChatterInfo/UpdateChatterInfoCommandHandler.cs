@@ -6,7 +6,7 @@ using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Chatters.UpdateChatterInfo;
-public class UpdateChatterInfoCommandHandler(
+internal sealed class UpdateChatterInfoCommandHandler(
     IDbConnectionFactory factory) : ICommandHandler<UpdateChatterInfoCommand>
 {
     private readonly IDbConnectionFactory _factory = factory;

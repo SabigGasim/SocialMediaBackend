@@ -6,12 +6,10 @@ using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
-using SocialMediaBackend.Modules.Payments.Infrastructure;
-using SocialMediaBackend.Modules.Payments.Infrastructure.Messaging.Inbox;
 
-namespace SocialMediaBackend.Modules.Feed.Infrastructure.Messaging.Inbox;
+namespace SocialMediaBackend.Modules.Payments.Infrastructure.Messaging.Inbox;
 
-public class ProcessInboxMessagesCommandHandler(
+internal sealed class ProcessInboxMessagesCommandHandler(
     IDbConnectionFactory factory,
     Mediator.IMediator mediator)
     : ICommandHandler<ProcessInboxMessagesCommand>

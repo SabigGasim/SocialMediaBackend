@@ -9,7 +9,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.DeleteComment;
 
-public class DeleteCommentCommandHandler(
+internal sealed class DeleteCommentCommandHandler(
     FeedDbContext context,
     IAuthorizationHandler<Comment, CommentId> authorizationHandler) : ICommandHandler<DeleteCommentCommand>
 {

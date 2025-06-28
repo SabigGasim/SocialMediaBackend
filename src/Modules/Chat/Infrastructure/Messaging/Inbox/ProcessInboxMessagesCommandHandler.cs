@@ -10,7 +10,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Infrastructure.Messaging.Inbox;
 
-public class ProcessInboxMessagesCommandHandler(
+internal sealed class ProcessInboxMessagesCommandHandler(
     IDbConnectionFactory factory,
     Mediator.IMediator mediator)
     : ICommandHandler<ProcessInboxMessagesCommand>

@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Payments.Domain.Subscriptions;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Subscriptions.FulfillSubscription;
 
-public class FulfillSubscriptionCommandHandler(
+internal sealed class FulfillSubscriptionCommandHandler(
     IAggregateRepository repository)
     : ICommandHandler<FulfillSubscriptionCommand>
 {

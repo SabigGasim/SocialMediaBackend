@@ -5,7 +5,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.LeaveGroupChat;
 
-public class GroupChatLeftDomainEventHandler(ChatDbContext context)
+internal sealed class GroupChatLeftDomainEventHandler(ChatDbContext context)
     : INotificationHandler<GroupChatLeftDomainEvent>
 {
     private readonly ChatDbContext _context = context;

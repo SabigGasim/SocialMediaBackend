@@ -1,16 +1,17 @@
 ﻿using Mediator;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.Messaging;
 using SocialMediaBackend.Modules.Users.IntegrationEvents;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.UpdateUserInfo;
 
-public class UserInfoUpdatedDomainNotificationHandler(IMediator mediator)
+internal sealed class UserInfoUpdatedDomainNotificationHandler(IEventBus eventBus)
     : INotificationHandler<UserInfoUpdatedDomainNotification>
 {
-    private readonly IMediator _mediator = mediator;
+    private readonly IEventBus _eventBus = eventBus;
 
     public async ValueTask Handle(UserInfoUpdatedDomainNotification notification, CancellationToken cancellationToken)
     {
-        await _mediator.Publish(new UserInforUpdatedIntegrationEvent(
+        await _eventBus.Publish(new UserInforUpdatedIntegrationEvent(
             notification.Event.UserId,
             notification.Event.Username,
             notification.Event.Nickname,

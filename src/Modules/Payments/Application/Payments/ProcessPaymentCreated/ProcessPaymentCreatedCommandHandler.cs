@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Payments.Domain.Purchase;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Payments.ProcessPaymentCreated;
 
-public class ProcessPaymentCreatedCommandHandler(IAggregateRepository repository)
+internal sealed class ProcessPaymentCreatedCommandHandler(IAggregateRepository repository)
     : ICommandHandler<ProcessPaymentCreatedCommand>
 {
     private readonly IAggregateRepository _repository = repository;

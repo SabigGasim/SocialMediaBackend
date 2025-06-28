@@ -10,7 +10,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Infrastructure.Messaging.Outbox;
 
-public class ProcessOutboxMessagesCommandHandler(
+internal sealed class ProcessOutboxMessagesCommandHandler(
     IDbConnectionFactory factory,
     Mediator.IMediator mediator)
     : ICommandHandler<ProcessOutboxMessagesCommand>

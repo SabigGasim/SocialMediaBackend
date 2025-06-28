@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Payments.Domain.Purchase;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Payments.FulfillPurchase;
 
-public class FulfillPurchaseCommandHandler(IAggregateRepository repository)
+internal sealed class FulfillPurchaseCommandHandler(IAggregateRepository repository)
     : ICommandHandler<FulfillPurchaseCommand>
 {
     private readonly IAggregateRepository _repository = repository;

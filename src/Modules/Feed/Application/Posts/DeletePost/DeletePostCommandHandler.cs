@@ -9,7 +9,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Posts.DeletePost;
 
-public class DeletePostCommandHandler(
+internal sealed class DeletePostCommandHandler(
     FeedDbContext context,
     IAuthorizationHandler<Post, PostId> authorizationHandler) : ICommandHandler<DeletePostCommand>
 {

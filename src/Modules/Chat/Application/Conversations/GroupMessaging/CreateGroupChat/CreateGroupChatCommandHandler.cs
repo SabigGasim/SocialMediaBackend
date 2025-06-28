@@ -9,7 +9,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.CreateGroupChat;
 
-public class CreateGroupChatCommandHandler(ChatDbContext context)
+internal sealed class CreateGroupChatCommandHandler(ChatDbContext context)
     : IMultipleUsersCommandHandler<CreateGroupChatCommand, CreateGroupChatMessage, CreateGroupChatResponse>
 {
     private readonly ChatDbContext _context = context;

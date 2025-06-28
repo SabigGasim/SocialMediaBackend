@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Payments.Domain.Purchase;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Payments.CancelPurchase;
 
-public class CancelPurchaseCommandHandler(IAggregateRepository repository)
+internal sealed class CancelPurchaseCommandHandler(IAggregateRepository repository)
     : ICommandHandler<CancelPurchaseCommand>
 {
     private readonly IAggregateRepository _repository = repository;

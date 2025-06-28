@@ -10,7 +10,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Posts.GetPost;
 
-public class GetPostQueryHandler(
+internal sealed class GetPostQueryHandler(
     FeedDbContext context,
     IAuthorizationHandler<Post, PostId> authService) : IQueryHandler<GetPostQuery, GetPostResponse>
 {

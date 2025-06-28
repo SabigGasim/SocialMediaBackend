@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Payments.Domain.Subscriptions;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Subscriptions.ProcessSubscriptionCreated;
 
-public class ProcessSubscriptionCreatedCommandHandler(IAggregateRepository repository)
+internal sealed class ProcessSubscriptionCreatedCommandHandler(IAggregateRepository repository)
     : ICommandHandler<ProcessSubscriptionCreatedCommand>
 {
     private readonly IAggregateRepository _repository = repository;

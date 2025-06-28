@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Payments.Domain.Purchase;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Payments.RefundPayment;
 
-public class RefundPaymentCommandHandler(IAggregateRepository repository)
+internal sealed class RefundPaymentCommandHandler(IAggregateRepository repository)
     : ICommandHandler<RefundPaymentCommand>
 {
     private readonly IAggregateRepository _repository = repository;

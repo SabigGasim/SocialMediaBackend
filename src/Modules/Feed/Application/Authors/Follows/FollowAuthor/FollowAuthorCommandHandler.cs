@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Feed.Domain.Follows;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Authors.Follows.FollowAuthor;
-public class FollowAuthorCommandHandler(IDbConnectionFactory factory): ICommandHandler<FollowAuthorCommand>
+internal sealed class FollowAuthorCommandHandler(IDbConnectionFactory factory): ICommandHandler<FollowAuthorCommand>
 {
     private readonly IDbConnectionFactory _factory = factory;
 

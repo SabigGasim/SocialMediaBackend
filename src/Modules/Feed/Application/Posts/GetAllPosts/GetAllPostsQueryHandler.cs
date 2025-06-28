@@ -6,7 +6,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Domain.Posts;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Posts.GetAllPosts;
 
-public class GetAllPostsQueryHandler(IPostRepository repository) : IQueryHandler<GetAllPostsQuery, GetAllPostsResponse>
+internal sealed class GetAllPostsQueryHandler(IPostRepository repository) : IQueryHandler<GetAllPostsQuery, GetAllPostsResponse>
 {
     private readonly IPostRepository _repository = repository;
 

@@ -5,7 +5,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.KickGroupMember;
 
-public class GroupMemberKickedDomainEventHandler(ChatDbContext context) : INotificationHandler<GroupMemberKickedDomainEvent>
+internal sealed class GroupMemberKickedDomainEventHandler(ChatDbContext context) : INotificationHandler<GroupMemberKickedDomainEvent>
 {
     private readonly ChatDbContext _context = context;
 

@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Chatters.DeleteChatter;
 
-public class DeleteChatterCommandHandler(ChatDbContext context) : ICommandHandler<DeleteChatterCommand>
+internal sealed class DeleteChatterCommandHandler(ChatDbContext context) : ICommandHandler<DeleteChatterCommand>
 {
     private readonly ChatDbContext _context = context;
 

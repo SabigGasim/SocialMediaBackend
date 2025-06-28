@@ -6,7 +6,7 @@ using SocialMediaBackend.Modules.Payments.Domain.Payers;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Payers.GetPayer;
 
-public class GetPayerCommandHandler(IQuerySession session) : ICommandHandler<GetPayerCommand, GetPayerResponse>
+internal sealed class GetPayerCommandHandler(IQuerySession session) : ICommandHandler<GetPayerCommand, GetPayerResponse>
 {
     private readonly IQuerySession _session = session;
 

@@ -10,7 +10,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Infrastructure.Messaging.Outbox;
 
-public class ProcessOutboxMessagesCommandHandler(
+internal sealed class ProcessOutboxMessagesCommandHandler(
     IDbConnectionFactory factory,
     Mediator.IMediator mediator)
     : ICommandHandler<ProcessOutboxMessagesCommand>

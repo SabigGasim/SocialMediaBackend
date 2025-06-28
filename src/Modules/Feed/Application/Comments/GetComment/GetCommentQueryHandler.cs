@@ -10,7 +10,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.GetComment;
 
-public class GetCommentQueryHandler(
+internal sealed class GetCommentQueryHandler(
     FeedDbContext context,
     IAuthorizationHandler<Comment, CommentId> authorizationHandler)
     : IQueryHandler<GetCommentQuery, GetCommentResponse>

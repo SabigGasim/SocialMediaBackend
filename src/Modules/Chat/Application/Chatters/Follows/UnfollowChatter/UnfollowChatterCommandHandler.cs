@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Chatters.Follows.UnfollowChatter;
 
-public class UnfollowChatterCommandHandler(IDbConnectionFactory factory) : ICommandHandler<UnfollowChatterCommand>
+internal sealed class UnfollowChatterCommandHandler(IDbConnectionFactory factory) : ICommandHandler<UnfollowChatterCommand>
 {
     private readonly IDbConnectionFactory _factory = factory;
 

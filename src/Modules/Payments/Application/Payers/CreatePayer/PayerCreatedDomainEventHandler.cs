@@ -6,7 +6,7 @@ using SocialMediaBackend.Modules.Payments.Infrastructure;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Payers.CreatePayer;
 
-public class PayerCreatedDomainEventHandler(
+internal sealed class PayerCreatedDomainEventHandler(
     IAggregateRepository repository,
     IPaymentService paymentService)
     : INotificationHandler<PayerCreatedDomainEvent>

@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Users.IntegrationEvents;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Chatters.DeleteChatter;
 
-internal class UserDeletedIntegrationEventHandler : INotificationHandler<UserDeletedIntegrationEvent>
+internal sealed class UserDeletedIntegrationEventHandler : INotificationHandler<UserDeletedIntegrationEvent>
 {
     public async ValueTask Handle(UserDeletedIntegrationEvent notification, CancellationToken cancellationToken)
     {

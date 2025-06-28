@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Payments.Domain.Subscriptions;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Subscriptions.MarkSubscriptionAsPastDue;
 
-public class MarkSubscriptionAsPastDueCommandHandler(IAggregateRepository repository)
+internal sealed class MarkSubscriptionAsPastDueCommandHandler(IAggregateRepository repository)
     : ICommandHandler<MarkSubscriptionAsPastDueCommand>
 {
     private readonly IAggregateRepository _repository = repository;

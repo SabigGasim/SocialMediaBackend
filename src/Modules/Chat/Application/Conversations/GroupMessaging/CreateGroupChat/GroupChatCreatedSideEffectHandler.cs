@@ -5,7 +5,7 @@ using SocialMediaBackend.Modules.Chat.Application.Hubs;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.CreateGroupChat;
 
-public class GroupChatCreatedSideEffectHandler(
+internal sealed class GroupChatCreatedSideEffectHandler(
     IHubConnectionTracker connectionTracker,
     IHubContext<ChatHub> hubContext) : IRealtimeSideEffectHandler<GroupChatCreatedSideEffect>
 {

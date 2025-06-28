@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.LeaveGroupChat;
 
-public class LeaveGroupChatCommandHandler(ChatDbContext context)
+internal sealed class LeaveGroupChatCommandHandler(ChatDbContext context)
     : IGroupCommandHandler<LeaveGroupChatCommand, GroupChatLeftMessage>
 {
     private readonly ChatDbContext _context = context;

@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
-using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
-using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 

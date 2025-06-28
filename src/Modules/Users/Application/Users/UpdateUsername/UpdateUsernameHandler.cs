@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.UpdateUsername;
 
-public class UpdateUsernameHandler : ICommandHandler<UpdateUsernameCommand>
+internal sealed class UpdateUsernameHandler : ICommandHandler<UpdateUsernameCommand>
 {
     private readonly UsersDbContext _context;
     private readonly IUserExistsChecker _userExistsChecker;

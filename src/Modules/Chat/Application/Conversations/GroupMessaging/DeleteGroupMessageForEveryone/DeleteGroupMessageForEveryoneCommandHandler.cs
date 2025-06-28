@@ -10,7 +10,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.DeleteGroupMessageForEveryone;
 
-public class DeleteGroupMessageForEveryoneCommandHandler(
+internal sealed class DeleteGroupMessageForEveryoneCommandHandler(
     ChatDbContext context,
     IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler)
     : IGroupCommandHandler<DeleteGroupMessageForEveryoneCommand, DeleteGroupMessageMessage>

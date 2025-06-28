@@ -9,7 +9,7 @@ using SocialMediaBackend.Modules.Feed.Domain.Posts;
 using SocialMediaBackend.Modules.Feed.Domain.Comments;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.LikeComment;
-internal class LikeCommentCommandHandler(
+internal sealed class LikeCommentCommandHandler(
     FeedDbContext context,
     IAuthorizationService authorizationService) : ICommandHandler<LikeCommentCommand>
 {

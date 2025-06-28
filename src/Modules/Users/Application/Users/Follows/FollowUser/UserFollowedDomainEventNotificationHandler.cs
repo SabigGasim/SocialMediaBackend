@@ -1,16 +1,17 @@
 ﻿using Mediator;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.Messaging;
 using SocialMediaBackend.Modules.Users.IntegrationEvents;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.FollowUser;
 
-public class UserFollowedDomainEventNotificationHandler(IMediator mediator)
+internal sealed class UserFollowedDomainEventNotificationHandler(IEventBus eventBus)
     : INotificationHandler<UserFollowedDomainEventNotification>
 {
-    private readonly IMediator _mediator = mediator;
+    private readonly IEventBus _eventBus = eventBus;
 
     public async ValueTask Handle(UserFollowedDomainEventNotification notification, CancellationToken cancellationToken)
     {
-        await _mediator.Publish(new UserFollowedIntegrationEvent(
+        await _eventBus.Publish(new UserFollowedIntegrationEvent(
             notification.Event.FollowerId.Value,
             notification.Event.FollowingId.Value,
             notification.Event.FollowedAt

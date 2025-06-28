@@ -5,7 +5,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.DeleteComment;
 
-public class CommentDeletedEventHandler(FeedDbContext context) : IDomainEventHandler<CommentDeletedEvent>
+internal sealed class CommentDeletedEventHandler(FeedDbContext context) : IDomainEventHandler<CommentDeletedEvent>
 {
     private readonly FeedDbContext _context = context;
 

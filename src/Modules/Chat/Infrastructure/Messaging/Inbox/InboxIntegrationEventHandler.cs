@@ -6,7 +6,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Infrastructure.Messaging.Inbox;
 
-public class InboxIntegrationEventHandler<TEvent>(IDbConnectionFactory factory) 
+internal sealed class InboxIntegrationEventHandler<TEvent>(IDbConnectionFactory factory) 
     : IIntegrationEventHandler<TEvent> where TEvent : IntegrationEvent
 {
     private readonly IDbConnectionFactory _factory = factory;

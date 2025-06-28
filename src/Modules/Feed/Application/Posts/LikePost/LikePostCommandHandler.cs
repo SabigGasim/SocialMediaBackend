@@ -9,7 +9,7 @@ using SocialMediaBackend.Modules.Feed.Domain.Authors;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Posts.LikePost;
 
-public class LikePostCommandHandler(
+internal sealed class LikePostCommandHandler(
     FeedDbContext context,
     IAuthorizationHandler<Post, PostId> authorizationHandler) : ICommandHandler<LikePostCommand>
 {

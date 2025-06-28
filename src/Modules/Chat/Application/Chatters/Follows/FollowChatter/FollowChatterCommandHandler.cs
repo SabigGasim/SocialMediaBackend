@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Chat.Domain.Follows;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Chatters.Follows.FollowChatter;
-public class FollowChatterCommandHandler(IDbConnectionFactory factory): ICommandHandler<FollowChatterCommand>
+internal sealed class FollowChatterCommandHandler(IDbConnectionFactory factory): ICommandHandler<FollowChatterCommand>
 {
     private readonly IDbConnectionFactory _factory = factory;
 

@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Authors.DeleteAuthor;
 
-public class DeleteAuthorCommandHandler(FeedDbContext context) : ICommandHandler<DeleteAuthorCommand>
+internal sealed class DeleteAuthorCommandHandler(FeedDbContext context) : ICommandHandler<DeleteAuthorCommand>
 {
     private readonly FeedDbContext _context = context;
 

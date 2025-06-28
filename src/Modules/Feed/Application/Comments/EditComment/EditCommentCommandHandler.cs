@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.EditComment;
 
-public class EditCommentCommandHandler(
+internal sealed class EditCommentCommandHandler(
     FeedDbContext context,
     IAuthorizationHandler<Comment, CommentId> authorizationHandler) : ICommandHandler<EditCommentCommand>
 {

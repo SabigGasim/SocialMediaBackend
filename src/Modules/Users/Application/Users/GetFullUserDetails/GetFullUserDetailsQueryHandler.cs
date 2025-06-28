@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.GetFullUserDetails;
 
-public class GetFullUserDetailsQueryHandler(UsersDbContext context)
+internal sealed class GetFullUserDetailsQueryHandler(UsersDbContext context)
     : IQueryHandler<GetFullUserDetailsQuery, GetFullUserDetailsResponse>
 {
     private readonly UsersDbContext _context = context;

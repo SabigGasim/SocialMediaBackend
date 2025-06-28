@@ -11,7 +11,7 @@ using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 
 namespace SocialMediaBackend.Modules.Feed.Infrastructure.InternalCommands;
 
-public class ProcessInternalCommandsCommandHandler : ICommandHandler<ProcessInternalCommandsCommand>
+internal sealed class ProcessInternalCommandsCommandHandler : ICommandHandler<ProcessInternalCommandsCommand>
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
 

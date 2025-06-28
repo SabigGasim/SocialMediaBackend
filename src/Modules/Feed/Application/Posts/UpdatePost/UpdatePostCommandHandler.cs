@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Posts.UpdatePost;
 
-public class UpdatePostCommandHandler(
+internal sealed class UpdatePostCommandHandler(
     FeedDbContext context,
     IAuthorizationHandler<Post, PostId> authorizationHandler) : ICommandHandler<UpdatePostCommand>
 {

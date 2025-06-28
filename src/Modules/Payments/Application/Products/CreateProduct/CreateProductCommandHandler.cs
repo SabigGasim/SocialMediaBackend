@@ -6,7 +6,7 @@ using SocialMediaBackend.Modules.Payments.Infrastructure;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Products.CreateProduct;
 
-public class CreateProductCommandHandler(
+internal sealed class CreateProductCommandHandler(
     IPaymentService paymentService,
     IAggregateRepository repository)
     : ICommandHandler<CreateProductCommand, ProductId>

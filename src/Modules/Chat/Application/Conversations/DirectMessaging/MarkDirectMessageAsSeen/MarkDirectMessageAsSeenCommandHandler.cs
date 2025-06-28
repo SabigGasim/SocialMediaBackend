@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Conversations;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.MarkDirectMessageAsSeen;
 
-public class MarkDirectMessageAsSeenCommandHandler(
+internal sealed class MarkDirectMessageAsSeenCommandHandler(
     IAuthorizationHandler<DirectChat, DirectChatId> authorizationHandler,
     IChatRepository chatRepository)
     : ICommandHandler<MarkDirectMessageAsSeenCommand>

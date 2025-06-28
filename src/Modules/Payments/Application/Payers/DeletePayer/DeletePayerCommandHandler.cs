@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Payments.Domain.Payers;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Payers.DeletePayer;
 
-public class DeletePayerCommandHandler(IAggregateRepository repository) : ICommandHandler<DeletePayerCommand>
+internal sealed class DeletePayerCommandHandler(IAggregateRepository repository) : ICommandHandler<DeletePayerCommand>
 {
     private readonly IAggregateRepository _repository = repository;
 

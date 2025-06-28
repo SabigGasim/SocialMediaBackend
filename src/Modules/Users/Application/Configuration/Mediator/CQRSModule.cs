@@ -33,18 +33,18 @@ public class CQRSModule : Module
 
         services.Scan(scan => scan
             .FromAssemblies(assemblies)
-            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>)))
+            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>)), publicOnly: false)
             .AsImplementedInterfaces()
             .WithScopedLifetime());
 
         services.Scan(scan => scan
             .FromAssemblies(assemblies)
-            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>)))
+            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>)), publicOnly: false)
             .AsImplementedInterfaces()
             .WithScopedLifetime());
 
         services.Scan(s => s.FromAssemblies(assemblies)
-            .AddClasses(c => c.AssignableTo(typeof(IDomainEventNotification<>)))
+            .AddClasses(c => c.AssignableTo(typeof(IDomainEventNotification<>)), publicOnly: false)
             .AsImplementedInterfaces()
             .WithTransientLifetime());
 

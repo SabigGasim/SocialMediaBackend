@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.CreateDirectMessage;
 
-public class DirectMessageAddedDomainEventHandler(ChatDbContext context) : INotificationHandler<DirectMessageAddedDomainEvent>
+internal sealed class DirectMessageAddedDomainEventHandler(ChatDbContext context) : INotificationHandler<DirectMessageAddedDomainEvent>
 {
     private readonly ChatDbContext _context = context;
 

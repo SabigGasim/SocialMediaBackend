@@ -6,7 +6,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Chatters.CreateChatter;
 
-public class CreateChatterCommandHandler(ChatDbContext context) : ICommandHandler<CreateChatterCommand>
+internal sealed class CreateChatterCommandHandler(ChatDbContext context) : ICommandHandler<CreateChatterCommand>
 {
     private readonly ChatDbContext _context = context;
 

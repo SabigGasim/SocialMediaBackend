@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Posts.CreatePost;
 
-public class CreatePostCommandHandler(FeedDbContext context) : ICommandHandler<CreatePostCommand, CreatePostResponse>
+internal sealed class CreatePostCommandHandler(FeedDbContext context) : ICommandHandler<CreatePostCommand, CreatePostResponse>
 {
     private readonly FeedDbContext _context = context;
 

@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Users.IntegrationEvents;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Chatters.CreateChatter;
 
-internal class UserCreatedIntegrationEventHandler : INotificationHandler<UserCreatedIntegrationEvent>
+internal sealed class UserCreatedIntegrationEventHandler : INotificationHandler<UserCreatedIntegrationEvent>
 {
     public async ValueTask Handle(UserCreatedIntegrationEvent notification, CancellationToken cancellationToken)
     {

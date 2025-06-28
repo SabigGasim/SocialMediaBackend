@@ -18,7 +18,7 @@ using SocialMediaBackend.Modules.Payments.Domain.Subscriptions;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Webhooks.StripeWebhookEventReceived;
 
-public class StripeWebhookEventReceivedCommandHandler(
+internal sealed class StripeWebhookEventReceivedCommandHandler(
     ICommandsScheduler scheduler) : ICommandHandler<StripeWebhookEventReceivedCommand>
 {
     private readonly ICommandsScheduler _scheduler = scheduler;

@@ -5,7 +5,7 @@ using SocialMediaBackend.Modules.Chat.Application.Hubs;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.LeaveGroupChat;
 
-public class GroupChatLeftSideEffectHandler(
+internal sealed class GroupChatLeftSideEffectHandler(
     IHubConnectionTracker connectionTracker,
     IHubContext<ChatHub> hubContext) : IRealtimeSideEffectHandler<GroupChatLeftSideEffect>
 {

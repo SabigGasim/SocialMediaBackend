@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.AppPlans.CreateAppSubscriptionProduct;
 
-public class CreateAppSubscriptionProductCommandHandler(
+internal sealed class CreateAppSubscriptionProductCommandHandler(
     UsersDbContext context,
     IPaymentAntiCorruptionLayer paymentAntiCorruptionLayer) 
     : ICommandHandler<CreateAppSubscriptionProductCommand>

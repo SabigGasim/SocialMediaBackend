@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.DeleteGroupMessageForMe;
 
-public class DeleteGroupMessageForMeCommandHandler(IDbConnectionFactory factory)
+internal sealed class DeleteGroupMessageForMeCommandHandler(IDbConnectionFactory factory)
     : ICommandHandler<DeleteGroupMessageForMeCommand>
 {
     private readonly IDbConnectionFactory _factory = factory;

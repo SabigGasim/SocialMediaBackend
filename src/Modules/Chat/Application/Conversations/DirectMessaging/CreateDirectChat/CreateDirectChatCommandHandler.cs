@@ -10,7 +10,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Conversations;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.CreateDirectChat;
 
-public class CreateDirectChatCommandHandler : ICommandHandler<CreateDirectChatCommand, CreateDirectChatResponse>
+internal sealed class CreateDirectChatCommandHandler : ICommandHandler<CreateDirectChatCommand, CreateDirectChatResponse>
 {
     private readonly ChatDbContext _context;
     private readonly IChatterRepository _chatterRepository;

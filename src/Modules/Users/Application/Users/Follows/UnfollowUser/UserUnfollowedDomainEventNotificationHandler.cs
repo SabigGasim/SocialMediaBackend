@@ -1,16 +1,17 @@
 ﻿using Mediator;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.Messaging;
 using SocialMediaBackend.Modules.Users.IntegrationEvents;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.UnfollowUser;
 
-public class UserUnfollowedDomainEventNotificationHandler(IMediator mediator)
+internal sealed class UserUnfollowedDomainEventNotificationHandler(IEventBus eventBus)
     : INotificationHandler<UserUnfollowedDomainEventNotification>
 {
-    private readonly IMediator _mediator = mediator;
+    private readonly IEventBus _eventBus = eventBus;
 
     public async ValueTask Handle(UserUnfollowedDomainEventNotification notification, CancellationToken cancellationToken)
     {
-        await _mediator.Publish(new UserUnfollowedIntegrationEvent(
+        await _eventBus.Publish(new UserUnfollowedIntegrationEvent(
             notification.Event.FollowerId.Value,
             notification.Event.FollowingId.Value));
     }

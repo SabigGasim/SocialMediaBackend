@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.CreateComment;
 
-public class CreateCommentCommandHandler(
+internal sealed class CreateCommentCommandHandler(
     FeedDbContext context,
     IAuthorizationHandler<Post, PostId> authorizationHandler)
     : ICommandHandler<CreateCommentCommand, CreateCommentResponse>

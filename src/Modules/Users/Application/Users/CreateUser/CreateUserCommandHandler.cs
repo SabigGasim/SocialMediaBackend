@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.CreateUser;
 
-public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, CreateUserResponse>
+internal sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, CreateUserResponse>
 {
     private readonly IUserExistsChecker _userExistsChecker;
     private readonly UsersDbContext _context;

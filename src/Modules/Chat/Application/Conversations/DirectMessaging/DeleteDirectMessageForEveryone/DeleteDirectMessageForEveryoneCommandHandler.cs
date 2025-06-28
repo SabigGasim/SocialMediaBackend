@@ -10,7 +10,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.DeleteDirectMessageForEveryone;
 
-public class DeleteDirectMessageForEveryoneCommandHandler
+internal sealed class DeleteDirectMessageForEveryoneCommandHandler
     : ISingleUserCommandHandler<DeleteDirectMessageForEveryoneCommand, DeleteDirectMessageMessage>
 {
     private readonly ChatDbContext _context;

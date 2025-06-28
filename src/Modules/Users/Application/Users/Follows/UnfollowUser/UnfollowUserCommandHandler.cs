@@ -2,13 +2,12 @@
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
-using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.UnfollowUser;
 
-public class UnfollowUserCommandHandler(UsersDbContext context) : ICommandHandler<UnfollowUserCommand>
+internal sealed class UnfollowUserCommandHandler(UsersDbContext context) : ICommandHandler<UnfollowUserCommand>
 {
     private readonly UsersDbContext _context = context;
 

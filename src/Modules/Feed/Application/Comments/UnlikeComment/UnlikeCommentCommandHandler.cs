@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.UnlikeComment;
 
-public class UnlikeCommentCommandHandler(FeedDbContext context) : ICommandHandler<UnlikeCommentCommand>
+internal sealed class UnlikeCommentCommandHandler(FeedDbContext context) : ICommandHandler<UnlikeCommentCommand>
 {
     private readonly FeedDbContext _context = context;
 

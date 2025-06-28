@@ -11,7 +11,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.GetAllPostComments;
 
-public class GetAllPostCommentsQueryHandler(
+internal sealed class GetAllPostCommentsQueryHandler(
     FeedDbContext context,
     IAuthorizationService authorizationService
     )

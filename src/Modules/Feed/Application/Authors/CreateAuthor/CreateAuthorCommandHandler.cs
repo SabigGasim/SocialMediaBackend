@@ -6,7 +6,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Authors.CreateAuthor;
 
-public class CreateAuthorCommandHandler(FeedDbContext context) : ICommandHandler<CreateAuthorCommand>
+internal sealed class CreateAuthorCommandHandler(FeedDbContext context) : ICommandHandler<CreateAuthorCommand>
 {
     private readonly FeedDbContext _context = context;
 

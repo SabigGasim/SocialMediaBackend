@@ -6,7 +6,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Chatters;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Chatters.GetChatter;
 
-public class GetChatterCommandHandler(IChatterRepository chatterRepository)
+internal sealed class GetChatterCommandHandler(IChatterRepository chatterRepository)
     : ICommandHandler<GetChatterCommand, GetChatterResponse>
 {
     private readonly IChatterRepository _chatterRepository = chatterRepository;

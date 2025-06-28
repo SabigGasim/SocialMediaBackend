@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Payments.Domain.Subscriptions;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Subscriptions.MarkSubscriptionAsIncomplete;
 
-public class MarkSubscriptionAsIncompleteCommandHandler(IAggregateRepository repository)
+internal sealed class MarkSubscriptionAsIncompleteCommandHandler(IAggregateRepository repository)
     : ICommandHandler<MarkSubscriptionAsIncompleteCommand>
 {
     private readonly IAggregateRepository _repository = repository;

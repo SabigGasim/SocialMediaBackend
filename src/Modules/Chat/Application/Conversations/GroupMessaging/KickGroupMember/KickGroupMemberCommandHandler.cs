@@ -10,7 +10,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.KickGroupMember;
 
-public class KickGroupMemberCommandHandler(
+internal sealed class KickGroupMemberCommandHandler(
     ChatDbContext context,
     IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler)
     : IGroupCommandHandler<KickGroupMemberCommand, KickGroupMemberMessage>

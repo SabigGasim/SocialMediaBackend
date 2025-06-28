@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Authors.Follows.UnfollowAuthor;
 
-public class UnfollowAuthorCommandHandler(IDbConnectionFactory factory) : ICommandHandler<UnfollowAuthorCommand>
+internal sealed class UnfollowAuthorCommandHandler(IDbConnectionFactory factory) : ICommandHandler<UnfollowAuthorCommand>
 {
     private readonly IDbConnectionFactory _factory = factory;
 

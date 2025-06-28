@@ -6,7 +6,7 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.DeleteUser;
 
-public class DeleteUserCommandHandler(UsersDbContext context) : ICommandHandler<DeleteUserCommand>
+internal sealed class DeleteUserCommandHandler(UsersDbContext context) : ICommandHandler<DeleteUserCommand>
 {
     private readonly UsersDbContext _context = context;
 

@@ -11,7 +11,7 @@ using SocialMediaBackend.Modules.Payments.Infrastructure;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Payers.CleanUpPayerResources;
 
-public class CleanUpPayerResourcesCommandHandler(
+internal sealed class CleanUpPayerResourcesCommandHandler(
     IAggregateRepository repository,
     IPaymentService paymentService)
     : ICommandHandler<CleanUpPayerResourcesCommand>

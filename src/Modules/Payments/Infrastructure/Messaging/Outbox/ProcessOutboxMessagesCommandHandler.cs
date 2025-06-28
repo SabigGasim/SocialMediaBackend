@@ -9,7 +9,7 @@ using SocialMediaBackend.BuildingBlocks.Infrastructure;
 
 namespace SocialMediaBackend.Modules.Payments.Infrastructure.Messaging.Outbox;
 
-public class ProcessOutboxMessagesCommandHandler(
+internal sealed class ProcessOutboxMessagesCommandHandler(
     IDbConnectionFactory factory,
     Mediator.IMediator mediator)
     : ICommandHandler<ProcessOutboxMessagesCommand>

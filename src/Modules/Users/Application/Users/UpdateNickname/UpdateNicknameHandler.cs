@@ -6,7 +6,7 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.UpdateNickname;
 
-public class UpdateNicknameHandler(UsersDbContext context) : ICommandHandler<UpdateNicknameCommand>
+internal sealed class UpdateNicknameHandler(UsersDbContext context) : ICommandHandler<UpdateNicknameCommand>
 {
     private readonly UsersDbContext _context = context;
 

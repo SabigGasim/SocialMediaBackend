@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.AppPlans.CreateAppPlan;
 
-public class CreateAppPlanCommandHandler(
+internal sealed class CreateAppPlanCommandHandler(
     IPaymentAntiCorruptionLayer paymentAntiCorruptionLayer,
     UsersDbContext context) : ICommandHandler<CreateAppPlanCommand>
 {

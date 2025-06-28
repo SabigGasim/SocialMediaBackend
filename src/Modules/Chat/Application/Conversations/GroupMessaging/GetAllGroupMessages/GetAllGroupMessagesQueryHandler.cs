@@ -9,7 +9,7 @@ using SocialMediaBackend.Modules.Chat.Application.Mappings;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.GetAllGroupMessages;
 
-public class GetAllGroupMessagesQueryHandler(
+internal sealed class GetAllGroupMessagesQueryHandler(
     IChatRepository chatRepository,
     IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler)
     : IQueryHandler<GetAllGroupMessagesQuery, GetAllGroupMessagesResponse>

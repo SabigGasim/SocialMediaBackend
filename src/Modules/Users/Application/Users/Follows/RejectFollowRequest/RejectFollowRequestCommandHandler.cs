@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.RejectFollowRequest;
 
-public class RejectFollowRequestCommandHandler(UsersDbContext context)
+internal sealed class RejectFollowRequestCommandHandler(UsersDbContext context)
     : ICommandHandler<RejectFollowRequestCommand>
 {
     private readonly UsersDbContext _context = context;

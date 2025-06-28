@@ -5,7 +5,7 @@ using SocialMediaBackend.Modules.Chat.Application.Hubs;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.KickGroupMember;
 
-public class KickGroupMemberSideEffectHandler(
+internal sealed class KickGroupMemberSideEffectHandler(
     IHubContext<ChatHub> hubContext,
     IHubConnectionTracker hubConnectionTracker)
     : IRealtimeSideEffectHandler<KickGroupMemberSideEffect>

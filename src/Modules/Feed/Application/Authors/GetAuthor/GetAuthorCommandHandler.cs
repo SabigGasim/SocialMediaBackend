@@ -5,7 +5,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Domain.Authors;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Authors.GetAuthor;
 
-public class GetAuthorCommandHandler(IAuthorRepository authorRepository) 
+internal sealed class GetAuthorCommandHandler(IAuthorRepository authorRepository) 
     : ICommandHandler<GetAuthorCommand, GetAuthorResponse>
 {
     private readonly IAuthorRepository _authorRepository = authorRepository;
