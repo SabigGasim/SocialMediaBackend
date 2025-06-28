@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using SocialMediaBackend.Modules.Users.Application.Configuration.Mediator;
 using SocialMediaBackend.Modules.Users.Infrastructure.Configuration;
+using SocialMediaBackend.Modules.Users.Infrastructure.Configuration.EventBus;
 using SocialMediaBackend.Modules.Users.Infrastructure.Configuration.Persistence;
 using SocialMediaBackend.Modules.Users.Infrastructure.Configuration.Processing;
+using SocialMediaBackend.Modules.Users.Infrastructure.Configuration.Quartz;
 
 namespace SocialMediaBackend.Modules.Users.Application.Configuration;
 
@@ -19,6 +21,7 @@ public static class UsersStartup
         ConfigureCompositionRoot(serviceCollection, connectionString);
 
         await PersistenceStartup.InitializeAsync(env);
+        await QuartzStartup.InitializeAsync();
     }
 
     private static void ConfigureCompositionRoot(IServiceCollection serviceCollection, string connectionString)
@@ -30,6 +33,8 @@ public static class UsersStartup
         containerBuilder.RegisterModule(new PersistenceModule(connectionString));
         containerBuilder.RegisterModule(new CQRSModule());
         containerBuilder.RegisterModule(new ProcessingModule());
+        containerBuilder.RegisterModule(new QuartzModule());
+        containerBuilder.RegisterModule(new EventBusModule());
 
         var container = containerBuilder.Build();
 
