@@ -6,7 +6,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration;
 using SocialMediaBackend.Modules.Users.IntegrationEvents;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Authors.Follows.FollowAuthor;
-public class UserFollowedIntegrationEventHandler : INotificationHandler<UserFollowedIntegrationEvent>
+internal class UserFollowedIntegrationEventHandler : INotificationHandler<UserFollowedIntegrationEvent>
 {
     public async ValueTask Handle(UserFollowedIntegrationEvent notification, CancellationToken cancellationToken)
     {

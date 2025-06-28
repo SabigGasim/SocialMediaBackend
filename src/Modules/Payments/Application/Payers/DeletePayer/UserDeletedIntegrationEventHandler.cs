@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using SocialMediaBackend.BuildingBlocks.Infrastructure.Events;
+using Mediator;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.InternalCommands;
 using SocialMediaBackend.Modules.Payments.Domain.Payers;
 using SocialMediaBackend.Modules.Payments.Infrastructure.Configuration;
@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Users.IntegrationEvents;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Payers.DeletePayer;
 
-public class UserDeletedIntegrationEventHandler : IIntegrationEventHandler<UserDeletedIntegrationEvent>
+internal class UserDeletedIntegrationEventHandler : INotificationHandler<UserDeletedIntegrationEvent>
 {
     public async ValueTask Handle(UserDeletedIntegrationEvent notification, CancellationToken cancellationToken)
     {

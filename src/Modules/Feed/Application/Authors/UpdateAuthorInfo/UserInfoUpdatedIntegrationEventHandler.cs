@@ -6,7 +6,7 @@ using SocialMediaBackend.Modules.Users.IntegrationEvents;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Authors.UpdateAuthorInfo;
 
-public class UserInfoUpdatedIntegrationEventHandler : INotificationHandler<UserInforUpdatedIntegrationEvent>
+internal class UserInfoUpdatedIntegrationEventHandler : INotificationHandler<UserInforUpdatedIntegrationEvent>
 {
     public async ValueTask Handle(UserInforUpdatedIntegrationEvent notification, CancellationToken cancellationToken)
     {

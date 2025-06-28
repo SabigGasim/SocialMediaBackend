@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Users.IntegrationEvents;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Chatters.Follows.UnfollowChatter;
 
-public class UserUnfollowedIntegrationEventHandler : INotificationHandler<UserUnfollowedIntegrationEvent>
+internal class UserUnfollowedIntegrationEventHandler : INotificationHandler<UserUnfollowedIntegrationEvent>
 {
     public async ValueTask Handle(UserUnfollowedIntegrationEvent notification, CancellationToken cancellationToken)
     {
