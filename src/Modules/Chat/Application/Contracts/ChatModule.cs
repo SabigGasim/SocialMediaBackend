@@ -2,6 +2,7 @@
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
+using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.Modules.Chat.Application.Helpers;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration;
 
@@ -35,6 +36,27 @@ public class ChatModule : IChatModule
             var handler = scope.Resolve<IQueryHandler<TQuery, TResult>>();
 
             return await handler.ExecuteAsync(query, ct);
+        }
+    }
+
+    public async Task Publish<TEvent>(TEvent @event, CancellationToken cancellationToken = default)
+        where TEvent : IEvent
+    {
+        using (var scope = ChatCompositionRoot.BeginLifetimeScope())
+        {
+            var mediator = scope.Resolve<Mediator.IMediator>();
+
+            await mediator.Publish(@event, cancellationToken);
+        }
+    }
+
+    public async Task Publish(object @event, CancellationToken cancellationToken = default)
+    {
+        using (var scope = ChatCompositionRoot.BeginLifetimeScope())
+        {
+            var mediator = scope.Resolve<Mediator.IMediator>();
+
+            await mediator.Publish(@event, cancellationToken);
         }
     }
 }

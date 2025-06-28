@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using Mediator;
 using Microsoft.AspNetCore.SignalR;
 using SocialMediaBackend.BuildingBlocks.Application;
+using SocialMediaBackend.BuildingBlocks.Application.Contracts;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands.Realtime;
 
@@ -9,17 +9,15 @@ namespace SocialMediaBackend.Api.Services;
 
 public class RealtimeMessageSender<THub>(
     IHubContext<THub> context,
-    ILifetimeScope lifetimeScope,
-    IMediator mediator) : IRealtimeMessageSender<THub>
+    ILifetimeScope scope) : IRealtimeMessageSender<THub>
     where THub : Hub
 {
     private readonly IHubContext<THub> _context = context;
-    private readonly ILifetimeScope _scope = lifetimeScope;
-    private readonly IMediator _mediator = mediator;
+    private readonly ILifetimeScope _scope = scope;
 
     private static InvalidCastException IdentifierException => new("Couldn't cast Message.Identifier");
 
-    public async Task SendAsync<TResponse, TMessage, TIdentifier>(TResponse response)
+    public async Task SendAsync<TResponse, TMessage, TIdentifier>(TResponse response, IModuleContract module)
         where TResponse : IRealtimeResponse<TMessage, TIdentifier>
         where TMessage : IRealtimeMessage
     {
@@ -52,7 +50,7 @@ public class RealtimeMessageSender<THub>(
                 return;
             }
 
-            await _mediator.Publish(sideEffect);
+            await module.Publish(sideEffect);
         }
     }
 

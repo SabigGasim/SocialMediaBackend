@@ -2,6 +2,7 @@
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
+using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Contracts;
@@ -44,6 +45,27 @@ public class FeedModule : IFeedModule
             var handler = scope.Resolve<IQueryHandler<TQuery, TResult>>();
 
             return await handler.ExecuteAsync(query, ct);
+        }
+    }
+
+    public async Task Publish<TEvent>(TEvent @event, CancellationToken cancellationToken = default)
+        where TEvent : IEvent
+    {
+        using (var scope = FeedCompositionRoot.BeginLifetimeScope())
+        {
+            var mediator = scope.Resolve<Mediator.IMediator>();
+
+            await mediator.Publish(@event, cancellationToken);
+        }
+    }
+
+    public async Task Publish(object @event, CancellationToken cancellationToken = default)
+    {
+        using (var scope = FeedCompositionRoot.BeginLifetimeScope())
+        {
+            var mediator = scope.Resolve<Mediator.IMediator>();
+
+            await mediator.Publish(@event, cancellationToken);
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
+using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Feed.Application.Auth;
 using SocialMediaBackend.Modules.Feed.Infrastructure;
@@ -43,12 +44,22 @@ public class CQRSModule : Autofac.Module
             .AsImplementedInterfaces()
             .WithScopedLifetime());
 
+        services.Scan(s => s.FromAssemblies(assemblies)
+            .AddClasses(c => c.AssignableTo(typeof(IDomainEventNotification<>)))
+            .AsImplementedInterfaces()
+            .WithTransientLifetime());
+
         services.Decorate(typeof(ICommandHandler<>), typeof(UnitOfWorkCommandHandlerDecorator<>));
         services.Decorate(typeof(ICommandHandler<,>), typeof(UnitOfWorkCommandHandlerWithResultDecorator<,>));
         
         services.Decorate(typeof(IQueryHandler<,>), typeof(AuthQueryHandlerDecorator<,>));
         services.Decorate(typeof(ICommandHandler<>), typeof(AuthCommandHandlerDecorator<>));
         services.Decorate(typeof(ICommandHandler<,>), typeof(AuthCommandHandlerWithResultDecorator<,>));
+
+        services.AddMediator(options =>
+        {
+            options.ServiceLifetime = ServiceLifetime.Scoped;
+        });
 
         builder.Populate(services);
     }

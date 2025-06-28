@@ -27,7 +27,7 @@ public class RealtimeEndpoint<TRequest, TMessage, THub>(
         {
             await SendNoContentAsync(ct);
 
-            await _sender.SendAsync<SingleUserResponse<TMessage>, TMessage, string>(handlerResponse.Payload);
+            await _sender.SendAsync<SingleUserResponse<TMessage>, TMessage, string>(handlerResponse.Payload, _module);
 
             return;
         }
@@ -48,7 +48,7 @@ public class RealtimeEndpoint<TRequest, TMessage, THub>(
         {
             await SendNoContentAsync(ct);
 
-            await _sender.SendAsync<MultipleUsersResponse<TMessage>, TMessage, IEnumerable<string>>(handlerResponse.Payload);
+            await _sender.SendAsync<MultipleUsersResponse<TMessage>, TMessage, IEnumerable<string>>(handlerResponse.Payload, _module);
 
             return;
         }
@@ -90,7 +90,7 @@ public class RealtimeEndpoint<TRequest, TMessage, THub>(
         {
             await SendNoContentAsync(ct);
 
-            await _sender.SendAsync<GroupResponse<TMessage>, TMessage, string>(handlerResponse.Payload);
+            await _sender.SendAsync<GroupResponse<TMessage>, TMessage, string>(handlerResponse.Payload, _module);
 
             return;
         }
@@ -124,7 +124,7 @@ public class RealtimeEndpoint<TRequest, TResponse, TMessage, THub>(
         {
             await SendAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
 
-            await _sender.SendAsync<SingleUserResponse<TMessage, TResponse>, TMessage, string>(handlerResponse.Payload);
+            await _sender.SendAsync<SingleUserResponse<TMessage, TResponse>, TMessage, string>(handlerResponse.Payload, _module);
 
             return;
         }
@@ -145,7 +145,7 @@ public class RealtimeEndpoint<TRequest, TResponse, TMessage, THub>(
         {
             await SendAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
 
-            await _sender.SendAsync<MultipleUsersResponse<TMessage, TResponse>, TMessage, IEnumerable<string>>(handlerResponse.Payload);
+            await _sender.SendAsync<MultipleUsersResponse<TMessage, TResponse>, TMessage, IEnumerable<string>>(handlerResponse.Payload, _module);
 
             return;
         }
@@ -166,7 +166,7 @@ public class RealtimeEndpoint<TRequest, TResponse, TMessage, THub>(
         {
             await SendAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
 
-            await _sender.SendAsync<GroupResponse<TMessage, TResponse>, TMessage, string>(handlerResponse.Payload);
+            await _sender.SendAsync<GroupResponse<TMessage, TResponse>, TMessage, string>(handlerResponse.Payload, _module);
 
             return;
         }
@@ -218,7 +218,7 @@ public class RealtimeEndpointWithoutRequest<TResponse, TMessage, THub>(
         {
             await SendAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
 
-            await _sender.SendAsync<SingleUserResponse<TMessage, TResponse>, TMessage, string>(handlerResponse.Payload);
+            await _sender.SendAsync<SingleUserResponse<TMessage, TResponse>, TMessage, string>(handlerResponse.Payload, _module);
 
             return;
         }
@@ -239,7 +239,7 @@ public class RealtimeEndpointWithoutRequest<TResponse, TMessage, THub>(
         {
             await SendAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
 
-            await _sender.SendAsync<MultipleUsersResponse<TMessage, TResponse>, TMessage, IEnumerable<string>>(handlerResponse.Payload);
+            await _sender.SendAsync<MultipleUsersResponse<TMessage, TResponse>, TMessage, IEnumerable<string>>(handlerResponse.Payload, _module);
 
             return;
         }
@@ -260,7 +260,7 @@ public class RealtimeEndpointWithoutRequest<TResponse, TMessage, THub>(
         {
             await SendAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
 
-            await _sender.SendAsync<GroupResponse<TMessage, TResponse>, TMessage, string>(handlerResponse.Payload);
+            await _sender.SendAsync<GroupResponse<TMessage, TResponse>, TMessage, string>(handlerResponse.Payload, _module);
 
             return;
         }

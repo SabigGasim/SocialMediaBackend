@@ -2,16 +2,15 @@
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using SocialMediaBackend.BuildingBlocks.Domain;
-using System.Reflection;
-using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.IdentityModel.Tokens;
 using SocialMediaBackend.Api.Services;
+using SocialMediaBackend.BuildingBlocks.Application;
+using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Chat.Application.Hubs;
 using SocialMediaBackend.Modules.Chat.Infrastructure;
-using SocialMediaBackend.BuildingBlocks.Application;
+using System.Reflection;
+using System.Text;
 
 namespace SocialMediaBackend.Api;
 
@@ -73,7 +72,7 @@ public static class ApiServiceCollectionExtensions
             .AddSingleton<IHubConnectionTracker, InMemoryHubConnectionTracker>()
             ;
 
-        List <Assembly> applicationAssemblies =
+        List<Assembly> applicationAssemblies =
         [
             typeof(SocialMediaBackend.Modules.Users.Application.ApplicationServiceCollectionExtensions).Assembly,
             typeof(SocialMediaBackend.Modules.Feed.Application.ApplicationServcieCollectionExtensions).Assembly,
@@ -82,19 +81,9 @@ public static class ApiServiceCollectionExtensions
         ];
 
         services.Scan(s => s.FromAssemblies(applicationAssemblies)
-            .AddClasses(c => c.AssignableTo(typeof(IDomainEventNotification<>)))
-            .AsImplementedInterfaces()
-            .WithTransientLifetime());
-
-        services.Scan(s => s.FromAssemblies(applicationAssemblies)
             .AddClasses(c => c.AssignableTo(typeof(IRealtimeSideEffect<>)))
             .AsImplementedInterfaces()
             .WithTransientLifetime());
-
-        services.AddMediator(opts =>
-        {
-            opts.ServiceLifetime = ServiceLifetime.Scoped;
-        });
 
         return services;
     }
