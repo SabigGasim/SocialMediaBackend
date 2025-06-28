@@ -1,11 +1,11 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SocialMediaBackend.Modules.Feed.Application.Configuration.Auth;
 using SocialMediaBackend.Modules.Feed.Application.Configuration.Mediator;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration;
+using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration.EventBus;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration.Persistence;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration.Processing;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration.Quartz;
@@ -23,6 +23,7 @@ public static class FeedStartup
 
         await PersistenceStartup.InitializeAsync(env);
         await QuartzStartup.InitializeAsync();
+        EventBusStartup.Initialize();
     }
 
     private static void ConfigureCompositionRoot(IServiceCollection serviceCollection, string connectionString)
@@ -36,6 +37,7 @@ public static class FeedStartup
         containerBuilder.RegisterModule(new ProcessingModule());
         containerBuilder.RegisterModule(new QuartzModule());
         containerBuilder.RegisterModule(new AuthModule());
+        containerBuilder.RegisterModule(new EventBusModule());
 
         var container = containerBuilder.Build();
 
