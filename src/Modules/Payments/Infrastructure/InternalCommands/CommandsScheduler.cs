@@ -1,33 +1,28 @@
-﻿using Dapper;
-using Newtonsoft.Json;
-using SocialMediaBackend.BuildingBlocks.Infrastructure;
+﻿using Autofac;
+using Marten;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.InternalCommands;
+using SocialMediaBackend.Modules.Payments.Infrastructure.Configuration;
 
 namespace SocialMediaBackend.Modules.Payments.Infrastructure.InternalCommands;
 
-public class CommandsScheduler(IDbConnectionFactory connectionFactory) : ICommandsScheduler
+public class CommandsScheduler : ICommandsScheduler
 {
-    private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
-
     public async ValueTask EnqueueAsync<TInternalCommand>(TInternalCommand command, string? idempotencyKey = null)
         where TInternalCommand : InternalCommandBase
     {
-        using (var connection = await _connectionFactory.CreateAsync())
-        {
-            const string sqlInsert =
-                $"""
-                INSERT INTO {Schema.Payments}."InternalCommands" ("Id", "EnqueueDate" , "Type", "Data", "IdempotencyKey")
-                VALUES (@Id, @EnqueueDate, @Type, @Data, @IdempotencyKey)
-                """;
+        var internalCommand = InternalCommand.Create(
+            command,
+            processed: false,
+            enqueueDate: DateTimeOffset.UtcNow,
+            idempotencyKey: idempotencyKey);
 
-            await connection.ExecuteAsync(sqlInsert, new
-            {
-                command.Id,
-                EnqueueDate = TimeProvider.System.GetUtcNow(),
-                Type = command.GetType().AssemblyQualifiedName,
-                Data = JsonConvert.SerializeObject(command),
-                IdempotencyKey = idempotencyKey
-            });
+        using (var scope = PaymentsCompositionRoot.BeginLifetimeScope())
+        {
+            var session = scope.Resolve<IDocumentSession>();
+
+            session.Store(internalCommand);
+
+            await session.SaveChangesAsync();
         }
     }
 }
