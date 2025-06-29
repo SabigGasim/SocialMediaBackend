@@ -1,35 +1,26 @@
-﻿using Dapper;
+﻿using Autofac;
+using Dapper;
 using Polly;
-using SocialMediaBackend.BuildingBlocks.Application.Requests;
-using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.BuildingBlocks.Application;
-using System.Text.Json;
-using Autofac;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.InternalCommands;
 using SocialMediaBackend.Modules.Payments.Infrastructure.Configuration;
 
 namespace SocialMediaBackend.Modules.Payments.Infrastructure.InternalCommands;
 
-public class ProcessInternalCommandsCommandHandler(IDbConnectionFactory dbConnectionFactory) 
+public class ProcessInternalCommandsCommandHandler(IAggregateRepository repository) 
     : ICommandHandler<ProcessInternalCommandsCommand>
 {
-    private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
+    private readonly IAggregateRepository _repository = repository;
 
     public async Task<HandlerResponse> ExecuteAsync(ProcessInternalCommandsCommand command, CancellationToken ct)
     {
-        using var connection = await _dbConnectionFactory.CreateAsync(ct);
-
-        const string sql = $"""
-                           SELECT
-                               c."Id" AS "{nameof(InternalCommandDto.Id)}", 
-                               c."Type" AS "{nameof(InternalCommandDto.Type)}", 
-                               c."Data" AS "{nameof(InternalCommandDto.Data)}" 
-                           FROM {Schema.Payments}."InternalCommands" AS c 
-                           WHERE c."Processed" = FALSE AND c."Error" IS NULL
-                           ORDER BY c."EnqueueDate"
-                           """;
-
-        var commands = await connection.QueryAsync<InternalCommandDto>(sql);
+        var commands = await _repository.LoadManyAsync<InternalCommand>(
+            x => x.Processed == false
+            && x.Error == null,
+            ct);
 
         var internalCommandsList = commands.AsList();
         
@@ -44,51 +35,31 @@ public class ProcessInternalCommandsCommandHandler(IDbConnectionFactory dbConnec
 
         foreach (var internalCommand in internalCommandsList)
         {
-            var result = await policy.ExecuteAndCaptureAsync(() => ProcessCommand(internalCommand));
+            var result = await policy.ExecuteAndCaptureAsync(() => ProcessCommand((dynamic)internalCommand.Command));
 
             if (result.Outcome == OutcomeType.Successful)
             {
                 continue;
             }
 
-            const string updateOnErrorSql = $"""
-                                            UPDATE {Schema.Payments}."InternalCommands"
-                                            SET "ProcessedDate" = @NowDate, "Error" = @Error
-                                            WHERE "Id" = @Id
-                                            """;
+            internalCommand.Processed = false;
+            internalCommand.Error = result.FinalException.Message;
 
-            await connection.ExecuteScalarAsync(
-                updateOnErrorSql,
-                new
-                {
-                    internalCommand.Id,
-                    NowDate = TimeProvider.System.GetUtcNow(),
-                    Error = result.FinalException.ToString(),
-                });
+            _repository.Store(internalCommand);
+            await _repository.SaveChangesAsync(CancellationToken.None);
         }
 
         return HandlerResponseStatus.NoContent;
     }
 
-    private static async Task ProcessCommand(InternalCommandDto internalCommand)
+    private static async Task ProcessCommand<TInternalCommand>(TInternalCommand internalCommand)
+        where TInternalCommand : InternalCommandBase
     {
-        var type = Type.GetType(internalCommand.Type)!;
-
-        dynamic commandToProcess = JsonSerializer.Deserialize(internalCommand.Data, type)!;
-
         await using (var scope = PaymentsCompositionRoot.BeginLifetimeScope())
         {
-            var handlerType = typeof(ICommandHandler<>).MakeGenericType(type);
-            var handler = (dynamic)scope.Resolve(handlerType);
+            var handler = scope.Resolve<ICommandHandler<TInternalCommand>>();
 
-            await handler.ExecuteAsync(commandToProcess, CancellationToken.None);
+            await handler.ExecuteAsync(internalCommand, CancellationToken.None);
         }
-    }
-
-    private class InternalCommandDto
-    {
-        public Guid Id { get; set; }
-        public string Type { get; set; } = default!;
-        public string Data { get; set; } = default!;
     }
 }
