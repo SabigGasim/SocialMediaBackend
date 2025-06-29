@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.InternalCommands;
 using SocialMediaBackend.Modules.Payments.Infrastructure.InternalCommands;
 

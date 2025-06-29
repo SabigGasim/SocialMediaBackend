@@ -34,7 +34,7 @@ builder.Services.Configure<StripeSettings>(options =>
 builder.Services.AddFeedModule();
 builder.Services.AddUserModule();
 builder.Services.AddChatModule();
-builder.Services.AddPaymentsModule(environment, connectionString);
+builder.Services.AddPaymentsModule();
 builder.Services.AddBuildingBlocks();
 builder.Services.AddApi(config);
 

@@ -5,12 +5,8 @@ namespace SocialMediaBackend.Api.Modules.Payments;
 
 public static class PaymentsServiceCollectionExtensions
 {
-    public static IServiceCollection AddPaymentsModule(
-        this IServiceCollection services,
-        IWebHostEnvironment environment,
-        string connectionString)
+    public static IServiceCollection AddPaymentsModule(this IServiceCollection services)
     {
-        return services.AddInfrastructure(environment, connectionString)
-            .AddApplication();
+        return services.AddApplication();
     }
 }
