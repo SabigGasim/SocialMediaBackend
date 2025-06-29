@@ -4,8 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Domain;
-using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Payments.Infrastructure;
+using SocialMediaBackend.Modules.Payments.Infrastructure.Processing;
 using System.Reflection;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Configuration.Mediator;
