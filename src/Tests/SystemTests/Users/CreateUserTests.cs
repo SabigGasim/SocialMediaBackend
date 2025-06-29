@@ -9,9 +9,8 @@ using SocialMediaBackend.Modules.Feed.Application.Contracts;
 using SocialMediaBackend.Modules.Payments.Application.Contracts;
 using SocialMediaBackend.Modules.Payments.Application.Payers.GetPayer;
 using SocialMediaBackend.Modules.Users.Application.Users.CreateUser;
-using SocialMediaBackend.Tests.SystemTests;
 
-namespace SocialMediaBackend.Tests.Tests.IntegrationTests.Api.Users;
+namespace SocialMediaBackend.Tests.SystemTests.Users;
 
 public class CreateUserTests(AuthFixture auth, App app) : AppTestBase(auth, app)
 {

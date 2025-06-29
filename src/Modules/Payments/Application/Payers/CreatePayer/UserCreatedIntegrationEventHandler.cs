@@ -8,17 +8,10 @@ using SocialMediaBackend.Modules.Users.IntegrationEvents;
 
 namespace SocialMediaBackend.Modules.Payments.Application.Payers.CreatePayer;
 
-internal sealed class UserCreatedIntegrationEventHandler(IHostEnvironment env) : INotificationHandler<UserCreatedIntegrationEvent>
+internal sealed class UserCreatedIntegrationEventHandler : INotificationHandler<UserCreatedIntegrationEvent>
 {
-    private readonly IHostEnvironment _env = env;
-
     public async ValueTask Handle(UserCreatedIntegrationEvent notification, CancellationToken cancellationToken)
     {
-        if (_env.IsEnvironment("Testing"))
-        {
-            return;
-        }
-
         using (var scope = PaymentsCompositionRoot.BeginLifetimeScope())
         {
             var scheduler = scope.Resolve<ICommandsScheduler>();
