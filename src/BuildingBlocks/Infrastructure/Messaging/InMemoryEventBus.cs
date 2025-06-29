@@ -51,9 +51,12 @@ internal class InMemoryEventBus : IEventBus
         {
             var (name, @event) = item;
 
-            await _handlerFunctions[name]
-                .Select(async handler => await handler(@event))
-                .ProcessIndividually(DescribePublishFailure(name, @event));
+            if (_handlerFunctions.TryGetValue(name, out var handlerFunction))
+            {
+                await handlerFunction
+                    .Select(async handler => await handler(@event))
+                    .ProcessIndividually(DescribePublishFailure(name, @event));
+            }
         }
     }
 
