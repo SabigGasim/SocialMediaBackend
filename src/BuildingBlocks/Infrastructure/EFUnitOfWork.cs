@@ -21,11 +21,11 @@ public sealed class EFUnitOfWork(
         var entitiesWithEvents = _context.ChangeTracker
             .Entries<IHasDomainEvents>()
             .Select(e => e.Entity)
-            .Where(e => e.DomainEvents is { Count: > 0 })
+            .Where(e => e.DomainEvents.Count > 0)
             .ToArray();
 
         var domainEvents = entitiesWithEvents
-            .SelectMany(e => e.DomainEvents!)
+            .SelectMany(e => e.DomainEvents)
             .ToArray();
 
         List<IDomainEventNotification> domainEventNotifications = [];
@@ -68,6 +68,13 @@ public sealed class EFUnitOfWork(
             _context.Set<OutboxMessage>().Add(outboxMessage);
         }
 
-        return await _context.SaveChangesAsync(ct);
+        try
+        {
+            return await _context.SaveChangesAsync(ct);
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
     }
 }

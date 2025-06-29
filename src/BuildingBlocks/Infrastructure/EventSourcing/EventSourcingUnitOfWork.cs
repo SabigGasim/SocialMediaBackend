@@ -1,23 +1,18 @@
 ﻿using Autofac;
 using Autofac.Core;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using SocialMediaBackend.BuildingBlocks.Domain;
-using SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing;
-using SocialMediaBackend.BuildingBlocks.Infrastructure.Messaging;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing.Messaging;
 
-namespace SocialMediaBackend.BuildingBlocks.Infrastructure.InternalCommands;
+namespace SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing;
 
-public sealed class EventSourcingUnitOfWork(
+public sealed class MartenUnitOfWork(
     IAggregateRepository repository,
     IAggregateTracker aggregateTracker,
-    DbContext context,
     IDomainEventsDispatcher dispatcher,
     ILifetimeScope scope) : IUnitOfWork
 {
     private readonly IAggregateRepository _repository = repository;
     private readonly IAggregateTracker _aggregateTracker = aggregateTracker;
-    private readonly DbContext _context = context;
     private readonly IDomainEventsDispatcher _dispatcher = dispatcher;
     private readonly ILifetimeScope _scope = scope;
 
@@ -66,23 +61,12 @@ public sealed class EventSourcingUnitOfWork(
 
         foreach (var notification in domainEventNotifications)
         {
-            var outboxMessage = new OutboxMessage
-            {
-                Id = notification.Id,
-                Content = JsonConvert.SerializeObject(notification),
-                Type = notification.GetType().AssemblyQualifiedName!,
-                OccurredOn = notification.Event.OccurredOn
-            };
+            var outboxMessage = OutboxMessage.Create(notification);
 
-            _context.Set<OutboxMessage>().Add(outboxMessage);
+            _repository.Store(outboxMessage);
         }
 
         await _repository.SaveChangesAsync(ct);
-
-        if (_context.ChangeTracker.HasChanges())
-        {
-            await _context.SaveChangesAsync(ct);
-        }
 
         return entitiesWithEvents.Count;
     }
