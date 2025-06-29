@@ -1,4 +1,4 @@
-﻿namespace SocialMediaBackend.BuildingBlocks.Domain;
+﻿namespace SocialMediaBackend.BuildingBlocks.Domain.EventSourcing;
 
 public interface IStreamEvent
 {

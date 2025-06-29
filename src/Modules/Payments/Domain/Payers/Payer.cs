@@ -1,4 +1,4 @@
-﻿using SocialMediaBackend.Modules.Payments.Domain.Common;
+﻿using SocialMediaBackend.BuildingBlocks.Domain.EventSourcing;
 using SocialMediaBackend.Modules.Payments.Domain.Payers.Events;
 
 namespace SocialMediaBackend.Modules.Payments.Domain.Payers;

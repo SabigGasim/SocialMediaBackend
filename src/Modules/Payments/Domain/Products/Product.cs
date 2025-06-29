@@ -1,5 +1,5 @@
-﻿using SocialMediaBackend.Modules.Payments.Contracts;
-using SocialMediaBackend.Modules.Payments.Domain.Common;
+﻿using SocialMediaBackend.BuildingBlocks.Domain.EventSourcing;
+using SocialMediaBackend.Modules.Payments.Contracts;
 using SocialMediaBackend.Modules.Payments.Domain.Products.Events;
 
 namespace SocialMediaBackend.Modules.Payments.Domain.Products;
