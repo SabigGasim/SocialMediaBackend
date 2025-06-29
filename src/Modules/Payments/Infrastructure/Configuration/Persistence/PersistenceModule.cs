@@ -3,7 +3,6 @@ using Autofac.Extensions.DependencyInjection;
 using JasperFx;
 using JasperFx.Events.Projections;
 using Marten;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SocialMediaBackend.BuildingBlocks.Domain.Serialization;
@@ -13,7 +12,6 @@ using SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing.Messaging;
 using SocialMediaBackend.Modules.Payments.Domain.Payers;
 using SocialMediaBackend.Modules.Payments.Domain.Products;
 using SocialMediaBackend.Modules.Payments.Domain.Subscriptions;
-using SocialMediaBackend.Modules.Payments.Infrastructure.Data;
 using SocialMediaBackend.Modules.Payments.Infrastructure.Domain.Payments;
 using SocialMediaBackend.Modules.Payments.Infrastructure.Domain.Products;
 using SocialMediaBackend.Modules.Payments.Infrastructure.Domain.Subscriptions;
@@ -28,14 +26,6 @@ public class PersistenceModule(string connectionString, IHostEnvironment env) : 
 
     protected override void Load(ContainerBuilder builder)
     {
-        builder.Register(_ => new PaymentsDbContext(
-            PaymentsDbContextOptionsBuilderFactory
-                .Create(_connectionString)
-                .Options))
-            .AsSelf()
-            .As<DbContext>()
-            .InstancePerLifetimeScope();
-
         builder.Register(_ => new NpgsqlConnectionFactory(_connectionString))
             .As<IDbConnectionFactory>()
             .SingleInstance();

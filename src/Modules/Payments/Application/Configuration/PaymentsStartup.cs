@@ -22,7 +22,6 @@ public static class PaymentsStartup
     {
         ConfigureCompositionRoot(services, connectionString, environment);
 
-        await PersistenceStartup.InitializeAsync(environment);
         await QuartzStartup.InitializeAsync();
         EventBusStartup.Initialize();
     }
