@@ -1,20 +1,20 @@
 ﻿using Dapper;
-using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
-using SocialMediaBackend.BuildingBlocks.Infrastructure;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing.Messaging;
 
 namespace SocialMediaBackend.Modules.Payments.Infrastructure.Messaging.Inbox;
 
 internal sealed class ProcessInboxMessagesCommandHandler(
-    IDbConnectionFactory factory,
+    IAggregateRepository repository,
     Mediator.IMediator mediator)
     : ICommandHandler<ProcessInboxMessagesCommand>
 {
-    private readonly IDbConnectionFactory _factory = factory;
+    private readonly IAggregateRepository _repository = repository;
     private readonly Mediator.IMediator _mediator = mediator;
     private readonly AsyncRetryPolicy _policy = Policy
             .Handle<Exception>()
@@ -27,74 +27,38 @@ internal sealed class ProcessInboxMessagesCommandHandler(
 
     public async Task<HandlerResponse> ExecuteAsync(ProcessInboxMessagesCommand command, CancellationToken ct)
     {
-        using var connection = await _factory.CreateAsync(ct);
-
-        const string sql = $"""
-                       SELECT
-                           m."Id" AS "{nameof(InboxMessageDto.Id)}", 
-                           m."Type" AS "{nameof(InboxMessageDto.Type)}", 
-                           m."Content" AS "{nameof(InboxMessageDto.Content)}" 
-                       FROM {Schema.Payments}."InboxMessages" AS m 
-                       WHERE m."Processed" = FALSE AND m."Error" IS NULL
-                       ORDER BY m."OccurredOn"
-                       """;
-
-        var messages = await connection.QueryAsync<InboxMessageDto>(sql);
+        var messages = await _repository.LoadManyAsync<InboxMessage, DateTimeOffset>(
+            expression: x => x.Processed == false && x.Error == null,
+            orderBy: x => x.OccurredOn,
+            descending: false,
+            ct);
 
         var messagesList = messages.AsList();
 
         foreach (var message in messagesList)
         {
             var result = await _policy.ExecuteAndCaptureAsync(() => ProcessMessage(message));
+            message.ProcessedDate = DateTimeOffset.UtcNow;
 
             if (result.Outcome == OutcomeType.Successful)
             {
-                const string updateOnSuccess = $"""
-                    UPDATE {Schema.Payments}."InboxMessages"
-                    SET "Processed" = TRUE, "ProcessedDate" = @NowDate
-                    WHERE "Id" = @Id
-                    """;
-
-                await connection.ExecuteScalarAsync(updateOnSuccess, new
-                {
-                    message.Id,
-                    NowDate = TimeProvider.System.GetUtcNow(),
-                });
-                continue;
+                message.Processed = true;
+            }
+            else
+            {
+                message.Processed = false;
+                message.Error = result.FinalException.Message;
             }
 
-            const string updateOnErrorSql = $"""
-                UPDATE {Schema.Payments}."InboxMessages"
-                SET "ProcessedDate" = @NowDate, "Error" = @Error, "Processed" = FALSE
-                WHERE "Id" = @Id
-                """;
-
-            await connection.ExecuteScalarAsync(
-                updateOnErrorSql,
-                new
-                {
-                    message.Id,
-                    NowDate = TimeProvider.System.GetUtcNow(),
-                    Error = result.FinalException.ToString(),
-                });
+            _repository.Store(message);
+            await _repository.SaveChangesAsync(CancellationToken.None);
         }
 
         return HandlerResponseStatus.NoContent;
     }
 
-    private async Task ProcessMessage(InboxMessageDto inboxMessage)
+    private async Task ProcessMessage(InboxMessage inboxMessage)
     {
-        var type = Type.GetType(inboxMessage.Type)!;
-
-        var notification = JsonConvert.DeserializeObject(inboxMessage.Content, type)!;
-
-        await _mediator.Publish(notification);
-    }
-
-    private class InboxMessageDto
-    {
-        public Guid Id { get; set; }
-        public string Type { get; set; } = default!;
-        public string Content { get; set; } = default!;
+        await _mediator.Publish(inboxMessage.Notification);
     }
 }
