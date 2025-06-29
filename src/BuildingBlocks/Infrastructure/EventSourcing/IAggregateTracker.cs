@@ -1,4 +1,4 @@
-﻿using SocialMediaBackend.BuildingBlocks.Domain;
+﻿using SocialMediaBackend.BuildingBlocks.Domain.EventSourcing;
 
 namespace SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing;
 
