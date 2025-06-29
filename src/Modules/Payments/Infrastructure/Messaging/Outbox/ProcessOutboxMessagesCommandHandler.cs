@@ -1,20 +1,20 @@
 ﻿using Dapper;
-using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
-using SocialMediaBackend.BuildingBlocks.Infrastructure;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing.Messaging;
 
 namespace SocialMediaBackend.Modules.Payments.Infrastructure.Messaging.Outbox;
 
 internal sealed class ProcessOutboxMessagesCommandHandler(
-    IDbConnectionFactory factory,
+    IAggregateRepository repository,
     Mediator.IMediator mediator)
     : ICommandHandler<ProcessOutboxMessagesCommand>
 {
-    private readonly IDbConnectionFactory _factory = factory;
+    private readonly IAggregateRepository _repository = repository;
     private readonly Mediator.IMediator _mediator = mediator;
     private readonly AsyncRetryPolicy _policy = Policy
             .Handle<Exception>()
@@ -27,75 +27,38 @@ internal sealed class ProcessOutboxMessagesCommandHandler(
 
     public async Task<HandlerResponse> ExecuteAsync(ProcessOutboxMessagesCommand command, CancellationToken ct)
     {
-        using var connection = await _factory.CreateAsync(ct);
-
-        const string sql = $"""
-                       SELECT
-                           m."Id" AS "{nameof(OutboxMessageDto.Id)}", 
-                           m."Type" AS "{nameof(OutboxMessageDto.Type)}", 
-                           m."Content" AS "{nameof(OutboxMessageDto.Content)}" 
-                       FROM {Schema.Payments}."OutboxMessages" AS m 
-                       WHERE m."Processed" = FALSE AND m."Error" IS NULL
-                       ORDER BY m."OccurredOn"
-                       """;
-
-        var messages = await connection.QueryAsync<OutboxMessageDto>(sql);
+        var messages = await _repository.LoadManyAsync<OutboxMessage, DateTimeOffset>(
+            expression: x => x.Processed == false && x.Error == null,
+            orderBy: x => x.OccurredOn,
+            descending: false,
+            ct);
 
         var messagesList = messages.AsList();
 
         foreach (var message in messagesList)
         {
             var result = await _policy.ExecuteAndCaptureAsync(() => ProcessMessage(message));
+            message.ProcessedDate = DateTimeOffset.UtcNow;
 
             if (result.Outcome == OutcomeType.Successful)
             {
-                const string updateOnSuccess = $"""
-                    UPDATE {Schema.Payments}."OutboxMessages"
-                    SET "Processed" = TRUE, "ProcessedDate" = @NowDate
-                    WHERE "Id" = @Id
-                    """;
-
-                await connection.ExecuteScalarAsync(updateOnSuccess, new
-                {
-                    message.Id,
-                    NowDate = TimeProvider.System.GetUtcNow(),
-                });
-
-                continue;
+                message.Processed = true;
+            }
+            else
+            {
+                message.Processed = false;
+                message.Error = result.FinalException.Message;
             }
 
-            const string updateOnErrorSql = $"""
-                UPDATE {Schema.Payments}."OutboxMessages"
-                SET "ProcessedDate" = @NowDate, "Error" = @Error
-                WHERE "Id" = @Id
-                """;
-
-            await connection.ExecuteScalarAsync(
-                updateOnErrorSql,
-                new
-                {
-                    message.Id,
-                    NowDate = TimeProvider.System.GetUtcNow(),
-                    Error = result.FinalException.ToString(),
-                });
+            _repository.Store(message);
+            await _repository.SaveChangesAsync(CancellationToken.None);
         }
 
         return HandlerResponseStatus.NoContent;
     }
 
-    private async Task ProcessMessage(OutboxMessageDto outboxMessage)
+    private async Task ProcessMessage(OutboxMessage outboxMessage)
     {
-        var type = Type.GetType(outboxMessage.Type)!;
-
-        var notification = JsonConvert.DeserializeObject(outboxMessage.Content, type)!;
-
-        await _mediator.Publish(notification);
+        await _mediator.Publish(outboxMessage.Notification);
     }
-}
-
-class OutboxMessageDto
-{
-    public Guid Id { get; set; }
-    public string Type { get; set; } = default!;
-    public string Content { get; set; } = default!;
 }
