@@ -14,10 +14,8 @@ public static class EventBusStartup
         {
             var eventBus = scope.Resolve<IEventBus>();
 
-            var factory = scope.Resolve<IDbConnectionFactory>();
-
-            eventBus.Subscribe(new InboxIntegrationEventHandler<UserCreatedIntegrationEvent>(factory));
-            eventBus.Subscribe(new InboxIntegrationEventHandler<UserDeletedIntegrationEvent>(factory));
+            eventBus.Subscribe(new InboxIntegrationEventHandler<UserCreatedIntegrationEvent>());
+            eventBus.Subscribe(new InboxIntegrationEventHandler<UserDeletedIntegrationEvent>());
         }
     }
 }

@@ -33,6 +33,7 @@ public class StripeGateway : IPaymentGateway
             {
                 Metadata = new Dictionary<string, string>
                 {
+                    { "mode", "payment" },
                     { "internal_payment_id", internalPaymentId.ToString() },
                     { "product_reference", productReference }
                 }
@@ -83,6 +84,7 @@ public class StripeGateway : IPaymentGateway
             {
                 Metadata = new Dictionary<string, string>
                 {
+                    { "mode", "subscription" },
                     { "internal_subscription_id", internalSubscriptionId.ToString() },
                     { "product_reference", productReference },
                 }
