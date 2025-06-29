@@ -1,34 +1,25 @@
-﻿using Dapper;
-using Newtonsoft.Json;
-using SocialMediaBackend.BuildingBlocks.Infrastructure;
+﻿using Autofac;
+using Marten;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.Events;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing.Messaging;
+using SocialMediaBackend.Modules.Payments.Infrastructure.Configuration;
 
 namespace SocialMediaBackend.Modules.Payments.Infrastructure.Messaging.Inbox;
 
-internal sealed class InboxIntegrationEventHandler<TEvent>(IDbConnectionFactory factory) 
+internal sealed class InboxIntegrationEventHandler<TEvent>
     : IIntegrationEventHandler<TEvent> where TEvent : IntegrationEvent
 {
-    private readonly IDbConnectionFactory _factory = factory;
-
     public async ValueTask Handle(TEvent notification, CancellationToken cancellationToken)
     {
-        const string sqlInsert =
-                $"""
-                INSERT INTO {Schema.Payments}."InboxMessages" ("Id", "Type" , "Content", "OccurredOn", "Processed")
-                VALUES (@Id, @Type, @Content, @OccurredOn, @Processed)
-                """;
+        var message = InboxMessage.Create(notification);
 
-        using (var connection = await _factory.CreateAsync(CancellationToken.None))
+        using (var scope = PaymentsCompositionRoot.BeginLifetimeScope())
         {
-            await connection.ExecuteAsync(sqlInsert, new
-            {
-                notification.Id,
-                notification.OccurredOn,
-                Type = notification.GetType().AssemblyQualifiedName,
-                Content = JsonConvert.SerializeObject(notification),
-                Processed = false
-            });
+            var session = scope.Resolve<IDocumentSession>();
+            
+            session.Store(message);
+            
+            await session.SaveChangesAsync(CancellationToken.None);
         }
-
     }
 }
