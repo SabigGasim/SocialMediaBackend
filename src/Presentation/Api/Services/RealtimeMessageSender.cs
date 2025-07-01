@@ -5,6 +5,7 @@ using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Contracts;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands.Realtime;
+using SocialMediaBackend.BuildingBlocks.Domain.Exceptions;
 
 namespace SocialMediaBackend.Api.Services;
 
@@ -22,7 +23,7 @@ public class RealtimeMessageSender<THub>(
         where TResponse : IRealtimeResponse<TMessage, TIdentifier>
         where TMessage : IRealtimeMessage
     {
-        var task = response.Recipients switch
+        var SendMessageAsync = response.Recipients switch
         {
             Recipients.SingleUser => _context.Clients
                 .User(response.ReceiverId as string ?? throw IdentifierException)
@@ -36,10 +37,10 @@ public class RealtimeMessageSender<THub>(
                 .Group(response.ReceiverId as string ?? throw IdentifierException)
                 .SendAsync(response.Method, response.Message),
 
-            _ => throw new InvalidOperationException("")
+            _ => throw new ThisWillNeverHappenException()
         };
 
-        await task;
+        await SendMessageAsync;
 
         using (var scope = _scope.BeginLifetimeScope())
         {
@@ -49,7 +50,7 @@ public class RealtimeMessageSender<THub>(
                 new TypedParameter(typeof(IHubContext<THub>), _context)
             };
 
-            var sideEffect = _scope.ResolveOptional<IRealtimeSideEffect<TMessage>>(parameters);
+            var sideEffect = scope.ResolveOptional<IRealtimeSideEffect<TMessage>>(parameters);
 
             if (sideEffect is null)
             {

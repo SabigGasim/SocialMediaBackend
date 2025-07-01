@@ -9,7 +9,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.Quartz;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.Processing;
 using SocialMediaBackend.Modules.Chat.Application.Configuration.Auth;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.EventBus;
-using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.SIgnalR;
+using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.SignalR;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Configuration;
 

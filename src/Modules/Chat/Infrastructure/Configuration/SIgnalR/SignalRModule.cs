@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 
-namespace SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.SIgnalR;
+namespace SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.SignalR;
 
 public class SignalRModule : Module
 {

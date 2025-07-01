@@ -8,7 +8,6 @@ using SocialMediaBackend.Api.Services;
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Chat.Application.Hubs;
-using SocialMediaBackend.Modules.Chat.Infrastructure;
 using System.Reflection;
 using System.Text;
 

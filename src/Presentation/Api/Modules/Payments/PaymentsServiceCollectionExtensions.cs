@@ -1,5 +1,4 @@
 ﻿using SocialMediaBackend.Modules.Payments.Application;
-using SocialMediaBackend.Modules.Payments.Infrastructure;
 
 namespace SocialMediaBackend.Api.Modules.Payments;
 
