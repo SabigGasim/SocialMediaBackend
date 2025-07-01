@@ -20,7 +20,8 @@ internal class DirectMessageEntityTypeConfiguration : IEntityTypeConfiguration<D
         builder.HasOne(x => x.Sender)
             .WithMany()
             .HasForeignKey(x => x.SenderId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasOne(x => x.Chat)
             .WithMany(x => x.Messages)

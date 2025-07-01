@@ -20,7 +20,8 @@ internal class UserDirectChatEntityTypeConfiguration : IEntityTypeConfiguration<
         builder.HasOne(x => x.Chatter)
             .WithMany()
             .HasForeignKey(x => x.ChatterId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasOne(x => x.DirectChat)
             .WithMany()

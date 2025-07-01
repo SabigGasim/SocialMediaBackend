@@ -20,11 +20,13 @@ internal class DirectChatEntityTypeConfiguration : IEntityTypeConfiguration<Dire
         builder.HasOne(x => x.FirstChatter)
             .WithMany()
             .HasForeignKey(x => x.FirstChatterId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasOne(x => x.SecondChatter)
             .WithMany()
             .HasForeignKey(x => x.SecondChatterId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

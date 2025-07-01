@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
-using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Conversations.GroupChats;
 
@@ -25,7 +24,7 @@ internal class GroupChatMemberEntityTypeConfiguration : IEntityTypeConfiguration
             .HasConversion(
                 id => id.Value,
                 value => new(value)
-        );
+            );
 
         builder.HasOne(x => x.GroupChat)
             .WithMany(x => x.Members)

@@ -22,7 +22,7 @@ internal class GroupMessageEntityTypeConfiguration : IEntityTypeConfiguration<Gr
         builder.HasOne(x => x.Sender)
             .WithMany()
             .HasForeignKey(x => x.SenderId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.Chat)
             .WithMany(x => x.Messages)
