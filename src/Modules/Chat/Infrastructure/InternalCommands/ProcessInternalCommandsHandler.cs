@@ -29,7 +29,7 @@ internal sealed class ProcessInternalCommandsCommandHandler : ICommandHandler<Pr
                                c."Id" AS "{nameof(InternalCommandDto.Id)}", 
                                c."Type" AS "{nameof(InternalCommandDto.Type)}", 
                                c."Data" AS "{nameof(InternalCommandDto.Data)}" 
-                           FROM "{Schema.Chat}"."InternalCommands" AS c 
+                           FROM {Schema.Chat}."InternalCommands" AS c 
                            WHERE c."Processed" = FALSE
                            ORDER BY c."EnqueueDate"
                            """;
@@ -42,13 +42,9 @@ internal sealed class ProcessInternalCommandsCommandHandler : ICommandHandler<Pr
             .Handle<Exception>()
             .WaitAndRetryAsync(
             [
-#if DEBUG
-                TimeSpan.FromHours(1)
-#else
                 TimeSpan.FromSeconds(1),
                 TimeSpan.FromSeconds(2),
                 TimeSpan.FromSeconds(3)
-#endif
             ]);
 
         foreach (var internalCommand in internalCommandsList)
