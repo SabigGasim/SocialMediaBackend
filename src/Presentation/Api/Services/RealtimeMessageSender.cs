@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Autofac.Core;
 using Microsoft.AspNetCore.SignalR;
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Contracts;
@@ -42,8 +43,13 @@ public class RealtimeMessageSender<THub>(
 
         using (var scope = _scope.BeginLifetimeScope())
         {
-            var sideEffect = _scope.ResolveOptional(typeof(IRealtimeSideEffect<TMessage>),
-                new TypedParameter(typeof(TMessage), response.Message));
+            var parameters = new List<Parameter>
+            {
+                new TypedParameter(typeof(TMessage), response.Message),
+                new TypedParameter(typeof(IHubContext<THub>), _context)
+            };
+
+            var sideEffect = _scope.ResolveOptional<IRealtimeSideEffect<TMessage>>(parameters);
 
             if (sideEffect is null)
             {

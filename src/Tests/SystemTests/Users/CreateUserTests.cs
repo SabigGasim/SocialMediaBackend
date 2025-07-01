@@ -49,7 +49,6 @@ public class CreateUserTests(AuthFixture auth, App app) : AppTestBase(auth, app)
         );
     }
 
-
     private class GetCreatedUserFromFeedProbe(UserInfo expectedUserInfo, IFeedModule module) : IProbe
     {
         private readonly UserInfo _expectedUserInfo = expectedUserInfo;

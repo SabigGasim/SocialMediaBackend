@@ -25,12 +25,12 @@ public class ChatHub : Hub<IChatHub>
     private readonly ILifetimeScope _scope;
     private readonly IHubConnectionTracker _connectionTracker;
 
-    public ChatHub(IHubConnectionTracker hubConnectionTracker)
+    public ChatHub()
     {
         _scope = ChatCompositionRoot.BeginLifetimeScope();
         _chatterRepository = _scope.Resolve<IChatterRepository>();
         _chatRepository = _scope.Resolve<IChatRepository>();
-        _connectionTracker = hubConnectionTracker;
+        _connectionTracker = _scope.Resolve<IHubConnectionTracker>();
     }
 
     public override async Task OnConnectedAsync()

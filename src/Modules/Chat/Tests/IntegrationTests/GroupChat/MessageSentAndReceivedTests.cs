@@ -76,8 +76,7 @@ public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper outp
 
         // 3. The new user sends messages to the group chat
         var sendMessageTasks = Enumerable.Range(0, messagesCount)
-            .Select(i => SendMessageToGroupChat(_userClient, groupChatId, $"Message {i}"))
-            .ToArray();
+            .Select(i => SendMessageToGroupChat(_userClient, groupChatId, $"Message {i}"));
 
         await Task.WhenAll(sendMessageTasks);
 
@@ -197,7 +196,7 @@ public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper outp
         Guid groupChatId = groupChatRespone.Id;
 
         // 2. Subscribe to this group chat via SignalR
-        var taskLimiterSemaphor = new SemaphoreSlim(Environment.ProcessorCount * 2); // To prevent task exaustion
+        var taskLimiterSemaphor = new SemaphoreSlim(Environment.ProcessorCount * 2); // To prevent task exhaustion
 
         Task SendMarkMessageAsReceivedAndSeenAsync(CreateGroupMessageMessage msg, HubConnection hub, int device)
         {
@@ -347,8 +346,7 @@ public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper outp
 
             for (int i = 0; i < devicesCount; i++)
             {
-                var hubClient = BuildSignalRClient(AdminAuthToken);
-                _adminHubClients[i] = hubClient;
+                _adminHubClients[i] = BuildSignalRClient(AdminAuthToken);
             }
 
             await StartHubClients([.. _adminHubClients, _adminHubClient]);

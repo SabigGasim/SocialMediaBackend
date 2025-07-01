@@ -69,7 +69,6 @@ public static class ApiServiceCollectionExtensions
             .AddHttpContextAccessor()
             .AddSingleton<IUserIdProvider, UserIdProvider>()
             .AddSingleton<IRealtimeMessageSender<ChatHub>, RealtimeMessageSender<ChatHub>>()
-            .AddSingleton<IHubConnectionTracker, InMemoryHubConnectionTracker>()
             ;
 
         List<Assembly> applicationAssemblies =

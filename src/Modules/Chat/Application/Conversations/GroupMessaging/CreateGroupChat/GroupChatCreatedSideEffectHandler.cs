@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
-using SocialMediaBackend.Modules.Chat.Application.Hubs;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.CreateGroupChat;
 
-internal sealed class GroupChatCreatedSideEffectHandler(
-    IHubConnectionTracker connectionTracker,
-    IHubContext<ChatHub> hubContext) : IRealtimeSideEffectHandler<GroupChatCreatedSideEffect>
+internal sealed class GroupChatCreatedSideEffectHandler(IHubConnectionTracker connectionTracker)
+    : IRealtimeSideEffectHandler<GroupChatCreatedSideEffect>
 {
     private readonly IHubConnectionTracker _connectionTracker = connectionTracker;
-    private readonly IHubContext<ChatHub> _hubContext = hubContext;
 
     public async ValueTask Handle(GroupChatCreatedSideEffect notification, CancellationToken cancellationToken)
     {
@@ -25,7 +22,7 @@ internal sealed class GroupChatCreatedSideEffectHandler(
 
         var addTasks = users
             .SelectMany(connections => connections)
-            .Select(connectionId => _hubContext.Groups.AddToGroupAsync(connectionId, groupName));
+            .Select(connectionId => notification.HubContext.Groups.AddToGroupAsync(connectionId, groupName));
 
         await Task.WhenAll(addTasks);
     }
