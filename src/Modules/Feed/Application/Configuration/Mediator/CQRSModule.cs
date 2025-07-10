@@ -1,12 +1,12 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using SocialMediaBackend.BuildingBlocks.Application.Auth;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
 using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
-using SocialMediaBackend.Modules.Feed.Application.Auth;
 using SocialMediaBackend.Modules.Feed.Infrastructure;
 using System.Reflection;
 
@@ -51,7 +51,7 @@ public class CQRSModule : Autofac.Module
 
         services.Decorate(typeof(ICommandHandler<>), typeof(UnitOfWorkCommandHandlerDecorator<>));
         services.Decorate(typeof(ICommandHandler<,>), typeof(UnitOfWorkCommandHandlerWithResultDecorator<,>));
-        
+
         services.Decorate(typeof(IQueryHandler<,>), typeof(AuthQueryHandlerDecorator<,>));
         services.Decorate(typeof(ICommandHandler<>), typeof(AuthCommandHandlerDecorator<>));
         services.Decorate(typeof(ICommandHandler<,>), typeof(AuthCommandHandlerWithResultDecorator<,>));

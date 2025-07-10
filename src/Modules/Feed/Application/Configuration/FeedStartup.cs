@@ -2,6 +2,7 @@
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using SocialMediaBackend.BuildingBlocks.Application.Auth;
 using SocialMediaBackend.Modules.Feed.Application.Configuration.Auth;
 using SocialMediaBackend.Modules.Feed.Application.Configuration.Mediator;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration;
@@ -17,7 +18,7 @@ public static class FeedStartup
     public static async Task InitializeAsync(
         IServiceCollection serviceCollection,
         string connectionString,
-        IWebHostEnvironment env)
+        IWebHostEnvironment env,
         IExecutionContextAccessor executionContextAccessor)
     {
         ConfigureCompositionRoot(serviceCollection, connectionString, executionContextAccessor);
@@ -39,6 +40,8 @@ public static class FeedStartup
         containerBuilder.RegisterModule(new QuartzModule());
         containerBuilder.RegisterModule(new AuthModule());
         containerBuilder.RegisterModule(new EventBusModule());
+        containerBuilder.RegisterModule(new AuthModule());
+
         containerBuilder.RegisterInstance(executionContextAccessor);
 
         var container = containerBuilder.Build();
