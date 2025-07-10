@@ -1,8 +1,10 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
+using SocialMediaBackend.Modules.Chat.Domain.Authorization;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
+using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Roles;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Chatters.CreateChatter;
 
@@ -22,6 +24,7 @@ internal sealed class CreateChatterCommandHandler(ChatDbContext context) : IComm
             command.FollowingCount);
 
         _context.Add(chatter);
+        _context.Set<ChatterRole>().Add(new ChatterRole(Roles.Chatter, chatter.Id));
 
         return Task.FromResult((HandlerResponse)HandlerResponseStatus.NoContent);
     }
