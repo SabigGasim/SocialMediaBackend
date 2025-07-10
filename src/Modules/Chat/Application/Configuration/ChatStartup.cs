@@ -51,6 +51,8 @@ public static class ChatStartup
         containerBuilder.RegisterModule(new AuthModule());
         containerBuilder.RegisterModule(new EventBusModule());
         containerBuilder.RegisterModule(new SignalRModule());
+        containerBuilder.RegisterModule(new AuthModule());
+
         containerBuilder.RegisterInstance(executionContextAccessor);
 
         var container = containerBuilder.Build();
