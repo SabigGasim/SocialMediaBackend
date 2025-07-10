@@ -1,11 +1,14 @@
-﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Auth;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.Modules.Payments.Contracts;
 using SocialMediaBackend.Modules.Users.Domain.AppPlan;
+using SocialMediaBackend.Modules.Users.Domain.Authorization;
 
 namespace SocialMediaBackend.Modules.Users.Application.AppPlans.CreateAppPlan;
 
-public class CreateAppPlanCommand : CommandBase, IUserRequest
+[HasPermission(Permissions.CreateAppPlan)]
+public sealed class CreateAppPlanCommand : CommandBase, IUserRequest
 {
     public CreateAppPlanCommand(IEnumerable<PriceRequest> prices, string tier)
     {

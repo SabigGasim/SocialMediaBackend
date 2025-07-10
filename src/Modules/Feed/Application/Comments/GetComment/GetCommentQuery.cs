@@ -4,7 +4,7 @@ using SocialMediaBackend.Modules.Feed.Domain.Comments;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.GetComment;
 
-public class GetCommentQuery(Guid commentId) : QueryBase<GetCommentResponse>, IOptionalUserRequest
+public sealed class GetCommentQuery(Guid commentId) : QueryBase<GetCommentResponse>, IOptionalUserRequest
 {
     public CommentId CommentId { get; } = new(commentId);
 

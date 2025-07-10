@@ -4,7 +4,7 @@ using SocialMediaBackend.Modules.Feed.Domain.Comments;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.GetAllReplies;
 
-public class GetAllRepliesQuery(Guid parentId, int page, int pageSize)
+public sealed class GetAllRepliesQuery(Guid parentId, int page, int pageSize)
     : QueryBase<GetAllRepliesResponse>, IOptionalUserRequest
 {
     public CommentId ParentId { get; } = new(parentId);

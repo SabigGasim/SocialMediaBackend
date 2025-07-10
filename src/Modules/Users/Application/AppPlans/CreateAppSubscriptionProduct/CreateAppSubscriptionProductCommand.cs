@@ -1,10 +1,13 @@
-﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Auth;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.Modules.Users.Domain.AppPlan;
+using SocialMediaBackend.Modules.Users.Domain.Authorization;
 
 namespace SocialMediaBackend.Modules.Users.Application.AppPlans.CreateAppSubscriptionProduct;
 
-public class CreateAppSubscriptionProductCommand : CommandBase, IUserRequest
+[HasPermission(Permissions.CreateAppPlanProduct)]
+public sealed class CreateAppSubscriptionProductCommand : CommandBase, IUserRequest
 {
     public AppSubscriptionTier Tier { get; }
     public Guid UserId { get; private set; }

@@ -1,9 +1,13 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.Modules.Users.Domain.Users;
+using SocialMediaBackend.BuildingBlocks.Application.Auth;
+using SocialMediaBackend.Modules.Users.Domain.Authorization;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.RejectFollowRequest;
-public class RejectFollowRequestCommand(Guid userToRejectId) : CommandBase, IUserRequest
+
+[HasPermission(Permissions.RejectFollowRequests)]
+public sealed class RejectFollowRequestCommand(Guid userToRejectId) : CommandBase, IUserRequest
 {
     public UserId UserToRejectId { get; } = new(userToRejectId);
 

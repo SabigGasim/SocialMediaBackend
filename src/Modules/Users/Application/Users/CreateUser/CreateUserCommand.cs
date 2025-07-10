@@ -3,7 +3,7 @@ using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.CreateUser;
 
-public class CreateUserCommand(
+public sealed class CreateUserCommand(
     string username,
     string nickname,
     DateOnly dateOfBirth, 

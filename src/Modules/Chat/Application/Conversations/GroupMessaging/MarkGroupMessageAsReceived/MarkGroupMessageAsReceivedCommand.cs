@@ -8,7 +8,7 @@ using SocialMediaBackend.Modules.Chat.Domain.Messages.GroupMessages;
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.MarkGroupMessageAsReceived;
 
 [HasPermission(Permissions.MarkGroupMessageAsReceived)]
-public class MarkGroupMessageAsReceivedCommand(Guid groupChatId, Guid messageId) : CommandBase, IUserRequest
+public sealed class MarkGroupMessageAsReceivedCommand(Guid groupChatId, Guid messageId) : CommandBase, IUserRequest
 {
     public GroupChatId GroupChatId { get; } = new(groupChatId);
     public GroupMessageId MessageId { get; } = new(messageId);

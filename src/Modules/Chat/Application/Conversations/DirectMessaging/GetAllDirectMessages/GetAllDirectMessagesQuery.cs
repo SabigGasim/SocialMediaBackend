@@ -1,10 +1,13 @@
-﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Auth;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
+using SocialMediaBackend.Modules.Chat.Domain.Authorization;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.DirectChats;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.GetAllDirectMessages;
 
-public class GetAllDirectMessagesQuery(Guid chatId, int page, int pageSize)
+[HasPermission(Permissions.GetAllDirectMessages)]
+public sealed class GetAllDirectMessagesQuery(Guid chatId, int page, int pageSize)
     : QueryBase<GetAllDirectMessagesResponse>, IUserRequest
 {
     public Guid UserId { get; private set; }

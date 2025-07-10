@@ -1,9 +1,13 @@
-﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Auth;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
+using SocialMediaBackend.Modules.Users.Domain.Authorization;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.AcceptFollowRequest;
-public class AcceptFollowRequestCommand(Guid userToAcceptId) : CommandBase, IUserRequest
+
+[HasPermission(Permissions.AcceptFollowRequests)]
+public sealed class AcceptFollowRequestCommand(Guid userToAcceptId) : CommandBase, IUserRequest
 {
     public Guid UserId { get; private set; } = default!;
     public bool IsAdmin { get; private set; }

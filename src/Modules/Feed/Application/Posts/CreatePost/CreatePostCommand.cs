@@ -1,9 +1,13 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
+using SocialMediaBackend.Modules.Feed.Domain.Authorization;
+using SocialMediaBackend.BuildingBlocks.Application.Auth;
+
 
 namespace SocialMediaBackend.Modules.Feed.Application.Posts.CreatePost;
 
-public class CreatePostCommand(
+[HasPermission(Permissions.CreatePost)]
+public sealed class CreatePostCommand(
     string text,
     IEnumerable<string> mediaItems) : CommandBase<CreatePostResponse>, IUserRequest
 {

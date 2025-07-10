@@ -4,7 +4,7 @@ using SocialMediaBackend.Modules.Feed.Infrastructure.Domain.Posts;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Posts.GetAllPosts;
 
-public class GetAllPostsQuery : QueryBase<GetAllPostsResponse>, IOptionalUserRequest
+public sealed class GetAllPostsQuery : QueryBase<GetAllPostsResponse>, IOptionalUserRequest
 {
     public GetAllPostsQuery(
         int page,

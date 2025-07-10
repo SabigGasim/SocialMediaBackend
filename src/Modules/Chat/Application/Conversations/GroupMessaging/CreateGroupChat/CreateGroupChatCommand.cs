@@ -6,7 +6,7 @@ using SocialMediaBackend.Modules.Chat.Domain.Authorization;
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.CreateGroupChat;
 
 [HasPermission(Permissions.CreateGroupChat)]
-public class CreateGroupChatCommand(string groupName, IEnumerable<Guid> memberIds)
+public sealed class CreateGroupChatCommand(string groupName, IEnumerable<Guid> memberIds)
     : MultipleUsersCommandBase<CreateGroupChatMessage, CreateGroupChatResponse>, IUserRequest
 {
     public string GroupName { get; } = groupName;

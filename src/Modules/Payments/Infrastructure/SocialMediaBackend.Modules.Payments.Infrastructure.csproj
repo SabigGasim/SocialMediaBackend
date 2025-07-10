@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Common\**" />
+    <EmbeddedResource Remove="Common\**" />
+    <None Remove="Common\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac" Version="8.3.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
     <PackageReference Include="Marten" Version="8.2.0" />
@@ -22,10 +28,6 @@
     <ProjectReference Include="..\..\Users\IntegrationEvents\SocialMediaBackend.Modules.Users.IntegrationEvents.csproj" />
     <ProjectReference Include="..\Contracts\SocialMediaBackend.Modules.Payments.Contracts.csproj" />
     <ProjectReference Include="..\Domain\SocialMediaBackend.Modules.Payments.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\" />
   </ItemGroup>
 
 </Project>

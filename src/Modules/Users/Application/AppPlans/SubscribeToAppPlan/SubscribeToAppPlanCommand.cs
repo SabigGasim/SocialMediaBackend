@@ -1,12 +1,15 @@
-﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Auth;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.Modules.Payments.Contracts;
 using SocialMediaBackend.Modules.Payments.Contracts.Gateway;
 using SocialMediaBackend.Modules.Users.Domain.AppPlan;
+using SocialMediaBackend.Modules.Users.Domain.Authorization;
 
 namespace SocialMediaBackend.Modules.Users.Application.AppPlans.SubscribeToAppPlan;
 
-public class SubscribeToAppPlanCommand(string tier, string interval) 
+[HasPermission(Permissions.SubscribeToAppPlan)]
+public sealed class SubscribeToAppPlanCommand(string tier, string interval) 
     : CommandBase<CreateCheckoutSessionResponse>, IUserRequest
 {
     public Guid UserId { get; private set; }

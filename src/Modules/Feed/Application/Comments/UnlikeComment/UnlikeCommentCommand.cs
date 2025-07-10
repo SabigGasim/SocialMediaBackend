@@ -1,9 +1,14 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.Modules.Feed.Domain.Comments;
+using SocialMediaBackend.Modules.Feed.Domain.Authorization;
+using SocialMediaBackend.BuildingBlocks.Application.Auth;
+
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.UnlikeComment;
-public class UnlikeCommentCommand(Guid commentId) : CommandBase, IUserRequest
+
+[HasPermission(Permissions.UnlikeComment)]
+public sealed class UnlikeCommentCommand(Guid commentId) : CommandBase, IUserRequest
 {
     public CommentId CommentId { get; } = new(commentId);
 

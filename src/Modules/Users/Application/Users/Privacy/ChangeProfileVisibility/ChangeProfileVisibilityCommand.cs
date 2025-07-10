@@ -1,9 +1,12 @@
-﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Auth;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
+using SocialMediaBackend.Modules.Users.Domain.Authorization;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Privacy.ChangeProfileVisibility;
 
-public class ChangeProfileVisibilityCommand(bool isPublic) : CommandBase, IUserRequest
+[HasPermission(Permissions.ModifyUserInfo)]
+public sealed class ChangeProfileVisibilityCommand(bool isPublic) : CommandBase, IUserRequest
 {
     public Guid UserId { get; private set; } = default!;
 

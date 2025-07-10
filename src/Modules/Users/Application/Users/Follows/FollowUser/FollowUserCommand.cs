@@ -1,10 +1,13 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.Modules.Users.Domain.Users;
+using SocialMediaBackend.Modules.Users.Domain.Authorization;
+using SocialMediaBackend.BuildingBlocks.Application.Auth;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.FollowUser;
 
-public class FollowUserCommand(Guid userToFollowId) : CommandBase<FollowUserResponse>, IUserRequest
+[HasPermission(Permissions.FollowUsers)]
+public sealed class FollowUserCommand(Guid userToFollowId) : CommandBase<FollowUserResponse>, IUserRequest
 {
     public UserId UserToFollowId { get; } = new(userToFollowId);
 

@@ -1,10 +1,13 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.Modules.Users.Domain.Users;
+using SocialMediaBackend.BuildingBlocks.Application.Auth;
+using SocialMediaBackend.Modules.Users.Domain.Authorization;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.DeleteUser;
 
-public class DeleteUserCommand(Guid userToDeleteId) : CommandBase, IUserRequest
+[HasPermission(Permissions.DeleteUsers)]
+public sealed class DeleteUserCommand(Guid userToDeleteId) : CommandBase, IUserRequest
 {
     public Guid UserId { get; private set; } = default!;
     public UserId UserToDeleteId { get; } = new(userToDeleteId);

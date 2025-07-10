@@ -7,7 +7,7 @@ using SocialMediaBackend.Modules.Chat.Domain.Messages.GroupMessages;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.MarkGroupMessagAsSeen;
 
-[HasPermission(Permissions.MarkDirectMessageAsSeen)]
+[HasPermission(Permissions.MarkGroupMessageAsSeen)]
 public class MarkGroupMessageAsSeenCommand(Guid groupId) : CommandBase<GroupMessageId?>, IUserRequest
 {
     public Guid UserId { get; private set; }

@@ -1,9 +1,13 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.Modules.Chat.Domain.Conversations.GroupChats;
+using SocialMediaBackend.BuildingBlocks.Application.Auth;
+using SocialMediaBackend.Modules.Chat.Domain.Authorization;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.GetAllGroupMessages;
-public class GetAllGroupMessagesQuery(Guid chatId, int page, int pageSize)
+
+[HasPermission(Permissions.GetAllGroupMessages)]
+public sealed class GetAllGroupMessagesQuery(Guid chatId, int page, int pageSize)
     : QueryBase<GetAllGroupMessagesResponse>, IUserRequest
 {
     public Guid UserId { get; private set; }

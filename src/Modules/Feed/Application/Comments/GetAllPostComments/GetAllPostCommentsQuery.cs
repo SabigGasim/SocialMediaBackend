@@ -4,7 +4,7 @@ using SocialMediaBackend.Modules.Feed.Domain.Posts;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Comments.GetAllPostComments;
 
-public class GetAllPostCommentsQuery(Guid postId, int page, int pageSize) 
+public sealed class GetAllPostCommentsQuery(Guid postId, int page, int pageSize) 
     : QueryBase<GetAllPostCommentsResponse>, IOptionalUserRequest
 {
     public PostId PostId { get; } = new(postId);
