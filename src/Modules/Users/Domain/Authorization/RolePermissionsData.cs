@@ -17,16 +17,23 @@ public static class RolePermissionData
             Permission.ModifyUserInfo,
             Permission.FollowUsers,
             Permission.AcceptFollowRequests,
-            Permission.RejectFollowRequests
+            Permission.RejectFollowRequests,
+            Permission.UnfollowUsers,
+            Permission.SubscribeToAppPlan,
+            Permission.UnsbscribeFromAppPlan
         ];
 
         _mappings[Role.BasicPlan] = [];
         _mappings[Role.PlusPlan] = [.. _mappings[Role.BasicPlan]];
 
         _mappings[Role.AdminUser] = new HashSet<Permission>(
-            _mappings[Role.User]
-                .Concat(_mappings[Role.BasicPlan])
-                .Concat(_mappings[Role.PlusPlan])
+            [
+                Permission.CreateAppPlan,
+                Permission.CreateAppPlanProduct,
+                .._mappings[Role.User]
+                    .Concat(_mappings[Role.BasicPlan])
+                    .Concat(_mappings[Role.PlusPlan])
+            ]
         )
             .ToArray();
     }
