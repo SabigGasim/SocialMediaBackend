@@ -2,15 +2,12 @@
 using FastEndpoints;
 using FastEndpoints.Testing;
 using Microsoft.EntityFrameworkCore;
-using SocialMediaBackend.Api;
 using SocialMediaBackend.Api.Authentication;
 using SocialMediaBackend.BuildingBlocks.Tests;
 using SocialMediaBackend.Modules.Users.Domain.Services;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 using SocialMediaBackend.Modules.Users.Infrastructure.Configuration;
 using SocialMediaBackend.Modules.Users.Infrastructure.Data;
-using System.Text;
-using System.Text.Json;
 
 namespace SocialMediaBackend.Tests.SystemTests;
 

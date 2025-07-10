@@ -10,6 +10,6 @@ public class GetPayerEndpoint(IPaymentsModule module) : RequestEndpoint<GetPayer
 {
     public override async Task HandleAsync(GetPayerRequest req, CancellationToken ct)
     {
-        await HandleCommandAsync(new GetPayerCommand(req.PayerId), ct);
+        await HandleQueryAsync(new GetPayerQuery(req.PayerId), ct);
     }
 }

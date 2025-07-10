@@ -63,7 +63,7 @@ public class CreateUserTests(App app) : AppTestBase(app)
 
         public async Task SampleAsync()
         {
-            var res = await _module.ExecuteCommandAsync<GetAuthorCommand, GetAuthorResponse>(new GetAuthorCommand(_expectedUserInfo.Id));
+            var res = await _module.ExecuteQueryAsync<GetAuthorQuery, GetAuthorResponse>(new GetAuthorQuery(_expectedUserInfo.Id));
 
             if (!res.IsSuccess)
             {
@@ -99,7 +99,7 @@ public class CreateUserTests(App app) : AppTestBase(app)
 
         public async Task SampleAsync()
         {
-            var res = await _module.ExecuteCommandAsync<GetChatterCommand, GetChatterResponse>(new GetChatterCommand(_expectedUserInfo.Id));
+            var res = await _module.ExecuteQueryAsync<GetChatterQuery, GetChatterResponse>(new GetChatterQuery(_expectedUserInfo.Id));
 
             if (!res.IsSuccess)
             {
@@ -135,7 +135,7 @@ public class CreateUserTests(App app) : AppTestBase(app)
 
         public async Task SampleAsync()
         {
-            var res = await _module.ExecuteCommandAsync<GetPayerCommand, GetPayerResponse>(new GetPayerCommand(_expectedPayerInfo.Id));
+            var res = await _module.ExecuteQueryAsync<GetPayerQuery, GetPayerResponse>(new GetPayerQuery(_expectedPayerInfo.Id));
 
             if (!res.IsSuccess)
             {

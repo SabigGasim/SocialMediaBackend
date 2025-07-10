@@ -1,17 +1,17 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
-using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
+using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
 using SocialMediaBackend.Modules.Chat.Application.Mappings;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Chatters;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Chatters.GetChatter;
 
-internal sealed class GetChatterCommandHandler(IChatterRepository chatterRepository)
-    : ICommandHandler<GetChatterCommand, GetChatterResponse>
+internal sealed class GetChatterQueryHandler(IChatterRepository chatterRepository)
+    : IQueryHandler<GetChatterQuery, GetChatterResponse>
 {
     private readonly IChatterRepository _chatterRepository = chatterRepository;
 
-    public async Task<HandlerResponse<GetChatterResponse>> ExecuteAsync(GetChatterCommand command, CancellationToken ct)
+    public async Task<HandlerResponse<GetChatterResponse>> ExecuteAsync(GetChatterQuery command, CancellationToken ct)
     {
         var chatter = await _chatterRepository.GetByIdAsync(command.ChatterId, ct); ;
         if (chatter is null)
