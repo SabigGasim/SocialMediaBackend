@@ -9,9 +9,20 @@ namespace SocialMediaBackend.Modules.Users.Domain.Users;
 
 public class User : AggregateRoot<UserId>
 {
-    private readonly List<Follow> _followers = new();
-    private readonly List<Follow> _followings = new();
+    private readonly List<Follow> _followers = [];
+    private readonly List<Follow> _followings = [];
 
+    public string Username { get; private set; } = default!;
+    public string Nickname { get; private set; } = default!;
+    public DateOnly DateOfBirth { get; private set; }
+    public Media ProfilePicture { get; private set; } = default!;
+    public bool ProfileIsPublic { get; private set; }
+    public int FollowersCount { get; private set; }
+    public int FollowingCount { get; private set; }
+    public IReadOnlyCollection<Follow> Followers => _followers.AsReadOnly();
+    public IReadOnlyCollection<Follow> Followings => _followings.AsReadOnly();
+
+    private User() { }
     private User(string username, string nickname, DateOnly dateOfBirth, Media profilePicture)
     {
         Username = username;
@@ -34,21 +45,6 @@ public class User : AggregateRoot<UserId>
             DateOfBirth,
             ProfileIsPublic));
     }
-
-    private User() { }
-
-    public string Username { get; private set; } = default!;
-    public string Nickname { get; private set; } = default!;
-
-    public DateOnly DateOfBirth { get; private set; }
-    public Media ProfilePicture { get; private set; } = default!;
-    public bool ProfileIsPublic { get; private set; }
-    public int FollowersCount { get; private set; }
-    public int FollowingCount { get; private set; }
-
-    public IReadOnlyCollection<Follow> Followers => _followers.AsReadOnly();
-    public IReadOnlyCollection<Follow> Followings => _followings.AsReadOnly();
-
 
     public static async Task<Result<User>> CreateAsync(string username, string nickname, DateOnly dateOfBirth, 
         IUserExistsChecker userExistsChecker,
