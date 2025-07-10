@@ -12,7 +12,7 @@ using SocialMediaBackend.Modules.Feed.Tests.Core.Common.Users;
 
 namespace SocialMediaBackend.Modules.Feed.Tests.UnitTests.Domain;
 
-public class CommentUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
+public class CommentUnitTests(App app) : AppTestBase(app)
 {
     [Fact]
     public void Create_ShouldReturnComment()

@@ -13,7 +13,7 @@ using SocialMediaBackend.Modules.Feed.Tests.Core.Common.Users;
 namespace SocialMediaBackend.Modules.Feed.Tests.UnitTests.Application.Auth;
 
 
-public class ProfileAuthorizationHandlerBaseTests(AuthFixture auth, App app) : AppTestBase(auth, app)
+public class ProfileAuthorizationHandlerBaseTests(App app) : AppTestBase(app)
 {
     private readonly App _app = app;
 

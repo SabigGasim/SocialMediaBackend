@@ -1,12 +1,13 @@
 ﻿using Autofac;
 using Dapper;
 using FastEndpoints.Testing;
-using Identity.Api;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SocialMediaBackend.Api.Configuration;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Feed.Application.Auth;
 using SocialMediaBackend.Modules.Feed.Application.Configuration;
@@ -57,8 +58,11 @@ public class App : AppFixture<Program>
         using (var scope = serviceProvider.CreateScope())
         {
             var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
-            
-            FeedStartup.InitializeAsync(s, connectionString, env).GetAwaiter().GetResult();
+            var httpContextAccessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
+
+            var contextAccessor = new ExecutionContextAccessor(httpContextAccessor);
+
+            FeedStartup.InitializeAsync(s, connectionString, env, contextAccessor).GetAwaiter().GetResult();
         }
 
         using (var scope = FeedCompositionRoot.BeginLifetimeScope())
