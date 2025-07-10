@@ -3,7 +3,6 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.Modules.Payments.Application.Configuration.Mediator;
 using SocialMediaBackend.Modules.Payments.Infrastructure.Configuration;
 using SocialMediaBackend.Modules.Payments.Infrastructure.Configuration.EventBus;

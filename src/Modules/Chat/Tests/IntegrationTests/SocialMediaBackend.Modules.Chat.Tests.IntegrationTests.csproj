@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\Identity.Api\Identity.Api.csproj" />
     <ProjectReference Include="..\..\..\..\BuildingBlocks\Tests\SocialMediaBackend.BuildingBlocks.Tests.csproj" />
     <ProjectReference Include="..\..\..\..\Presentation\Api\Api.csproj" />
     <ProjectReference Include="..\Tests.Core\SocialMediaBackend.Modules.Chat.Tests.Core.csproj" />
