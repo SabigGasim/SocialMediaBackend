@@ -10,6 +10,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.Processing;
 using SocialMediaBackend.Modules.Chat.Application.Configuration.Auth;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.EventBus;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration.SignalR;
+using SocialMediaBackend.BuildingBlocks.Application.Auth;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Configuration;
 
@@ -19,9 +20,14 @@ public static class ChatStartup
         IServiceCollection serviceCollection,
         string databaseConnection,
         string redisConnection,
-        IWebHostEnvironment env)
+        IWebHostEnvironment env,
+        IExecutionContextAccessor executionContextAccessor)
     {
-        ConfigureCompositionRoot(serviceCollection, databaseConnection, redisConnection);
+        ConfigureCompositionRoot(
+            serviceCollection, 
+            databaseConnection, 
+            redisConnection, 
+            executionContextAccessor);
 
         await PersistenceStartup.InitializeAsync(env);
         await QuartzStartup.InitializeAsync();
@@ -31,7 +37,8 @@ public static class ChatStartup
     private static void ConfigureCompositionRoot(
         IServiceCollection serviceCollection,
         string databaseConnection,
-        string redisConnection)
+        string redisConnection,
+        IExecutionContextAccessor executionContextAccessor)
     {
         var containerBuilder = new ContainerBuilder();
 
@@ -44,6 +51,7 @@ public static class ChatStartup
         containerBuilder.RegisterModule(new AuthModule());
         containerBuilder.RegisterModule(new EventBusModule());
         containerBuilder.RegisterModule(new SignalRModule());
+        containerBuilder.RegisterInstance(executionContextAccessor);
 
         var container = containerBuilder.Build();
 

@@ -15,6 +15,8 @@ using SocialMediaBackend.Api.Modules.Payments;
 using Stripe;
 using SocialMediaBackend.Modules.Payments.Infrastructure;
 using SocialMediaBackend.Api.Modules.BuildingBlocks;
+using SocialMediaBackend.Api.Configuration;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,12 +46,18 @@ if (!environment.IsEnvironment("Testing"))
 {
     var redisConnection = config.GetConnectionString("RedisConnection")!;
 
-    await Task.WhenAll(
-        UsersStartup.InitializeAsync(builder.Services, connectionString, environment),
-        FeedStartup.InitializeAsync(builder.Services, connectionString, environment),
-        ChatStartup.InitializeAsync(builder.Services, connectionString, redisConnection, environment),
-        PaymentsStartup.InitializeAsync(builder.Services, connectionString, environment)
-        );
+    using (var scope = app.Services.CreateScope())
+    {
+        var httpContextAccessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
+        var executionContextAccessor = new ExecutionContextAccessor(httpContextAccessor);
+
+        await Task.WhenAll(
+            UsersStartup.InitializeAsync(builder.Services, connectionString, environment, executionContextAccessor),
+            FeedStartup.InitializeAsync(builder.Services, connectionString, environment, executionContextAccessor),
+            ChatStartup.InitializeAsync(builder.Services, connectionString, redisConnection, environment, executionContextAccessor),
+            PaymentsStartup.InitializeAsync(builder.Services, connectionString, environment)
+            );
+    }
 }
 
 app.UseMiddleware<ExceptionStatusCodeMiddleware>();

@@ -2,6 +2,8 @@
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using SocialMediaBackend.BuildingBlocks.Application.Auth;
+using SocialMediaBackend.Modules.Users.Application.Configuration.Auth;
 using SocialMediaBackend.Modules.Users.Application.Configuration.Mediator;
 using SocialMediaBackend.Modules.Users.Infrastructure.Configuration;
 using SocialMediaBackend.Modules.Users.Infrastructure.Configuration.EventBus;
@@ -16,15 +18,16 @@ public static class UsersStartup
     public static async Task InitializeAsync(
         IServiceCollection serviceCollection, 
         string connectionString,
-        IWebHostEnvironment env)
+        IWebHostEnvironment env,
+        IExecutionContextAccessor executionContextAccessor)
     {
-        ConfigureCompositionRoot(serviceCollection, connectionString);
+        ConfigureCompositionRoot(serviceCollection, connectionString, executionContextAccessor);
 
         await PersistenceStartup.InitializeAsync(env);
         await QuartzStartup.InitializeAsync();
     }
 
-    private static void ConfigureCompositionRoot(IServiceCollection serviceCollection, string connectionString)
+    private static void ConfigureCompositionRoot(IServiceCollection serviceCollection, string connectionString, IExecutionContextAccessor executionContextAccessor)
     {
         var containerBuilder = new ContainerBuilder();
 
@@ -35,6 +38,7 @@ public static class UsersStartup
         containerBuilder.RegisterModule(new ProcessingModule());
         containerBuilder.RegisterModule(new QuartzModule());
         containerBuilder.RegisterModule(new EventBusModule());
+        containerBuilder.RegisterInstance(executionContextAccessor);
 
         var container = containerBuilder.Build();
 

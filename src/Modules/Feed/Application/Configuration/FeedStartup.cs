@@ -18,15 +18,16 @@ public static class FeedStartup
         IServiceCollection serviceCollection,
         string connectionString,
         IWebHostEnvironment env)
+        IExecutionContextAccessor executionContextAccessor)
     {
-        ConfigureCompositionRoot(serviceCollection, connectionString);
+        ConfigureCompositionRoot(serviceCollection, connectionString, executionContextAccessor);
 
         await PersistenceStartup.InitializeAsync(env);
         await QuartzStartup.InitializeAsync();
         EventBusStartup.Initialize();
     }
 
-    private static void ConfigureCompositionRoot(IServiceCollection serviceCollection, string connectionString)
+    private static void ConfigureCompositionRoot(IServiceCollection serviceCollection, string connectionString, IExecutionContextAccessor executionContextAccessor)
     {
         var containerBuilder = new ContainerBuilder();
 
@@ -38,6 +39,7 @@ public static class FeedStartup
         containerBuilder.RegisterModule(new QuartzModule());
         containerBuilder.RegisterModule(new AuthModule());
         containerBuilder.RegisterModule(new EventBusModule());
+        containerBuilder.RegisterInstance(executionContextAccessor);
 
         var container = containerBuilder.Build();
 
