@@ -12,7 +12,7 @@ using SocialMediaBackend.Modules.Users.Application.Users.CreateUser;
 
 namespace SocialMediaBackend.Tests.SystemTests.Users;
 
-public class CreateUserTests(AuthFixture auth, App app) : AppTestBase(auth, app)
+public class CreateUserTests(App app) : AppTestBase(app)
 {
     private readonly App _app = app;
 

@@ -16,7 +16,6 @@ using Stripe;
 using SocialMediaBackend.Modules.Payments.Infrastructure;
 using SocialMediaBackend.Api.Modules.BuildingBlocks;
 using SocialMediaBackend.Api.Configuration;
-using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 

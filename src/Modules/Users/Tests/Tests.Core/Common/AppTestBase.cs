@@ -1,6 +1,9 @@
 ﻿using Autofac;
+using FastEndpoints;
 using FastEndpoints.Testing;
 using Microsoft.EntityFrameworkCore;
+using SocialMediaBackend.Api;
+using SocialMediaBackend.Api.Authentication;
 using SocialMediaBackend.BuildingBlocks.Tests;
 using SocialMediaBackend.Modules.Users.Domain.Services;
 using SocialMediaBackend.Modules.Users.Domain.Users;
@@ -14,9 +17,8 @@ namespace SocialMediaBackend.Modules.Users.Tests.Core.Common;
 
 
 [Collection("Api & Auth")]
-public abstract class AppTestBase(AuthFixture auth, App app) : TestBase<App>
+public abstract class AppTestBase(App app) : TestBase<App>
 {
-    private readonly AuthFixture _auth = auth;
     private readonly App _app = app;
     private readonly SemaphoreSlim _locker = new(1, 1);
 
@@ -34,23 +36,19 @@ public abstract class AppTestBase(AuthFixture auth, App app) : TestBase<App>
             return;
         }
 
-        using var client = _auth.CreateClient(o => o.BaseAddress = new Uri("https://localhost:7272"));
-        var body = new
+        var body = new TokenGenerationRequest
         {
-            userid = _adminId,
-            email = "sabig@moanyn.com",
-            customClaims = new
+            UserId = Guid.Parse(_adminId),
+            Email = "sabig@moanyn.com",
+            CustomClaims = new Dictionary<string, object>
             {
-                admin = "true"
+                { "admin", true }
             }
         };
 
-        var json = JsonSerializer.Serialize(body);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var (_, token) = await _app.Client.POSTAsync<TokenEndpoint, TokenGenerationRequest, string>(body);
 
-        var response = await client.PostAsync("/token", content, TestContext.Current.CancellationToken);
-
-        AdminAuthToken = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        AdminAuthToken = token;
 
         _app.Client.DefaultRequestHeaders.Authorization = new("Bearer", AdminAuthToken);
 

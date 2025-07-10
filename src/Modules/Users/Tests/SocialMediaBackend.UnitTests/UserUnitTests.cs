@@ -12,7 +12,7 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Tests.UnitTests;
 
-public class UserUnitTests(AuthFixture auth, App app) : AppTestBase(auth, app)
+public class UserUnitTests(App app) : AppTestBase(app)
 {
     [Fact]
     public async Task CreateAsync_ShouldReturnUser()
