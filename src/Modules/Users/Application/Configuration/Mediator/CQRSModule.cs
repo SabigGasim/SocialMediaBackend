@@ -1,12 +1,12 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using SocialMediaBackend.BuildingBlocks.Application.Auth;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Queries;
 using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
-using SocialMediaBackend.Modules.Users.Application.Auth;
 using SocialMediaBackend.Modules.Users.Infrastructure;
 
 namespace SocialMediaBackend.Modules.Users.Application.Configuration.Mediator;
@@ -62,5 +62,4 @@ public class CQRSModule : Module
 
         builder.Populate(services);
     }
-
 }

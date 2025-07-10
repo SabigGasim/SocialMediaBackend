@@ -38,6 +38,8 @@ public static class UsersStartup
         containerBuilder.RegisterModule(new ProcessingModule());
         containerBuilder.RegisterModule(new QuartzModule());
         containerBuilder.RegisterModule(new EventBusModule());
+        containerBuilder.RegisterModule(new AuthModule());
+
         containerBuilder.RegisterInstance(executionContextAccessor);
 
         var container = containerBuilder.Build();
