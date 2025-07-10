@@ -4,6 +4,11 @@ public static class ApiEndpoints
 {
     private const string ApiBase = "api";
 
+    public static class Auth
+    {
+        public const string Token = $"{ApiBase}/token";
+    }
+
     public static class Users
     {
         private const string Base = $"{ApiBase}/users";
