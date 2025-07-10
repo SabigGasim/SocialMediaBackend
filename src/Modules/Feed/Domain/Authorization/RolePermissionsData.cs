@@ -17,7 +17,16 @@ public static class RolePermissionData
             Permission.DeletePost,
             Permission.UpdatePost,
             Permission.LikePost,
-            Permission.UnlikePost
+            Permission.UnlikePost,
+            Permission.CreateComment,
+            Permission.UpdateComment,
+            Permission.DeleteComment,
+            Permission.GetComment,
+            Permission.GetAllPostComments,
+            Permission.GetAllReplies,
+            Permission.ReplyToComment,
+            Permission.LikeComment,
+            Permission.UnlikeComment
         ];
 
         _mappings[Role.BasicPlan] = [];
