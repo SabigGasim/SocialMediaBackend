@@ -1,8 +1,11 @@
-﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
+﻿using SocialMediaBackend.BuildingBlocks.Application.Auth;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands.Realtime;
+using SocialMediaBackend.Modules.Chat.Domain.Authorization;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.CreateGroupChat;
 
+[HasPermission(Permissions.CreateGroupChat)]
 public class CreateGroupChatCommand(string groupName, IEnumerable<Guid> memberIds)
     : MultipleUsersCommandBase<CreateGroupChatMessage, CreateGroupChatResponse>, IUserRequest
 {

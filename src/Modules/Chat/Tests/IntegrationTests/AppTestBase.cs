@@ -1,22 +1,23 @@
 ﻿using Autofac;
+using FastEndpoints;
 using FastEndpoints.Testing;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.Api;
+using SocialMediaBackend.Api.Authentication;
 using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 using SocialMediaBackend.BuildingBlocks.Tests;
+using SocialMediaBackend.Modules.Chat.Domain.Authorization;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Configuration;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
-using System.Text;
-using System.Text.Json;
+using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Roles;
 
 namespace SocialMediaBackend.Modules.Chat.Tests.IntegrationTests;
 
 [Collection("Api & Auth")]
-public abstract class AppTestBase(AuthFixture auth, App app) : TestBase<App>
+public abstract class AppTestBase(App app) : TestBase<App>
 {
-    private readonly AuthFixture _auth = auth;
     private readonly App _app = app;
     private readonly SemaphoreSlim _locker = new(1, 1);
 
@@ -67,7 +68,8 @@ public abstract class AppTestBase(AuthFixture auth, App app) : TestBase<App>
                     followingCount: 0
                     );
 
-                await context.Chatters.AddAsync(chatter, token);
+                context.Chatters.Add(chatter);
+                context.Set<ChatterRole>().Add(new ChatterRole(Roles.AdminChatter, chatter.Id));
                 await context.SaveChangesAsync(token);
             }
         }
@@ -82,22 +84,19 @@ public abstract class AppTestBase(AuthFixture auth, App app) : TestBase<App>
 
     protected async Task<string> CreateUserAndTokenAsync(Guid userId, bool isAdmin = false)
     {
-        var body = new
+        await EnsureChatterCreated(new ChatterId(userId), TestContext.Current.CancellationToken);
+
+        var body = new TokenGenerationRequest
         {
-            userid = userId,
-            email = $"{userId}@test.com",
-            customClaims = new { admin = isAdmin }
+            UserId = userId,
+            Email = "sabig@moanyn.com",
+            CustomClaims = new Dictionary<string, object>
+            {
+                { "admin", isAdmin }
+            }
         };
 
-        var json = JsonSerializer.Serialize(body);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-        using var client = _auth.CreateClient(o => o.BaseAddress = new Uri("https://localhost:7272"));
-        var response = await client.PostAsync("/token", content);
-        var token = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-
-        // Ensure user exists in ChatDb
-        await EnsureChatterCreated(new ChatterId(userId), TestContext.Current.CancellationToken);
+        var (_, token) = await _app.Client.POSTAsync<TokenEndpoint, TokenGenerationRequest, string>(body);
 
         return token;
     }

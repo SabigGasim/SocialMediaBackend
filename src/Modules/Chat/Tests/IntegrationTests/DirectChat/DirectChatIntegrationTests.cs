@@ -14,7 +14,7 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Tests.IntegrationTests.DirectChat;
 
-public class DirectChatIntegrationTests(AuthFixture authFixture, App app) : AppTestBase(authFixture, app)
+public class DirectChatIntegrationTests(App app) : AppTestBase(app)
 {
     [Fact]
     public async Task GetAllDirectMessages_ShouldReturnViewableMessages()

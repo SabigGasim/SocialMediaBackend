@@ -16,8 +16,8 @@ using Xunit.Internal;
 
 namespace SocialMediaBackend.Modules.Chat.Tests.IntegrationTests.GroupChat;
 
-public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper output, AuthFixture auth, App app) 
-    : AppTestBase(auth, app)
+public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper output, App app) 
+    : AppTestBase(app)
 {
     private readonly ITestOutputHelper _output = output;
     private readonly App _app = app;

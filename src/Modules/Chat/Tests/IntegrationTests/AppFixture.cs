@@ -1,8 +1,12 @@
 ﻿using FastEndpoints.Testing;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SocialMediaBackend.Api.Configuration;
 using SocialMediaBackend.Modules.Chat.Application.Configuration;
+using SocialMediaBackend.Modules.Chat.Application.Hubs;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
 
@@ -46,7 +50,16 @@ public class App : AppFixture<Program>
             var dbConnection = _databaseContainer.GetConnectionString();
             var redisConnection = _redisContainer.GetConnectionString();
 
-            ChatStartup.InitializeAsync(s, dbConnection, redisConnection, env).GetAwaiter().GetResult();
+            var httpContextAccessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
+
+            var contextAccessor = new ExecutionContextAccessor(httpContextAccessor);
+
+            ChatStartup.InitializeAsync(
+                serviceCollection: s, 
+                dbConnection, 
+                redisConnection, 
+                env, 
+                contextAccessor).GetAwaiter().GetResult();
         }
     }
 }
