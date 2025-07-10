@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
+using SocialMediaBackend.Api.Authentication;
 using SocialMediaBackend.Api.Services;
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
@@ -17,6 +18,7 @@ public static class ApiServiceCollectionExtensions
 {
     public static IServiceCollection AddApi(this IServiceCollection services, IConfiguration config)
     {
+        services.AddSingleton<IJwtProvider, JwtProvider>();
         services.AddAuthentication(o =>
         {
             o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

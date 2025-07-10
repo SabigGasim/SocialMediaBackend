@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\Identity.Api\Identity.Api.csproj" />
     <ProjectReference Include="..\..\..\..\BuildingBlocks\Tests\SocialMediaBackend.BuildingBlocks.Tests.csproj" />
     <ProjectReference Include="..\..\..\..\Presentation\Api\Api.csproj" />
     <ProjectReference Include="..\..\Domain\SocialMediaBackend.Modules.Users.Domain.csproj" />

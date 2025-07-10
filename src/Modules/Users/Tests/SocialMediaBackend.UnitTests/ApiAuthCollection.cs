@@ -3,4 +3,4 @@
 namespace SocialMediaBackend.Modules.Users.Tests.UnitTests;
 
 [CollectionDefinition("Api & Auth")]
-public class ApiAuthCollection : ICollectionFixture<App>, ICollectionFixture<AuthFixture>;
+public class ApiAuthCollection : ICollectionFixture<App>;
