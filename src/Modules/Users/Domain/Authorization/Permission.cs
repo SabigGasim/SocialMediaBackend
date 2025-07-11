@@ -20,10 +20,10 @@ public class Permission
     public static readonly Permission UnfollowUsers = new(Permissions.UnfollowUsers, "Permissions.Users.Unfollow");
     public static readonly Permission DeleteCurrentUser = new(Permissions.DeleteCurrentUser, "Permissions.Users.DeleteSelf");
     public static readonly Permission DeleteUsers = new(Permissions.DeleteUsers, "Permissions.Users.Delete");
-    public static readonly Permission CreateAppPlan = new(Permissions.SubscribeToAppPlan, "Permissions.AppPlan.CreatePlan");
-    public static readonly Permission CreateAppPlanProduct = new(Permissions.SubscribeToAppPlan, "Permissions.AppPlan.CreateProduct");
+    public static readonly Permission CreateAppPlan = new(Permissions.CreateAppPlan, "Permissions.AppPlan.CreatePlan");
+    public static readonly Permission CreateAppPlanProduct = new(Permissions.CreateAppPlanProduct, "Permissions.AppPlan.CreateProduct");
     public static readonly Permission SubscribeToAppPlan = new(Permissions.SubscribeToAppPlan, "Permissions.AppPlan.Subscribe");
-    public static readonly Permission UnsbscribeFromAppPlan = new(Permissions.SubscribeToAppPlan, "Permissions.AppPlan.Unsubscribe");
+    public static readonly Permission UnsbscribeFromAppPlan = new(Permissions.UnsubscribeFromAppPlan, "Permissions.AppPlan.Unsubscribe");
 
     public Permissions Id { get; private set; }
     public string Name { get; private set; } = default!;

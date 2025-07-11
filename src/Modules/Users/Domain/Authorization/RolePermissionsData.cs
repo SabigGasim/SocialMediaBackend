@@ -30,6 +30,7 @@ public static class RolePermissionData
             [
                 Permission.CreateAppPlan,
                 Permission.CreateAppPlanProduct,
+                Permission.DeleteUsers,
                 .._mappings[Role.User]
                     .Concat(_mappings[Role.BasicPlan])
                     .Concat(_mappings[Role.PlusPlan])
