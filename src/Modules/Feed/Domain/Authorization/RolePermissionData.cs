@@ -2,14 +2,12 @@
 
 public static class RolePermissionData
 {
-    private static readonly Dictionary<Role, Permission[]> _mappings;
+    private static readonly Dictionary<Role, Permission[]> _mappings = [];
 
     public static IReadOnlyDictionary<Role, Permission[]> Mappings => _mappings.AsReadOnly();
 
     static RolePermissionData()
     {
-        _mappings = [];
-        
         _mappings[Role.Author] = [
             Permission.GetPost,
             Permission.CreatePost,
@@ -32,11 +30,9 @@ public static class RolePermissionData
         _mappings[Role.BasicPlan] = [];
         _mappings[Role.PlusPlan] = [.. _mappings[Role.BasicPlan]];
 
-        _mappings[Role.AdminAuthor] = new HashSet<Permission>(
-            _mappings[Role.Author]
-                .Concat(_mappings[Role.BasicPlan])
-                .Concat(_mappings[Role.PlusPlan])
-        )
-            .ToArray();
+        _mappings[Role.AdminAuthor] = [
+            .._mappings[Role.Author],
+            .._mappings[Role.PlusPlan]
+        ];
     }
 }

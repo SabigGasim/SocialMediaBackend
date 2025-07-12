@@ -2,14 +2,12 @@
 
 public static class RolePermissionData
 {
-    private static readonly Dictionary<Role, Permission[]> _mappings;
+    private static readonly Dictionary<Role, Permission[]> _mappings = [];
 
     public static IReadOnlyDictionary<Role, Permission[]> Mappings => _mappings.AsReadOnly();
 
     static RolePermissionData()
     {
-        _mappings = [];
-        
         _mappings[Role.Chatter] = [
             Permission.CreateDirectChat,
             Permission.CreateDirectMessage,
@@ -33,11 +31,9 @@ public static class RolePermissionData
         _mappings[Role.BasicPlan] = [];
         _mappings[Role.PlusPlan] = [.. _mappings[Role.BasicPlan]];
 
-        _mappings[Role.AdminChatter] = new HashSet<Permission>(
-            _mappings[Role.Chatter]
-                .Concat(_mappings[Role.BasicPlan])
-                .Concat(_mappings[Role.PlusPlan])
-        )
-            .ToArray();
+        _mappings[Role.AdminChatter] = [
+            .._mappings[Role.Chatter],
+            .._mappings[Role.PlusPlan]
+        ];
     }
 }

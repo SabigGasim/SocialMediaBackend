@@ -6,9 +6,9 @@ using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 using SocialMediaBackend.Modules.Users.Domain.Users.Follows;
 using SocialMediaBackend.Modules.Users.Tests.Core.Common;
 using System.Net;
-using SocialMediaBackend.Api.Modules.Users.Endpoints.Users;
-using SocialMediaBackend.Api.Modules.Users.Endpoints.Users.Follows;
 using SocialMediaBackend.BuildingBlocks.Tests;
+using SocialMediaBackend.Api.Modules.Users.Endpoints;
+using SocialMediaBackend.Api.Modules.Users.Endpoints.Follows;
 
 namespace SocialMediaBackend.Modules.Users.Tests.IntegrationTests;
 
