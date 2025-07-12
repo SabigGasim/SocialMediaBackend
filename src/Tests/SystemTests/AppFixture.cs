@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SocialMediaBackend.Api.Configuration;
+using SocialMediaBackend.Modules.AppSubscriptions.Application.Configuration;
 using SocialMediaBackend.Modules.Chat.Application.Configuration;
 using SocialMediaBackend.Modules.Feed.Application.Configuration;
 using SocialMediaBackend.Modules.Payments.Application.Configuration;
@@ -59,6 +60,7 @@ public class App : AppFixture<Program>
             ChatStartup.InitializeAsync(s, connectionString, redistConnection, env, contextAccessor).GetAwaiter().GetResult();
             FeedStartup.InitializeAsync(s, connectionString, env, contextAccessor).GetAwaiter().GetResult();
             PaymentsStartup.InitializeAsync(s, connectionString, env).GetAwaiter().GetResult();
+            AppSubscriptionsStartup.InitializeAsync(s, connectionString, env, contextAccessor).GetAwaiter().GetResult();
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Api.Modules.Users.Endpoints.Users;
+using SocialMediaBackend.Api.Modules.Users.Endpoints;
 using SocialMediaBackend.BuildingBlocks.Domain.ValueObjects;
 using SocialMediaBackend.BuildingBlocks.Tests;
+using SocialMediaBackend.Modules.AppSubscriptions.Application.Contracts;
 using SocialMediaBackend.Modules.Chat.Application.Contracts;
 using SocialMediaBackend.Modules.Feed.Application.Contracts;
 using SocialMediaBackend.Modules.Payments.Application.Contracts;
@@ -42,7 +43,8 @@ public class CreateUserTests(App app) : AppTestBase(app)
         await Task.WhenAll(
             AssertEventually(new GetCreatedUserFromChatProbe(userInfo, new ChatModule()), _testTimeout),
             AssertEventually(new GetCreatedUserFromFeedProbe(userInfo, new FeedModule()), _testTimeout),
-            AssertEventually(new GetCreatedUserFromPaymentsProbe(payerInfo, new PaymentsModule()), _testTimeout)
+            AssertEventually(new GetCreatedUserFromPaymentsProbe(payerInfo, new PaymentsModule()), _testTimeout),
+            AssertEventually(new GetCreatedUserFromAppSubscriptionsProbe(user.Id, new AppSubscriptionsModule()), _testTimeout)
         );
     }
 }
