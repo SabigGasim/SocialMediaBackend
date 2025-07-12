@@ -11,19 +11,35 @@ public class UserRepositry(IDbConnectionFactory dbConnectionFactory) : IUserRepo
 
     public async Task<bool> ExistsAsync(Guid userId, CancellationToken token = default)
     {
-        using var connection = await _dbConnectionFactory.CreateAsync();
-        return await connection.ExecuteScalarAsync<bool>(new CommandDefinition($"""
+        const string sql = $"""
             SELECT EXISTS (
                 SELECT 1 FROM {Schema.Users}."Users" WHERE "Id" = @{nameof(userId)}
             );
-            """, new {userId}, cancellationToken: token));
+            """;
+
+        using (var connection = await _dbConnectionFactory.CreateAsync(token))
+        {
+            return await connection.ExecuteScalarAsync<bool>(new CommandDefinition(sql,
+                new {userId},
+                cancellationToken: token)
+                );
+        }
     }
 
     public async Task<bool> ExistsAsync(string username, CancellationToken token = default)
     {
-        using var connection = await _dbConnectionFactory.CreateAsync(token);
-        return await connection.ExecuteScalarAsync<bool>(new CommandDefinition($"""
-            SELECT COUNT(1) FROM {Schema.Users}."Users" WHERE "Username" = @{nameof(username)}
-            """, new { username }, cancellationToken: token));
+        const string sql = $"""
+            SELECT EXISTS (
+                SELECT 1 FROM {Schema.Users}."Users" WHERE "Username" = @Username
+            );
+            """;
+
+        using (var connection = await _dbConnectionFactory.CreateAsync(token))
+        {
+            return await connection.ExecuteScalarAsync<bool>(new CommandDefinition(sql,
+                new { Username = username },
+                cancellationToken: token)
+                );
+        }
     }
 }

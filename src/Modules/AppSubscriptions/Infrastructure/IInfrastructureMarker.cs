@@ -1,0 +1,3 @@
+﻿namespace SocialMediaBackend.Modules.AppSubscriptions.Infrastructure;
+
+public interface IInfrastructureMarker;

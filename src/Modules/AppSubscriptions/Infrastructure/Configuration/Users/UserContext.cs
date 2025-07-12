@@ -1,7 +1,7 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application.Auth;
-using SocialMediaBackend.Modules.Users.Domain.Users;
+using SocialMediaBackend.Modules.AppSubscriptions.Domain.Users;
 
-namespace SocialMediaBackend.Modules.Users.Infrastructure.Configuration.Users;
+namespace SocialMediaBackend.Modules.AppSubscriptions.Infrastructure.Configuration.Users;
 
 public class UserContext(IExecutionContextAccessor accessor) : IUserContext
 {
