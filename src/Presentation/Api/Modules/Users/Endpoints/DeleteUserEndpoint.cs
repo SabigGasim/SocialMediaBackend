@@ -3,7 +3,7 @@ using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Modules.Users.Application.Contracts;
 using SocialMediaBackend.Modules.Users.Application.Users.DeleteUser;
 
-namespace SocialMediaBackend.Api.Modules.Users.Endpoints.Users;
+namespace SocialMediaBackend.Api.Modules.Users.Endpoints;
 
 [HttpDelete(ApiEndpoints.Users.Delete)]
 public class DeleteUserEndpoint(IUsersModule module) : RequestEndpoint<DeleteUserRequest>(module)

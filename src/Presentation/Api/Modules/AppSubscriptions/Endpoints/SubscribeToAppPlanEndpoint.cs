@@ -1,13 +1,13 @@
 ﻿using FastEndpoints;
 using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Modules.Payments.Contracts.Gateway;
-using SocialMediaBackend.Modules.Users.Application.AppPlans.SubscribeToAppPlan;
-using SocialMediaBackend.Modules.Users.Application.Contracts;
+using SocialMediaBackend.Modules.AppSubscriptions.Application.AppPlans.SubscribeToAppPlan;
+using SocialMediaBackend.Modules.AppSubscriptions.Application.Contracts;
 
-namespace SocialMediaBackend.Api.Modules.Users.Endpoints.AppPlans;
+namespace SocialMediaBackend.Api.Modules.AppSubscriptions.Endpoints;
 
 [HttpPost(ApiEndpoints.Payments.SubscriteToAppPlan)]
-public class SubscribeToAppPlanEndpoint(IUsersModule module)
+public class SubscribeToAppPlanEndpoint(IAppSubscriptionsModule module)
     : RequestEndpoint<SubscribeToAppPlanRequest, CreateCheckoutSessionResponse>(module)
 {
     public override async Task HandleAsync(SubscribeToAppPlanRequest req, CancellationToken ct)

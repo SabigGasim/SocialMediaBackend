@@ -1,5 +1,5 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Api.Modules.Users.Endpoints.Users.Privacy;
+using SocialMediaBackend.Api.Modules.Users.Endpoints.Privacy;
 
 namespace SocialMediaBackend.Api.Modules.Users.Summaries;
 

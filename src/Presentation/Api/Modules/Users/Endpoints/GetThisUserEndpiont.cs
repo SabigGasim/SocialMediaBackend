@@ -3,7 +3,7 @@ using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Modules.Users.Application.Contracts;
 using SocialMediaBackend.Modules.Users.Application.Users.GetFullUserDetails;
 
-namespace SocialMediaBackend.Api.Modules.Users.Endpoints.Users;
+namespace SocialMediaBackend.Api.Modules.Users.Endpoints;
 
 [HttpGet(ApiEndpoints.Users.Me)]
 public class GetThisUserEndpiont(IUsersModule module) : RequestEndpointWithoutRequest<GetFullUserDetailsResponse>(module)

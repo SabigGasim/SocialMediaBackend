@@ -3,7 +3,7 @@ using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Modules.Users.Application.Contracts;
 using SocialMediaBackend.Modules.Users.Application.Users.Follows.AcceptFollowRequest;
 
-namespace SocialMediaBackend.Api.Modules.Users.Endpoints.Users.Follows;
+namespace SocialMediaBackend.Api.Modules.Users.Endpoints.Follows;
 
 
 public class AcceptFollowRequestEndpoint(IUsersModule module) : RequestEndpoint<AcceptFollowRequestRequest>(module)

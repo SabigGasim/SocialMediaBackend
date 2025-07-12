@@ -4,7 +4,7 @@ using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Modules.Users.Application.Contracts;
 using SocialMediaBackend.Modules.Users.Application.Users.CreateUser;
 
-namespace SocialMediaBackend.Api.Modules.Users.Endpoints.Users;
+namespace SocialMediaBackend.Api.Modules.Users.Endpoints;
 
 [HttpPost(ApiEndpoints.Users.Create), AllowAnonymous]
 public class CreateUserEndpoint(IUsersModule module) : RequestEndpoint<CreateUserRequest, CreateUserResponse>(module)

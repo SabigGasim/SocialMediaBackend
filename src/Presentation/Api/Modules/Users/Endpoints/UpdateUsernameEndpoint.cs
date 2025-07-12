@@ -3,7 +3,7 @@ using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Modules.Users.Application.Contracts;
 using SocialMediaBackend.Modules.Users.Application.Users.UpdateUsername;
 
-namespace SocialMediaBackend.Api.Modules.Users.Endpoints.Users;
+namespace SocialMediaBackend.Api.Modules.Users.Endpoints;
 
 [HttpPatch(ApiEndpoints.Users.PatchUsername)]
 internal class UpdateUsernameEndpoint(IUsersModule module) : RequestEndpoint<UpdateUsernameRequest>(module)

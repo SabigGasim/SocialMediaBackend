@@ -16,6 +16,8 @@ using Stripe;
 using SocialMediaBackend.Modules.Payments.Infrastructure;
 using SocialMediaBackend.Api.Modules.BuildingBlocks;
 using SocialMediaBackend.Api.Configuration;
+using SocialMediaBackend.Api.Modules.AppSubscriptions;
+using SocialMediaBackend.Modules.AppSubscriptions.Application.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +38,7 @@ builder.Services.AddFeedModule();
 builder.Services.AddUserModule();
 builder.Services.AddChatModule();
 builder.Services.AddPaymentsModule();
+builder.Services.AddAppSubscriptionsModule();
 builder.Services.AddBuildingBlocks();
 builder.Services.AddApi(config);
 
@@ -54,6 +57,7 @@ if (!environment.IsEnvironment("Testing"))
             UsersStartup.InitializeAsync(builder.Services, connectionString, environment, executionContextAccessor),
             FeedStartup.InitializeAsync(builder.Services, connectionString, environment, executionContextAccessor),
             ChatStartup.InitializeAsync(builder.Services, connectionString, redisConnection, environment, executionContextAccessor),
+            AppSubscriptionsStartup.InitializeAsync(builder.Services, connectionString, environment, executionContextAccessor),
             PaymentsStartup.InitializeAsync(builder.Services, connectionString, environment)
             );
     }

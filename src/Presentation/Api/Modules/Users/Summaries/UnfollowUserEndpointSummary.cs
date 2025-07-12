@@ -1,5 +1,5 @@
 ﻿using FastEndpoints;
-using SocialMediaBackend.Api.Modules.Users.Endpoints.Users.Follows;
+using SocialMediaBackend.Api.Modules.Users.Endpoints.Follows;
 
 namespace SocialMediaBackend.Api.Modules.Users.Summaries;
 

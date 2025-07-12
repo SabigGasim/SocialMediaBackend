@@ -1,12 +1,12 @@
 ﻿using FastEndpoints;
 using SocialMediaBackend.Api.Abstractions;
-using SocialMediaBackend.Modules.Users.Application.AppPlans.CreateAppSubscriptionProduct;
-using SocialMediaBackend.Modules.Users.Application.Contracts;
+using SocialMediaBackend.Modules.AppSubscriptions.Application.AppPlans.CreateAppSubscriptionProduct;
+using SocialMediaBackend.Modules.AppSubscriptions.Application.Contracts;
 
-namespace SocialMediaBackend.Api.Modules.Users.Endpoints.AppPlans;
+namespace SocialMediaBackend.Api.Modules.AppSubscriptions.Endpoints;
 
 [HttpPost(ApiEndpoints.Payments.CreateAppSubscriptionProduct)]
-public class CreateAppSubscriptionProductEndpoint(IUsersModule module)
+public class CreateAppSubscriptionProductEndpoint(IAppSubscriptionsModule module)
     : RequestEndpoint<CreateAppSubscriptionRequest>(module)
 {
     public override async Task HandleAsync(CreateAppSubscriptionRequest req, CancellationToken ct)

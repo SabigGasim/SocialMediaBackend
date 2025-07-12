@@ -3,7 +3,7 @@ using SocialMediaBackend.Api.Abstractions;
 using SocialMediaBackend.Modules.Users.Application.Contracts;
 using SocialMediaBackend.Modules.Users.Application.Users.Privacy.ChangeProfileVisibility;
 
-namespace SocialMediaBackend.Api.Modules.Users.Endpoints.Users.Privacy;
+namespace SocialMediaBackend.Api.Modules.Users.Endpoints.Privacy;
 
 [HttpPatch(ApiEndpoints.Users.Privacy.ChangeProfileVisibility)]
 public class ChangeProfileVisibilityEndpoint(IUsersModule module) : RequestEndpoint<ChangeProfileVisibilityRequest>(module)

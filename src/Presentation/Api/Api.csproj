@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\Domain\SocialMediaBackend.BuildingBlocks.Domain.csproj" />
+    <ProjectReference Include="..\..\Modules\AppSubscriptions\Application\SocialMediaBackend.Modules.AppSubscriptions.Application.csproj" />
     <ProjectReference Include="..\..\Modules\Chat\Application\SocialMediaBackend.Modules.Chat.Application.csproj" />
     <ProjectReference Include="..\..\Modules\Feed\Application\SocialMediaBackend.Modules.Feed.Application.csproj" />
     <ProjectReference Include="..\..\Modules\Payments\Application\SocialMediaBackend.Modules.Payments.Application.csproj" />

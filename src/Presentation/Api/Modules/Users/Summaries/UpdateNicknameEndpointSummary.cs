@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
 using SocialMediaBackend.Api.Contracts;
-using SocialMediaBackend.Api.Modules.Users.Endpoints.Users;
+using SocialMediaBackend.Api.Modules.Users.Endpoints;
 
 namespace SocialMediaBackend.Api.Modules.Users.Summaries;
 
