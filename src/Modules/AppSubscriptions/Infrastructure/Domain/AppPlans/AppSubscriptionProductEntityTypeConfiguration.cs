@@ -19,38 +19,5 @@ public class AppSubscriptionProductEntityTypeConfiguration : IEntityTypeConfigur
         builder.Property(x => x.Tier)
             .HasColumnName("Tier")
             .IsRequired();
-
-        builder.OwnsMany(x => x.Plans, m =>
-        {
-            m.WithOwner().HasForeignKey("ProductId");
-            
-            m.HasKey(x => x.Id);
-
-            m.Property(x => x.Id)
-                .HasConversion(
-                    id => id.Value,
-                    value => new(value)
-                    );
-
-            m.OwnsOne(x => x.Price, price =>
-            {
-                price.WithOwner();
-
-                price.Property(p => p.PaymentInterval)
-                    .HasColumnName("PaymentInterval")
-                    .IsRequired();
-
-                price.OwnsOne(p => p.MoneyValue, money =>
-                {
-                    money.Property(m => m.Amount)
-                        .HasColumnName("PriceAmount")
-                        .IsRequired();
-
-                    money.Property(m => m.Currency)
-                        .HasColumnName("PriceCurrency")
-                        .IsRequired();
-                });
-            });
-        });
     }
 }

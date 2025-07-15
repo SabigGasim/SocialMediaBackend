@@ -1,12 +1,8 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Domain;
+using SocialMediaBackend.Modules.AppSubscriptions.Contracts;
 using SocialMediaBackend.Modules.Payments.Contracts;
 
 namespace SocialMediaBackend.Modules.AppSubscriptions.Domain.AppPlan;
-
-public enum AppSubscriptionTier
-{
-    Basic, Plus
-}
 
 public class AppSubscriptionProduct : AggregateRoot<AppSubscriptionProductId>
 {
@@ -30,7 +26,7 @@ public class AppSubscriptionProduct : AggregateRoot<AppSubscriptionProductId>
 
     public AppSubscriptionPlan AddPlan(AppSubscriptionPlanId planId, ProductPrice price)
     {
-        var plan = AppSubscriptionPlan.Create(planId, price);
+        var plan = AppSubscriptionPlan.Create(this.Id, planId, price);
 
         _plans.Add(plan);
 
