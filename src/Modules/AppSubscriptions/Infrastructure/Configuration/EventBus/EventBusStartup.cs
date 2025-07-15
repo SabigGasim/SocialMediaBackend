@@ -2,6 +2,7 @@
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.Messaging;
 using SocialMediaBackend.Modules.AppSubscriptions.Infrastructure.Messaging.Inbox;
+using SocialMediaBackend.Modules.Payments.Contracts.IntegrationEvents;
 using SocialMediaBackend.Modules.Users.IntegrationEvents;
 
 namespace SocialMediaBackend.Modules.AppSubscriptions.Infrastructure.Configuration.EventBus;
@@ -18,6 +19,8 @@ public static class EventBusStartup
 
             eventBus.Subscribe(new InboxIntegrationEventHandler<UserCreatedIntegrationEvent>(factory));
             eventBus.Subscribe(new InboxIntegrationEventHandler<UserDeletedIntegrationEvent>(factory));
+            eventBus.Subscribe(new InboxIntegrationEventHandler<SubscriptionActivatedIntegrationEvent>(factory));
+            eventBus.Subscribe(new InboxIntegrationEventHandler<SubscriptionCancelledIntegrationEvent>(factory));
         }
     }
 }
