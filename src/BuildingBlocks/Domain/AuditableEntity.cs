@@ -4,7 +4,7 @@ public abstract class AuditableEntity<TId> : Entity<TId>
 {
     protected AuditableEntity()
     {
-        var now = DateTime.UtcNow;
+        var now = DateTimeOffset.UtcNow;
         Created = now;
         CreatedBy = "System";
         LastModified = now;

@@ -1,6 +1,8 @@
-﻿namespace SocialMediaBackend.Modules.Payments.Contracts;
+﻿using SocialMediaBackend.BuildingBlocks.Domain;
 
-public record MoneyValue
+namespace SocialMediaBackend.Modules.Payments.Contracts;
+
+public record MoneyValue : ValueObject
 {
     private MoneyValue() {}
     public MoneyValue(int amount, Currency currency)
@@ -13,4 +15,10 @@ public record MoneyValue
     public Currency Currency { get; init; }
 
     public string CurrencyCode => Currency.ToString();
+
+    protected override IEnumerable<object> GetComponents()
+    {
+        yield return Amount;
+        yield return Currency;
+    }
 }

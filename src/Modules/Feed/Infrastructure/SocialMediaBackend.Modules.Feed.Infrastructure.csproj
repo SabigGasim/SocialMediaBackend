@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\Domain\SocialMediaBackend.BuildingBlocks.Domain.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\Infrastructure\SocialMediaBackend.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\AppSubscriptions\IntegrationEvents\SocialMediaBackend.Modules.AppSubscriptions.Contracts.csproj" />
     <ProjectReference Include="..\..\Users\IntegrationEvents\SocialMediaBackend.Modules.Users.IntegrationEvents.csproj" />
     <ProjectReference Include="..\Domain\SocialMediaBackend.Modules.Feed.Domain.csproj" />
   </ItemGroup>

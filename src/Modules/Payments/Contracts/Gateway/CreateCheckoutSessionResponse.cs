@@ -3,5 +3,5 @@
 public record CreateCheckoutSessionResponse(
     string SessionId,
     string CheckoutUrl,
-    string ClientSecret // For using Stripe Elements instead of redirect
+    string ClientSecret
 );

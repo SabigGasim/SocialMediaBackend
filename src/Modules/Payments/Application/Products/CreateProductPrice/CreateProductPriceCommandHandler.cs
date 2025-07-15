@@ -26,8 +26,6 @@ internal sealed class CreateProductPriceCommandHandler(
             command.ProductPrice
             );
 
-        var priceId = product.AddPrice(gatewayPriceId, command.ProductPrice);
-
-        return priceId;
+        return product.AddPrice(gatewayPriceId, command.ProductPrice);
     }
 }

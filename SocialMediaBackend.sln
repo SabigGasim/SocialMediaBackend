@@ -119,7 +119,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.AppSubscriptions.Infrastructure", "src\Modules\AppSubscriptions\Infrastructure\SocialMediaBackend.Modules.AppSubscriptions.Infrastructure.csproj", "{F08E48EB-EA6B-4E2C-B63B-B6A4299E51A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.AppSubscriptions.IntegrationEvents", "src\Modules\AppSubscriptions\IntegrationEvents\SocialMediaBackend.Modules.AppSubscriptions.IntegrationEvents.csproj", "{53CEC03D-F808-49D4-993F-DE1E23FE33E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.AppSubscriptions.Contracts", "src\Modules\AppSubscriptions\IntegrationEvents\SocialMediaBackend.Modules.AppSubscriptions.Contracts.csproj", "{53CEC03D-F808-49D4-993F-DE1E23FE33E4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaBackend.Modules.Payments.Tests.IntegrationTests", "src\Modules\Payments\Tests\IntegrationTests\SocialMediaBackend.Modules.Payments.Tests.IntegrationTests.csproj", "{3FE70D1F-B7CC-4A78-A773-CDC27D35FC72}"
 EndProject

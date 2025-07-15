@@ -20,10 +20,18 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\Application\SocialMediaBackend.BuildingBlocks.Application.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\Domain\SocialMediaBackend.BuildingBlocks.Domain.csproj" />
+    <ProjectReference Include="..\..\AppSubscriptions\IntegrationEvents\SocialMediaBackend.Modules.AppSubscriptions.Contracts.csproj" />
     <ProjectReference Include="..\..\Payments\Contracts\SocialMediaBackend.Modules.Payments.Contracts.csproj" />
     <ProjectReference Include="..\..\Users\IntegrationEvents\SocialMediaBackend.Modules.Users.IntegrationEvents.csproj" />
     <ProjectReference Include="..\Domain\SocialMediaBackend.Modules.Feed.Domain.csproj" />
     <ProjectReference Include="..\Infrastructure\SocialMediaBackend.Modules.Feed.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="AppSubscriptions\AppSubscriptionCanceled\" />
+    <Folder Include="AppSubscriptions\AppSubscriptionExpired\" />
+    <Folder Include="AppSubscriptions\AppSubscriptionRenewed\" />
+    <Folder Include="AppSubscriptions\AppSubscriptionUpgraded\" />
   </ItemGroup>
 
 </Project>

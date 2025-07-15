@@ -6,8 +6,8 @@ namespace SocialMediaBackend.BuildingBlocks.Infrastructure.Messaging;
 
 internal class InMemoryEventBus : IEventBus
 {
-    private readonly Dictionary<string, List<Func<IntegrationEvent, ValueTask>>> _handlerFunctions = [];
-    private readonly ConcurrentQueue<(string, IntegrationEvent)> _events = [];
+    private readonly Dictionary<EventName, List<Func<IntegrationEvent, ValueTask>>> _handlerFunctions = [];
+    private readonly ConcurrentQueue<(EventName, IntegrationEvent)> _events = [];
     private readonly TimeSpan _interval = TimeSpan.FromSeconds(2);
 
     private InMemoryEventBus() { }
@@ -47,7 +47,7 @@ internal class InMemoryEventBus : IEventBus
     {
         await Task.Delay(_interval, ct);
 
-        while (_events.TryDequeue(out (string, IntegrationEvent) item))
+        while (_events.TryDequeue(out (EventName, IntegrationEvent) item))
         {
             var (name, @event) = item;
 
@@ -60,8 +60,14 @@ internal class InMemoryEventBus : IEventBus
         }
     }
 
-    private static string DescribePublishFailure(string name, IntegrationEvent @event)
+    private static string DescribePublishFailure(EventName name, IntegrationEvent @event)
     {
         return $"[{@event.OccurredOn}] Couldn't send event {name} with Id ({@event.Id})";
+    }
+
+    private readonly record struct EventName(string Value)
+    {
+        public static implicit operator string(EventName eventName) => eventName.Value;
+        public static implicit operator EventName(string value) => new(value);
     }
 }

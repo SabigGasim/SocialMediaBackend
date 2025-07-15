@@ -42,13 +42,9 @@ internal sealed class ProcessInternalCommandsCommandHandler : ICommandHandler<Pr
             .Handle<Exception>()
             .WaitAndRetryAsync(
             [
-#if DEBUG
-                TimeSpan.FromHours(1)
-#else
                 TimeSpan.FromSeconds(1),
                 TimeSpan.FromSeconds(2),
                 TimeSpan.FromSeconds(3)
-#endif
             ]);
 
         foreach (var internalCommand in internalCommandsList)
