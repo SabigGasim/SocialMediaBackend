@@ -1,7 +1,5 @@
 ﻿using Autofac;
-using Autofac.Core;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.Messaging;
 
@@ -18,63 +16,66 @@ public sealed class EFUnitOfWork(
 
     public async Task<int> CommitAsync(CancellationToken ct = default)
     {
-        var entitiesWithEvents = _context.ChangeTracker
+        while (TryGetDomainEvents(out var entities, out var domainEvents, out var notifications))
+        {
+            foreach (var entity in entities)
+            {
+                entity.ClearDomainEvents();
+            }
+
+            await _dispatcher.DispatchAsync(domainEvents, ct);
+
+            foreach (var notification in notifications)
+            {
+                var outboxMessage = OutboxMessage.Create(notification);
+
+                _context.Set<OutboxMessage>().Add(outboxMessage);
+            }
+        }
+
+        return await _context.SaveChangesAsync(ct);
+    }
+
+    private bool TryGetDomainEvents(
+        out IHasDomainEvents[] entities,
+        out IDomainEvent[] domainEvents,
+        out List<IDomainEventNotification> notifications)
+    {
+        entities = _context.ChangeTracker
             .Entries<IHasDomainEvents>()
             .Select(e => e.Entity)
             .Where(e => e.DomainEvents.Count > 0)
             .ToArray();
 
-        var domainEvents = entitiesWithEvents
+        if (entities.Length == 0) 
+        {
+            domainEvents = [];
+            notifications = [];
+            return false;
+        }
+
+        domainEvents = entities
             .SelectMany(e => e.DomainEvents)
             .ToArray();
 
-        List<IDomainEventNotification> domainEventNotifications = [];
+        notifications = [];
         foreach (var domainEvent in domainEvents)
         {
-            Type domainEvenNotificationType = typeof(IDomainEventNotification<>);
-
-            var domainNotificationWithGenericType = domainEvenNotificationType.MakeGenericType(domainEvent.GetType());
-            var domainNotification = _scope.ResolveOptional(domainNotificationWithGenericType, new List<Parameter>
+            Type notificationType = typeof(IDomainEventNotification<>);
+            Type NotificationGenericType = notificationType.MakeGenericType(domainEvent.GetType());
+            
+            var notification = _scope.ResolveOptional(NotificationGenericType, new List<NamedParameter>
             {
                 new NamedParameter("id", domainEvent.Id),
-                new NamedParameter("domainEvent", domainEvent!)
+                new NamedParameter("domainEvent", domainEvent)
             });
 
-            if (domainNotification is not null)
+            if (notification is not null)
             {
-                var notification = (IDomainEventNotification)domainNotification;
-
-                domainEventNotifications.Add(notification);
+                notifications.Add((IDomainEventNotification)notification);
             }
         }
 
-        foreach (var entity in entitiesWithEvents)
-        {
-            entity.ClearDomainEvents();
-        }
-
-        await _dispatcher.DispatchAsync(domainEvents, ct);
-
-        foreach (var notification in domainEventNotifications)
-        {
-            var outboxMessage = new OutboxMessage
-            {
-                Id = notification.Id,
-                Content = JsonConvert.SerializeObject(notification),
-                Type = notification.GetType().AssemblyQualifiedName!,
-                OccurredOn = notification.Event.OccurredOn
-            };
-
-            _context.Set<OutboxMessage>().Add(outboxMessage);
-        }
-
-        try
-        {
-            return await _context.SaveChangesAsync(ct);
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        return true;
     }
 }
