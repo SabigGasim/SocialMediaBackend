@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 
 namespace SocialMediaBackend.BuildingBlocks.Infrastructure.Messaging;
 
-internal class InMemoryEventBus : IEventBus
+internal sealed class InMemoryEventBus : IEventBus
 {
     private readonly Dictionary<EventName, List<Func<IntegrationEvent, ValueTask>>> _handlerFunctions = [];
     private readonly ConcurrentQueue<(EventName, IntegrationEvent)> _events = [];

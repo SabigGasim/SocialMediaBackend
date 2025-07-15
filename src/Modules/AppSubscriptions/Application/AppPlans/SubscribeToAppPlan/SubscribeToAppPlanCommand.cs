@@ -1,7 +1,7 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application.Auth;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
-using SocialMediaBackend.Modules.AppSubscriptions.Domain.AppPlan;
+using SocialMediaBackend.Modules.AppSubscriptions.Contracts;
 using SocialMediaBackend.Modules.AppSubscriptions.Domain.Authorization;
 using SocialMediaBackend.Modules.Payments.Contracts;
 using SocialMediaBackend.Modules.Payments.Contracts.Gateway;
