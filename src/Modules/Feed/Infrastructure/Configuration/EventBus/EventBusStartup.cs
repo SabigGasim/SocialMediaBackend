@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.Messaging;
+using SocialMediaBackend.Modules.AppSubscriptions.Contracts;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Messaging.Inbox;
 using SocialMediaBackend.Modules.Users.IntegrationEvents;
 
@@ -21,6 +22,7 @@ public static class EventBusStartup
             eventBus.Subscribe(new InboxIntegrationEventHandler<UserFollowedIntegrationEvent>(factory));
             eventBus.Subscribe(new InboxIntegrationEventHandler<UserUnfollowedIntegrationEvent>(factory));
             eventBus.Subscribe(new InboxIntegrationEventHandler<UserInforUpdatedIntegrationEvent>(factory));
+            eventBus.Subscribe(new InboxIntegrationEventHandler<AppSubscriptionActivatedIntegrationEvent>(factory));
         }
     }
 }
