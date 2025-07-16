@@ -86,6 +86,19 @@ public sealed class Subscription : AggregateRoot<SubscriptionId>
         return Result.Success();
     }
 
+    public Result Reactivate()
+    {
+        if (this.Status != SubscriptionStatus.CancleAtPeriodEnd)
+        {
+            return Result.FailureWithMessage(FailureCode.Conflict, "Can't reactivate an active/permenantly canceled subscription");
+        }
+
+        this.Status = SubscriptionStatus.Active;
+        this.CanceledAt = null;
+
+        return Result.Success();
+    }
+
     public void Cancel(DateTimeOffset canceledAt)
     {
         this.Status = SubscriptionStatus.Canceled;
