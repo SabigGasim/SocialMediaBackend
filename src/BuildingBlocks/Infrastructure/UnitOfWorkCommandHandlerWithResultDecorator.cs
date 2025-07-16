@@ -26,6 +26,10 @@ public class UnitOfWorkCommandHandlerWithResultDecorator<TCommand, TResult>
     public async Task<HandlerResponse<TResult>> ExecuteAsync(TCommand command, CancellationToken ct)
     {
         var handlerResult = await _decorated.ExecuteAsync(command, ct);
+        if (!handlerResult.IsSuccess)
+        {
+            return handlerResult;
+        }
 
         if (command is InternalCommandBase)
         {
