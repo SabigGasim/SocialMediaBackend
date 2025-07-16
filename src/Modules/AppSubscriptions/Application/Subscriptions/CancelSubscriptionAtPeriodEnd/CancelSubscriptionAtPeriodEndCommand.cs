@@ -1,0 +1,9 @@
+﻿using SocialMediaBackend.BuildingBlocks.Application.Auth;
+using SocialMediaBackend.BuildingBlocks.Application.Requests;
+using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
+using SocialMediaBackend.Modules.AppSubscriptions.Domain.Authorization;
+
+namespace SocialMediaBackend.Modules.AppSubscriptions.Application.Subscriptions.CancelSubscriptionAtPeriodEnd;
+
+[HasPermission(Permissions.CancelAppSubscriptionAtPeriodEnd)]
+public sealed class CancelSubscriptionAtPeriodEndCommand : CommandBase, IRequireAuthorization;
