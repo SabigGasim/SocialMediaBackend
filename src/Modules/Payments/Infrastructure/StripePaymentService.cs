@@ -122,4 +122,15 @@ public class StripePaymentService : IPaymentService
     {
         await new PaymentMethodService().DetachAsync(paymentMethodId);
     }
+
+    public async Task<bool> CancelSubscriptionAtPeriodEndAsync(string subscriptionId)
+    {
+        var subscription = await new SubscriptionService().UpdateAsync(subscriptionId, new()
+        {
+            CancelAtPeriodEnd = true
+        });
+
+        return subscription.CancelAtPeriodEnd;
+    }
+
 }
