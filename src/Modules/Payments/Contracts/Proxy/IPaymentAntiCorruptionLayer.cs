@@ -20,6 +20,7 @@ public interface IPaymentAntiCorruptionLayer
         string cancelUrl,
         CancellationToken ct = default);
 
+    Task<HandlerResponse> CancelSubscriptionAtPeriodEnd(Guid subscriptionId, CancellationToken ct);
     Task<HandlerResponse<CreateCheckoutSessionResponse>> CreateSubscriptionCheckoutSessionAsync(
         Guid userId,
         string productReference,

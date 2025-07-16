@@ -13,4 +13,5 @@ internal class SubscriptionProjection : SingleStreamProjection<Subscription, Gui
     public void Apply(Subscription subscription, SubscriptionPastDue @event) => subscription.Apply(@event);
     public void Apply(Subscription subscription, SubscriptionCreated @event) => subscription.Apply(@event);
     public void Apply(Subscription subscription, SubscriptionRenewed @event) => subscription.Apply(@event);
+    public void Apply(Subscription subscription, AssigentToCancelAtPeriodEnd @event) => subscription.Apply(@event);
 }

@@ -2,7 +2,9 @@
 using SocialMediaBackend.Modules.Payments.Application.Payments.CreatePaymentCheckoutSession;
 using SocialMediaBackend.Modules.Payments.Application.Products.CreateProduct;
 using SocialMediaBackend.Modules.Payments.Application.Products.CreateProductPrice;
+using SocialMediaBackend.Modules.Payments.Application.Subscriptions.CancelSubscriptionAtPeriodEnd;
 using SocialMediaBackend.Modules.Payments.Application.Subscriptions.CreateSubscriptionCheckoutSession;
+using SocialMediaBackend.Modules.Payments.Application.Subscriptions.ReactivateSubscription;
 using SocialMediaBackend.Modules.Payments.Contracts;
 using SocialMediaBackend.Modules.Payments.Contracts.Gateway;
 using SocialMediaBackend.Modules.Payments.Contracts.Proxy;
@@ -47,6 +49,13 @@ public class PaymentAntiCorruptionLayer : IPaymentAntiCorruptionLayer
                 new ProductPriceId(priceId),
                 successUrl,
                 cancelUrl),
+            ct);
+    }
+
+    public async Task<HandlerResponse> CancelSubscriptionAtPeriodEnd(Guid subscriptionId, CancellationToken ct)
+    {
+        return await CommandExecutor.ExecuteAsync(
+            new CancelSubscriptionAtPeriodEndCommand(subscriptionId),
             ct);
     }
 

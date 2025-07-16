@@ -70,7 +70,7 @@ public class Subscription : AggregateRoot
 
         this.Apply(@event);
         this.AddEvent(@event);
-        this.AddDomainEvent(new SubscriptionActivatedDomainEvent(
+        this.AddDomainEvent(new SubscriptionRenewedDomainEvent(
             new(this.PayerId),
             new(this.Id),
             this.ProductReference,
@@ -100,6 +100,19 @@ public class Subscription : AggregateRoot
         }
 
         var @event = new SubscriptionPastDue();
+
+        this.Apply(@event);
+        this.AddEvent(@event);
+    }
+
+    public void CancelAtPeriodEnd()
+    {
+        if (this.Status is not SubscriptionStatus.Active or SubscriptionStatus.PastDue)
+        {
+            return;
+        }
+
+        var @event = new AssigentToCancelAtPeriodEnd();
 
         this.Apply(@event);
         this.AddEvent(@event);
