@@ -1,17 +1,15 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Infrastructure.Events;
 
-namespace SocialMediaBackend.Modules.AppSubscriptions.Contracts;
+namespace SocialMediaBackend.Modules.AppSubscriptions.Contracts.IntegrationEvents;
 
-public sealed class AppSubscriptionActivatedIntegrationEvent(
+public sealed class AppSubscriptionRenewedIntegrationEvent(
     Guid subscriptionId,
     Guid subscriberId,
-    AppSubscriptionTier subscriptionTier,
-    DateTimeOffset activatedAt,
+    DateTimeOffset renewedAt,
     DateTimeOffset expiresAt) : IntegrationEvent()
 {
     public Guid SubscriptionId { get; } = subscriptionId;
     public Guid SubscriberId { get; } = subscriberId;
-    public AppSubscriptionTier SubscriptionTier { get; } = subscriptionTier;
-    public DateTimeOffset ActivatedAt { get; } = activatedAt;
+    public DateTimeOffset RenewedAt { get; } = renewedAt;
     public DateTimeOffset ExpiresAt { get; } = expiresAt;
 }
