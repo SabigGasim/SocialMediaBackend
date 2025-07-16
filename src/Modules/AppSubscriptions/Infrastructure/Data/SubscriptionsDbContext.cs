@@ -4,6 +4,7 @@ using SocialMediaBackend.BuildingBlocks.Infrastructure.Messaging;
 using SocialMediaBackend.Modules.AppSubscriptions.Domain.AppPlan;
 using SocialMediaBackend.Modules.AppSubscriptions.Domain.Authorization;
 using SocialMediaBackend.Modules.AppSubscriptions.Domain.SubscriptionPayments;
+using SocialMediaBackend.Modules.AppSubscriptions.Domain.SubscriptionRenewalPayments;
 using SocialMediaBackend.Modules.AppSubscriptions.Domain.Subscriptions;
 using SocialMediaBackend.Modules.AppSubscriptions.Domain.Users;
 
@@ -15,6 +16,7 @@ public sealed class SubscriptionsDbContext : DbContext
     public DbSet<AppSubscriptionProduct> AppSubscriptionProducts { get; private set; } = default!;
     public DbSet<Subscription> Subscriptions { get; private set; } = default!;
     public DbSet<SubscriptionPayment> SubscriptionPayments { get; private set; } = default!;
+    public DbSet<SubscriptionRenewalPayment> SubscriptionRenewalPayments { get; private set; } = default!;
 
     public DbSet<Role> Roles { get; private set; } = default!;
     public DbSet<InternalCommand> InternalCommands { get; private set; } = default!;
