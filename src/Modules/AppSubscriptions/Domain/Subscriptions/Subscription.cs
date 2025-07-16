@@ -58,6 +58,20 @@ public sealed class Subscription : AggregateRoot<SubscriptionId>
         return subscription;
     }
 
+    public void Renew(DateTimeOffset renewedAt, DateTimeOffset expiresAt)
+    {
+        this.ActivatedAt = renewedAt;
+        this.ExpiresAt = expiresAt;
+        this.Status = SubscriptionStatus.Active;
+
+        this.AddDomainEvent(new AppSubscriptionRenewedDomainEvent(
+            this.Id,
+            this.SubscriberId,
+            this.ActivatedAt,
+            this.ExpiresAt
+            ));
+    }
+
     public void Cancel(DateTimeOffset canceledAt)
     {
         this.Status = SubscriptionStatus.Canceled;
