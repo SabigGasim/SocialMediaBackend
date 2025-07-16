@@ -4,5 +4,6 @@ public enum SubscriptionStatus
 {
     PastDue = 0,
     Canceled = 1,
-    Active = 2,
+    CancleAtPeriodEnd = 2,
+    Active = 3,
 }

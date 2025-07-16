@@ -72,6 +72,20 @@ public sealed class Subscription : AggregateRoot<SubscriptionId>
             ));
     }
 
+    public Result CancelAtPeriodEnd(DateTimeOffset requestedCancellationAt)
+    {
+        if (this.Status != SubscriptionStatus.Active)
+        {
+            return Result.FailureWithMessage(FailureCode.Conflict, "Subscription is not active, can't cancel at period end");
+        }
+
+        this.Status = SubscriptionStatus.CancleAtPeriodEnd;
+        this.CanceledAt = requestedCancellationAt;
+        this.AddDomainEvent(new AppSubscriptionAssignedToBeCanceledAtPeriodEndDomainEvent(this.Id));
+        
+        return Result.Success();
+    }
+
     public void Cancel(DateTimeOffset canceledAt)
     {
         this.Status = SubscriptionStatus.Canceled;
