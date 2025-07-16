@@ -8,7 +8,7 @@ public class CancelAppSubscriptionAtPeriodEndEndpoint(IAppSubscriptionsModule mo
 {
     public override void Configure()
     {
-        Delete(ApiEndpoints.Payments.CancelSubscriptionAtPeriodEnd);
+        Delete(ApiEndpoints.Payments.CancelAppSubscriptionAtPeriodEnd);
     }
 
     public override async Task HandleAsync(CancellationToken ct)

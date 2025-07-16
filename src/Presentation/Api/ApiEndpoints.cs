@@ -116,8 +116,8 @@ public static class ApiEndpoints
         public const string GetPayer = $"{Base}/payers/{{PayerId}}";
 
         public const string SubscriteToAppPlan = $"{Base}/subscribe-to-app-plan";
-        public const string CancelSubscriptionAtPeriodEnd = $"{Base}/cancel-app-sub";
-        public const string ReactivateSubscription = $"{Base}/reactivate-app-sub";
+        public const string CancelAppSubscriptionAtPeriodEnd = $"{Base}/cancel-app-sub";
+        public const string ReactivateAppSubscription = $"{Base}/reactivate-app-sub";
         public const string CreateAppPlan = $"{Base}/create-app-plan";
         public const string CreateAppSubscriptionProduct = $"{Base}/create-app-sub-product";
     }
