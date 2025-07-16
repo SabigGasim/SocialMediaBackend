@@ -10,8 +10,4 @@
     <ProjectReference Include="..\..\..\BuildingBlocks\Infrastructure\SocialMediaBackend.BuildingBlocks.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="IntegrationEvents\" />
-  </ItemGroup>
-
 </Project>

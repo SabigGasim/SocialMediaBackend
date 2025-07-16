@@ -10,12 +10,16 @@ public static class RolePermissionData
     {
         _mappings[Role.User] = [
             Permission.SubscribeToAppPlan,
-            Permission.UnsbscribeFromAppPlan
+            Permission.UnsbscribeFromAppPlan,
+            Permission.RenewAppSubscription,
+            Permission.CancelAppSubscriptionAtPeriodEnd,
+            Permission.ReactivateAppSubscription
         ];
 
         _mappings[Role.AdminUser] = [
             Permission.CreateAppPlan,
             Permission.CreateAppPlanProduct,
+            Permission.CancelAppSubscription,
             .._mappings[Role.User]
         ];
     }
