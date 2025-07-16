@@ -17,4 +17,5 @@ public interface IPaymentService
     Task<IEnumerable<string>> GetCustomerPaymentMethodIdsAsync(string GatewayCustomerId);
     Task DeletePaymentMethodAsync(string paymentMethodId);
     Task<bool> CancelSubscriptionAtPeriodEndAsync(string subscriptionId);
+    Task<bool> ReactivateSubscriptionAsync(string subscriptionId);
 }

@@ -133,4 +133,13 @@ public class StripePaymentService : IPaymentService
         return subscription.CancelAtPeriodEnd;
     }
 
+    public async Task<bool> ReactivateSubscriptionAsync(string subscriptionId)
+    {
+        var subscription = await new SubscriptionService().UpdateAsync(subscriptionId, new()
+        {
+            CancelAtPeriodEnd = false
+        });
+
+        return subscription.CancelAtPeriodEnd == false;
+    }
 }
