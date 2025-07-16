@@ -118,6 +118,19 @@ public class Subscription : AggregateRoot
         this.AddEvent(@event);
     }
 
+    public void Reactivate()
+    {
+        if (this.Status != SubscriptionStatus.CancelAtPeriodEnd)
+        {
+            return;
+        }
+
+        var @event = new SubscriptionReactivated();
+
+        this.Apply(@event);
+        this.AddEvent(@event);
+    }
+
     public void Cancel()
     {
         if (Status == SubscriptionStatus.Cancelled)
@@ -187,5 +200,15 @@ public class Subscription : AggregateRoot
         this.Status = SubscriptionStatus.Active;
         this.ActivatedAt = @event.ActivatedAt;
         this.ExpiresAt = @event.ExpiresAt;
+    }
+
+    public void Apply(AssigentToCancelAtPeriodEnd @event)
+    {
+        this.Status = SubscriptionStatus.CancelAtPeriodEnd;
+    }
+
+    public void Apply(SubscriptionReactivated @event)
+    {
+        this.Status = SubscriptionStatus.Active;
     }
 }

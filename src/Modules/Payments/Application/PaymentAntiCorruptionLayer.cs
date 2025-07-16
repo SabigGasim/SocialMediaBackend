@@ -59,6 +59,13 @@ public class PaymentAntiCorruptionLayer : IPaymentAntiCorruptionLayer
             ct);
     }
 
+    public async Task<HandlerResponse> ReactivateSubscription(Guid subscriptionId, CancellationToken ct)
+    {
+        return await CommandExecutor.ExecuteAsync(
+            new ReactivateSubscriptionCommand(subscriptionId),
+            ct);
+    }
+
     public async Task<Guid> CreateProductAsync(
         string productReference, 
         string name, 

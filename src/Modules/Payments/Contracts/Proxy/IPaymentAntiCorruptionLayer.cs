@@ -28,4 +28,5 @@ public interface IPaymentAntiCorruptionLayer
         string successUrl,
         string cancelUrl,
         CancellationToken ct = default);
+    Task<HandlerResponse> ReactivateSubscription(Guid subscriptionId, CancellationToken ct);
 }
