@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.Messaging;
-using SocialMediaBackend.Modules.AppSubscriptions.Contracts;
+using SocialMediaBackend.Modules.AppSubscriptions.Contracts.IntegrationEvents;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Messaging.Inbox;
 using SocialMediaBackend.Modules.Users.IntegrationEvents;
 

@@ -1,6 +1,6 @@
 ﻿using Mediator;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.Messaging;
-using SocialMediaBackend.Modules.AppSubscriptions.Contracts;
+using SocialMediaBackend.Modules.AppSubscriptions.Contracts.IntegrationEvents;
 
 namespace SocialMediaBackend.Modules.AppSubscriptions.Application.Subscriptions.ActivateSubscription;
 
