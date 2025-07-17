@@ -17,7 +17,7 @@ internal sealed class CancelSubscriptionCommandHandler(IAggregateRepository repo
 
         NotFoundException.ThrowIfNull(nameof(Subscription), subscription);
 
-        subscription.Cancel();
+        subscription.Cancel(command.CanceledAt);
 
         return HandlerResponseStatus.OK;
     }

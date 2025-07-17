@@ -14,7 +14,8 @@ internal sealed class SubscriptionCancelledDomainEventNotificationHandler(IEvent
         await _eventBus.Publish(new SubscriptionCancelledIntegrationEvent(
             notification.Event.PayerId.Value,
             notification.Event.SubscriptionId.Value,
-            notification.Event.ProductReference)
+            notification.Event.ProductReference,
+            notification.Event.CanceledAt)
             );
     }
 }

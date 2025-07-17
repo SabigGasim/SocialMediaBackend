@@ -4,10 +4,12 @@ namespace SocialMediaBackend.Modules.Payments.Application.Subscriptions.CancelSu
 
 public class CancelSubscriptionCommand(
     Guid internalSubscriptionId, 
-    string eventId, 
+    string eventId,
+    DateTimeOffset canceledAt,
     Guid id = default)
     : InternalCommandBase(id)
 {
     public Guid InternalSubscriptionId { get; } = internalSubscriptionId;
     public string EventId { get; } = eventId;
+    public DateTimeOffset CanceledAt { get; } = canceledAt;
 }

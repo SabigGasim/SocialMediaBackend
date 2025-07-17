@@ -23,7 +23,8 @@ internal sealed class CreateSubscriptionCheckoutSessionCommandHandler(
     {
         var oldSubscription = await _repository.LoadAsync<Subscription>(
             x => x.ProductReference == command.ProductReference &&
-                 x.PayerId == command.PayerId.Value
+                 x.PayerId == command.PayerId.Value &&
+                 x.Status != SubscriptionStatus.Cancelled
             );
 
         if (oldSubscription is not null)
