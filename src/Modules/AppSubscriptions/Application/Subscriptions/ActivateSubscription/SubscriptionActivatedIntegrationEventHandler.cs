@@ -21,8 +21,8 @@ internal sealed class SubscriptionActivatedIntegrationEventHandler(ICommandsSche
             notification.Id,
             new(notification.PayerId),
             new(notification.SubscriptionId),
-            notification.ActivatedAt,
-            notification.ActivatedAt,
-            notification.ExpiresAt));
+            notification.ActivatedAt.ToUniversalTime(),
+            notification.ActivatedAt.ToUniversalTime(),
+            notification.ExpiresAt.ToUniversalTime()));
     }
 }

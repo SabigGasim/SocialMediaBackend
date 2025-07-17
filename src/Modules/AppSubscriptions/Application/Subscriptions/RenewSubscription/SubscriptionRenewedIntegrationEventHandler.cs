@@ -21,8 +21,8 @@ internal sealed class SubscriptionRenewedIntegrationEventHandler(ICommandsSchedu
             notification.Id,
             new(notification.PayerId),
             new(notification.SubscriptionId),
-            notification.RenewedAt,
-            notification.RenewedAt,
-            notification.ExpiresAt));
+            notification.RenewedAt.ToUniversalTime(),
+            notification.RenewedAt.ToUniversalTime(),
+            notification.ExpiresAt.ToUniversalTime()));
     }
 }
