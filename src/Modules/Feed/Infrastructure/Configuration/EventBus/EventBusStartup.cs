@@ -23,6 +23,7 @@ public static class EventBusStartup
             eventBus.Subscribe(new InboxIntegrationEventHandler<UserUnfollowedIntegrationEvent>(factory));
             eventBus.Subscribe(new InboxIntegrationEventHandler<UserInforUpdatedIntegrationEvent>(factory));
             eventBus.Subscribe(new InboxIntegrationEventHandler<AppSubscriptionActivatedIntegrationEvent>(factory));
+            eventBus.Subscribe(new InboxIntegrationEventHandler<AppSubscriptionCanceledIntegrationEvent>(factory));
         }
     }
 }
