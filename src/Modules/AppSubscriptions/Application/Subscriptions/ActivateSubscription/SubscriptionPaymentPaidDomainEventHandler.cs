@@ -19,7 +19,7 @@ internal sealed class SubscriptionPaymentPaidDomainEventHandler(SubscriptionsDbC
             .Include(x => x.Plans)
             .Where(x => x.Plans.Any(x => x.Id == notification.AppSubscriptionPlanId))
             .Select(x => x.Tier)
-            .FirstAsync(cancellationToken);
+            .FirstAsync(CancellationToken.None);
 
         var subscription = Subscription.CreateActive(
             notification.SubscriptionId,
@@ -27,6 +27,17 @@ internal sealed class SubscriptionPaymentPaidDomainEventHandler(SubscriptionsDbC
             subscriptionTier,
             notification.SubscriptionActivatedAt,
             notification.SubscriptionExpiresAt);
+
+        var oldSubscription = await _context.Subscriptions
+            .Where(x => 
+                x.SubscriberId == notification.PayerId &&
+                x.Status == SubscriptionStatus.Canceled)
+            .FirstOrDefaultAsync(CancellationToken.None);
+
+        if (oldSubscription is not null)
+        {
+            _context.Subscriptions.Remove(oldSubscription);
+        }
 
         _context.Subscriptions.Add(subscription);
     }
