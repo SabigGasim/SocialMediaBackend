@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.Modules.AppSubscriptions.Domain.AppPlan;
 using SocialMediaBackend.Modules.AppSubscriptions.Domain.SubscriptionPayments;
+using SocialMediaBackend.Modules.AppSubscriptions.Domain.Subscriptions;
 using SocialMediaBackend.Modules.AppSubscriptions.Domain.Users;
 using SocialMediaBackend.Modules.AppSubscriptions.Infrastructure.Data;
 using SocialMediaBackend.Modules.Payments.Contracts.Gateway;
@@ -14,26 +14,23 @@ namespace SocialMediaBackend.Modules.AppSubscriptions.Application.AppPlans.Subsc
 internal sealed class SubscribeToAppPlanCommandHandler(
     IPaymentAntiCorruptionLayer paymentAntiCorruptionLayer,
     SubscriptionsDbContext context,
+    ISubscriptionService subscriptionService,
     IUserContext userContext) 
     : ICommandHandler<SubscribeToAppPlanCommand, CreateCheckoutSessionResponse>
 {
     private readonly IPaymentAntiCorruptionLayer _paymentAntiCorruptionLayer = paymentAntiCorruptionLayer;
     private readonly SubscriptionsDbContext _context = context;
+    private readonly ISubscriptionService _subscriptionService = subscriptionService;
     private readonly IUserContext _userContext = userContext;
 
     public async Task<HandlerResponse<CreateCheckoutSessionResponse>> ExecuteAsync(SubscribeToAppPlanCommand command, CancellationToken ct)
     {
-        var subscriptionPaymentRequested = await _context.SubscriptionPayments
-            .AsNoTracking()
-            .AnyAsync(x => 
-                x.PayerId == _userContext.UserId &&
-                x.PaymentStatus == SubscriptionPaymentStatus.PaymentIntentRequested,
-                ct);
+        var canIssueSubscriptionPaymentIntentResult = await _subscriptionService
+            .CanIssueSubscriptionPaymentIntentAsync(_userContext.UserId, ct);
 
-        if (subscriptionPaymentRequested)
+        if (canIssueSubscriptionPaymentIntentResult.IsFailure)
         {
-            //TODO: Handle cancellation of previous payments and instantiation of new ones
-            return ("You have already requested a subscription payment, please proceed with it", HandlerResponseStatus.Conflict);
+            return canIssueSubscriptionPaymentIntentResult;
         }
 
         var appPlan = await _context.AppSubscriptionProducts
