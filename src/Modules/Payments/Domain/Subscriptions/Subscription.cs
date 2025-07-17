@@ -12,6 +12,7 @@ public class Subscription : AggregateRoot
     public SubscriptionStatus Status { get; private set; }
     public DateTimeOffset? ActivatedAt { get; private set; }
     public DateTimeOffset? ExpiresAt { get; private set; }
+    public DateTimeOffset? CanceledAt { get; private set; }
 
     private Subscription() { }
 
@@ -131,26 +132,26 @@ public class Subscription : AggregateRoot
         this.AddEvent(@event);
     }
 
-    public void Cancel()
+    public void Cancel(DateTimeOffset canceledAt)
     {
         if (Status == SubscriptionStatus.Cancelled)
         {
             return;
         }
 
-        if (Status != SubscriptionStatus.Pending)
+        var @event = new SubscriptionCancelled(canceledAt);
+
+        this.Apply(@event);
+        this.AddEvent(@event);
+        if (this.Status != SubscriptionStatus.Pending)
         {
             this.AddDomainEvent(new SubscriptionCancelledDomainEvent(
                 new(this.PayerId),
                 new(this.Id),
-                this.ProductReference)
+                this.ProductReference,
+                this.CanceledAt!.Value)
                 );
         }
-
-        var @event = new SubscriptionCancelled();
-
-        this.Apply(@event);
-        this.AddEvent(@event);
     }
 
     public void Apply(SubscriptionPastDue @event)
@@ -161,8 +162,7 @@ public class Subscription : AggregateRoot
     public void Apply(SubscriptionCancelled @event)
     {
         this.Status = SubscriptionStatus.Cancelled;
-        this.ActivatedAt = null;
-        this.ExpiresAt = null;
+        this.CanceledAt = @event.CanceledAt;
     }
 
     public void Apply(SubscriptionMarkedIncomplete @event)

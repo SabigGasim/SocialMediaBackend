@@ -2,4 +2,4 @@
 
 namespace SocialMediaBackend.Modules.Payments.Domain.Subscriptions.Events;
 
-public record SubscriptionCancelled : StreamEventBase;
+public record SubscriptionCancelled(DateTimeOffset CanceledAt) : StreamEventBase;
