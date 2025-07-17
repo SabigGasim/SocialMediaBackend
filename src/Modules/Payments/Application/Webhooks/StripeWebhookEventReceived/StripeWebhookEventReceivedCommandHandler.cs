@@ -2,6 +2,7 @@
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
+using SocialMediaBackend.BuildingBlocks.Domain.Helpers;
 using SocialMediaBackend.BuildingBlocks.Infrastructure.InternalCommands;
 using SocialMediaBackend.Modules.Payments.Application.Payments.CancelPurchase;
 using SocialMediaBackend.Modules.Payments.Application.Payments.FulfillPurchase;
@@ -129,7 +130,8 @@ internal sealed class StripeWebhookEventReceivedCommandHandler(
 
         return new CancelSubscriptionCommand(
             subscription.InternalSubscriptionId,
-            @event.Id);
+            @event.Id,
+            subscription.CanceledAt!.Value);
     }
 
     private static CancelSubscriptionCommand HandleCheckoutSessionExpired(Stripe.Event @event)
@@ -138,7 +140,8 @@ internal sealed class StripeWebhookEventReceivedCommandHandler(
 
         return new CancelSubscriptionCommand(
             session.InternalSubscriptionId,
-            @event.Id);
+            @event.Id,
+            DateTimeOffset.UtcNow);
     }
 
     /// <summary>
@@ -176,25 +179,22 @@ internal sealed class StripeWebhookEventReceivedCommandHandler(
         return new ShortSubscriptionDto(
             Guid.Parse(internalSubscriptionId!),
             subscription.Id,
-            Status: GetSubscriptionStatus(subscription.Status)
+            Status: GetSubscriptionStatus(subscription.Status),
+            subscription.CanceledAt?.ToUtcDateTimeOffset()
         );
     }
 
     private static PaymentIntentDto CreateDto(Stripe.PaymentIntent paymentIntent)
     {
-        var mode = paymentIntent.Metadata.GetValueOrDefault("mode") switch
-        {
-            "payment" => PaymentMode.Payment,
-            _ => PaymentMode.Subscription
-        };
+        var mode = paymentIntent.Metadata.GetValueOrDefault("mode") == "payment"
+            ? PaymentMode.Payment
+            : PaymentMode.Subscription;
 
-        var id = mode switch
-        {
-            PaymentMode.Payment => paymentIntent.Metadata.GetValueOrDefault("internal_payment_id"),
-            _ => paymentIntent.Metadata.GetValueOrDefault("internal_subscription_id")
-        };
+        var id = mode == PaymentMode.Payment
+            ? Guid.Parse(paymentIntent.Metadata.GetValueOrDefault("internal_payment_id")!)
+            : Guid.Empty;
 
-        return new PaymentIntentDto(mode, paymentIntent.Id, Guid.Parse(id!), DateTimeOffset.UtcNow);
+        return new PaymentIntentDto(mode, paymentIntent.Id, id, DateTimeOffset.UtcNow);
     }
 
     private static InvoiceDto CreateDto(Stripe.Invoice invoice)
@@ -213,8 +213,8 @@ internal sealed class StripeWebhookEventReceivedCommandHandler(
         return new InvoiceDto(
             Guid.Parse(internalSubscriptionId!),
             billingReason,
-            new DateTimeOffset(subscriptionItem.Period.Start, TimeSpan.Zero),
-            new DateTimeOffset(subscriptionItem.Period.End, TimeSpan.Zero)
+            subscriptionItem.Period.Start.ToUtcDateTimeOffset(),
+            subscriptionItem.Period.End.ToUtcDateTimeOffset()
         );
     }
 
@@ -271,4 +271,8 @@ record SessionDto(Guid InternalSubscriptionId);
 
 record ChargeDto(Guid InternalId, DateTimeOffset RefundedAt);
 
-record ShortSubscriptionDto(Guid InternalSubscriptionId, string SubscriptionId, SubscriptionStatus Status);
+record ShortSubscriptionDto(
+    Guid InternalSubscriptionId, 
+    string SubscriptionId, 
+    SubscriptionStatus Status,
+    DateTimeOffset? CanceledAt = default);

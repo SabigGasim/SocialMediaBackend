@@ -28,9 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="AppSubscriptions\AppSubscriptionCanceled\" />
-    <Folder Include="AppSubscriptions\AppSubscriptionExpired\" />
-    <Folder Include="AppSubscriptions\AppSubscriptionRenewed\" />
     <Folder Include="AppSubscriptions\AppSubscriptionUpgraded\" />
   </ItemGroup>
 

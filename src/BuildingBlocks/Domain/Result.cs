@@ -28,12 +28,14 @@ public class Result
     }
 
     public bool IsSuccess { get; }
+    public bool IsFailure => !IsSuccess;
     public FailureCode FailureStatusCode { get; }
     public string? Message { get; private set; }
 
     public static Result Success() => new();
     public static Result Failure(FailureCode code, params string[] objects) => new(code, objects);
     public static Result FailureWithMessage(FailureCode code, string message) => new(code, message);
+    public static Result Conflict(string message) => new(FailureCode.Conflict, message);
 
     private static string GetErrorMessage(FailureCode code, string[] objects)
     {
