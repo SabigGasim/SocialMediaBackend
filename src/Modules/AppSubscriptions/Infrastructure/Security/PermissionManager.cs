@@ -54,4 +54,25 @@ public sealed class PermissionManager(IDbConnectionFactory factory) : IPermissio
             }, cancellationToken: ct));
         }
     }
+
+    public async Task<bool> UserIsInRole(Guid userId, int roleId, CancellationToken ct = default)
+    {
+        const string sql = $"""
+            SELECT EXISTS (
+                SELECT 1
+                FROM {Schema.AppSubscriptions}."UserRoles" ur
+                WHERE ur."UserId" = @UserId
+                  AND ur."RoleId" = @RoleId
+            );
+        """;
+
+        using (var connection = await _factory.CreateAsync(ct))
+        {
+            return await connection.ExecuteScalarAsync<bool>(new CommandDefinition(sql, new
+            {
+                UserId = userId,
+                RoleId = roleId
+            }, cancellationToken: ct));
+        }
+    }
 }
