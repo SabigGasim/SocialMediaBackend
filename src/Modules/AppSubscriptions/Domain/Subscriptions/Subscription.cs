@@ -103,5 +103,10 @@ public sealed class Subscription : AggregateRoot<SubscriptionId>
     {
         this.Status = SubscriptionStatus.Canceled;
         this.CanceledAt = canceledAt;
+        this.AddDomainEvent(new AppSubscriptionCanceledDomainEvent(
+            this.Id,
+            this.SubscriberId,
+            canceledAt
+        ));
     }
 }
