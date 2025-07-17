@@ -21,6 +21,7 @@ public static class EventBusStartup
             eventBus.Subscribe(new InboxIntegrationEventHandler<UserDeletedIntegrationEvent>(factory));
             eventBus.Subscribe(new InboxIntegrationEventHandler<SubscriptionActivatedIntegrationEvent>(factory));
             eventBus.Subscribe(new InboxIntegrationEventHandler<SubscriptionCancelledIntegrationEvent>(factory));
+            eventBus.Subscribe(new InboxIntegrationEventHandler<SubscriptionRenewedIntegrationEvent>(factory));
         }
     }
 }
