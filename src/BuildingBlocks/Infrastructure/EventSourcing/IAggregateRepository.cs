@@ -5,9 +5,13 @@ namespace SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing;
 
 public interface IAggregateRepository
 {
-    Task<TAggregate?> LoadAsync<TAggregate>(Guid aggregateId, CancellationToken ct = default)
+    Task<TAggregate> LoadAsync<TAggregate>(Guid aggregateId, CancellationToken ct = default)
         where TAggregate : class, IStreamAggregate;
-    Task<TAggregate?> LoadAsync<TAggregate>(Expression<Func<TAggregate, bool>> expression, CancellationToken ct = default)
+    Task<TAggregate> LoadAsync<TAggregate>(Expression<Func<TAggregate, bool>> expression, CancellationToken ct = default)
+        where TAggregate : class, IStreamAggregate;
+    Task<TAggregate?> LoadOrDefaultAsync<TAggregate>(Guid aggregateId, CancellationToken ct = default)
+        where TAggregate : class, IStreamAggregate;
+    Task<TAggregate?> LoadOrDefaultAsync<TAggregate>(Expression<Func<TAggregate, bool>> expression, CancellationToken ct = default)
         where TAggregate : class, IStreamAggregate;
     Task<IEnumerable<TAggregate>> LoadManyAsync<TAggregate>(Expression<Func<TAggregate, bool>> expression, CancellationToken ct = default)
         where TAggregate : class, IStreamAggregate;

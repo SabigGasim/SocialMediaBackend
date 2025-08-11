@@ -1,5 +1,6 @@
 ﻿using Marten;
 using SocialMediaBackend.BuildingBlocks.Domain.EventSourcing;
+using SocialMediaBackend.BuildingBlocks.Infrastructure.Exceptions;
 using System.Linq.Expressions;
 
 namespace SocialMediaBackend.BuildingBlocks.Infrastructure.EventSourcing;
@@ -11,7 +12,27 @@ public class MartenAggregateRepository(
     private readonly IDocumentSession _documentSession = documentSession;
     private readonly IAggregateTracker _tracker = tracker;
 
-    public async Task<TAggregate?> LoadAsync<TAggregate>(Guid aggregateId, CancellationToken ct = default) 
+    public async Task<TAggregate> LoadAsync<TAggregate>(Guid aggregateId, CancellationToken ct = default) 
+        where TAggregate : class, IStreamAggregate
+    {
+        var aggregate = await this.LoadOrDefaultAsync<TAggregate>(aggregateId, ct);
+
+        NotFoundException.ThrowIfNull(typeof(TAggregate).Name, aggregate);
+
+        return aggregate!;
+    }
+
+    public async Task<TAggregate> LoadAsync<TAggregate>(Expression<Func<TAggregate, bool>> expression, CancellationToken ct) 
+        where TAggregate : class, IStreamAggregate
+    {
+        var aggregate = await this.LoadOrDefaultAsync(expression, ct);
+
+        NotFoundException.ThrowIfNull(typeof(TAggregate).Name, aggregate);
+
+        return aggregate!;
+    }
+
+    public async Task<TAggregate?> LoadOrDefaultAsync<TAggregate>(Guid aggregateId, CancellationToken ct)
         where TAggregate : class, IStreamAggregate
     {
         if (_tracker.GetTrackedAggregates()
@@ -27,11 +48,11 @@ public class MartenAggregateRepository(
         }
 
         _tracker.Track(aggregate);
-        
+
         return aggregate;
     }
 
-    public async Task<TAggregate?> LoadAsync<TAggregate>(Expression<Func<TAggregate, bool>> expression, CancellationToken ct) 
+    public async Task<TAggregate?> LoadOrDefaultAsync<TAggregate>(Expression<Func<TAggregate, bool>> expression, CancellationToken ct)
         where TAggregate : class, IStreamAggregate
     {
         var aggregates = _tracker.GetTrackedAggregates()
@@ -42,14 +63,15 @@ public class MartenAggregateRepository(
             ? aggregates
                 .Where(expression.Compile())
                 .FirstOrDefault()
-            : null; 
+            : null;
 
         if (trackedAggregate is not null)
         {
             return trackedAggregate;
         }
 
-        var aggregate = await _documentSession.Query<TAggregate>()
+        var aggregate = await _documentSession
+            .Query<TAggregate>()
             .Where(expression)
             .FirstOrDefaultAsync(ct);
 
