@@ -10,21 +10,17 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Conversations;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.CreateDirectChat;
 
-internal sealed class CreateDirectChatCommandHandler : ICommandHandler<CreateDirectChatCommand, CreateDirectChatResponse>
+internal sealed class CreateDirectChatCommandHandler(
+    ChatDbContext context,
+    IChatterRepository chatterRepository,
+    IChatRepository chatRepository,
+    IChatterContext chatterContext)
+    : ICommandHandler<CreateDirectChatCommand, CreateDirectChatResponse>
 {
-    private readonly ChatDbContext _context;
-    private readonly IChatterRepository _chatterRepository;
-    private readonly IChatRepository _chatRepository;
-
-    public CreateDirectChatCommandHandler(
-        ChatDbContext context,
-        IChatterRepository chatterRepository,
-        IChatRepository chatRepository)
-    {
-        _context = context;
-        _chatterRepository = chatterRepository;
-        _chatRepository = chatRepository;
-    }
+    private readonly ChatDbContext _context = context;
+    private readonly IChatterRepository _chatterRepository = chatterRepository;
+    private readonly IChatRepository _chatRepository = chatRepository;
+    private readonly IChatterContext _chatterContext = chatterContext;
 
     public async Task<HandlerResponse<CreateDirectChatResponse>> ExecuteAsync(CreateDirectChatCommand command, CancellationToken ct)
     {
@@ -33,7 +29,7 @@ internal sealed class CreateDirectChatCommandHandler : ICommandHandler<CreateDir
             return ("User with the given Id was not found", HandlerResponseStatus.NotFound, command.OtherChatterId);
         }
 
-        var firstChatterId = new ChatterId(command.UserId);
+        var firstChatterId = _chatterContext.ChatterId;
 
         if (await _chatRepository.DirectChatExistsAsync(firstChatterId, command.OtherChatterId, ct))
         {

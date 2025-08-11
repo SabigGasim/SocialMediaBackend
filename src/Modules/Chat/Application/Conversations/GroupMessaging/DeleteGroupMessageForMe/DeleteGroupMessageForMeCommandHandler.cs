@@ -3,14 +3,18 @@ using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.BuildingBlocks.Infrastructure;
+using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.DeleteGroupMessageForMe;
 
-internal sealed class DeleteGroupMessageForMeCommandHandler(IDbConnectionFactory factory)
+internal sealed class DeleteGroupMessageForMeCommandHandler(
+    IDbConnectionFactory factory,
+    IChatterContext chatterContext)
     : ICommandHandler<DeleteGroupMessageForMeCommand>
 {
     private readonly IDbConnectionFactory _factory = factory;
+    private readonly IChatterContext _chatterContext = chatterContext;
 
     public async Task<HandlerResponse> ExecuteAsync(DeleteGroupMessageForMeCommand command, CancellationToken ct)
     {
@@ -29,7 +33,7 @@ internal sealed class DeleteGroupMessageForMeCommandHandler(IDbConnectionFactory
             {
                 MessageId = command.GroupMessageId.Value,
                 GroupChatId = command.GroupChatId.Value,
-                SenderId = command.UserId
+                SenderId = _chatterContext.ChatterId.Value,
             }, cancellationToken: ct));
 
             return result == 1

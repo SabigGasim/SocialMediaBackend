@@ -5,7 +5,7 @@ namespace SocialMediaBackend.BuildingBlocks.Application.Auth;
 
 public class AuthRequestHandlerWithResultDecoratorBase<TRequest, TResult, TRequestHandler>
     : IRequestHandler<TRequest, TResult>
-    where TRequest : IRequest<HandlerResponse<TResult>>, IRequireAuthorization, IUserRequestBase
+    where TRequest : IRequest<HandlerResponse<TResult>>, IRequireAuthorization
     where TRequestHandler : IRequestHandler<TRequest, TResult>
 {
     private readonly TRequestHandler _decorated;
@@ -26,9 +26,6 @@ public class AuthRequestHandlerWithResultDecoratorBase<TRequest, TResult, TReque
     public async Task<HandlerResponse<TResult>> ExecuteAsync(TRequest request, CancellationToken ct)
     {
         var userId = _executionContextAccessor.UserId;
-
-        request.WithUserId(userId);
-        request.WithAdminRole(true);
 
         if (_requiredPermissions.Length <= 0)
         {

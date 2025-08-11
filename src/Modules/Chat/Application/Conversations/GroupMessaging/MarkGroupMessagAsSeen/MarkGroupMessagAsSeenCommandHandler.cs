@@ -13,16 +13,18 @@ namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessagi
 internal sealed class MarkGroupMessagAsSeenCommandHandler(
     IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler,
     IChatRepository chatRepository,
-    IUserLockMangaer lockMangaer)
+    IUserLockMangaer lockMangaer,
+    IChatterContext chatterContext)
     : ICommandHandler<MarkGroupMessageAsSeenCommand, GroupMessageId?>
 {
     private readonly IAuthorizationHandler<GroupChat, GroupChatId> _authorizationHandler = authorizationHandler;
     private readonly IChatRepository _chatRepository = chatRepository;
     private readonly IUserLockMangaer _lockMangaer = lockMangaer;
+    private readonly IChatterContext _chatterContext = chatterContext;
 
     public async Task<HandlerResponse<GroupMessageId?>> ExecuteAsync(MarkGroupMessageAsSeenCommand command, CancellationToken ct)
     {
-        var chatterId = new ChatterId(command.UserId);
+        var chatterId = _chatterContext.ChatterId;
 
         var authorizationResult = await _authorizationHandler.AuthorizeAsync(chatterId, command.GroupChatId);
 
@@ -31,7 +33,7 @@ internal sealed class MarkGroupMessagAsSeenCommandHandler(
             return authorizationResult;
         }
 
-        await using (await _lockMangaer.AcquireLockAsync(command.UserId.ToString(), $"MarkGroupMessage({command.GroupChatId.Value})"))
+        await using (await _lockMangaer.AcquireLockAsync(chatterId.Value.ToString(), $"MarkGroupMessage({command.GroupChatId.Value})"))
         {
             var messageId = await _chatRepository.MarkGroupMessagesAsSeenAsync(command.GroupChatId, chatterId);
 

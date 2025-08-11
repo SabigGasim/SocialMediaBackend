@@ -12,12 +12,13 @@ namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessag
 
 internal sealed class CreateDirectMessageCommandHandler(
     ChatDbContext context,
-    IAuthorizationHandler<DirectChat> authorizationHandler
-    )
+    IAuthorizationHandler<DirectChat> authorizationHandler,
+    IChatterContext chatterContext)
     : ISingleUserCommandHandler<CreateDirectMessageCommand, DirectMessageMessage, SendDirectMessageResponse>
 {
     private readonly ChatDbContext _context = context;
     private readonly IAuthorizationHandler<DirectChat> _authorizationHandler = authorizationHandler;
+    private readonly IChatterContext _chatterContext = chatterContext;
 
     public async Task<HandlerResponse<SingleUserResponse<DirectMessageMessage, SendDirectMessageResponse>>> ExecuteAsync(CreateDirectMessageCommand command, CancellationToken ct)
     {
@@ -27,7 +28,7 @@ internal sealed class CreateDirectMessageCommandHandler(
             return ("You have to create a chat with the user before sending a message", HandlerResponseStatus.Conflict);
         }
 
-        var senderId = new ChatterId(command.UserId);
+        var senderId = _chatterContext.ChatterId;
 
         if (!_authorizationHandler.Authorize(senderId, chat))
         {

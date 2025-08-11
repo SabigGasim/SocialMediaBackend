@@ -8,20 +8,7 @@ namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessag
 
 [HasPermission(Permissions.CreateDirectChat)]
 public sealed class CreateDirectChatCommand(Guid otherChatterId)
-    : CommandBase<CreateDirectChatResponse>, IUserRequest
+    : CommandBase<CreateDirectChatResponse>, IRequireAuthorization
 {
-    public Guid UserId { get; private set; }
-
-    public bool IsAdmin { get; private set; }
     public ChatterId OtherChatterId { get; } = new(otherChatterId);
-
-    public void WithAdminRole(bool isAdmin)
-    {
-        IsAdmin = isAdmin;
-    }
-
-    public void WithUserId(Guid userId)
-    {
-        UserId = userId;
-    }
 }

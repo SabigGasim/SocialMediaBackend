@@ -10,19 +10,15 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.DeleteDirectMessageForEveryone;
 
-internal sealed class DeleteDirectMessageForEveryoneCommandHandler
+internal sealed class DeleteDirectMessageForEveryoneCommandHandler(
+    ChatDbContext context,
+    IAuthorizationHandler<DirectChat> authorizationHandler,
+    IChatterContext chatterContext)
     : ISingleUserCommandHandler<DeleteDirectMessageForEveryoneCommand, DeleteDirectMessageMessage>
 {
-    private readonly ChatDbContext _context;
-    private readonly IAuthorizationHandler<DirectChat> _authorizationHandler;
-
-    public DeleteDirectMessageForEveryoneCommandHandler(
-        ChatDbContext context,
-        IAuthorizationHandler<DirectChat> authorizationHandler)
-    {
-        _context = context;
-        _authorizationHandler = authorizationHandler;
-    }
+    private readonly ChatDbContext _context = context;
+    private readonly IAuthorizationHandler<DirectChat> _authorizationHandler = authorizationHandler;
+    private readonly IChatterContext _chatterContext = chatterContext;
 
     public async Task<HandlerResponse<SingleUserResponse<DeleteDirectMessageMessage>>> ExecuteAsync(DeleteDirectMessageForEveryoneCommand command, CancellationToken ct)
     {
@@ -36,7 +32,7 @@ internal sealed class DeleteDirectMessageForEveryoneCommandHandler
             return ("Chat with the given Id was not found", HandlerResponseStatus.NotFound, command.ChatId.Value);
         }
 
-        var chatterId = new ChatterId(command.UserId);
+        var chatterId = _chatterContext.ChatterId;
 
         if (!_authorizationHandler.Authorize(chatterId, chat))
         {

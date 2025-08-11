@@ -8,22 +8,8 @@ namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessagi
 
 [HasPermission(Permissions.CreateGroupMessage)]
 public sealed class CreateGroupMessageCommand(Guid chatId, string text)
-    : GroupCommandBase<CreateGroupMessageMessage, SendGroupMessageResponse>, IUserRequest
+    : GroupCommandBase<CreateGroupMessageMessage, SendGroupMessageResponse>, IRequireAuthorization
 {
     public GroupChatId ChatId { get; } = new(chatId);
     public string Text { get; } = text;
-
-    public Guid UserId { get; private set; }
-    public bool IsAdmin { get; private set; }
-
-    public void WithAdminRole(bool isAdmin)
-    {
-        new HasPermissionAttribute(Permissions.CreateGroupMessage);
-        IsAdmin = isAdmin;
-    }
-
-    public void WithUserId(Guid userId)
-    {
-        UserId = userId;
-    }
 }

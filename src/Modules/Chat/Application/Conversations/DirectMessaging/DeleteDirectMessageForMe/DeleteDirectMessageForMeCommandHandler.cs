@@ -9,22 +9,19 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessaging.DeleteDirectMessageForMe;
 
-internal sealed class DeleteDirectMessageForMeCommandHandler : ICommandHandler<DeleteDirectMessageForMeCommand>
+internal sealed class DeleteDirectMessageForMeCommandHandler(
+    ChatDbContext context,
+    IAuthorizationHandler<UserDirectChat> authorizationHandler,
+    IChatterContext chatterContext) 
+    : ICommandHandler<DeleteDirectMessageForMeCommand>
 {
-    private readonly ChatDbContext _context;
-    private readonly IAuthorizationHandler<UserDirectChat> _authorizationHandler;
-
-    public DeleteDirectMessageForMeCommandHandler(
-        ChatDbContext context,
-        IAuthorizationHandler<UserDirectChat> authorizationHandler)
-    {
-        _context = context;
-        _authorizationHandler = authorizationHandler;
-    }
+    private readonly ChatDbContext _context = context;
+    private readonly IAuthorizationHandler<UserDirectChat> _authorizationHandler = authorizationHandler;
+    private readonly IChatterContext _chatterContext = chatterContext;
 
     public async Task<HandlerResponse> ExecuteAsync(DeleteDirectMessageForMeCommand command, CancellationToken ct)
     {
-        var chatterId = new ChatterId(command.UserId);
+        var chatterId = _chatterContext.ChatterId;
 
         var chat = await _context.UserDirectChats
             .Where(x => x.DirectChatId == command.DirectChatId)

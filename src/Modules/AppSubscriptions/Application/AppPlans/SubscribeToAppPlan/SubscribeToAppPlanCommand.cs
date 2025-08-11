@@ -10,13 +10,8 @@ namespace SocialMediaBackend.Modules.AppSubscriptions.Application.AppPlans.Subsc
 
 [HasPermission(Permissions.SubscribeToAppPlan)]
 public sealed class SubscribeToAppPlanCommand(string tier, string interval) 
-    : CommandBase<CreateCheckoutSessionResponse>, IUserRequest
+    : CommandBase<CreateCheckoutSessionResponse>, IRequireAuthorization
 {
-    public Guid UserId { get; private set; }
-    public bool IsAdmin { get; private set; }
     public AppSubscriptionTier AppPlanTier { get; } = Enum.Parse<AppSubscriptionTier>(tier, ignoreCase: true);
     public PaymentInterval PaymentInterval { get; } = Enum.Parse<PaymentInterval>(interval, ignoreCase: true);
-
-    public void WithAdminRole(bool isAdmin) => IsAdmin = isAdmin;
-    public void WithUserId(Guid userId) => UserId = userId;
 }

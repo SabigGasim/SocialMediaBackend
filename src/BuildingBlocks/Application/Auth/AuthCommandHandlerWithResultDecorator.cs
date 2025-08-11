@@ -6,7 +6,7 @@ namespace SocialMediaBackend.BuildingBlocks.Application.Auth;
 public sealed class AuthCommandHandlerWithResultDecorator<TRequest, TResult>
     : AuthRequestHandlerWithResultDecoratorBase<TRequest, TResult, ICommandHandler<TRequest, TResult>>,
     ICommandHandler<TRequest, TResult>
-    where TRequest : ICommand<HandlerResponse<TResult>>, IUserRequestBase, IRequireAuthorization
+    where TRequest : ICommand<HandlerResponse<TResult>>, IRequireAuthorization
 {
     public AuthCommandHandlerWithResultDecorator(
         ICommandHandler<TRequest, TResult> decorated,

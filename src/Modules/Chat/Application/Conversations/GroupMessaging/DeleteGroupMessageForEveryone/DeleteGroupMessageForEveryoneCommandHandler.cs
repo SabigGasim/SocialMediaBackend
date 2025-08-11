@@ -12,15 +12,17 @@ namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessagi
 
 internal sealed class DeleteGroupMessageForEveryoneCommandHandler(
     ChatDbContext context,
-    IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler)
+    IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler,
+    IChatterContext chatterContext)
     : IGroupCommandHandler<DeleteGroupMessageForEveryoneCommand, DeleteGroupMessageMessage>
 {
     private readonly ChatDbContext _context = context;
     private readonly IAuthorizationHandler<GroupChat, GroupChatId> _authorizationHandler = authorizationHandler;
+    private readonly IChatterContext _chatterContext = chatterContext;
 
     public async Task<HandlerResponse<GroupResponse<DeleteGroupMessageMessage>>> ExecuteAsync(DeleteGroupMessageForEveryoneCommand command, CancellationToken ct)
     {
-        var chatterId = new ChatterId(command.UserId);
+        var chatterId = _chatterContext.ChatterId;
 
         var authorizationResult = await _authorizationHandler.AuthorizeAsync(chatterId, command.ChatId, ct);
 

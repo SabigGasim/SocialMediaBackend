@@ -1,5 +1,4 @@
 ﻿using SocialMediaBackend.BuildingBlocks.Application.Requests;
-using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.Modules.Chat.Domain.Chatters;
 using SocialMediaBackend.Modules.Chat.Infrastructure.Domain.Conversations;
 using SocialMediaBackend.Modules.Chat.Application.Auth;
@@ -11,25 +10,32 @@ namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessagi
 
 internal sealed class GetAllGroupMessagesQueryHandler(
     IChatRepository chatRepository,
-    IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler)
+    IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler,
+    IChatterContext chatterContext)
     : IQueryHandler<GetAllGroupMessagesQuery, GetAllGroupMessagesResponse>
 {
     private readonly IChatRepository _chatRepository = chatRepository;
     private readonly IAuthorizationHandler<GroupChat, GroupChatId> _authorizationHandler = authorizationHandler;
+    private readonly IChatterContext _chatterContext = chatterContext;
 
     public async Task<HandlerResponse<GetAllGroupMessagesResponse>> ExecuteAsync(GetAllGroupMessagesQuery query, CancellationToken ct)
     {
-        var chatterId = new ChatterId(query.UserId);
-
-        var authorizationResult = await _authorizationHandler.AuthorizeAsync(chatterId, query.GroupChatId, ct);
+        var authorizationResult = await _authorizationHandler.AuthorizeAsync(
+            _chatterContext.ChatterId,
+            query.GroupChatId, 
+            ct);
 
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;
         }
 
-        var messages = await _chatRepository
-            .GetAllGroupChatMessages(chatterId, query.GroupChatId, query.Page, query.PageSize, ct);
+        var messages = await _chatRepository.GetAllGroupChatMessages(
+            _chatterContext.ChatterId, 
+            query.GroupChatId, 
+            query.Page, 
+            query.PageSize, 
+            ct);
 
         return messages.MapToResponse();
     }

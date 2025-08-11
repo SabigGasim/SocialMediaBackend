@@ -4,7 +4,7 @@ using System.Reflection;
 namespace SocialMediaBackend.BuildingBlocks.Application.Auth;
 
 public abstract class AuthRequestHandlerDecoratorBase<TRequest, TRequestHandler> : IRequestHandler<TRequest>
-    where TRequest : IRequest<HandlerResponse>, IUserRequestBase, IRequireAuthorization
+    where TRequest : IRequest<HandlerResponse>, IRequireAuthorization
     where TRequestHandler : IRequestHandler<TRequest>
 {
     private readonly TRequestHandler _decorated;
@@ -25,9 +25,6 @@ public abstract class AuthRequestHandlerDecoratorBase<TRequest, TRequestHandler>
     public async Task<HandlerResponse> ExecuteAsync(TRequest request, CancellationToken ct)
     {
         var userId = _executionContext.UserId;
-
-        request.WithUserId(userId);
-        request.WithAdminRole(true);
 
         if (_requiredPermissions.Length <= 0)
         {

@@ -8,14 +8,15 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.LeaveGroupChat;
 
-internal sealed class LeaveGroupChatCommandHandler(ChatDbContext context)
+internal sealed class LeaveGroupChatCommandHandler(ChatDbContext context, IChatterContext chatterContext)
     : IGroupCommandHandler<LeaveGroupChatCommand, GroupChatLeftMessage>
 {
     private readonly ChatDbContext _context = context;
+    private readonly IChatterContext _chatterContext = chatterContext;
 
     public async Task<HandlerResponse<GroupResponse<GroupChatLeftMessage>>> ExecuteAsync(LeaveGroupChatCommand command, CancellationToken ct)
     {
-        var chatterId = new ChatterId(command.UserId);
+        var chatterId = _chatterContext.ChatterId;
 
         var group = await _context.GroupChats
             .Where(x => x.Id == command.GroupChatId)

@@ -3,13 +3,17 @@ using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.Modules.Users.Application.Mappings;
+using SocialMediaBackend.Modules.Users.Domain.Users;
 using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.FollowUser;
 
-internal sealed class FollowUserCommandHandler(UsersDbContext context) : ICommandHandler<FollowUserCommand, FollowUserResponse>
+internal sealed class FollowUserCommandHandler(
+    UsersDbContext context,
+    IUserContext userContext) : ICommandHandler<FollowUserCommand, FollowUserResponse>
 {
     private readonly UsersDbContext _context = context;
+    private readonly IUserContext _userContext = userContext;
 
     public async Task<HandlerResponse<FollowUserResponse>> ExecuteAsync(FollowUserCommand command, CancellationToken ct)
     {
@@ -22,7 +26,7 @@ internal sealed class FollowUserCommandHandler(UsersDbContext context) : IComman
             return ("User with the given Id was not found", HandlerResponseStatus.NotFound, command.UserToFollowId);
         }
 
-        var result = userToFollow.FollowOrRequestFollow(new(command.UserId));
+        var result = userToFollow.FollowOrRequestFollow(_userContext.UserId);
         if (!result.IsSuccess)
         {
             return result;

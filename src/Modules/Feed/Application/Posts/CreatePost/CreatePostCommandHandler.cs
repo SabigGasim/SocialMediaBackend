@@ -9,13 +9,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Posts.CreatePost;
 
-internal sealed class CreatePostCommandHandler(FeedDbContext context) : ICommandHandler<CreatePostCommand, CreatePostResponse>
+internal sealed class CreatePostCommandHandler(
+    FeedDbContext context,
+    IAuthorContext authorContext) : ICommandHandler<CreatePostCommand, CreatePostResponse>
 {
     private readonly FeedDbContext _context = context;
+    private readonly IAuthorContext _authorContext = authorContext;
 
     public async Task<HandlerResponse<CreatePostResponse>> ExecuteAsync(CreatePostCommand command, CancellationToken ct)
     {
-        var author = await _context.Authors.FirstAsync(x => x.Id == new AuthorId(command.UserId), ct);
+        var author = await _context.Authors.FirstAsync(x => x.Id == _authorContext.AuthorId, ct);
 
         var result = author.CreatePost(command.Text, command.MediaItems.Select(x => Media.Create(x)));
         if (!result.IsSuccess)

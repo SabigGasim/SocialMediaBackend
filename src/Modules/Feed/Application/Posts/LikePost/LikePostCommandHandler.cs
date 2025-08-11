@@ -11,16 +11,18 @@ namespace SocialMediaBackend.Modules.Feed.Application.Posts.LikePost;
 
 internal sealed class LikePostCommandHandler(
     FeedDbContext context,
-    IAuthorizationHandler<Post, PostId> authorizationHandler) : ICommandHandler<LikePostCommand>
+    IAuthorizationHandler<Post, PostId> authorizationHandler,
+    IAuthorContext authorContext) : ICommandHandler<LikePostCommand>
 {
     private readonly FeedDbContext _context = context;
     private readonly IAuthorizationHandler<Post, PostId> _authorizationHandler = authorizationHandler;
+    private readonly IAuthorContext _authorContext = authorContext;
 
     public async Task<HandlerResponse> ExecuteAsync(LikePostCommand command, CancellationToken ct)
     {
         var post = await _context.Posts
             .Include(x => x.Author)
-            .Include(x => x.Likes.Where(p => p.UserId == new AuthorId(command.UserId)))
+            .Include(x => x.Likes.Where(p => p.UserId == _authorContext.AuthorId))
             .Where(x => x.Id == command.PostId)
             .FirstOrDefaultAsync(ct);
 
@@ -29,14 +31,14 @@ internal sealed class LikePostCommandHandler(
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, command.PostId);
         }
 
-        var authorId = new AuthorId(command.UserId);
+        var authorId = _authorContext.AuthorId;
 
-        if (!await _authorizationHandler.AuthorizeAsync(authorId, command.PostId, new(command.IsAdmin), ct))
+        if (!await _authorizationHandler.AuthorizeAsync(authorId, command.PostId, new(true), ct))
         {
             return ("The author limits who can view their posts", HandlerResponseStatus.Unauthorized, post.AuthorId);
         }
 
-        var result = post.AddLike(new(command.UserId));
+        var result = post.AddLike(_authorContext.AuthorId);
         if (!result.IsSuccess)
         {
             return result;

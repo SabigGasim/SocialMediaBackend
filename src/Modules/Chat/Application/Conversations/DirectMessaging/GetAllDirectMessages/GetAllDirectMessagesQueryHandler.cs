@@ -10,25 +10,32 @@ namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessag
 
 internal sealed class GetAllDirectMessagesQueryHandler(
     IChatRepository chatRepository,
-    IAuthorizationHandler<DirectChat, DirectChatId> authorizationHandler)
+    IAuthorizationHandler<DirectChat, DirectChatId> authorizationHandler,
+    IChatterContext chatterContext)
     : IQueryHandler<GetAllDirectMessagesQuery, GetAllDirectMessagesResponse>
 {
     private readonly IChatRepository _chatRepository = chatRepository;
     private readonly IAuthorizationHandler<DirectChat, DirectChatId> _authorizationHandler = authorizationHandler;
+    private readonly IChatterContext _chatterContext = chatterContext;
 
     public async Task<HandlerResponse<GetAllDirectMessagesResponse>> ExecuteAsync(GetAllDirectMessagesQuery query, CancellationToken ct)
     {
-        var chatterId = new ChatterId(query.UserId);
-
-        var authorizationResult = await _authorizationHandler.AuthorizeAsync(chatterId, query.DirectChatId, ct);
+        var authorizationResult = await _authorizationHandler.AuthorizeAsync(
+            _chatterContext.ChatterId, 
+            query.DirectChatId, 
+            ct);
 
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;
         }
 
-        var messages = await _chatRepository
-            .GetAllDirectChatMessages(chatterId, query.DirectChatId, query.Page, query.PageSize, ct);
+        var messages = await _chatRepository.GetAllDirectChatMessages(
+            _chatterContext.ChatterId,
+            query.DirectChatId,
+            query.Page,
+            query.PageSize, 
+            ct);
 
         return messages.MapToResponse();
     }

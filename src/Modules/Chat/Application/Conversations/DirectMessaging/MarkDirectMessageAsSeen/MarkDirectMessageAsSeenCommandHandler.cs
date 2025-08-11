@@ -10,15 +10,17 @@ namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessag
 
 internal sealed class MarkDirectMessageAsSeenCommandHandler(
     IAuthorizationHandler<DirectChat, DirectChatId> authorizationHandler,
-    IChatRepository chatRepository)
+    IChatRepository chatRepository,
+    IChatterContext chatterContext)
     : ICommandHandler<MarkDirectMessageAsSeenCommand>
 {
     private readonly IAuthorizationHandler<DirectChat, DirectChatId> _authorizationHandler = authorizationHandler;
     private readonly IChatRepository _chatRepository = chatRepository;
+    private readonly IChatterContext _chatterContext = chatterContext;
 
     public async Task<HandlerResponse> ExecuteAsync(MarkDirectMessageAsSeenCommand command, CancellationToken ct)
     {
-        var chatterId = new ChatterId(command.UserId);
+        var chatterId = _chatterContext.ChatterId;
 
         var authorizationResult = await _authorizationHandler.AuthorizeAsync(chatterId, command.DirectChatId);
 

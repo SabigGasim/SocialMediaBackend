@@ -5,13 +5,6 @@ public interface IUserRequestBase : IRequest, IRequireAuthorization
     void WithAdminRole(bool isAdmin);
 }
 
-public interface IUserRequest : IUserRequestBase
-{
-    Guid UserId { get; }
-    bool IsAdmin { get; }
-}
-
-
 public interface IOptionalUserRequest : IUserRequestBase
 {
     Guid? UserId { get; }

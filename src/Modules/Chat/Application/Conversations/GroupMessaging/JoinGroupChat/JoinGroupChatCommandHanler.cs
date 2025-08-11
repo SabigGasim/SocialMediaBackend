@@ -8,14 +8,15 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.JoinGroupChat;
 
-public class JoinGroupChatCommandHanler(ChatDbContext context)
+public class JoinGroupChatCommandHanler(ChatDbContext context, IChatterContext chatterContext)
     : IGroupCommandHandler<JoinGroupChatCommand, GroupChatJoinedMessage>
 {
     private readonly ChatDbContext _context = context;
+    private readonly IChatterContext _chatterContext = chatterContext;
 
     public async Task<HandlerResponse<GroupResponse<GroupChatJoinedMessage>>> ExecuteAsync(JoinGroupChatCommand command, CancellationToken ct)
     {
-        var chatterId = new ChatterId(command.UserId);
+        var chatterId = _chatterContext.ChatterId;
 
         var group = await _context.GroupChats
             .Where(x => x.Id == command.GroupChatId)

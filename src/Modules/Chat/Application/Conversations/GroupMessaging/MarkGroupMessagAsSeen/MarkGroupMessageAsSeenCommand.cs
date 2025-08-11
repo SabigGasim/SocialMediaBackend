@@ -8,20 +8,7 @@ using SocialMediaBackend.Modules.Chat.Domain.Messages.GroupMessages;
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.MarkGroupMessagAsSeen;
 
 [HasPermission(Permissions.MarkGroupMessageAsSeen)]
-public class MarkGroupMessageAsSeenCommand(Guid groupId) : CommandBase<GroupMessageId?>, IUserRequest
+public class MarkGroupMessageAsSeenCommand(Guid groupId) : CommandBase<GroupMessageId?>, IRequireAuthorization
 {
-    public Guid UserId { get; private set; }
-
-    public bool IsAdmin { get; private set; }
     public GroupChatId GroupChatId { get; } = new(groupId);
-
-    public void WithAdminRole(bool isAdmin)
-    {
-        IsAdmin = isAdmin;
-    }
-
-    public void WithUserId(Guid userId)
-    {
-        UserId = userId;
-    }
 }

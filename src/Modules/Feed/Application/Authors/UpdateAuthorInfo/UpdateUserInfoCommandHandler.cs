@@ -6,6 +6,7 @@ using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Authors.UpdateAuthorInfo;
+
 internal sealed class UpdateAuthorInfoCommandHandler(
     IDbConnectionFactory factory) : ICommandHandler<UpdateAuthorInfoCommand>
 {

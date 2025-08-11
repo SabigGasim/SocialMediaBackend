@@ -9,22 +9,8 @@ namespace SocialMediaBackend.Modules.Chat.Application.Conversations.DirectMessag
 
 [HasPermission(Permissions.DeleteDirectMessageForEveryone)]
 public class DeleteDirectMessageForEveryoneCommand(Guid chatId, Guid messageId)
-    : SingleUserCommandBase<DeleteDirectMessageMessage>, IUserRequest
+    : SingleUserCommandBase<DeleteDirectMessageMessage>, IRequireAuthorization
 {
-    public Guid UserId { get; private set; }
-
-    public bool IsAdmin { get; private set; }
-
     public DirectChatId ChatId { get; } = new(chatId);
     public DirectMessageId MessageId { get; } = new(messageId);
-
-    public void WithAdminRole(bool isAdmin)
-    {
-        IsAdmin = isAdmin;
-    }
-
-    public void WithUserId(Guid userId)
-    {
-        UserId = userId;
-    }
 }

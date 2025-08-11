@@ -12,15 +12,17 @@ namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessagi
 
 internal sealed class PromoteMemberCommandHandler(
     ChatDbContext context,
-    IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler)
+    IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler,
+    IChatterContext chatterContext)
     : IGroupCommandHandler<PromoteMemberCommand, MemberPromotedMessage>
 {
     private readonly ChatDbContext _context = context;
     private readonly IAuthorizationHandler<GroupChat, GroupChatId> _authorizationHandler = authorizationHandler;
+    private readonly IChatterContext _chatterContext = chatterContext;
 
     public async Task<HandlerResponse<GroupResponse<MemberPromotedMessage>>> ExecuteAsync(PromoteMemberCommand command, CancellationToken ct)
     {
-        var promoterId = new ChatterId(command.UserId);
+        var promoterId = _chatterContext.ChatterId;
 
         var authorizationResult = await _authorizationHandler.AuthorizeAsync(promoterId, command.GroupChatId, ct);
 

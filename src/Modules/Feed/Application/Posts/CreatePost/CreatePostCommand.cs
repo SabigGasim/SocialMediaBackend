@@ -9,21 +9,8 @@ namespace SocialMediaBackend.Modules.Feed.Application.Posts.CreatePost;
 [HasPermission(Permissions.CreatePost)]
 public sealed class CreatePostCommand(
     string text,
-    IEnumerable<string> mediaItems) : CommandBase<CreatePostResponse>, IUserRequest
+    IEnumerable<string> mediaItems) : CommandBase<CreatePostResponse>, IRequireAuthorization
 {
     public string Text { get; } = text;
     public IEnumerable<string> MediaItems { get; } = mediaItems;
-
-    public Guid UserId { get; private set; } = default!;
-    public bool IsAdmin { get; private set; }
-
-    public void WithAdminRole(bool isAdmin)
-    {
-        IsAdmin = isAdmin;
-    }
-
-    public void WithUserId(Guid userId)
-    {
-        UserId = userId;
-    }
 }

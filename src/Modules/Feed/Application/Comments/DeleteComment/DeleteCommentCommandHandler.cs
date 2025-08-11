@@ -11,18 +11,20 @@ namespace SocialMediaBackend.Modules.Feed.Application.Comments.DeleteComment;
 
 internal sealed class DeleteCommentCommandHandler(
     FeedDbContext context,
-    IAuthorizationHandler<Comment, CommentId> authorizationHandler) : ICommandHandler<DeleteCommentCommand>
+    IAuthorizationHandler<Comment, CommentId> authorizationHandler,
+    IAuthorContext authorContext) : ICommandHandler<DeleteCommentCommand>
 {
     private readonly FeedDbContext _context = context;
     private readonly IAuthorizationHandler<Comment, CommentId> _authorizationHandler = authorizationHandler;
+    private readonly IAuthorContext _authorContext = authorContext;
 
     public async Task<HandlerResponse> ExecuteAsync(DeleteCommentCommand command, CancellationToken ct)
     {
-        var authorId = new AuthorId(command.UserId);
+        var authorId = _authorContext.AuthorId;
         var commentId = command.CommentId;
         var postId = command.PostId;
 
-        if (!await _authorizationHandler.IsAdminOrResourceOwnerAsync(authorId, commentId, new(command.IsAdmin), ct))
+        if (!await _authorizationHandler.IsAdminOrResourceOwnerAsync(authorId, commentId, new(true), ct))
         {
             return ("Forbidden", HandlerResponseStatus.Unauthorized);
         }

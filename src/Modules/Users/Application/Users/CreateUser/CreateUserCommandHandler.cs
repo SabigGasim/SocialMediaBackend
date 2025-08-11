@@ -10,18 +10,12 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Domain.Roles;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.CreateUser;
 
-internal sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, CreateUserResponse>
+internal sealed class CreateUserCommandHandler(
+    IUserExistsChecker userExistsChecker,
+    UsersDbContext context) : ICommandHandler<CreateUserCommand, CreateUserResponse>
 {
-    private readonly IUserExistsChecker _userExistsChecker;
-    private readonly UsersDbContext _context;
-
-    public CreateUserCommandHandler(
-        IUserExistsChecker userExistsChecker,
-        UsersDbContext context)
-    {
-        _userExistsChecker = userExistsChecker;
-        _context = context;
-    }
+    private readonly IUserExistsChecker _userExistsChecker = userExistsChecker;
+    private readonly UsersDbContext _context = context;
 
     public async Task<HandlerResponse<CreateUserResponse>> ExecuteAsync(CreateUserCommand command, CancellationToken ct)
     {
@@ -37,7 +31,7 @@ internal sealed class CreateUserCommandHandler : ICommandHandler<CreateUserComma
             return result;
         }
 
-        var user = result.Payload;
+        User user = result.Payload;
 
         _context.Users.Add(user);
         _context.Set<UserRole>().Add(new UserRole(Roles.User, user.Id));

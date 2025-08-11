@@ -48,7 +48,7 @@ internal sealed class SubscribeToAppPlanCommandHandler(
         _context.SubscriptionPayments.Add(subscriptionPayment);
 
         return await _paymentAntiCorruptionLayer.CreateSubscriptionCheckoutSessionAsync(
-            command.UserId,
+            _userContext.UserId.Value,
             AppSubscriptionProduct.Reference,
             appPlan.Id.Value,
             successUrl: "https://localhost:7251/",

@@ -6,14 +6,10 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.GetAllUsers;
 
-internal sealed class GetAllUsersQueryHandler : IQueryHandler<GetAllUsersQuery, GetAllUsersResponse>
+internal sealed class GetAllUsersQueryHandler(UsersDbContext context) 
+    : IQueryHandler<GetAllUsersQuery, GetAllUsersResponse>
 {
-    private readonly UsersDbContext _context;
-
-    public GetAllUsersQueryHandler(UsersDbContext context)
-    {
-        _context = context;
-    }
+    private readonly UsersDbContext _context = context;
 
     public async Task<HandlerResponse<GetAllUsersResponse>> ExecuteAsync(GetAllUsersQuery query, CancellationToken ct)
     {

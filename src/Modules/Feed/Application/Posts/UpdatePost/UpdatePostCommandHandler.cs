@@ -10,10 +10,12 @@ namespace SocialMediaBackend.Modules.Feed.Application.Posts.UpdatePost;
 
 internal sealed class UpdatePostCommandHandler(
     FeedDbContext context,
-    IAuthorizationHandler<Post, PostId> authorizationHandler) : ICommandHandler<UpdatePostCommand>
+    IAuthorizationHandler<Post, PostId> authorizationHandler,
+    IAuthorContext authorContext) : ICommandHandler<UpdatePostCommand>
 {
     public readonly FeedDbContext _context = context;
     private readonly IAuthorizationHandler<Post, PostId> _authorizationHandler = authorizationHandler;
+    private readonly IAuthorContext _authorContext = authorContext;
 
     public async Task<HandlerResponse> ExecuteAsync(UpdatePostCommand command, CancellationToken ct)
     {
@@ -23,9 +25,7 @@ internal sealed class UpdatePostCommandHandler(
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound);
         }
 
-        var authorId = new AuthorId(command.UserId);
-
-        if (!await _authorizationHandler.AuthorizeAsync(authorId, command.PostId, new(command.IsAdmin), ct))
+        if (!await _authorizationHandler.AuthorizeAsync(_authorContext.AuthorId, command.PostId, new(true), ct))
         {
             return ("Forbidden", HandlerResponseStatus.Unauthorized);
         }

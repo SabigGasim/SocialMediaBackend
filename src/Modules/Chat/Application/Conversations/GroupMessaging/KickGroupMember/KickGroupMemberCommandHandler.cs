@@ -12,15 +12,17 @@ namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessagi
 
 internal sealed class KickGroupMemberCommandHandler(
     ChatDbContext context,
-    IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler)
+    IAuthorizationHandler<GroupChat, GroupChatId> authorizationHandler,
+    IChatterContext chatterContext)
     : IGroupCommandHandler<KickGroupMemberCommand, KickGroupMemberMessage>
 {
     private readonly ChatDbContext _context = context;
     private readonly IAuthorizationHandler<GroupChat, GroupChatId> _authorizationHandler = authorizationHandler;
+    private readonly IChatterContext _chatterContext = chatterContext;
 
     public async Task<HandlerResponse<GroupResponse<KickGroupMemberMessage>>> ExecuteAsync(KickGroupMemberCommand command, CancellationToken ct)
     {
-        var kickerId = new ChatterId(command.UserId);
+        var kickerId = _chatterContext.ChatterId;
 
         var authorizationResult = await _authorizationHandler.AuthorizeAsync(kickerId, command.GroupChatId, ct);
 

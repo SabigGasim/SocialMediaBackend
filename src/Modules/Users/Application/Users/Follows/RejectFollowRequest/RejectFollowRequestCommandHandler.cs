@@ -8,16 +8,19 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.Follows.RejectFollowRequest;
 
-internal sealed class RejectFollowRequestCommandHandler(UsersDbContext context)
+internal sealed class RejectFollowRequestCommandHandler(
+    UsersDbContext context,
+    IUserContext userContext)
     : ICommandHandler<RejectFollowRequestCommand>
 {
     private readonly UsersDbContext _context = context;
+    private readonly IUserContext _userContext = userContext;
 
     public async Task<HandlerResponse> ExecuteAsync(RejectFollowRequestCommand command, CancellationToken ct)
     {
         var user = await _context.Users
             .Include(x => x.Followers.Where(f => f.Status == FollowStatus.Pending))
-            .FirstAsync(x => x.Id == new UserId(command.UserId), ct);
+            .FirstAsync(x => x.Id == _userContext.UserId, ct);
 
         var result = user.RejectPendingFollowRequest(command.UserToRejectId);
         if (!result.IsSuccess)

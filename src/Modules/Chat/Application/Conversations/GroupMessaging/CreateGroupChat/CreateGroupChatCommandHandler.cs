@@ -9,14 +9,15 @@ using SocialMediaBackend.Modules.Chat.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Chat.Application.Conversations.GroupMessaging.CreateGroupChat;
 
-internal sealed class CreateGroupChatCommandHandler(ChatDbContext context)
+internal sealed class CreateGroupChatCommandHandler(ChatDbContext context, IChatterContext chatterContext)
     : IMultipleUsersCommandHandler<CreateGroupChatCommand, CreateGroupChatMessage, CreateGroupChatResponse>
 {
     private readonly ChatDbContext _context = context;
+    private readonly IChatterContext _chatterContext = chatterContext;
 
     public async Task<HandlerResponse<MultipleUsersResponse<CreateGroupChatMessage, CreateGroupChatResponse>>> ExecuteAsync(CreateGroupChatCommand command, CancellationToken ct)
     {
-        var ownerId = new ChatterId(command.UserId);
+        var ownerId = _chatterContext.ChatterId;
 
         var requestedMemberIds = command.MemberIds
             .Select(x => new ChatterId(x))

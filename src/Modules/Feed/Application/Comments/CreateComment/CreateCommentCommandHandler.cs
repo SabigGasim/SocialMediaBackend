@@ -3,6 +3,7 @@ using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
 using SocialMediaBackend.Modules.Feed.Application.Auth;
 using SocialMediaBackend.Modules.Feed.Application.Mappings;
+using SocialMediaBackend.Modules.Feed.Domain.Authors;
 using SocialMediaBackend.Modules.Feed.Domain.Posts;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
@@ -10,25 +11,34 @@ namespace SocialMediaBackend.Modules.Feed.Application.Comments.CreateComment;
 
 internal sealed class CreateCommentCommandHandler(
     FeedDbContext context,
-    IAuthorizationHandler<Post, PostId> authorizationHandler)
+    IAuthorizationHandler<Post, PostId> authorizationHandler,
+    IAuthorContext authorContext)
     : ICommandHandler<CreateCommentCommand, CreateCommentResponse>
 {
     private readonly FeedDbContext _context = context;
     private readonly IAuthorizationHandler<Post, PostId> _authorizationHandler = authorizationHandler;
+    private readonly IAuthorContext _authorContext = authorContext;
 
     public async Task<HandlerResponse<CreateCommentResponse>> ExecuteAsync(CreateCommentCommand command, CancellationToken ct)
     {
         var post = await _context.Posts.FindAsync([command.PostId], ct);
         if (post is null)
+        {
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, command.PostId);
+        }
 
-        var authorized = await _authorizationHandler
-            .AuthorizeAsync(new(command.UserId), command.PostId, new(command.IsAdmin), ct);
+        var authorized = await _authorizationHandler.AuthorizeAsync(
+            _authorContext.AuthorId, 
+            command.PostId, 
+            new AuthOptions(IsAdmin: true),
+            ct);
 
         if (!authorized)
+        {
             return ("The author limits who can view their posts", HandlerResponseStatus.Unauthorized, post.AuthorId);
+        }
 
-        var comment = post.AddComment(command.Text, new(command.UserId));
+        var comment = post.AddComment(command.Text, _authorContext.AuthorId);
 
         _context.Add(comment);
 

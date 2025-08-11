@@ -7,20 +7,7 @@ using SocialMediaBackend.BuildingBlocks.Application.Auth;
 namespace SocialMediaBackend.Modules.Feed.Application.Posts.UnlikePost;
 
 [HasPermission(Permissions.UnlikePost)]
-public sealed class UnlikePostCommand(Guid postId) : CommandBase, IUserRequest
+public sealed class UnlikePostCommand(Guid postId) : CommandBase, IRequireAuthorization
 {
     public PostId PostId { get; } = new(postId);
-
-    public Guid UserId { get; private set; } = default!;
-    public bool IsAdmin { get; private set; }
-
-    public void WithAdminRole(bool isAdmin)
-    {
-        IsAdmin = isAdmin;
-    }
-
-    public void WithUserId(Guid userId)
-    {
-        UserId = userId;
-    }
 }

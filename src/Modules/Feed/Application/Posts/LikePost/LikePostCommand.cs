@@ -7,20 +7,7 @@ using SocialMediaBackend.BuildingBlocks.Application.Auth;
 namespace SocialMediaBackend.Modules.Feed.Application.Posts.LikePost;
 
 [HasPermission(Permissions.LikePost)]
-public sealed class LikePostCommand(Guid postId) : CommandBase, IUserRequest
+public sealed class LikePostCommand(Guid postId) : CommandBase, IRequireAuthorization
 {
     public PostId PostId { get; } = new(postId);
-
-    public Guid UserId { get; private set; } = default!;
-    public bool IsAdmin { get; private set; }
-
-    public void WithAdminRole(bool isAdmin)
-    {
-        IsAdmin = isAdmin;
-    }
-
-    public void WithUserId(Guid userId)
-    {
-        UserId = userId;
-    }
 }
