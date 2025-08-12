@@ -1,12 +1,16 @@
 ﻿using Autofac;
+using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Shouldly;
+using SocialMediaBackend.BuildingBlocks.Application.Auth;
+using SocialMediaBackend.BuildingBlocks.Infrastructure;
 using SocialMediaBackend.Modules.Feed.Application.Auth;
+using SocialMediaBackend.Modules.Feed.Domain.Authorization;
 using SocialMediaBackend.Modules.Feed.Domain.Authors;
 using SocialMediaBackend.Modules.Feed.Domain.Follows;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration;
+using SocialMediaBackend.Modules.Feed.Infrastructure.Security;
 using SocialMediaBackend.Modules.Feed.Tests.Core.Common;
 using SocialMediaBackend.Modules.Feed.Tests.Core.Common.Users;
 
@@ -15,8 +19,6 @@ namespace SocialMediaBackend.Modules.Feed.Tests.UnitTests.Application.Auth;
 
 public class ProfileAuthorizationHandlerBaseTests(App app) : AppTestBase(app)
 {
-    private readonly App _app = app;
-
     [Fact]
     public async Task AuthorizeAsync_ShouldReturnTrue_WhenUserIsOwner()
     {
@@ -35,10 +37,10 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : AppTestBase(app)
         var options = new AuthOptions(IsAdmin: false);
 
         // Act
-        var result = await handler.AuthorizeAsync(user.Id, resource.Id, options, TestContext.Current.CancellationToken);
+        var result = await handler.AuthorizeAsync(user.Id, resource.Id, TestContext.Current.CancellationToken);
 
         // Assert
-        result.ShouldBeTrue();
+        result.IsAuthorized.ShouldBeTrue();
     }
 
     [Fact]
@@ -60,10 +62,10 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : AppTestBase(app)
         var options = new AuthOptions(IsAdmin: false);
 
         // Act
-        var result = await handler.AuthorizeAsync(differentAuthorId, resource.Id, options, TestContext.Current.CancellationToken);
+        var result = await handler.AuthorizeAsync(differentAuthorId, resource.Id, TestContext.Current.CancellationToken);
 
         // Assert
-        result.ShouldBeFalse();
+        result.IsAuthorized.ShouldBeFalse();
     }
 
     [Fact]
@@ -71,17 +73,24 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : AppTestBase(app)
     {
         // Arrange
         await using var scope = FeedCompositionRoot.BeginLifetimeScope();
-        var handler = scope.Resolve<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
+        await using var context = scope.Resolve<FakeDbContext>();
+        var factory = scope.Resolve<IDbConnectionFactory>();
 
         var userId = AuthorId.New();
         var resourceId = FakeUserResourceId.New();
-        var options = new AuthOptions(IsAdmin: true);
+
+        var permissionManager = Substitute.For<IPermissionManager>();
+        permissionManager
+            .UserIsInRole(userId.Value, (int)Roles.AdminAuthor, TestContext.Current.CancellationToken)
+            .Returns(true);
+
+        var handler = new FakeProfileAuthorizationHandler(context, permissionManager);
 
         // Act
-        var result = await handler.IsAdminOrResourceOwnerAsync(userId, resourceId, options, TestContext.Current.CancellationToken);
+        var result = await handler.IsAdminOrResourceOwnerAsync(userId, resourceId, TestContext.Current.CancellationToken);
 
         // Assert
-        result.ShouldBeTrue();
+        result.IsAuthorized.ShouldBeTrue();
     }
 
     [Fact]
@@ -103,10 +112,10 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : AppTestBase(app)
         var options = new AuthOptions(IsAdmin: false);
 
         // Act
-        var result = await handler.IsAdminOrResourceOwnerAsync(user.Id, resource.Id, options, TestContext.Current.CancellationToken);
+        var result = await handler.IsAdminOrResourceOwnerAsync(user.Id, resource.Id, TestContext.Current.CancellationToken);
 
         // Assert
-        result.ShouldBeTrue();
+        result.IsAuthorized.ShouldBeTrue();
     }
 
     [Fact]
@@ -114,13 +123,13 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : AppTestBase(app)
     {
         // Arrange
         await using var scope = FeedCompositionRoot.BeginLifetimeScope();
-        var handler = scope.Resolve<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
+        await using var context = scope.Resolve<FakeDbContext>();
+        var factory = scope.Resolve<IDbConnectionFactory>();
 
         var user1 = AuthorFactory.Create(isPublic: false);
         var user2 = AuthorFactory.Create(isPublic: true);
 
         var adminId = AuthorId.New();
-        var options = new AuthOptions(IsAdmin: true);
 
         var resources = new List<FakeUserResource>
         {
@@ -128,11 +137,18 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : AppTestBase(app)
             FakeUserResource.Create(user2),
         }.AsQueryable();
 
+        var permissionManager = Substitute.For<IPermissionManager>();
+        permissionManager
+            .UserIsInRole(adminId.Value, (int)Roles.AdminAuthor, TestContext.Current.CancellationToken)
+            .Returns(true);
+
+        var handler = new FakeProfileAuthorizationHandler(context, permissionManager);
+
         // Act
-        var result = handler.AuthorizeQueryable(resources, adminId, options).ToList();
+        var result = await handler.AuthorizeQueryable(resources, adminId, TestContext.Current.CancellationToken);
 
         // Assert
-        result.Count.ShouldBe(resources.Count());
+        result.Count().ShouldBe(resources.Count());
     }
 
     [Fact]
@@ -156,10 +172,10 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : AppTestBase(app)
         }.AsQueryable();
 
         // Act
-        var result = handler.AuthorizeQueryable(resources, owner.Id, options).ToList();
+        var result = await handler.AuthorizeQueryable(resources, owner.Id, TestContext.Current.CancellationToken);
 
         // Assert
-        result.Count.ShouldBe(2);
+        result.Count().ShouldBe(2);
         result.All(x => x.Author.ProfileIsPublic || x.AuthorId == owner.Id).ShouldBeTrue();
     }
 
@@ -198,8 +214,12 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : AppTestBase(app)
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Act
-        var result = await handler
-            .AuthorizeQueryable(context.Set<FakeUserResource>(), follower.Id, options)
+        var querayble = await handler.AuthorizeQueryable(
+            context.Set<FakeUserResource>(),
+            follower.Id, 
+            TestContext.Current.CancellationToken);
+
+        var result = await querayble
             .Include(x => x.Author)
             .ThenInclude(x => x.Followers)
             .ToListAsync(TestContext.Current.CancellationToken);
@@ -221,7 +241,7 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : AppTestBase(app)
         await using var scope = FeedCompositionRoot.BeginLifetimeScope();
         var handler = scope.Resolve<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>();
 
-        AuthorId? anonymousAuthorId = null;
+        AuthorId ? anonymousAuthorId = null;
         var options = new AuthOptions(IsAdmin: true);
         var user1 = AuthorFactory.Create(isPublic: true);
         var user2 = AuthorFactory.Create(isPublic: false);
@@ -233,11 +253,10 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : AppTestBase(app)
         }.AsQueryable();
 
         // Act
-        var result = handler.AuthorizeQueryable(resources, anonymousAuthorId, options).ToList();
+        var result = await handler.AuthorizeQueryable(resources, anonymousAuthorId, TestContext.Current.CancellationToken);
 
         // Assert
-        result.Count.ShouldBe(1);
-        result[0].Author.ProfileIsPublic.ShouldBeTrue();
+        result.Single().Author.ProfileIsPublic.ShouldBeTrue();
     }
 
     [Fact]
@@ -245,7 +264,8 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : AppTestBase(app)
     {
         // Arrange
         await using var scope = FeedCompositionRoot.BeginLifetimeScope();
-        var context = scope.Resolve<FakeDbContext>();
+        await using var context = scope.Resolve<FakeDbContext>();
+        var permissionManager = scope.Resolve<IPermissionManager>();
 
         var options = new AuthOptions();
         var owner = AuthorFactory.Create(isPublic: true);
@@ -260,19 +280,18 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : AppTestBase(app)
 
         var resourceId = resources.First().Id;
 
-        var handler = Substitute.ForPartsOf<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>(context);
+        var handler = Substitute.ForPartsOf<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>(context, permissionManager);
         handler.AuthorizeQueryable(
             Arg.Any<IQueryable<FakeUserResource>>(),
             Arg.Any<AuthorId?>(),
-            Arg.Any<AuthOptions>())
+            TestContext.Current.CancellationToken)
                 .Returns(info => info.Arg<IQueryable<FakeUserResource>>());
 
         // Act
-        var result = handler.AuthorizeQueryable(resources, owner.Id, resourceId, options).ToList();
+        var result = await handler.AuthorizeQueryable(resources, owner.Id, resourceId, TestContext.Current.CancellationToken);
 
         // Assert
-        result.Count.ShouldBe(1);
-        result[0].Id.ShouldBe(resourceId);
+        result.Single().Id.ShouldBe(resourceId);
     }
 
     [Fact]
@@ -280,7 +299,8 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : AppTestBase(app)
     {
         // Arrange
         await using var scope = FeedCompositionRoot.BeginLifetimeScope();
-        var context = scope.Resolve<FakeDbContext>();
+        await using var context = scope.Resolve<FakeDbContext>();
+        var permissionManager = scope.Resolve<IPermissionManager>();
 
         var options = new AuthOptions();
         var nonExistentResourceId = FakeUserResourceId.New();
@@ -294,18 +314,18 @@ public class ProfileAuthorizationHandlerBaseTests(App app) : AppTestBase(app)
             FakeUserResource.Create(user2),
         }.AsQueryable();
 
-        var handler = Substitute.ForPartsOf<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>(context);
+        var handler = Substitute.ForPartsOf<ProfileAuthorizationHandlerBase<FakeUserResource, FakeUserResourceId>>(context, permissionManager);
         handler.AuthorizeQueryable(
             Arg.Any<IQueryable<FakeUserResource>>(),
             Arg.Any<AuthorId?>(),
-            Arg.Any<AuthOptions>())
+            TestContext.Current.CancellationToken)
                 .Returns(info => info.Arg<IQueryable<FakeUserResource>>());
 
         // Act
-        var result = handler.AuthorizeQueryable(resources, owner.Id, nonExistentResourceId, options).ToList();
+        var result = await handler.AuthorizeQueryable(resources, owner.Id, nonExistentResourceId, TestContext.Current.CancellationToken);
 
         // Assert
-        result.Count.ShouldBe(0);
+        result.ShouldBeEmpty();
     }
 }
 
