@@ -5,10 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using SocialMediaBackend.Api;
 using SocialMediaBackend.Api.Authentication;
 using SocialMediaBackend.BuildingBlocks.Tests;
+using SocialMediaBackend.Modules.Users.Domain.Authorization;
 using SocialMediaBackend.Modules.Users.Domain.Services;
 using SocialMediaBackend.Modules.Users.Domain.Users;
 using SocialMediaBackend.Modules.Users.Infrastructure.Configuration;
 using SocialMediaBackend.Modules.Users.Infrastructure.Data;
+using SocialMediaBackend.Modules.Users.Infrastructure.Domain.Roles;
 using System.Text;
 using System.Text.Json;
 using Xunit;
@@ -82,6 +84,7 @@ public abstract class AppTestBase(App app) : TestBase<App>
 
             context.Entry(user).Property(x => x.Id).CurrentValue = AdminId;
             await context.Users.AddAsync(user, token);
+            await context.Set<UserRole>().AddAsync(new UserRole(Roles.AdminUser, AdminId));
             await context.SaveChangesAsync(token);
         }
 
