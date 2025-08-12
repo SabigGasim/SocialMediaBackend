@@ -24,12 +24,12 @@ public abstract class AuthRequestHandlerDecoratorBase<TRequest, TRequestHandler>
 
     public async Task<HandlerResponse> ExecuteAsync(TRequest request, CancellationToken ct)
     {
-        var userId = _executionContext.UserId;
-
-        if (_requiredPermissions.Length <= 0)
+        if (_requiredPermissions.Length <= 0 || AuthorizationIsOptionalAndUserIsntAuthenticated(request))
         {
             return await _decorated.ExecuteAsync(request, ct);
         }
+
+        var userId = _executionContext.UserId;
 
         var authorized = _requiredPermissions.Length == 1
             ? await _permissionManager.UserHasPermission(userId, _requiredPermissions[0], ct)
@@ -41,6 +41,11 @@ public abstract class AuthRequestHandlerDecoratorBase<TRequest, TRequestHandler>
         }
 
         return await _decorated.ExecuteAsync(request, ct);
+    }
+
+    private bool AuthorizationIsOptionalAndUserIsntAuthenticated(TRequest request)
+    {
+        return request is IRequireOptionalAuthorizaiton && !_executionContext.IsAvailable;
     }
 
     private static int[] LoadPermissions()

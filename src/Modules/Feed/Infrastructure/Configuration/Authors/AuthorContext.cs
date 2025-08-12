@@ -3,7 +3,7 @@ using SocialMediaBackend.Modules.Feed.Domain.Authors;
 
 namespace SocialMediaBackend.Modules.Feed.Infrastructure.Configuration.Authors;
 
-public class AuthorContext(IExecutionContextAccessor context) : IAuthorContext
+public sealed class AuthorContext(IExecutionContextAccessor context) : IAuthorContext
 {
     private readonly IExecutionContextAccessor _context = context;
 

@@ -13,12 +13,12 @@ namespace SocialMediaBackend.Modules.Feed.Application.Comments.GetComment;
 internal sealed class GetCommentQueryHandler(
     FeedDbContext context,
     IAuthorizationHandler<Comment, CommentId> authorizationHandler,
-    IAuthorContext authorContext)
+    IOptionalAuthorContext authorContext)
     : IQueryHandler<GetCommentQuery, GetCommentResponse>
 {
     private readonly FeedDbContext _context = context;
     private readonly IAuthorizationHandler<Comment, CommentId> _authHandler = authorizationHandler;
-    private readonly IAuthorContext _authorContext = authorContext;
+    private readonly IOptionalAuthorContext _authorContext = authorContext;
 
     public async Task<HandlerResponse<GetCommentResponse>> ExecuteAsync(GetCommentQuery query, CancellationToken ct)
     {

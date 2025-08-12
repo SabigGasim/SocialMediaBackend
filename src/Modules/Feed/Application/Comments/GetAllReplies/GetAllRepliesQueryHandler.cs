@@ -13,12 +13,12 @@ namespace SocialMediaBackend.Modules.Feed.Application.Comments.GetAllReplies;
 internal sealed class GetAllRepliesQueryHandler(
     FeedDbContext context,
     IAuthorizationHandler<Comment, CommentId> authorizationHandler,
-    IAuthorContext authorContext)
+    IOptionalAuthorContext authorContext)
     : IQueryHandler<GetAllRepliesQuery, GetAllRepliesResponse>
 {
     private readonly FeedDbContext _context = context;
     private readonly IAuthorizationHandler<Comment, CommentId> _authorizationHandler = authorizationHandler;
-    private readonly IAuthorContext _authorContext = authorContext;
+    private readonly IOptionalAuthorContext _authorContext = authorContext;
 
     public async Task<HandlerResponse<GetAllRepliesResponse>> ExecuteAsync(GetAllRepliesQuery query, CancellationToken ct)
     {
@@ -38,7 +38,7 @@ internal sealed class GetAllRepliesQueryHandler(
             .Include(x => x.Author)
             .Where(x => x.ParentCommentId == query.ParentId);
 
-        queryable = await _authorizationHandler.AuthorizeQueryable(queryable, _authorContext.AuthorId);
+        queryable = await _authorizationHandler.AuthorizeQueryable(queryable, _authorContext.AuthorId, ct);
 
         var replies = await queryable
             .Skip((query.Page - 1) * query.PageSize)

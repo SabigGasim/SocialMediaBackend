@@ -16,6 +16,10 @@ public class AuthModule : Module
         builder.RegisterType<AuthorContext>()
             .As<IAuthorContext>()
             .InstancePerLifetimeScope();
+        
+        builder.RegisterType<OptionalAuthorContext>()
+            .As<IOptionalAuthorContext>()
+            .InstancePerLifetimeScope();
 
         builder.RegisterType<CommentAuthorizationHandler>()
             .As<IAuthorizationHandler<Comment, CommentId>>()

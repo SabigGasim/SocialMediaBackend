@@ -14,12 +14,12 @@ namespace SocialMediaBackend.Modules.Feed.Application.Comments.GetAllPostComment
 internal sealed class GetAllPostCommentsQueryHandler(
     FeedDbContext context,
     IAuthorizationService authorizationService,
-    IAuthorContext authorContext)
+    IOptionalAuthorContext authorContext)
     : IQueryHandler<GetAllPostCommentsQuery, GetAllPostCommentsResponse>
 {
     private readonly FeedDbContext _context = context;
     private readonly IAuthorizationService _authService = authorizationService;
-    private readonly IAuthorContext _authorContext = authorContext;
+    private readonly IOptionalAuthorContext _authorContext = authorContext;
 
     public async Task<HandlerResponse<GetAllPostCommentsResponse>> ExecuteAsync(GetAllPostCommentsQuery query, CancellationToken ct)
     {

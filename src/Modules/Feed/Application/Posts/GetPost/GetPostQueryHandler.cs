@@ -13,11 +13,11 @@ namespace SocialMediaBackend.Modules.Feed.Application.Posts.GetPost;
 internal sealed class GetPostQueryHandler(
     FeedDbContext context,
     IAuthorizationHandler<Post, PostId> authorizationHandler,
-    IAuthorContext authorContext) : IQueryHandler<GetPostQuery, GetPostResponse>
+    IOptionalAuthorContext authorContext) : IQueryHandler<GetPostQuery, GetPostResponse>
 {
     private readonly FeedDbContext _context = context;
     private readonly IAuthorizationHandler<Post, PostId> _authHandler = authorizationHandler;
-    private readonly IAuthorContext _authorContext = authorContext;
+    private readonly IOptionalAuthorContext _authorContext = authorContext;
 
     public async Task<HandlerResponse<GetPostResponse>> ExecuteAsync(GetPostQuery query, CancellationToken ct)
     {
