@@ -2,10 +2,10 @@
 using SocialMediaBackend.BuildingBlocks.Application;
 using SocialMediaBackend.BuildingBlocks.Application.Requests;
 using SocialMediaBackend.BuildingBlocks.Application.Requests.Commands;
+using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.Modules.Feed.Application.Auth;
 using SocialMediaBackend.Modules.Feed.Domain.Authors;
 using SocialMediaBackend.Modules.Feed.Domain.Posts;
-using SocialMediaBackend.Modules.Feed.Infrastructure.Configuration.Authors;
 using SocialMediaBackend.Modules.Feed.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Posts.DeletePost;
@@ -21,22 +21,32 @@ internal sealed class DeletePostCommandHandler(
 
     public async Task<HandlerResponse> ExecuteAsync(DeletePostCommand command, CancellationToken ct)
     {
-        if (!await _authorizationHandler.IsAdminOrResourceOwnerAsync(_authorContext.AuthorId, command.PostId, new(true), ct))
+        var authResult = await _authorizationHandler.IsAdminOrResourceOwnerAsync(
+            _authorContext.AuthorId, 
+            command.PostId,
+            ct);
+
+        if (!authResult.IsAuthorized)
         {
             return ("Forbidden", HandlerResponseStatus.Unauthorized);
         }
 
-        var query = _context.Authors
-                .Include(x => x.Posts.Where(p => p.Id == command.PostId))
-                .AsQueryable();
-
         //TODO: Return result from auth handler that indicates how the authorization succeded, including
         //if the user was admin
-        query = command.IsAdmin
-            ? query.Where(x => x.Id == authorId || x.Posts.Any(p => p.Id == command.PostId))
-            : query.Where(x => x.Id == authorId);
+        var query = authResult.SuccessReason == AuthSuccessReason.Admin
+            ? _context
+                .Authors
+                .Where(x => 
+                    x.Id == _authorContext.AuthorId ||
+                    x.Posts.Any(p => p.Id == command.PostId))
+            : _context
+                .Authors
+                .Where(x => x.Id == _authorContext.AuthorId);
 
-        var user = await query.FirstOrDefaultAsync(ct);
+        var user = await query
+            .Include(x => x.Posts.Where(p => p.Id == command.PostId))
+            .FirstOrDefaultAsync(ct);
+
         if (user is null)
         {
             // This will only execute if the deleter is an admin That isn't

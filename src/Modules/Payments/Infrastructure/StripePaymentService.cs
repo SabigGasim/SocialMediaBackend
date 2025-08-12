@@ -142,4 +142,23 @@ public class StripePaymentService : IPaymentService
 
         return subscription.CancelAtPeriodEnd == false;
     }
+
+    public async Task<Subscription> UpgradeSubscriptionPlanAsync(string subscriptionId, string newPriceId)
+    {
+        var subscription = await new SubscriptionService().GetAsync(subscriptionId);
+
+        var updatedSubscription = await new SubscriptionService().UpdateAsync(subscriptionId, new SubscriptionUpdateOptions
+        {
+            Items = new List<SubscriptionItemOptions>
+            {
+                new SubscriptionItemOptions
+                {
+                    Id = subscription.Items.Data[0].Id,
+                    Price = newPriceId,
+                }
+            }
+        });
+
+        return updatedSubscription;
+    }
 }

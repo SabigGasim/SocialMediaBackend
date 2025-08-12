@@ -20,9 +20,11 @@ internal sealed class LikePostCommandHandler(
 
     public async Task<HandlerResponse> ExecuteAsync(LikePostCommand command, CancellationToken ct)
     {
+        var authorId = _authorContext.AuthorId;
+
         var post = await _context.Posts
             .Include(x => x.Author)
-            .Include(x => x.Likes.Where(p => p.UserId == _authorContext.AuthorId))
+            .Include(x => x.Likes.Where(p => p.UserId == authorId))
             .Where(x => x.Id == command.PostId)
             .FirstOrDefaultAsync(ct);
 
@@ -31,14 +33,12 @@ internal sealed class LikePostCommandHandler(
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, command.PostId);
         }
 
-        var authorId = _authorContext.AuthorId;
-
-        if (!await _authorizationHandler.AuthorizeAsync(authorId, command.PostId, new(true), ct))
+        if (!await _authorizationHandler.AuthorizeAsync(authorId, command.PostId, ct))
         {
             return ("The author limits who can view their posts", HandlerResponseStatus.Unauthorized, post.AuthorId);
         }
 
-        var result = post.AddLike(_authorContext.AuthorId);
+        var result = post.AddLike(authorId);
         if (!result.IsSuccess)
         {
             return result;

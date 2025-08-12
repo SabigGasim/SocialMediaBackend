@@ -1,4 +1,5 @@
 ﻿using SocialMediaBackend.Modules.Payments.Contracts.Gateway;
+using Stripe;
 using Stripe.Checkout;
 
 namespace SocialMediaBackend.Modules.Payments.Infrastructure.Gateway;
@@ -104,6 +105,35 @@ public class StripeGateway : IPaymentGateway
             session.Id,
             session.Url,
             session.ClientSecret
+        );
+    }
+
+    public async Task<CreateCheckoutSessionResponse> CreateBillingPortalSessionForSubscriptionUpgradeAsync(
+        string customerId,
+        string subscriptionId,
+        string priceId)
+    {
+        var portalSessionService = new Stripe.BillingPortal.SessionService();
+        var portalOptions = new Stripe.BillingPortal.SessionCreateOptions
+        {
+            Customer = customerId,
+            ReturnUrl = "https://localhost:7251/",
+            FlowData = new()
+            {
+                Type = "subscription_update_confirm",
+                SubscriptionUpdateConfirm = new()
+                {
+                    Subscription = subscriptionId,
+                    Items = [new() { Price = priceId }]
+                }
+            }
+        };
+        
+        var portalSession = await portalSessionService.CreateAsync(portalOptions);
+        return new CreateCheckoutSessionResponse(
+            portalSession.Id,
+            portalSession.Url,
+            string.Empty
         );
     }
 }

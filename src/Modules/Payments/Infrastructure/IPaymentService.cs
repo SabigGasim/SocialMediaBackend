@@ -18,4 +18,5 @@ public interface IPaymentService
     Task DeletePaymentMethodAsync(string paymentMethodId);
     Task<bool> CancelSubscriptionAtPeriodEndAsync(string subscriptionId);
     Task<bool> ReactivateSubscriptionAsync(string subscriptionId);
+    Task<Subscription> UpgradeSubscriptionPlanAsync(string subscriptionId, string newPriceId);
 }

@@ -12,10 +12,12 @@ namespace SocialMediaBackend.Modules.Feed.Application.Posts.GetPost;
 
 internal sealed class GetPostQueryHandler(
     FeedDbContext context,
-    IAuthorizationHandler<Post, PostId> authService) : IQueryHandler<GetPostQuery, GetPostResponse>
+    IAuthorizationHandler<Post, PostId> authorizationHandler,
+    IAuthorContext authorContext) : IQueryHandler<GetPostQuery, GetPostResponse>
 {
     private readonly FeedDbContext _context = context;
-    private readonly IAuthorizationHandler<Post, PostId> _authService = authService;
+    private readonly IAuthorizationHandler<Post, PostId> _authHandler = authorizationHandler;
+    private readonly IAuthorContext _authorContext = authorContext;
 
     public async Task<HandlerResponse<GetPostResponse>> ExecuteAsync(GetPostQuery query, CancellationToken ct)
     {
@@ -25,14 +27,14 @@ internal sealed class GetPostQueryHandler(
             .FirstOrDefaultAsync(x => x.Id == query.PostId, ct);
 
         if (post is null)
+        {
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound, query.PostId);
+        }
 
-        var authorized = await _authService
-            .AuthorizeAsync(new AuthorId(query.UserId!.Value), query.PostId, new AuthOptions(query.IsAdmin), ct);
-
-        if (!authorized)
+        if (!await _authHandler.AuthorizeAsync(_authorContext.AuthorId, query.PostId, ct))
+        {
             return ("The author limits who can view there posts", HandlerResponseStatus.Unauthorized, post.Id);
-
+        }
 
         return (post.MapToGetResponse(), HandlerResponseStatus.OK);
     }

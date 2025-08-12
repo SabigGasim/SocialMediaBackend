@@ -1,54 +1,71 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SocialMediaBackend.BuildingBlocks.Application.Auth;
 using SocialMediaBackend.BuildingBlocks.Domain;
 using SocialMediaBackend.Modules.Feed.Domain;
+using SocialMediaBackend.Modules.Feed.Domain.Authorization;
 using SocialMediaBackend.Modules.Feed.Domain.Authors;
 
 namespace SocialMediaBackend.Modules.Feed.Application.Auth;
+
 public abstract class ProfileAuthorizationHandlerBase<TUserResource, TId>
     : IAuthorizationHandler<TUserResource, TId>
     where TUserResource : Entity<TId>, IUserResource
     where TId : class
 {
     protected readonly DbContext _context;
+    private readonly IPermissionManager _permissionManager;
 
-    public ProfileAuthorizationHandlerBase(DbContext context)
+    public ProfileAuthorizationHandlerBase(DbContext context, IPermissionManager permissionManager)
     {
         _context = context;
+        _permissionManager = permissionManager;
     }
 
-    public virtual Task<bool> AuthorizeAsync(AuthorId? authorId, TId resourceId, AuthOptions options, CancellationToken ct = default)
+    public virtual async Task<AuthResult> AuthorizeAsync(AuthorId? authorId, TId resourceId, CancellationToken ct = default)
     {
         var queryable = _context
             .Set<TUserResource>()
             .AsNoTracking();
 
-        var fullQuery = AuthorizeQueryable(queryable, authorId, resourceId, options);
+        var fullQuery = await AuthorizeQueryable(queryable, authorId, resourceId);
 
-        return fullQuery.AnyAsync(ct);
+        return await fullQuery.AnyAsync(ct)
+            ? AuthResult.Success()
+            : AuthResult.Fail();
     }
 
-    public virtual Task<bool> IsAdminOrResourceOwnerAsync(AuthorId? authorId, TId resourceId, AuthOptions options, CancellationToken ct = default)
+    public virtual async Task<AuthResult> IsAdminOrResourceOwnerAsync(
+        AuthorId? authorId,
+        TId resourceId, 
+        CancellationToken ct = default)
     {
-        if (UserIsAdmin(authorId, options))
+        if (await UserIsAdminAsync(authorId, ct))
         {
-            return Task.FromResult(true);
+            return AuthResult.Admin();
         }
 
-        return _context
+        var isResourceOwner = await _context
             .Set<TUserResource>()
             .AsNoTracking()
             .Where(x => x.Id == resourceId && x.AuthorId == authorId)
             .AnyAsync(ct);
+
+        return isResourceOwner
+            ? AuthResult.ResourceOwner()
+            : AuthResult.Fail();
     }
 
-    public virtual IQueryable<TUserResource> AuthorizeQueryable(IQueryable<TUserResource> queryable, AuthorId? authorId, AuthOptions options)
+    public virtual async Task<IQueryable<TUserResource>> AuthorizeQueryable(
+        IQueryable<TUserResource> queryable, 
+        AuthorId? authorId, 
+        CancellationToken ct = default)
     {
-        if (UserIsAdmin(authorId, options))
+        if (await UserIsAdminAsync(authorId, ct))
         {
             return queryable;
         }
 
-        if (UserIsNotAdmin(authorId, options))
+        if (authorId is not null)
         {
             return queryable.Where(x =>
                        x.AuthorId == authorId
@@ -60,21 +77,25 @@ public abstract class ProfileAuthorizationHandlerBase<TUserResource, TId>
         return queryable.Where(x => x.Author.ProfileIsPublic);
     }
 
-    public virtual IQueryable<TUserResource> AuthorizeQueryable(IQueryable<TUserResource> queryable, AuthorId? authorId, TId resourceId, AuthOptions options)
+    public virtual Task<IQueryable<TUserResource>> AuthorizeQueryable(
+        IQueryable<TUserResource> queryable, 
+        AuthorId? authorId, 
+        TId resourceId,
+        CancellationToken ct = default)
     {
         queryable = queryable
             .Where(x => x.Id == resourceId);
 
-        return AuthorizeQueryable(queryable, authorId, options);
+        return AuthorizeQueryable(queryable, authorId, ct);
     }
 
-    private static bool UserIsAdmin(AuthorId? authorId, AuthOptions options)
+    private async Task<bool> UserIsAdminAsync(AuthorId? authorId, CancellationToken ct = default)
     {
-        return authorId is not null && options.IsAdmin;
-    }
+        if (authorId is not null)
+        {
+            return await _permissionManager.UserIsInRole(authorId.Value, (int)Roles.AdminAuthor, ct);
+        }
 
-    private static bool UserIsNotAdmin(AuthorId? authorId, AuthOptions options)
-    {
-        return authorId is not null && !options.IsAdmin;
+        return false;
     }
 }

@@ -24,7 +24,7 @@ internal sealed class DeleteCommentCommandHandler(
         var commentId = command.CommentId;
         var postId = command.PostId;
 
-        if (!await _authorizationHandler.IsAdminOrResourceOwnerAsync(authorId, commentId, new(true), ct))
+        if (!await _authorizationHandler.IsAdminOrResourceOwnerAsync(authorId, commentId, ct))
         {
             return ("Forbidden", HandlerResponseStatus.Unauthorized);
         }

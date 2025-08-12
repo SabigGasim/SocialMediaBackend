@@ -10,13 +10,13 @@ public static class QuartzStartup
     public static async Task InitializeAsync()
     {
         await Task.WhenAll(
-            SchduleJobAsync<ProcessInternalCommandsJob>(),
+            SchduleJobAsync<ProcessInternalCommandsJob>(TimeSpan.FromMilliseconds(500)),
             SchduleJobAsync<ProcessOutboxMessagesJob>(),
             SchduleJobAsync<ProcessInboxMessagesJob>()
             );
     }
 
-    private static async Task SchduleJobAsync<TJob>()
+    private static async Task SchduleJobAsync<TJob>(TimeSpan? interval = null)
         where TJob : IJob
     {
         var jobName = typeof(TJob).Name;
@@ -24,7 +24,7 @@ public static class QuartzStartup
         var trigger = TriggerBuilder.Create()
            .StartNow()
            .WithSimpleSchedule(x => x
-               .WithIntervalInSeconds(2)
+               .WithInterval(interval ?? TimeSpan.FromSeconds(2))
                .RepeatForever())
            .Build();
 

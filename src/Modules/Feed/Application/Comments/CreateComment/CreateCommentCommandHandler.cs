@@ -30,7 +30,6 @@ internal sealed class CreateCommentCommandHandler(
         var authorized = await _authorizationHandler.AuthorizeAsync(
             _authorContext.AuthorId, 
             command.PostId, 
-            new AuthOptions(IsAdmin: true),
             ct);
 
         if (!authorized)

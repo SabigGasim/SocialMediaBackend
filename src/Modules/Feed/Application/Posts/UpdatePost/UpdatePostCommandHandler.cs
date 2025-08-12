@@ -25,7 +25,7 @@ internal sealed class UpdatePostCommandHandler(
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound);
         }
 
-        if (!await _authorizationHandler.AuthorizeAsync(_authorContext.AuthorId, command.PostId, new(true), ct))
+        if (!await _authorizationHandler.AuthorizeAsync(_authorContext.AuthorId, command.PostId, ct))
         {
             return ("Forbidden", HandlerResponseStatus.Unauthorized);
         }

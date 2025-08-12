@@ -13,24 +13,26 @@ namespace SocialMediaBackend.Modules.Feed.Application.Comments.GetAllPostComment
 
 internal sealed class GetAllPostCommentsQueryHandler(
     FeedDbContext context,
-    IAuthorizationService authorizationService
-    )
+    IAuthorizationService authorizationService,
+    IAuthorContext authorContext)
     : IQueryHandler<GetAllPostCommentsQuery, GetAllPostCommentsResponse>
 {
     private readonly FeedDbContext _context = context;
-    private readonly IAuthorizationService _authorizationService = authorizationService;
+    private readonly IAuthorizationService _authService = authorizationService;
+    private readonly IAuthorContext _authorContext = authorContext;
 
     public async Task<HandlerResponse<GetAllPostCommentsResponse>> ExecuteAsync(GetAllPostCommentsQuery query, CancellationToken ct)
     {
         var postExists = await _context.Posts.AnyAsync(x => x.Id == query.PostId, ct);
         if (!postExists)
+        {
             return ("Post with the given Id was not found", HandlerResponseStatus.NotFound);
+        }
 
-        var authorized = await _authorizationService
-            .AuthorizeAsync<Post, PostId>(new AuthorId(query.UserId!.Value), query.PostId, new AuthOptions(query.IsAdmin), ct);
-
-        if (!authorized)
+        if (!await _authService.AuthorizeAsync<Post, PostId>(_authorContext.AuthorId, query.PostId, ct))
+        {
             return ("The author limits who can view there posts", HandlerResponseStatus.Unauthorized, query.PostId);
+        }
 
         var sqlQuery = _context.Comments
             .AsNoTracking()
@@ -39,8 +41,7 @@ internal sealed class GetAllPostCommentsQueryHandler(
             .OrderByDescending(c => c.Created)
             .AsQueryable();
 
-        sqlQuery = _authorizationService
-            .AuthorizeQueryable<Comment, CommentId>(sqlQuery, new(query.UserId!.Value), new(query.IsAdmin));
+        sqlQuery = await _authService.AuthorizeQueryable<Comment, CommentId>(sqlQuery, _authorContext.AuthorId, ct);
 
         var totalCount = await sqlQuery.CountAsync(ct);
 

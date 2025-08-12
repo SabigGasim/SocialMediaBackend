@@ -9,35 +9,50 @@ internal class AuthorizationService(IServiceScopeFactory serviceScopeFactory) : 
 {
     private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
 
-    public async Task<bool> AuthorizeAsync<TResource, TResourceId>(AuthorId? userId, TResourceId resourceId, AuthOptions options, CancellationToken ct = default)
+    public async Task<AuthResult> AuthorizeAsync<TResource, TResourceId>(AuthorId? userId, TResourceId resourceId, CancellationToken ct = default)
         where TResource : Entity<TResourceId>, IUserResource
     {
-        using var scope = _serviceScopeFactory.CreateScope();
-        var handler = scope.ServiceProvider.GetRequiredService<IAuthorizationHandler<TResource, TResourceId>>();
-        return await handler.AuthorizeAsync(userId, resourceId, options, ct);
+        using (var scope = _serviceScopeFactory.CreateScope())
+        {
+            var handler = scope.ServiceProvider.GetRequiredService<IAuthorizationHandler<TResource, TResourceId>>();
+            return await handler.AuthorizeAsync(userId, resourceId, ct);
+        }
     }
 
-    public async Task<bool> IsAdminOrResourceOwnerAsync<TResource, TResourceId>(AuthorId? userId, TResourceId resourceId, AuthOptions options, CancellationToken ct = default)
+    public async Task<AuthResult> IsAdminOrResourceOwnerAsync<TResource, TResourceId>(AuthorId? userId, TResourceId resourceId, CancellationToken ct = default)
         where TResource : Entity<TResourceId>, IUserResource
     {
-        using var scope = _serviceScopeFactory.CreateScope();
-        var handler = scope.ServiceProvider.GetRequiredService<IAuthorizationHandler<TResource, TResourceId>>();
-        return await handler.AuthorizeAsync(userId, resourceId, options, ct);
+        using (var scope = _serviceScopeFactory.CreateScope())
+        {
+            var handler = scope.ServiceProvider.GetRequiredService<IAuthorizationHandler<TResource, TResourceId>>();
+            return await handler.IsAdminOrResourceOwnerAsync(userId, resourceId, ct);
+        }
     }
 
-    public IQueryable<TResource> AuthorizeQueryable<TResource, TResourceId>(IQueryable<TResource> resource, AuthorId? userId, TResourceId resourceId, AuthOptions options)
+    public async Task<IQueryable<TResource>> AuthorizeQueryable<TResource, TResourceId>(
+        IQueryable<TResource> resource, 
+        AuthorId? userId, 
+        TResourceId resourceId,
+        CancellationToken ct = default)
         where TResource : Entity<TResourceId>, IUserResource
     {
-        using var scope = _serviceScopeFactory.CreateScope();
-        var handler = scope.ServiceProvider.GetRequiredService<IAuthorizationHandler<TResource, TResourceId>>();
-        return handler.AuthorizeQueryable(resource, userId, resourceId, options);
+        using (var scope = _serviceScopeFactory.CreateScope())
+        {
+            var handler = scope.ServiceProvider.GetRequiredService<IAuthorizationHandler<TResource, TResourceId>>();
+            return await handler.AuthorizeQueryable(resource, userId, resourceId, ct);
+        }
     }
 
-    public IQueryable<TResource> AuthorizeQueryable<TResource, TResourceId>(IQueryable<TResource> resource, AuthorId? userId, AuthOptions options)
+    public async Task<IQueryable<TResource>> AuthorizeQueryable<TResource, TResourceId>(
+        IQueryable<TResource> resource, 
+        AuthorId? userId, 
+        CancellationToken ct = default)
         where TResource : Entity<TResourceId>, IUserResource
     {
-        using var scope = _serviceScopeFactory.CreateScope();
-        var handler = scope.ServiceProvider.GetRequiredService<IAuthorizationHandler<TResource, TResourceId>>();
-        return handler.AuthorizeQueryable(resource, userId, options);
+        using (var scope = _serviceScopeFactory.CreateScope())
+        {
+            var handler = scope.ServiceProvider.GetRequiredService<IAuthorizationHandler<TResource, TResourceId>>();
+            return await handler.AuthorizeQueryable(resource, userId, ct);
+        }
     }
 }

@@ -16,7 +16,7 @@ internal sealed class ReplyToCommentCommandHandler(
     : ICommandHandler<ReplyToCommentCommand, ReplyToCommentResponse>
 {
     private readonly FeedDbContext _context = context;
-    private readonly IAuthorizationHandler<Comment, CommentId> _authorizationHandler = authorizationHandler;
+    private readonly IAuthorizationHandler<Comment, CommentId> _authHandler = authorizationHandler;
     private readonly IAuthorContext _authorContext = authorContext;
 
     public async Task<HandlerResponse<ReplyToCommentResponse>> ExecuteAsync(ReplyToCommentCommand command, CancellationToken ct)
@@ -27,15 +27,9 @@ internal sealed class ReplyToCommentCommandHandler(
             return ("Comment with the given Id was not found", HandlerResponseStatus.NotFound);
         }
 
-        var authorized = await _authorizationHandler.AuthorizeAsync(
-            _authorContext.AuthorId, 
-            command.ParentId, 
-            new AuthOptions(IsAdmin: true), 
-            ct);
-
-        if (!authorized)
+        if (!await _authHandler.AuthorizeAsync(_authorContext.AuthorId, command.ParentId, ct))
         {
-            return ("The author restricts who can see their comments", HandlerResponseStatus.Unauthorized, parent.AuthorId);
+            return ("This author restricts who can see their comments", HandlerResponseStatus.Unauthorized, parent.AuthorId.Value);
         }
 
         var reply = parent.AddReply(_authorContext.AuthorId, command.Text);

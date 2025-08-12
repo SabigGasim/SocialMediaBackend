@@ -52,9 +52,9 @@ internal sealed class LikeCommentCommandHandler(
     {
         return
              await _authorizationService
-                .AuthorizeAsync<Post, PostId>(_authorContext.AuthorId, postId, new(true), ct)
+                .AuthorizeAsync<Post, PostId>(_authorContext.AuthorId, postId, ct)
                 &&
              await _authorizationService
-                .AuthorizeAsync<Comment, CommentId>(_authorContext.AuthorId, command.CommentId, new(true), ct);
+                .AuthorizeAsync<Comment, CommentId>(_authorContext.AuthorId, command.CommentId, ct);
     }
 }

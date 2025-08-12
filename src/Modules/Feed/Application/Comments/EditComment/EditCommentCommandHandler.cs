@@ -14,7 +14,7 @@ internal sealed class EditCommentCommandHandler(
     IAuthorContext authorContext) : ICommandHandler<EditCommentCommand>
 {
     private readonly FeedDbContext _context = context;
-    private readonly IAuthorizationHandler<Comment, CommentId> _authorizationHandler = authorizationHandler;
+    private readonly IAuthorizationHandler<Comment, CommentId> _authHandler = authorizationHandler;
     private readonly IAuthorContext _authorContext = authorContext;
 
     public async Task<HandlerResponse> ExecuteAsync(EditCommentCommand command, CancellationToken ct)
@@ -25,13 +25,7 @@ internal sealed class EditCommentCommandHandler(
             return ("Comment with the given Id was not found", HandlerResponseStatus.NotFound, command.CommentId);
         }
 
-        var authorized = await _authorizationHandler.IsAdminOrResourceOwnerAsync(
-            _authorContext.AuthorId, 
-            command.CommentId, 
-            new AuthOptions(IsAdmin: true),
-            ct);
-
-        if (!authorized)
+        if (!await _authHandler.IsAdminOrResourceOwnerAsync(_authorContext.AuthorId, command.CommentId, ct))
         {
             return ("Forbidden", HandlerResponseStatus.Unauthorized);
         }

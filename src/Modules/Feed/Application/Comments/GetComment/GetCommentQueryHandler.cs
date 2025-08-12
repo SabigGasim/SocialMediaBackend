@@ -12,19 +12,20 @@ namespace SocialMediaBackend.Modules.Feed.Application.Comments.GetComment;
 
 internal sealed class GetCommentQueryHandler(
     FeedDbContext context,
-    IAuthorizationHandler<Comment, CommentId> authorizationHandler)
+    IAuthorizationHandler<Comment, CommentId> authorizationHandler,
+    IAuthorContext authorContext)
     : IQueryHandler<GetCommentQuery, GetCommentResponse>
 {
     private readonly FeedDbContext _context = context;
-    private readonly IAuthorizationHandler<Comment, CommentId> _authorizationHandler = authorizationHandler;
+    private readonly IAuthorizationHandler<Comment, CommentId> _authHandler = authorizationHandler;
+    private readonly IAuthorContext _authorContext = authorContext;
 
     public async Task<HandlerResponse<GetCommentResponse>> ExecuteAsync(GetCommentQuery query, CancellationToken ct)
     {
-        var authorized = await _authorizationHandler
-            .AuthorizeAsync(new AuthorId(query.UserId!.Value), query.CommentId, new AuthOptions(query.IsAdmin), ct);
-
-        if (!authorized)
-            return ("The author restricts who can see their comments", HandlerResponseStatus.Unauthorized, query.CommentId);
+        if (!await _authHandler.AuthorizeAsync(_authorContext.AuthorId, query.CommentId, ct))
+        {
+            return ("This author restricts who can see their comments", HandlerResponseStatus.Unauthorized, query.CommentId.Value);
+        }
 
         var comment = await _context.Comments
             .AsNoTracking()
@@ -32,7 +33,9 @@ internal sealed class GetCommentQueryHandler(
             .FirstOrDefaultAsync(x => x.Id == query.CommentId, ct);
 
         if (comment is null)
+        {
             return ("Comment with the given Id was not found", HandlerResponseStatus.NotFound);
+        }
 
         return (comment.MapToGetResponse(), HandlerResponseStatus.OK);
     }

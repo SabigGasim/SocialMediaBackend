@@ -7,26 +7,24 @@ namespace SocialMediaBackend.Modules.Feed.Application.Auth;
 public interface IAuthorizationHandler<TResource, TResourceId>
     where TResource : Entity<TResourceId>, IUserResource
 {
-    IQueryable<TResource> AuthorizeQueryable(
+    Task<IQueryable<TResource>> AuthorizeQueryable(
         IQueryable<TResource> resource,
         AuthorId? authorId,
         TResourceId resourceId,
-        AuthOptions options);
-
-    IQueryable<TResource> AuthorizeQueryable(
-        IQueryable<TResource> resource,
-        AuthorId? authorId,
-        AuthOptions options);
-
-    Task<bool> AuthorizeAsync(
-        AuthorId? authorId,
-        TResourceId resourceId,
-        AuthOptions options,
         CancellationToken ct = default);
 
-    Task<bool> IsAdminOrResourceOwnerAsync(
+    Task<IQueryable<TResource>> AuthorizeQueryable(
+        IQueryable<TResource> resource,
+        AuthorId? authorId,
+        CancellationToken ct = default);
+
+    Task<AuthResult> AuthorizeAsync(
         AuthorId? authorId,
         TResourceId resourceId,
-        AuthOptions options,
+        CancellationToken ct = default);
+
+    Task<AuthResult> IsAdminOrResourceOwnerAsync(
+        AuthorId? authorId,
+        TResourceId resourceId,
         CancellationToken ct = default);
 }

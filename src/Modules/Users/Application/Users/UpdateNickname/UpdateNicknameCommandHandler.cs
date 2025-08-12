@@ -6,13 +6,15 @@ using SocialMediaBackend.Modules.Users.Infrastructure.Data;
 
 namespace SocialMediaBackend.Modules.Users.Application.Users.UpdateNickname;
 
-internal sealed class UpdateNicknameHandler(UsersDbContext context) : ICommandHandler<UpdateNicknameCommand>
+internal sealed class UpdateNicknameCommandHandler(UsersDbContext context, IUserContext userContext) 
+    : ICommandHandler<UpdateNicknameCommand>
 {
     private readonly UsersDbContext _context = context;
+    private readonly IUserContext _userContext = userContext;
 
     public async Task<HandlerResponse> ExecuteAsync(UpdateNicknameCommand command, CancellationToken ct)
     {
-        var user = await _context.Users.FindAsync([new UserId(command.UserId)], ct);
+        var user = await _context.Users.FindAsync([_userContext.UserId], ct);
 
         var result = user!.ChangeNickname(command.Nickname);
         if(!result.IsSuccess)
