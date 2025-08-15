@@ -18,7 +18,7 @@ public class RequestEndpoint<TRequest>(IModuleContract module) : FastEndpoints.E
 
         if (handlerResponse.IsSuccess)
         {
-            await SendNoContentAsync(cancellationToken);
+            await Send.NoContentAsync(cancellationToken);
             return;
         }
 
@@ -26,7 +26,7 @@ public class RequestEndpoint<TRequest>(IModuleContract module) : FastEndpoints.E
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: cancellationToken);
+        await Send.ErrorsAsync((int)statusCode, cancellation: cancellationToken);
     }
 }
 
@@ -44,13 +44,13 @@ public class RequestEndpoint<TRequest, TResponse>(IModuleContract module) : Fast
 
         if (handlerResponse.IsSuccess)
         {
-            await SendAsync(handlerResponse.Payload, (int)statusCode, cancellation: ct);
+            await Send.ResponseAsync(handlerResponse.Payload, (int)statusCode, cancellation: ct);
             return;
         }
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
 
     protected async Task HandleCommandAsync<TCommand>(TCommand command, CancellationToken ct)
@@ -62,13 +62,13 @@ public class RequestEndpoint<TRequest, TResponse>(IModuleContract module) : Fast
 
         if (handlerResponse.IsSuccess)
         {
-            await SendAsync(handlerResponse.Payload, (int)statusCode, cancellation: ct);
+            await Send.ResponseAsync(handlerResponse.Payload, (int)statusCode, cancellation: ct);
             return;
         }
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
 }
 
@@ -85,13 +85,13 @@ public class RequestEndpointWithoutRequest<TResponse>(IModuleContract module) : 
 
         if (handlerResponse.IsSuccess)
         {
-            await SendAsync(handlerResponse.Payload, (int)statusCode, cancellation: ct);
+            await Send.ResponseAsync(handlerResponse.Payload, (int)statusCode, cancellation: ct);
             return;
         }
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
 
     protected async Task HandleQueryAsync<TQuery>(TQuery query, CancellationToken ct)
@@ -103,13 +103,13 @@ public class RequestEndpointWithoutRequest<TResponse>(IModuleContract module) : 
 
         if (handlerResponse.IsSuccess)
         {
-            await SendAsync(handlerResponse.Payload, (int)statusCode, cancellation: ct);
+            await Send.ResponseAsync(handlerResponse.Payload, (int)statusCode, cancellation: ct);
             return;
         }
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
 }
 
@@ -127,12 +127,12 @@ public abstract class RequestEndpoint(IModuleContract module) : FastEndpoints.En
 
         if (handlerResponse.IsSuccess)
         {
-            await SendNoContentAsync(ct);
+            await Send.NoContentAsync(ct);
             return;
         }
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
 }

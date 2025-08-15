@@ -25,7 +25,7 @@ public class RealtimeEndpoint<TRequest, TMessage, THub>(
 
         if (handlerResponse.IsSuccess)
         {
-            await SendNoContentAsync(ct);
+            await Send.NoContentAsync(ct);
 
             await _sender.SendAsync<SingleUserResponse<TMessage>, TMessage, string>(handlerResponse.Payload, _module);
 
@@ -36,7 +36,7 @@ public class RealtimeEndpoint<TRequest, TMessage, THub>(
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
 
     protected async Task HandleMultipleUsersCommand<TCommand>(TCommand command, CancellationToken ct)
@@ -46,7 +46,7 @@ public class RealtimeEndpoint<TRequest, TMessage, THub>(
 
         if (handlerResponse.IsSuccess)
         {
-            await SendNoContentAsync(ct);
+            await Send.NoContentAsync(ct);
 
             await _sender.SendAsync<MultipleUsersResponse<TMessage>, TMessage, IEnumerable<string>>(handlerResponse.Payload, _module);
 
@@ -57,7 +57,7 @@ public class RealtimeEndpoint<TRequest, TMessage, THub>(
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
     
     protected async Task HandleAllUsersCommandAsync<TCommand>(TCommand command, CancellationToken ct)
@@ -67,7 +67,7 @@ public class RealtimeEndpoint<TRequest, TMessage, THub>(
 
         if (handlerResponse.IsSuccess)
         {
-            await SendNoContentAsync(ct);
+            await Send.NoContentAsync(ct);
 
             await _sender.SendAllAsync<AllUsersResponse<TMessage>, TMessage>(handlerResponse.Payload);
 
@@ -78,7 +78,7 @@ public class RealtimeEndpoint<TRequest, TMessage, THub>(
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
     
     protected async Task HandleGroupCommandAsync<TCommand>(TCommand command, CancellationToken ct)
@@ -88,7 +88,7 @@ public class RealtimeEndpoint<TRequest, TMessage, THub>(
 
         if (handlerResponse.IsSuccess)
         {
-            await SendNoContentAsync(ct);
+            await Send.NoContentAsync(ct);
 
             await _sender.SendAsync<GroupResponse<TMessage>, TMessage, string>(handlerResponse.Payload, _module);
 
@@ -99,7 +99,7 @@ public class RealtimeEndpoint<TRequest, TMessage, THub>(
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
 }
 
@@ -122,7 +122,7 @@ public class RealtimeEndpoint<TRequest, TResponse, TMessage, THub>(
 
         if (handlerResponse.IsSuccess)
         {
-            await SendAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
+            await Send.ResponseAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
 
             await _sender.SendAsync<SingleUserResponse<TMessage, TResponse>, TMessage, string>(handlerResponse.Payload, _module);
 
@@ -131,7 +131,7 @@ public class RealtimeEndpoint<TRequest, TResponse, TMessage, THub>(
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
 
     protected async Task HandleMultipleUsersCommandAsync<TCommand>(TCommand command, CancellationToken ct)
@@ -143,7 +143,7 @@ public class RealtimeEndpoint<TRequest, TResponse, TMessage, THub>(
 
         if (handlerResponse.IsSuccess)
         {
-            await SendAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
+            await Send.ResponseAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
 
             await _sender.SendAsync<MultipleUsersResponse<TMessage, TResponse>, TMessage, IEnumerable<string>>(handlerResponse.Payload, _module);
 
@@ -152,7 +152,7 @@ public class RealtimeEndpoint<TRequest, TResponse, TMessage, THub>(
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
 
     protected async Task HandleGroupCommandAsync<TCommand>(TCommand command, CancellationToken ct)
@@ -164,7 +164,7 @@ public class RealtimeEndpoint<TRequest, TResponse, TMessage, THub>(
 
         if (handlerResponse.IsSuccess)
         {
-            await SendAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
+            await Send.ResponseAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
 
             await _sender.SendAsync<GroupResponse<TMessage, TResponse>, TMessage, string>(handlerResponse.Payload, _module);
 
@@ -173,7 +173,7 @@ public class RealtimeEndpoint<TRequest, TResponse, TMessage, THub>(
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
 
     protected async Task HandleAllUsersCommandAsync<TCommand>(TCommand command, CancellationToken ct)
@@ -185,7 +185,7 @@ public class RealtimeEndpoint<TRequest, TResponse, TMessage, THub>(
 
         if (handlerResponse.IsSuccess)
         {
-            await SendAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
+            await Send.ResponseAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
 
             await _sender.SendAllAsync<AllUsersResponse<TMessage, TResponse>, TMessage>(handlerResponse.Payload);
 
@@ -194,7 +194,7 @@ public class RealtimeEndpoint<TRequest, TResponse, TMessage, THub>(
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
 }
 
@@ -216,7 +216,7 @@ public class RealtimeEndpointWithoutRequest<TResponse, TMessage, THub>(
 
         if (handlerResponse.IsSuccess)
         {
-            await SendAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
+            await Send.ResponseAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
 
             await _sender.SendAsync<SingleUserResponse<TMessage, TResponse>, TMessage, string>(handlerResponse.Payload, _module);
 
@@ -225,7 +225,7 @@ public class RealtimeEndpointWithoutRequest<TResponse, TMessage, THub>(
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
 
     protected async Task HandleMultipleUsersCommandAsync<TCommand>(TCommand command, CancellationToken ct)
@@ -237,7 +237,7 @@ public class RealtimeEndpointWithoutRequest<TResponse, TMessage, THub>(
 
         if (handlerResponse.IsSuccess)
         {
-            await SendAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
+            await Send.ResponseAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
 
             await _sender.SendAsync<MultipleUsersResponse<TMessage, TResponse>, TMessage, IEnumerable<string>>(handlerResponse.Payload, _module);
 
@@ -246,7 +246,7 @@ public class RealtimeEndpointWithoutRequest<TResponse, TMessage, THub>(
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
 
     protected async Task HandleGroupCommandAsync<TCommand>(TCommand command, CancellationToken ct)
@@ -258,7 +258,7 @@ public class RealtimeEndpointWithoutRequest<TResponse, TMessage, THub>(
 
         if (handlerResponse.IsSuccess)
         {
-            await SendAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
+            await Send.ResponseAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
 
             await _sender.SendAsync<GroupResponse<TMessage, TResponse>, TMessage, string>(handlerResponse.Payload, _module);
 
@@ -267,7 +267,7 @@ public class RealtimeEndpointWithoutRequest<TResponse, TMessage, THub>(
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
 
     protected async Task HandleAllUsersCommandAsync<TCommand>(TCommand command, CancellationToken ct)
@@ -279,7 +279,7 @@ public class RealtimeEndpointWithoutRequest<TResponse, TMessage, THub>(
 
         if (handlerResponse.IsSuccess)
         {
-            await SendAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
+            await Send.ResponseAsync(handlerResponse.Payload.Payload, (int)statusCode, cancellation: ct);
 
             await _sender.SendAllAsync<AllUsersResponse<TMessage, TResponse>, TMessage>(handlerResponse.Payload);
 
@@ -288,6 +288,6 @@ public class RealtimeEndpointWithoutRequest<TResponse, TMessage, THub>(
 
         AddError(handlerResponse.Message, statusCode.ToString());
 
-        await SendErrorsAsync((int)statusCode, cancellation: ct);
+        await Send.ErrorsAsync((int)statusCode, cancellation: ct);
     }
 }

@@ -13,6 +13,6 @@ public class TokenEndpoint(IJwtProvider jwtProvder) : Endpoint<TokenGenerationRe
     {
         var token = _jwtProvder.GenerateToken(req);
 
-        await SendOkAsync(token, ct);
+        await Send.OkAsync(token, ct);
     }
 }
