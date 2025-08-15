@@ -45,7 +45,7 @@ public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper outp
     {
         var messagesMarkedAsReceived = 0;
         var locker = new SemaphoreSlim(1, 1);
-        await locker.WaitAsync(TestContext.Current.CancellationToken);
+        await locker.WaitAsync(CancellationToken.None);
 
         // 1. Create a group chat between the two users
         var createGroupChatReq = new CreateGroupChatRequest(
@@ -85,7 +85,7 @@ public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper outp
         // 4. Admin marks all messages as seen via ChatHub
         await WaitForHubClientToTriggerMessageReceived(locker);
 
-        await _adminHubClient.InvokeAsync(ChatHubMethods.MarkGroupMessageAsSeen, groupChatId, TestContext.Current.CancellationToken);
+        await _adminHubClient.InvokeAsync(ChatHubMethods.MarkGroupMessageAsSeen, groupChatId, CancellationToken.None);
 
         // 5. Assert
         var messages = await GetAllGroupMessages(groupChatId);
@@ -112,7 +112,7 @@ public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper outp
     {
         var messagesMarkedAsReceived = 0;
         var locker = new SemaphoreSlim(1, 1);
-        await locker.WaitAsync(TestContext.Current.CancellationToken);
+        await locker.WaitAsync(CancellationToken.None);
 
         // 1. Create a group chat between the two users
         var createGroupChatReq = new CreateGroupChatRequest(
@@ -132,7 +132,7 @@ public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper outp
         using var subscription = _adminHubClient.On(ChatHubMethods.ReceiveGroupMessage, async (CreateGroupMessageMessage msg) =>
         {
             await SendMarkMessageAsReceivedRequest(msg);
-            await _adminHubClient.InvokeAsync(ChatHubMethods.MarkGroupMessageAsSeen, groupChatId, TestContext.Current.CancellationToken);
+            await _adminHubClient.InvokeAsync(ChatHubMethods.MarkGroupMessageAsSeen, groupChatId, CancellationToken.None);
             
             messagesMarkedAsReceived++;
             if (messagesMarkedAsReceived == messagesCount)
@@ -179,7 +179,7 @@ public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper outp
     {
         var messagesMarkedAsReceived = 0;
         var locker = new SemaphoreSlim(1, 1);
-        await locker.WaitAsync(TestContext.Current.CancellationToken);
+        await locker.WaitAsync(CancellationToken.None);
 
         // 1. Create a group chat between the two users
         var createGroupChatReq = new CreateGroupChatRequest(
@@ -202,10 +202,10 @@ public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper outp
         {
             _ = Task.Run(async () =>
             {
-                await taskLimiterSemaphor.WaitAsync(TestContext.Current.CancellationToken);
+                await taskLimiterSemaphor.WaitAsync(CancellationToken.None);
                 
                 await SendMarkMessageAsReceivedRequest(msg);
-                await hub.SendAsync(ChatHubMethods.MarkGroupMessageAsSeen, groupChatId, TestContext.Current.CancellationToken);
+                await hub.SendAsync(ChatHubMethods.MarkGroupMessageAsSeen, groupChatId, CancellationToken.None);
                 if (++messagesMarkedAsReceived == messagesCount * _devicesCount)
                 {
                     locker.Release();
@@ -255,7 +255,7 @@ public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper outp
 
     private static async Task WaitForHubClientToTriggerMessageReceived(SemaphoreSlim locker)
     {
-        await locker.WaitAsync(TestContext.Current.CancellationToken);
+        await locker.WaitAsync(CancellationToken.None);
         locker.Release();
     }
 
@@ -267,7 +267,7 @@ public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper outp
             
             return await db.UserGroupChats
                 .Where(x => x.ChatterId == AdminId && x.GroupChatId == new GroupChatId(groupChatId))
-                .FirstAsync(TestContext.Current.CancellationToken);
+                .FirstAsync(CancellationToken.None);
         }
     }
 
@@ -280,7 +280,7 @@ public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper outp
             return await db.GroupMessages
                 .Include(x => x.SeenBy)
                 .Where(m => m.ChatId == new GroupChatId(groupChatId))
-                .ToListAsync(TestContext.Current.CancellationToken);
+                .ToListAsync(CancellationToken.None);
         }
     }
 
@@ -305,7 +305,7 @@ public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper outp
             var lastMessage = await db.GroupMessages
                 .Where(m => m.ChatId == new GroupChatId(groupChatId))
                 .OrderByDescending(x => x.Id)
-                .FirstAsync(TestContext.Current.CancellationToken);
+                .FirstAsync(CancellationToken.None);
 
             return lastMessage.Id;
         }
@@ -334,7 +334,7 @@ public class MessageSentAndReceivedFlowRaceConditionTests(ITestOutputHelper outp
             return;
         }
 
-        await _setupLocker.WaitAsync(TestContext.Current.CancellationToken);
+        await _setupLocker.WaitAsync(CancellationToken.None);
         if (_userId == Guid.Empty)
         {
             _userId = Guid.NewGuid();
